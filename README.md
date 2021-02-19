@@ -24,7 +24,7 @@ This project is built using:
 Brief instructions and links to downloading each language or framework
 
 ### Install Python and PIP
-    * Check if python is installed by typing **python -V**
+    * Check if python is installed by typing __python -V__
     * if not, Download Python https://www.python.org/downloads/release/python-379/
     * Install by pip, by typing **python get-pip.py** in your terminal. Use pip -V to verifysuccessful installation. 
     *Also, ensure the Python path have been added to your system variables.
