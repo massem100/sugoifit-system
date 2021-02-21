@@ -16,9 +16,10 @@ This project is built using:
     - CSS3/SCSS
     - Bootstrap 4
     - Python 3.7.9
-    - Flask 
-    - Vue JS 
+    - Flask 1.1.2
+    - Vue JS 2.9.6
     - MySQL 
+    - Node JS
     - Webpack
 
 # Installation 
@@ -35,6 +36,16 @@ to be added.
 
 # How to Launch
 
+The frontend setup is separated from the backend. 
+
+
+## Frontend
+Launching the frontend 
+  Type cd .\frontend/sugoifit-app or navigate to them one at a time. 
+  - Run the development server by typing npm run dev
+
+## Backend
+Go to the backend directory then launch the Python Environment 
 ### Creating a Python Runtime Environment
     - In your command line, type python -m venv venv in the desired project folder. 
       (This will enable you to isolate your versions when working on multiple projects,
