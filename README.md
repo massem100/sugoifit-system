@@ -36,16 +36,10 @@ to be added.
 
 # How to Launch
 
-The frontend setup is separated from the backend. 
+The frontend setup is separated from the backend. Since it is separated, each will need to be launched in a separate terminal and using ajax or fetch they will communicate.
 
+Create the venv folder inside the folder with frontend and backend.
 
-## Frontend
-Launching the frontend 
-  Type cd .\frontend/sugoifit-app or navigate to them one at a time. 
-  - Run the development server by typing npm run dev
-
-## Backend
-Go to the backend directory then launch the Python Environment 
 ### Creating a Python Runtime Environment
     - In your command line, type python -m venv venv in the desired project folder. 
       (This will enable you to isolate your versions when working on multiple projects,
@@ -59,12 +53,20 @@ Go to the backend directory then launch the Python Environment
     - Remember to include your virtual environment folder, venv in your .gitignore file.
     
 
+## Frontend
+Launching the frontend 
+  Type cd .\frontend/sugoifit-app or navigate to them one at a time. 
+  - Run the development server by typing npm run dev
+
+## Backend
+Launching the backend
 ### Installing the Requirements.txt file 
     - While in an activate virtual environment, type pip install -r requirements.txt
     to install all packages for the project. 
     - To update/ export all installed packages to the requirements.txt file
      use the pip freeze > requirements.txt command.
      
+    - run the development server by typing python run.py
 
-### Finally, run your file 
-    This will be updated when the initial set up is completed.
+
+
