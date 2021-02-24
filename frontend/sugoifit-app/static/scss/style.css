@@ -1,6 +1,50 @@
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body, input, button, select, textarea {
+  font: 600 1rem Poppins;
+  color: #222222;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul, ol {
+  margin: 0 0 1rem;
+  padding: 0 0 1rem;
+}
+
 .side-bar {
-  background-color: coral;
-  width: 100vh;
-  height: 2rem;
+  background-color: #DFFBFF;
+  width: 20rem;
+  height: 100rem;
+  margin-top: 0;
+  padding: 10px;
+}
+
+.quick_actions {
+  margin: 5px;
+  background-color: #DFFBFF;
+  width: 15rem;
+  height: 0.75rem;
+  padding: 24px;
+}
+
+.quick_actions span {
+  font-size: 16px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 /*# sourceMappingURL=style.css.map */
