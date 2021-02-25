@@ -1,11 +1,22 @@
 <template>
     
-    <div id="entirePage">
-        <div id="header">
-            <br>
-            <h2> SugoiFit Login </h2>
+    <div class="entirePage">
+        <div  class='sidebar'>
+            <h2>SugoiFit</h2>
+
+            <div id="square1">
+
+            </div>
+            <div id="square2">
+
+            </div>
         </div>
+        
          <div class = 'main-area'>
+                <div id="header">
+                    <br>
+                    <h2> Login </h2>
+                </div>
                 <form>
                     <br>
                     <br><br>
@@ -15,31 +26,20 @@
                     Password:<br>
                     <input type="text" name="password" id="password">
                 </form>
+                <div  id="msgBox">
+                    <p> {Display error messages here} </p>
+                </div>
 
-            </div>
+                <div>
+                    <button class="submit" id="submit" type="button">Submit</button>
+                </div>
 
-            
-            <div id="square2">
+                <div> 
+                    <a href=""> Dont have an account? Sign up your business! </a>
+                </div>
 
-            </div>
-            <div id="square1">
-
-            </div>
-            
-            
-
-            <div  id="msgBox">
-                <p> {Display error messages here} </p>
-            </div>
-
-            <div>
-                <button class="submit" id="submit" type="button">Submit</button>
-            </div>
-
-            <div> 
-                <a href=""> Dont have an account? Sign up your business! </a>
-            </div>
-
+          </div>
+         
     </div>
 </template>
 
@@ -47,6 +47,9 @@
 export default {
     name: 'Login',
     data(){
+        return{
+
+        }
 
     }
 }
@@ -55,7 +58,7 @@ export default {
 <style scoped>
 
     input[type=text], input[type=password] {
-        align-content: left;
+        align-content: center;
         width: 500px;
         height: 45px;
         left: 392px;
@@ -106,5 +109,20 @@ export default {
 
         background: #7CC3CD;
     }
+
+    .entirePage{
+        
+        display: grid;
+        grid-template-columns: 1fr 7fr 1fr;
+        grid-column-gap: 1em;
+    
+    }
+
+    .sidebar{
+        padding-left: 50%;
+    }
+
+
+    
 
 </style>
