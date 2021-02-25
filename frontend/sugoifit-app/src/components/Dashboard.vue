@@ -44,10 +44,8 @@
 
 <script>
 import SideBar from './SideBar.vue'
-import Login from './Login'
-
 export default {
-    components: { SideBar, Login},
+    components: { SideBar },
     name: 'Dashboard',
 
 }
