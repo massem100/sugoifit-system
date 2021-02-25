@@ -7,8 +7,8 @@
 */
 nav.side-navbar {
     background: #DFFBFF;
-    min-width: 320px;
-    max-width: 320px;
+    min-width: 250px;
+    max-width: 250px;
     min-height: 100vh;
     color: #686a76;
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
@@ -265,69 +265,25 @@ nav.side-navbar {
   Added Styles
   ------------------------- */
 
-  .nav_icon{
-    width: 24px;
-    height: 24px;
-    /* margin: 0 0  0 */
-    margin-top: 18px;
-  }
+
   .nav_logo{
     font-size: 16px;
     font-weight: 600;
     padding:20px;
   }
 
+  .nav_logo > span{
+    color:#428B95;
+  }
 
   .profile{
-    margin-bottom: 15px;
-    display: grid;
-    grid-template-areas: 'name icon ' 
-                          'ID icon'
-                          'role role';
-    grid-column-gap: 24px;
+    margin:15px;
   }
 
-  #profile_name{
-    grid-area: name;
-    font-weight: 200;
-    }
-  #profile_ID{
-    grid-area: ID;
-    color: #00A99D;
-  }
-  
-  #profile-icon{
-    width: 60px;
-    height:60px;
-    grid-area: icon;
-    /* margin: 5px; */
-    /* padding:  5px; */
-  }
-
-  #role{
-    grid-area: role;
-    width:10rem;
-    font-weight: 200;
-    /* background-color: #8e81f1; */
-  }
   .profile >h6 {
-    font-family: 'Poppins', sans-serif;
     text-align: start;
     font-size: 15px;
-    font-weight: bold;
+    font-weight: 600;
     margin-left: 20px;
   
-  }
-
-  .list-unstyled{
-    padding-right: 2px;
-  }
-
-  .list-unstyled li {
-    background-color: white;
-    margin-bottom: 10px;
-  }
-  
-  .list-unstyled li a {
-    text-align: start;
   }

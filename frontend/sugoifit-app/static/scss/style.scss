@@ -15,7 +15,7 @@ $secondary-2: #7CC3CD;
   }
   
   body, input, button, select, textarea {
-    font: 600 1rem 'Poppins', sans-serif;
+    font: 600 1rem Poppins;
     color: #222222;
   }
   
@@ -28,68 +28,24 @@ $secondary-2: #7CC3CD;
     padding: 0 0 1rem;
   }
 
-.settings_bar{
-  position: absolute;
-  top: 16px;
-  right: 48px;
+.side-bar{
+    background-color: $primary-1;
+    width: 20rem;
+    height:100rem;
+    margin-top: 0; 
+    // padding: 10px;
 }
 
-.quick_actions_div{
-  display: flex;
-  justify-content: space-evenly;
-  // background-color: #7CC3CD;
-  margin-top: 155px;
-  height: 6rem;
-}
 .quick_actions{
-    // margin: 10px;
+    margin: 5px;
     background-color: $primary-1;
-    width: 18rem;
-    height: 5rem;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    border-radius: 20px;
+    width: 15rem;
+    height: 0.75rem;
+    padding: 24px;
 
     span{
         font-size: 16px;
         align-items: center;
         justify-content: center;
     }
-}
-
-#top-user-icon{
-  width:27px;
-  height: 27px;
-}
-
-.time_box{
-  display: grid;
-  grid-template-areas: 'Time 1 Time 2' 
-                      'Timezone 1 Timezone 2';
-  grid-column-gap: 24px;
-  position:absolute;
-  top: 72px;
-  right: 48px;
-  // padding: 24px;
-  text-align: center;
-  :nth-child(1){
-    grid-area: Time 1;
-  }
-  :nth-child(2){
-    grid-area: Timezone 1;
-  }
-  :nth-child(3){
-    grid-area: Time 2;
-  }
-  :nth-child(4){
-    grid-area: Timezone 2;
-  }
-}
-
-.welcome-heading{
-  position: absolute;
-  top:72px;
-  text-align: start;
-  margin:16px;
 }
