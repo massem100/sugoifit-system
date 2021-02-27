@@ -2,7 +2,7 @@
   <div class="container">
     <div>
       <Logo />
-      <h1 class="title">sugoifit-app</h1>
+      <h1 class="title bg-primary">sugoifit-app</h1>
       <div class="links">
         <a
           href="https://nuxtjs.org/"
