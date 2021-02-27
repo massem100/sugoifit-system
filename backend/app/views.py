@@ -3,26 +3,27 @@ from app import app
 from flask import Flask,render_template, request, jsonify, redirect, url_for, flash, session
 
 
-@app.route('/')
+@app.route('/api/test')
 def home():
-    return "Checking"
+    data = [{'message': 'Data deh ya'}]
+    return jsonify(data)
 
 
 
-# Please create all new routes and view functions above this route.
-# This route is now our catch all route for our VueJS single page
-# application.
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def index(path):
-    """
-    Because we use HTML5 history mode in vue-router we need to configure our
-    web server to redirect all routes to index.html. Hence the additional route
-    "/<path:path".
+# # Please create all new routes and view functions above this route.
+# # This route is now our catch all route for our VueJS single page
+# # application.
+# @app.route('/', defaults={'path': ''})
+# @app.route('/<path:path>')
+# def index(path):
+#     """
+#     Because we use HTML5 history mode in vue-router we need to configure our
+#     web server to redirect all routes to index.html. Hence the additional route
+#     "/<path:path".
 
-    Also we will render the initial webpage and then let VueJS take control.
-    """
-    return render_template('index.html')
+#     Also we will render the initial webpage and then let VueJS take control.
+#     """
+#     return render_template('index.html')
 
 # Here we define a function to collect form errors from Flask-WTF
 # which we can later use

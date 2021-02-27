@@ -57,7 +57,29 @@ export default {
                 }
             ]
         };
-    }
+    },
+    methods: {
+
+    }, 
+    created: function () {
+    let self = this;
+    fetch("localhost:8080/api/test", {
+      method: "GET",
+      headers: {
+        "accept": "application/json",
+      },
+      credentials: "same-origin",
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (jsonResponse) {
+       console.log(jsonResponse);
+      })
+      .catch(function (error) {
+        // console.log(error);
+      });    
+  }
 
 };
 
