@@ -1,5 +1,9 @@
 <template>
     <div class="container">
+        <div class="header">
+            <WebsiteHeader />
+        </div>
+
         <div class="left">
             <div class="column">
                 <div class="card">
@@ -46,8 +50,12 @@
 </template>
 
 <script>
+import WebsiteHeader from '../components/WebsiteHeader';
 export default {
     name: 'PlaceOrder',
+    components: {
+        WebsiteHeader
+    }
 }
 </script>
 
