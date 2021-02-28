@@ -36,20 +36,22 @@ $secondary-2: #7CC3CD;
 
 .quick_actions_div{
   display: flex;
-  justify-content: center;
+  justify-content:flex-start;
+  // align-items: flex-start;
   // background-color: #7CC3CD;
   margin-top: 155px;
+  margin-left: 20px;
   height: 6rem;
 }
 .quick_actions{
-    margin: 10px;
+    margin: 10px 15px 10px 0px;
     background-color: $primary-1;
-    width: 14rem;
+    width: 15rem;
     height: 5rem;
     padding: 20px;
     display: flex;
     justify-content: center;
-    border-radius: 20px;
+    border-radius: 15px;
 
     span{
         font-size: 16px;
@@ -91,5 +93,9 @@ $secondary-2: #7CC3CD;
   position: absolute;
   top:72px;
   text-align: start;
-  margin:16px;
+  margin:16px 16px 16px 24px;
+  p{
+    font-weight: 200;
+    font-family: 'Poppins';
+  }
 }

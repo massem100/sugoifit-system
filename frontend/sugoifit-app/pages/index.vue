@@ -25,7 +25,7 @@
                 </div> 
             </div>
             <!-- Quick Actions -->
-            <div class="quick_actions_div d-flex flex-row p-2 text-center">
+            <div class="quick_actions_div d-flex flex-row text-center">
                 <div class = "d-flex flex-column quick_actions"><img src="" alt=""><i class="fas fa-plus"></i><span>Add Transaction</span></div>
                 <div class = "d-flex flex-column quick_actions"><img src="" alt=""><i class="fas fa-plus"></i><span> Place Order</span></div>
                 <div class = "d-flex flex-column quick_actions"><img src="" alt=""><i class="fas fa-plus"></i><span> Create Invoice</span></div>
