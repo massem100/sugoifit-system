@@ -72,7 +72,8 @@ ul, ol {
 .time_box {
   display: -ms-grid;
   display: grid;
-      grid-template-areas: 'Time 1 Time 2'  'Timezone 1 Timezone 2';
+      grid-template-areas: 'Time 1 Time 2'
+ 'Timezone 1 Timezone 2';
   grid-column-gap: 24px;
   position: absolute;
   top: 72px;
@@ -103,3 +104,26 @@ ul, ol {
   margin: 16px;
 }
 /*# sourceMappingURL=style.css.map */
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.custom-popover .popover-body {
+  padding: 0;
+}
+
+.custom-popover .pop-link {
+  text-decoration: none;
+  color: #222222;
+  font-size: 16px;
+  padding: 10px;
+}
+
+.custom-popover .pop-link:hover {
+  background: #428B95;
+  color: white;
+}
+.c-box{
+  height: 100px;
+}
