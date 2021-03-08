@@ -1,6 +1,50 @@
 import os
-from app import app
-from flask import Flask,render_template, request, jsonify, redirect, url_for, flash, session
+from app import app, login_manager, jwt_token, csrf, cors
+from flask import render_template, request, jsonify, flash, session, _request_ctx_stack, g
+from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import current_user, logout_user, login_user, login_required
+from app.forms import RegisterForm, LoginForm
+# from app.models import User, Post, Like, Follow
+from datetime import datetime
+from functools import wraps
+import jwt
+from sqlalchemy import desc
+
+csrf.init_app(app)
+
+# Create a JWT @requires_auth decorator
+# This decorator can be used to denote that a specific route should check
+# for a valid JWT token before displaying the contents of that route.
+def requires_auth(f):
+  @wraps(f)
+  def decorated(*args, **kwargs):
+    auth = request.headers.get('Authorization', None)
+    if not auth:
+      return jsonify({'code': 'authorization_header_missing', 'description': 'Authorization header is expected'}), 401
+
+    parts = auth.split()
+
+    if parts[0].lower() != 'bearer':
+      return jsonify({'code': 'invalid_header', 'description': 'Authorization header must start with Bearer'}), 401
+    elif len(parts) == 1:
+      return jsonify({'code': 'invalid_header', 'description': 'Token not found'}), 401
+    elif len(parts) > 2:
+      return jsonify({'code': 'invalid_header', 'description': 'Authorization header must be Bearer + \s + token'}), 401
+
+    token = parts[1]
+    try:
+        payload = jwt.decode(token, jwt_token)
+
+    except jwt.ExpiredSignature:
+        return jsonify({'code': 'token_expired', 'description': 'token is expired'}), 401
+    except jwt.DecodeError:
+        return jsonify({'code': 'token_invalid_signature', 'description': 'Token signature is invalid'}), 401
+
+    g.current_user = user = payload
+    return f(*args, **kwargs)
+
+  return decorated     
 
 
 @app.route('/api/test')
@@ -8,7 +52,29 @@ def home():
     data = [{'message': 'Data deh ya'}]
     return jsonify(data)
 
+@app.route('/api/auth/login', methods=["POST"])
+def login(): 
+    form = LoginForm()
+    if request.method == "POST" and form.validate_on_submit() and form.username.data:
+            # Get the username and password values from the form.
+        email = form.username.data
+        password = form.password.data
 
+        if email == "johndoe@gmail.com" and password == "pass":
+            
+            return jsonify([{'message': "Login successful", "token": "{{CSRF_token()}}"}])
+           
+@app.route('/api/auth/logout', methods = ['GET'])
+@requires_auth
+@login_required
+def logout():
+    logout_user()
+    return jsonify(message = [{'message': "You have been logged out successfully"}])
+
+# @login_manager.user_loader
+# def load_user(id):
+#     user = User.query.get(int(id))
+#     return user
 
 # # Please create all new routes and view functions above this route.
 # # This route is now our catch all route for our VueJS single page

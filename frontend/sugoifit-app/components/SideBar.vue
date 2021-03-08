@@ -24,7 +24,7 @@
                 <li class ="d-flex flex-row align-items-center"><a href="">View Reports </a><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
                 <li class ="d-flex flex-row align-items-center"><a href="">Manage Roles </a><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
             
-                </ul>
+            </ul>
 
       </nav>
     </div>

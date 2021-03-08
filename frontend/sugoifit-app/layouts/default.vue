@@ -4,6 +4,31 @@
   </div>
 </template>
 
+<script>
+
+
+export default {
+  data (){
+    return{
+      
+    }
+  },
+  created (){
+    // console.log(this.csrf);
+  },
+  head(){
+    return{
+      meta: [{
+            name:"csrf-token",
+            content: "{{ csrf_token() }}",
+      }
+                
+    
+      ]
+    }
+  }
+}
+</script>
 <style>
 html {
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',

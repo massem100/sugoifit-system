@@ -1,157 +1,123 @@
 <template>
     
-    <div class="entirePage">
-        <h2 id='logo'>SugoiFit</h2>
-        <div  class='sidebar'>
+    <div id ="login-page" class="d-flex flex-column justify-content-center align-items-center">
+        <!-- Add nav component here -->
+        <sf-nav-bar class="w-100"/>
+
+        <div class="d-flex flex-row m-4 w-100 justify-content-center align-items-center">
+            <div  class="login-image d-flex  w-50 justify-content-center">
+                <LoginImage  class=" m-0 "/>
+            </div>
             
-
-            <div id="square1">
-
-            </div>
-            <div id="square2">
-
-            </div>
-        </div>
-        
-        <div class='main-area'>
-                <div id="header">
-                    <br>
-                    <h2> Login </h2>
-                    <br>
-                </div>
-                <div> 
-                    <p>Welcome back, enter your username and password</p>
-                </div>
-
-                <form>
-                    <br>
-                    <br><br>
-                    Email:<br>
-                    <input type="text" name="email" id="email">
-                    <br><br>
-                    Password:<br>
-                    <input type="text" name="password" id="password">
-                </form>
-                <div  id="msgBox">
-                    <p> {Display error messages here} </p>
-                </div>
-
-                <div>
-                    <button class="submit" id="submit" type="button">Submit</button>
-                </div>
-
-                <div> 
-                    <a href=""> Dont have an account? Sign up your business! </a>
-                </div>
-
-        </div>   
+            <div id ="main-area" class="d-flex flex-column  w-50 p-4">
+                    <div class = "d-flex flex-column justify-content-start">
+                        <h2 class ="text-center"> Login </h2>   
+                        <div id="login-text-div d-flex justify-content-center">               
+                            <p class ="login-text text-center"> Welcome back, enter your username and password</p>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center m-3">
+                        <form id = "LoginForm" class ="d-flex flex-column" method ="POST">
+                            <input type="hidden" name="_token" :value="token">
+                            <label class ="text-left" for ="email">Email:</label>
+                            <input class ="mt-2" type="text" name="email" id="email">
+                        
+                            <label class ="mt-4" for="password"> Password:</label> 
+                            <input class ="mt-2" type="text" name="password" id="password">
+                            <div class ="d-flex flex-column align-items-center">
+                                 <!-- <div  id="msgBox">
+                            <p> {Display error messages here} </p>
+                        </div> -->
+                                <button class="btn submit" id="submit"> Submit </button>
+                                <p class ="m-3">Dont have an account? <a href="">Sign up your business! </a></p>
+                             </div>
+                        </form>
+                    </div>
+                    
+            </div> 
+        </div>  
     </div>
 </template>
 
 <script>
+import sfNavBar from '../components/sf-nav-bar.vue'
+
 export default {
+  components: { sfNavBar },
     name: 'Login',
+    head(){
+    return{
+    //   meta: [{
+    //         name:"csrf-token",
+    //         content: "{{ csrf_token()}}"
+    //   }
+                
+    
+    //   ]
+    }
+  },
+  mounted(){
+      
+     
+  },
     data(){
         return{
-
+           token: ''
+           
         }
 
+    }, 
+    methods:{
     }
 }
+
 </script>
 
 <style scoped>
+    #login-page{
+        width:100%;
+        height: 70%;
 
+    }
+
+    #main-area{
+        justify-content: center;
+        align-content: center;
+        padding: 16px;
+        margin: 24px;
+        
+    }
+    #login-text-div{
+        width: 200px;
+        
+    }
+    .login-text{
+        font:200 1rem "Poppins";
+
+    }
     input[type=text], input[type=password] {
         align-content: center;
-        width: 500px;
+        width: 20rem;
         height: 45px;
         left: 392px;
         top: 171px;
         border: none;
-        background: #DFFBFF;
-        border-radius: 15px;
+        background: #f3f2f2;
+        border-radius: 80px;
         
     }
 
-    
-    button {
-    background-color: #4DC4D4;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 12%;
-    border-radius: 10px;
-    
+    .submit{
+        display:flex;
+        width: 10rem;
+        height:4rem;
+        background-color: #f3f2f2;
+        border-radius: 80px;
+        justify-content: center;
+        align-items: center;
+       
     }
-
     #msgBox{
-        padding-top: 3%;
+        margin-top:16px;
     }
-
-    h2{
-      font-family: fantasy; 
-      color: black; 
-    }
-
-    #square2{
-        position: absolute;
-        width: 196px;
-        height: 280px;
-        left: 134px;
-        top: 70px;
-
-        background: #DFFBFF;
-    }
-
-    #square1{
-        position: absolute;
-        width: 196px;
-        height: 280px;
-        
-        left: 36px;
-        top: 120px;
-
-        background: #7CC3CD;
-    }
-
-    @media(min-width: 768px){
-        .entirePage{
-            display:flex;
-            align-items:center;
-            justify-content: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            overflow: auto;
-        
-        }
-    }
-
-    .sidebar{
-        flex: 1;
-        padding-left: 15%;
-        padding-bottom: 30%;
-        align-items: flex-start;
-        position: relative;
-        left: 10%;
-        top: 0%;
-    
-    }
-
-    .main-area{
-        flex: 3;
-        padding-right: 20%;
-    }
-
-    #logo{
-        position: absolute;
-        top: 10%;
-        left: 14%
-    }
-    
 </style>
