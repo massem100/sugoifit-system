@@ -19,12 +19,12 @@
             <ul class="list-unstyled">
                 <li class="active"><a href=""><img class= "home-icon" src = "">Dashboard </a></li>
                 <li class ="d-flex flex-row align-items-center"><a href="">Manage Products </a></li>
-                <li class ="d-flex flex-row align-items-center"><a href="">Manage S                ales </a><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
+                <li class ="d-flex flex-row align-items-center"><a href="">Manage Sales </a><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
                 <li class ="d-flex flex-row align-items-center"><a href="">Manage Financial Statements </a><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
                 <li class ="d-flex flex-row align-items-center"><a href="">View Reports </a><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
                 <li class ="d-flex flex-row align-items-center"><a href="">Manage Roles </a><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
             
-                </ul>
+            </ul>
 
       </nav>
     </div>

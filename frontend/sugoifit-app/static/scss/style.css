@@ -32,17 +32,18 @@ ul, ol {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
   margin-top: 155px;
+  margin-left: 20px;
   height: 6rem;
 }
 
 .quick_actions {
-  margin: 10px;
+  margin: 10px 15px 10px 0px;
   background-color: #DFFBFF;
-  width: 14rem;
+  width: 15rem;
   height: 5rem;
   padding: 20px;
   display: -webkit-box;
@@ -51,7 +52,7 @@ ul, ol {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  border-radius: 20px;
+  border-radius: 15px;
 }
 
 .quick_actions span {
@@ -101,7 +102,12 @@ ul, ol {
   position: absolute;
   top: 72px;
   text-align: start;
-  margin: 16px;
+  margin: 16px 16px 16px 24px;
+}
+
+.welcome-heading p {
+  font-weight: 200;
+  font-family: 'Poppins';
 }
 /*# sourceMappingURL=style.css.map */
 

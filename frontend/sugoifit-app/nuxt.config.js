@@ -1,4 +1,5 @@
 export default {
+  ssr: true,
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
 
@@ -10,24 +11,24 @@ export default {
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},
       {hid: 'description', name: 'description', content: ''},
     ],
-    link: [{rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}, {
-      rel: 'preconnect',
-      href: 'https://fonts.gstatic.com'
-    }, {
-      rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=block'
-    }]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [{rel: 'preconnect', href: 'https://fonts.gstatic.com'}],
+    link: [{rel:'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap' }]
+    
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     'static/scss/sidebar.css',
-    'static/scss/style.css'
+    'static/scss/style.css',
+    'static/scss/website.css'
+
+
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    {src: '~/plugins/vee-validate', ssr: false},
+    // {src: '~/plugins/vee-validate', ssr: false},
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -49,14 +50,7 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    ['nuxt-fontawesome', {
-      imports: [
-        //import whole set
-        {
-          set: '@fortawesome/free-solid-svg-icons',
-          icons: ['fas']
-        },]
-    }]
+    
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -70,5 +64,5 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: { }
 }
