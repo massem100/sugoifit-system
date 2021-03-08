@@ -63,7 +63,7 @@ export default {
     }, 
     created: function () {
     let self = this;
-    fetch("localhost:8080/api/test", {
+    fetch("http://localhost:8080/api/test", {
       method: "GET",
       headers: {
         "accept": "application/json",
