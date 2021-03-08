@@ -1,4 +1,5 @@
 export default {
+  ssr: true,
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
 
@@ -13,6 +14,7 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     link: [{rel: 'preconnect', href: 'https://fonts.gstatic.com'}],
     link: [{rel:'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap' }]
+    
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -25,7 +27,9 @@ export default {
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [
+
+  ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -46,6 +50,8 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    
+    
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -59,5 +65,5 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: { }
 }

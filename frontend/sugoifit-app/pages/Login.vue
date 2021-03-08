@@ -2,7 +2,7 @@
     
     <div id ="login-page" class="d-flex flex-column justify-content-center align-items-center">
         <!-- Add nav component here -->
-        <h5 id='logo'>SugoiFit</h5>
+        <sf-nav-bar class="w-100"/>
 
         <div class="d-flex flex-row m-4 w-100 justify-content-center align-items-center">
             <div  class="login-image d-flex  w-50 justify-content-center">
@@ -17,45 +17,66 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-center m-3">
-                        <form class ="d-flex flex-column">
+                        <form id = "LoginForm" class ="d-flex flex-column" method ="POST">
+                            <input type="hidden" name="_token" :value="token">
                             <label class ="text-left" for ="email">Email:</label>
                             <input class ="mt-2" type="text" name="email" id="email">
                         
                             <label class ="mt-4" for="password"> Password:</label> 
                             <input class ="mt-2" type="text" name="password" id="password">
+                            <div class ="d-flex flex-column align-items-center">
+                                 <!-- <div  id="msgBox">
+                            <p> {Display error messages here} </p>
+                        </div> -->
+                                <button class="btn submit" id="submit"> Submit </button>
+                                <p class ="m-3">Dont have an account? <a href="">Sign up your business! </a></p>
+                             </div>
                         </form>
                     </div>
-                    <div class ="d-flex flex-column align-items-center">
-                        <div  id="msgBox">
-                            <p> {Display error messages here} </p>
-                        </div>
-                        <div class="submit" id="submit" type="button">
-                            Submit
-                        </div>
-                        <p class ="m-3">Dont have an account? <a href="">Sign up your business! </a></p>
-                    </div>
+                    
             </div> 
-            </div>  
+        </div>  
     </div>
 </template>
 
 <script>
+import sfNavBar from '../components/sf-nav-bar.vue'
 
 export default {
+  components: { sfNavBar },
     name: 'Login',
+    head(){
+    return{
+    //   meta: [{
+    //         name:"csrf-token",
+    //         content: "{{ csrf_token()}}"
+    //   }
+                
+    
+    //   ]
+    }
+  },
+  mounted(){
+      
+     
+  },
     data(){
         return{
-
+           token: ''
+           
         }
 
+    }, 
+    methods:{
     }
 }
+
 </script>
 
 <style scoped>
     #login-page{
         width:100%;
-        height: 100vh;
+        height: 70%;
 
     }
 
