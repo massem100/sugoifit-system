@@ -15,7 +15,7 @@ $secondary-2: #7CC3CD;
   }
   
   body, input, button, select, textarea {
-    font: 600 1rem Poppins;
+    font: 600 1rem 'Poppins', sans-serif;
     color: #222222;
   }
   
@@ -28,24 +28,74 @@ $secondary-2: #7CC3CD;
     padding: 0 0 1rem;
   }
 
-.side-bar{
-    background-color: $primary-1;
-    width: 20rem;
-    height:100rem;
-    margin-top: 0; 
-    // padding: 10px;
+.settings_bar{
+  position: absolute;
+  top: 16px;
+  right: 48px;
 }
 
+.quick_actions_div{
+  display: flex;
+  justify-content:flex-start;
+  // align-items: flex-start;
+  // background-color: #7CC3CD;
+  margin-top: 155px;
+  margin-left: 20px;
+  height: 6rem;
+}
 .quick_actions{
-    margin: 5px;
+    margin: 10px 15px 10px 0px;
     background-color: $primary-1;
     width: 15rem;
-    height: 0.75rem;
-    padding: 24px;
+    height: 5rem;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    border-radius: 15px;
 
     span{
         font-size: 16px;
         align-items: center;
         justify-content: center;
     }
+}
+
+#top-user-icon{
+  width:36px;
+  height: 36px;
+}
+
+.time_box{
+  display: grid;
+  grid-template-areas: 'Time 1 Time 2' 
+                      'Timezone 1 Timezone 2';
+  grid-column-gap: 24px;
+  position:absolute;
+  top: 72px;
+  right: 48px;
+  // padding: 24px;
+  text-align: center;
+  :nth-child(1){
+    grid-area: Time 1;
+  }
+  :nth-child(2){
+    grid-area: Timezone 1;
+  }
+  :nth-child(3){
+    grid-area: Time 2;
+  }
+  :nth-child(4){
+    grid-area: Timezone 2;
+  }
+}
+
+.welcome-heading{
+  position: absolute;
+  top:72px;
+  text-align: start;
+  margin:16px 16px 16px 24px;
+  p{
+    font-weight: 200;
+    font-family: 'Poppins';
+  }
 }
