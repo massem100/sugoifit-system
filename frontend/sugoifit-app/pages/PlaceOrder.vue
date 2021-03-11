@@ -49,46 +49,51 @@
             <div class="right">
                 <div class="column">
                     <div class="right-text">
-                        <h6>Cost Breakdown</h6>
+                        <h2>Cost Breakdown</h2>
                         <p>Item Cost: JMD 2000.99</p>
                         <p>Delivery Cost/Pick up: JMD 500.00</p>
                         <p>Total Cost: JMD 2500.99</p>
                     </div>
                     <div class="right-btn">
-                        <button type="submit">Checkout</button>
+                        <button id="checkout-btn" type="submit">Checkout</button>
                     </div>
                 </div>
             </div>
         </div>
         <div class="bottom">
-            <div class="column">
-                <h6>Your Almost Done</h6>
-                <p>Please fill out the form below.</p>
-                <form id="contact" action="" method="post">
-                <fieldset>
-                    <label for="fname">First Name</label>
-                    <input placeholder="" type="text" tabindex="1" required autofocus>
-                </fieldset>
-                <fieldset>
-                    <label for="lname">Last Name</label>
-                    <input placeholder="" type="text" tabindex="2" required>
-                </fieldset>
-                <fieldset>
-                    <label for="address">Address</label>
-                    <input placeholder="" type="text" tabindex="3" required>
-                </fieldset>
-                <fieldset>
-                    <label for="num">Phone Number</label>
-                    <input placeholder="" type="tel" tabindex="4" required>
-                </fieldset>
-                <fieldset>
-                    <label for="trn">TRN</label>
-                    <textarea placeholder="" tabindex="5" required></textarea>
-                </fieldset>
-                <fieldset>
-                    <button name="submit" type="submit" id="order-submit" data-submit="...Sending">Submit</button>
-                </fieldset>
-            </form>
+            <div class="bottom-left">
+                <div class="form">
+                    <h3>You're Almost Done</h3>
+                    <p>Please fill out the form below.</p>
+                    <form id="order" action="" method="post">
+                    <fieldset>
+                        <label for="fname">First Name</label>
+                        <input placeholder="" type="text" tabindex="1" required autofocus>
+                    </fieldset>
+                    <fieldset>
+                        <label for="lname">Last Name</label>
+                        <input placeholder="" type="text" tabindex="2" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="address">Address</label>
+                        <input placeholder="" type="text" tabindex="3" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="num">Phone Number</label>
+                        <input placeholder="" type="tel" tabindex="4" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="trn">TRN</label>
+                        <input placeholder="" type="trn" tabindex="5" required>
+                    </fieldset>
+                    <fieldset>
+                        <button name="submit" type="submit" id="order-submit" data-submit="...Sending">Submit</button>
+                    </fieldset>
+                </form>
+                </div>
+            </div>
+            <div class=bottom-right>
+                <img src="~/assets/uploads/products/boutique.jpg" alt="Picture">
             </div>
         </div>
         
@@ -111,14 +116,26 @@ export default {
     flex-direction: column;
     justify-content: center;
 }
+
 .top{
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
-    margin: 3em;
+    justify-content: space-between;
+    margin: 5em;
+}
+.right{
+    line-height: 3em;
+}
+#checkout-btn{
+    height: 50px;
+    width: 170px;
+    border-radius: 15px;
+    color: white;
+    font-size: 20px;
+    background-color: rgb(46, 158, 102);
 }
 .column {
-    width: 25%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     margin: 0 auto;
@@ -143,16 +160,30 @@ export default {
     padding: 1rem;
     position: relative;
 }
-.contact{
+.bottom{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
     margin: 3em;
+}
+.bottom-right{
+    flex: 1 1 auto;
+}
+.bottom-right > img{
+    width: 300px;
+    height: 300px;
+    box-shadow: 3rem -20px rgb(46, 158, 102);
+}
+fieldset{
+    padding: 10px 5px;
 }
 label{
   display:block;
   margin:1em 0 .2em;
 }
-input, textarea{
+input{
   display:block;
-  width:75%;
+  width:50%;
   padding:.3em;
   font-size:20px;
   border: none;
@@ -160,17 +191,14 @@ input, textarea{
   border-radius: 20px;
   resize:vertical;
 }
-textarea{
-  min-height:180px;
-}
-form{
-    align-items: center;
-}
+ 
 #order-submit{
     border-radius: 15px;
     color: white;
     font-size: 20px;
     background-color: rgb(46, 158, 102);
-    padding: 15px;
+    height: 50px;
+    width: 170px;
+    align-content: right;
 }
 </style>

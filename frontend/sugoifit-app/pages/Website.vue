@@ -22,81 +22,22 @@
 
         <!-- product section -->
         <div class="products">
-            <div class="box">
-                <img src="~/assets/uploads/products/skirt1.jpg" alt="Picture" style="width:100%">
-                <h6>Skirt</h6>
-                <p class="price">$19.99</p>
-            </div>
-            <div class="box">
-                <img src="~/assets/uploads/products/skirt2.jpg" alt="Picture" style="width:100%">
-                <h6>Skirt</h6>
-                <p class="price">$19.99</p>
-            </div>
-            <div class="box">
-                <img src="~/assets/uploads/products/skirt3.jpg" alt="Picture" style="width:100%">
-                <h6>Skirt</h6>
-                <p class="price">$19.99</p>
-            </div>
-            <div class="box">
-                <img src="~/assets/uploads/products/top5.jpg" alt="Picture" style="width:100%">
-                <h6>Top</h6>
-                <p class="price">$19.99</p>
-            </div>
-            <div class="box">
-                <img src="~/assets/uploads/products/top3.jpg" alt="Picture" style="width:100%">
-                <h6>Top</h6>
-                <p class="price">$19.99</p>
-            </div>
-            <div class="box">
-                <img src="~/assets/uploads/products/top1.jpg" alt="Picture" style="width:100%">
-                <h6>Top</h6>
-                <p class="price">$19.99</p>
-            </div>
-            <div class="box">
-                <img src="~/assets/uploads/products/dress5.jpg" alt="Picture" style="width:100%">
-                <h6>Dress</h6>
-                <p class="price">$19.99</p>
-            </div>
-            <div class="box">
-                <img src="~/assets/uploads/products/dress3.jpg" alt="Picture" style="width:100%">
-                <h6>Dress</h6>
-                <p class="price">$19.99</p>
-            </div>
-            <div class="box">
-                <img src="~/assets/uploads/products/dress1.jpg" alt="Picture" style="width:100%">
-                <h6>Dress</h6>
-                <p class="price">$19.99</p>
-            </div>
-            <div class="box">
-                <img src="~/assets/uploads/products/pants3.jpg" alt="Picture" style="width:100%">
-                <h6>Pants</h6>
-                <p class="price">$19.99</p>
-            </div>
-            <div class="box">
-                <img src="~/assets/uploads/products/pants4.jpg" alt="Picture" style="width:100%">
-                <h6>Pants</h6>
-                <p class="price">$19.99</p>
-            </div>
-            <div class="box">
-                <img src="~/assets/uploads/products/pants2.jpg" alt="Picture" style="width:100%">
-                <h6>Pants</h6>
-                <p class="price">$19.99</p>
-            </div>
+            <Slider />
         </div>
+        
 
         <!-- receipt section -->
         <div class="receipt">
             <div class="receipt-left">
-                <img src="~/assets/uploads/products/boutique2.jpg" alt="Picture">
-                <div class="image-shadow2"></div>
+                <img class=" receipt-img" src="~/assets/uploads/products/boutique2.jpg" alt="Picture">
             </div>
-            <div class="left">
-                <div class="text">
+            <div class="receipt-right">
+                <div class="receipt-text">
                     <h3> Welcome to my Boutique </h3>
                     <p> Young aspiring entrepreneur, spreading love and peace through style</p>
                 </div>
                 <div class="form">
-                    <form id="contact" action="" method="post">
+                    <form id="receipt-upload" action="" method="post">
                         <fieldset>
                             <input placeholder="Order No." type="text" tabindex="1" required autofocus>
                         </fieldset>
@@ -133,10 +74,6 @@
                     <input placeholder="" type="tel" tabindex="3" required>
                 </fieldset>
                 <fieldset>
-                    <label for=""></label>
-                    <input placeholder="" type="url" tabindex="4" required>
-                </fieldset>
-                <fieldset>
                     <label for="message">Message</label>
                     <textarea placeholder="" tabindex="5" required></textarea>
                 </fieldset>
@@ -151,21 +88,24 @@
 </template>
 
 <script>
+import Slider from '../components/ImageSlider';
 import WebsiteHeader from '../components/WebsiteHeader';
 export default {
     name: 'Website',
     components: {
-        WebsiteHeader
+        WebsiteHeader,
+        Slider
     }
     
 }
 </script>
 
 <style scoped>
+
 .container{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 .welcome{
     display: flex;
@@ -178,6 +118,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: baseline;
+    line-height: 3em;
 }
 .welcome-right{
     flex: 1 1 auto;
@@ -220,25 +161,31 @@ export default {
 
 .receipt{
     display: flex;
-    justify-content: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
     margin: 3em;
 }
 .receipt-left{
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
+    line-height: 3em;
 }
-.receipt-right > img{
-    width: 300px;
-    height: 300px;
-    box-shadow: 3rem 20px rgb(46, 158, 102);
+.receipt-img{
+    width: 400px;
+    height: 400px;
+    box-shadow: -3em -20px rgb(46, 158, 102);
 }
-.receipt-right{
-    flex: 1 1 auto;
+#receipt-submit{
+    height: 50px;
+    width: 150px;
+    border-radius: 15px;
+    color: white;
+    font-size: 20px;
+    background-color: rgb(46, 158, 102);
 }
-
 .contact{
     margin: 3em;
+}
+fieldset{
+    padding: 10px 5px;
 }
 label{
   display:block;
