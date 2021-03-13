@@ -11,7 +11,7 @@ from functools import wraps
 import jwt
 from sqlalchemy import desc
 
-csrf.init_app(app)
+
 
 # Create a JWT @requires_auth decorator
 # This decorator can be used to denote that a specific route should check
@@ -110,11 +110,11 @@ def form_errors(form):
 # The functions below should be applicable to all Flask apps.
 ###
 
-# @app.route('/<file_name>.txt')
-# def send_text_file(file_name):
-#     """Send your static text file."""
-#     file_dot_text = file_name + '.txt'
-#     return app.send_static_file(file_dot_text)
+@app.route('/<file_name>.txt')
+def send_text_file(file_name):
+    """Send your static text file."""
+    file_dot_text = file_name + '.txt'
+    return app.send_static_file(file_dot_text)
 
 
 @app.after_request
