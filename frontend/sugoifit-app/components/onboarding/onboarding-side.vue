@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-primary side-nav-on"> 
+    <div class=" side-nav-on"> 
         <!-- The inner divs will be triggered by a v-if to toggle active class/display -->
         <div> 
 
@@ -27,9 +27,15 @@ export default {
 </script>
 
 <style scoped>
- .side-nav-on{
-     margin: 0; 
-     width: 24rem; 
-     height: 100vh;
- }
+ 
+    .side-nav-on{
+        display:grid;
+        grid-template-rows: 1fr 1fr 1fr;
+        margin: 20px;
+        width: 24rem; 
+        height: 100vh;
+        padding:25px;
+        text-transform: uppercase;
+        border-right: 1px solid rgba(112,112, 0.05);
+    }
 </style>
