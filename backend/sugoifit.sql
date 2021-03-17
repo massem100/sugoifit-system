@@ -4,14 +4,10 @@ DROP DATABASE IF EXISTS sugoifit;
 
 CREATE DATABASE sugoifit;
 
-use sugoifit;
+USE sugoifit;
 
--- Add DROP TABLE IF EXISTS statements
--- Prevents duplicating tables.
-
-
-CREATE table User(
-    userID VARCHAR(5) NOT NULL,
+CREATE table user(
+    userID VARCHAR(5) NOT NULL UNIQUE,
     fname VARCHAR(25),
     lname VARCHAR(25),
     user_address VARCHAR(50),
@@ -32,31 +28,47 @@ CREATE table Credentials(
     pass_salt VARCHAR(50),
     
     PRIMARY KEY(email),
-    FOREIGN KEY(userID) REFERENCES User(userID) 
-    ON DELETE CASCADE
+    FOREIGN KEY(userID) REFERENCES user(userID) 
+    ON DELETE CASCADE 
     ON UPDATE CASCADE
     );
 
 
 
-
-CREATE table FinancialStmt(
-    stmtID VARCHAR(10) NOT NULL unique, 
-     lineID INT(10) NOT NULL,
-    fs_name VARCHAR(50), 
-    fStmtDescID INT(15),
-    PRIMARY KEY(stmtID),
-    FOREIGN KEY(lineID) REFERENCES FinancialStmtLine(lineID) on upDATE cascade on delete cascade,
-    FOREIGN KEY(fStmtDescID) REFERENCES FinancialStmtDesc(fStmtDescID) on upDATE cascade on delete cascade
+CREATE table Business(
+    busID INT(10) NOT NULL unique, 
+    busName VARCHAR(100),
+    busemail VARCHAR(255), 
+    busaddress VARCHAR(100), 
+    telephone VARCHAR(100),
+    
+    PRIMARY KEY(busID)
 );
 
 
+CREATE table `FinancialStmt`(
+    stmtID VARCHAR(10) NOT NULL unique, 
+    fs_name VARCHAR(50), 
+    PRIMARY KEY(stmtID)
+   
+);
+
+
+
+CREATE table FinancialStmtLine(
+    lineID INT(10) NOT NULL unique, 
+    line_name VARCHAR(50), 
+    lineDesc VARCHAR(50), 
+
+    PRIMARY KEY (lineID)
+    
+);
 
 
 CREATE table FinancialStmtDesc(
     fStmtDescID INT(15) NOT NULL unique,
     companyID INT(10) NOT NULL unique, 
-    fsLineID VARCHAR(10) NOT NULL unique, 
+    fsLineID INT(10) NOT NULL unique, 
     fiscalPeriod DATE,
     fillingDATE DATE ,
     fiscalYear INT(5),
@@ -70,16 +82,6 @@ CREATE table FinancialStmtDesc(
 
 
 
-
-
-CREATE table FinancialStmtLine(
-    lineID INT(10) NOT NULL unique, 
-    line_name VARCHAR(50), 
-    lineDesc VARCHAR(50), 
-
-    PRIMARY KEY (lineID)
-    
-);
 
 
 CREATE table FinancialStmtLineSeq(
@@ -105,8 +107,30 @@ CREATE table FinancialStmtLineAlias(
 
 );
 
+
+CREATE table AccountType(
+    typeID VARCHAR(10) NOT NULL, 
+    accountCategory VARCHAR(100),
+
+    PRIMARY KEY(typeID)
+);
+
+CREATE table Account( 
+    accountID VARCHAR(10) NOT NULL, 
+    accountName VARCHAR(100), 
+    typeID VARCHAR(10),
+
+    PRIMARY KEY(accountID),
+    FOREIGN KEY(typeID) REFERENCES AccountType(typeID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+
+);
+
+
+
 CREATE table Voucher(
-    vouchID INT(10) NOT NULL unique, 
+    vouchID VARCHAR(5) NOT NULL unique, 
     accountID VARCHAR(10), 
     vType ENUM('creditVoucher', 'debitVoucher'),  
     vDATE DATE, 
@@ -114,14 +138,14 @@ CREATE table Voucher(
     prepBy VARCHAR(10),
 
     PRIMARY KEY(vouchID),
-    foreign key (accountID) REFERENCES FinancialStmtLine(lineID) on update cascade on delete cascade,
+    foreign key (accountID) REFERENCES Account(accountID) on update cascade on delete cascade,
     foreign key (authBy) REFERENCES user(userID) on update cascade on delete cascade,
     foreign key (prepBy) REFERENCES user(userID) on update cascade on delete cascade
 );
 
 
 CREATE table VoucherDetails(
-    vouchID VARCHAR(5),
+    vouchID VARCHAR(5) NOT NULL ,
     sourceNo INT, 
     Amount DECIMAL(10,2), 
     Narration VARCHAR(100),
@@ -147,7 +171,7 @@ CREATE table CreditVoucher (
 
 
 CREATE table DebitVoucher ( 
-    vouchID VARCHAR(5), 
+    vouchID VARCHAR(5) NOT NULL, 
     vDATE DATE, 
     debit DECIMAL(10,2), 
     authBy VARCHAR(100), 
@@ -182,7 +206,7 @@ CREATE table Debit(
 
 
 CREATE table SupportDoc(
-    vouchID VARCHAR(10) NOT NULL,
+    vouchID VARCHAR(5) NOT NULL,
     sourceNo INT NOT NULL UNIQUE, 
     docName VARCHAR(100), 
     docDATE DATE,
@@ -192,36 +216,6 @@ CREATE table SupportDoc(
     ON DELETE CASCADE
     ON UPDATE CASCADE 
 
-);
-
-CREATE table Account( 
-    accountID VARCHAR(10) NOT NULL, 
-    accountName VARCHAR(100), 
-    typeID VARCHAR(10),
-
-    PRIMARY KEY(accountID),
-    FOREIGN KEY(typeID) REFERENCES AccountType(typeID)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-
-);
-
-CREATE table AccountType(
-    typeID VARCHAR(10) NOT NULL, 
-    accountCategory VARCHAR(100),
-
-    PRIMARY KEY(typeID)
-);
-
-
-CREATE table Business(
-    busID VARCHAR(10), 
-    busName VARCHAR(100),
-    busemail VARCHAR(255), 
-    busaddress VARCHAR(100), 
-    telephone VARCHAR(100),
-    
-    PRIMARY KEY(busID)
 );
 
 CREATE table Customer(
@@ -235,6 +229,17 @@ CREATE table Customer(
 );
 
 
+CREATE table Invoice(
+    invoiceID VARCHAR(10) NOT NULL, 
+    custID VARCHAR(10), 
+    invoice_DATE DATE, 
+    tax_tot DECIMAL(10,2),
+
+    PRIMARY KEY(invoiceID),
+    FOREIGN KEY(custID) REFERENCES Customer(custID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
 
 
 CREATE TABLE `Order`(
@@ -243,7 +248,7 @@ CREATE TABLE `Order`(
     order_DATE DATE, 
     custID VARCHAR(10), 
     invoiceID VARCHAR(10), 
-    busID VARCHAR(10),
+    busID INT(10) ,
     status VARCHAR(20),
 
     PRIMARY KEY(orderID),
@@ -253,7 +258,7 @@ CREATE TABLE `Order`(
     FOREIGN KEY(invoiceID) REFERENCES Invoice(custID)
     ON UPDATE CASCADE
     ON DELETE CASCADE,
-    FOREIGN KEY(busID) REFERENCES Business(custID)
+    FOREIGN KEY(busID) REFERENCES Business(busID)
     ON UPDATE CASCADE
     ON DELETE CASCADE
 
@@ -274,17 +279,6 @@ CREATE table OrderDetails(
     ON UPDATE CASCADE
 );
     
-CREATE table Invoice(
-    invoiceID VARCHAR(10) NOT NULL, 
-    custID VARCHAR(10), 
-    invoice_DATE DATE, 
-    tax_tot DECIMAL(10,2),
-
-    PRIMARY KEY(invoiceID),
-    FOREIGN KEY(custID) REFERENCES Customer(custID)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
 
 CREATE table Asset(
     asset_id VARCHAR(10), 
@@ -293,7 +287,7 @@ CREATE table Asset(
     a_type VARCHAR(100), 
     acquisDATE DATE, 
     a_value DECIMAL(10.2), 
-    busID VARCHAR(10),
+    busID INT(10) ,
 
     PRIMARY KEY(asset_id),
     FOREIGN KEY(busID) REFERENCES Business(busID)
@@ -309,10 +303,10 @@ CREATE table CurrentAsset(
     acquisDATE DATE, 
     a_value DECIMAL(10,2), 
     ca_id VARCHAR(10) NOT NULL, 
-    busID VARCHAR(10),
+    busID INT(10) ,
 
     PRIMARY KEY(ca_id),
-    FOREIGN KEY(asset_id) REFERENCES Asset(assetID)
+    FOREIGN KEY(asset_id) REFERENCES Asset(asset_id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
     FOREIGN KEY(busID) REFERENCES Business(busID)
@@ -331,7 +325,7 @@ CREATE table NonCurrentAsset(
     AccumDep DECIMAL(10,2), 
     disposalAmt DECIMAL(10,2), 
     depType VARCHAR(100), 
-    busID VARCHAR(10),
+    busID INT(10),
 
     PRIMARY KEY(nca_id),
     FOREIGN KEY(asset_id) REFERENCES Asset(asset_id)
@@ -350,7 +344,7 @@ CREATE table Liability(
     Amt_owed DECIMAL(10,2), 
     borw_DATE DATE, 
     loan_period INT, 
-    busID VARCHAR(10),
+    busID INT(10),
 
     PRIMARY KEY(liab_id),
     FOREIGN KEY(busID) REFERENCES Business(busID)
@@ -366,7 +360,7 @@ CREATE table currentLiability(
     Amt_owed DECIMAL(10,2), 
     borw_DATE DATE, 
     loan_period INT, 
-    busID VARCHAR(10),
+    busID INT(10),
     PRIMARY KEY(cliab_id),
     FOREIGN KEY(liab_id) REFERENCES Liability(liab_id)
     ON DELETE CASCADE
@@ -384,7 +378,7 @@ CREATE table longTermLiability(
     Amt_owed DECIMAL(10,2), 
     borw_DATE DATE, 
     loan_period INT, 
-    busID VARCHAR(10),
+    busID INT(10),
 
     PRIMARY KEY(Itliab_id),
     FOREIGN KEY(liab_id) REFERENCES Liability(liab_id)
@@ -411,7 +405,7 @@ CREATE table Purchase(
     p_item VARCHAR(100), 
     p_quantity INT, 
     p_price DECIMAL(10,2), 
-    busID VARCHAR(10), 
+    busID INT(10), 
     stmtID VARCHAR(10),
 
     PRIMARY KEY(purchaseID),
@@ -419,10 +413,35 @@ CREATE table Purchase(
     FOREIGN KEY(stmtID) REFERENCES FinancialStmt(stmtID)
 );
 
+
+CREATE TABLE  Product  (
+   prodID  VARCHAR(10) NOT NULL,
+   prodName  VARCHAR(100) ,
+   unit_price  DECIMAL(10,2),
+   baseUnit  DECIMAL(10,2),
+   limitedTime  DATETIME,
+   taxPercent  DECIMAL(3,2),
+   prodStatus  VARCHAR(25),
+
+   PRIMARY KEY(prodID)
+);
+
+CREATE table stock(
+    prodID VARCHAR(10), 
+    inStock VARCHAR(10), 
+    lastUpdateTime DATETIME, 
+    quantity INT(11),
+    threshold INT(11),
+
+    FOREIGN KEY(prodID) REFERENCES Product(prodID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+    
+);
 CREATE table Receipt(
     receiptID VARCHAR(10) NOT NULL, 
     orderID VARCHAR(10),
-    busID VARCHAR(10), 
+    busID INT(10), 
     DATE_issued DATE,
 
     PRIMARY KEY(receiptID),
@@ -433,7 +452,37 @@ CREATE table Receipt(
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
- 
+
+
+CREATE table Service(
+    serviceID VARCHAR(11) NOT NULL, 
+    serv_name VARCHAR(11) , 
+    serv_price INT(11) , 
+    taxPercent DECIMAL(3,2) , 
+    in_season VARCHAR(11) , 
+    
+    PRIMARY KEY(serviceID)
+    
+); 
+
+
+CREATE table service_sale_item(
+    ssiID VARCHAR(11) , 
+    serv_price INT(11) , 
+    taxAmt INT(11) , 
+    serviceID VARCHAR(11), 
+    userID VARCHAR(5),
+
+    PRIMARY KEY(ssiID),
+    FOREIGN KEY(ssiID) REFERENCES Service(serviceID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY(userID) REFERENCES User(userID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+        
+);
+
 CREATE table ReceiptDetails(
     receiptID VARCHAR(10) NOT NULL unique, 
     rdetailsID VARCHAR(10), 
@@ -450,7 +499,7 @@ CREATE table ReceiptDetails(
     FOREIGN KEY(orderID) REFERENCES `Order`(orderID)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-    FOREIGN KEY(prodID) REFERENCES Products(prodID)
+    FOREIGN KEY(prodID) REFERENCES Product(prodID)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
     FOREIGN KEY(serviceID) REFERENCES Service(serviceID)
@@ -469,13 +518,14 @@ CREATE table Sale(
     receiptID VARCHAR(11),
 
     PRIMARY KEY(saleID),
-    FOREIGN KEY(customerID) REFERENCES Customer(customerID)
+    FOREIGN KEY(customerID) REFERENCES Customer(custID)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
     FOREIGN KEY(receiptID) REFERENCES Receipt(receiptID)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
+
 
 CREATE table con_service_sale_item(
     cssiID VARCHAR(11) NOT NULL, 
@@ -512,36 +562,6 @@ CREATE table Con_Service(
     
 );
 
-CREATE table service_sale_item(
-    ssiID VARCHAR(11) , 
-    serv_price INT(11) , 
-    taxAmt INT(11) , 
-    serviceID VARCHAR(11), 
-    roleID VARCHAR(11) ,
-
-    PRIMARY KEY(ssiID),
-    FOREIGN KEY(serviceID) REFERENCES Service(serviceID)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-    FOREIGN KEY(roleID) REFERENCES Role(roleID)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
-
-
-CREATE table Service(
-    serviceID VARCHAR(11) NOT NULL, 
-    serv_name VARCHAR(11) , 
-    serv_price INT(11) , 
-    taxPercent DECIMAL(3,2) , 
-    in_season VARCHAR(11) , 
-    ssiID INT(11) ,
-
-    PRIMARY KEY(serviceID),
-    FOREIGN KEY(ssiID) REFERENCES service_sale_item(ssiID)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-);
 
 CREATE table product_sale_item(
     psiID INT(11) NOT NULL, 
@@ -557,7 +577,7 @@ CREATE table product_sale_item(
     taxAmt DECIMAL(10, 2), 
 
     PRIMARY KEY(psiID),
-    FOREIGN KEY(customerID) REFERENCES Customer(customerID)
+    FOREIGN KEY(customerID) REFERENCES Customer(custID)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
     FOREIGN KEY(prodID) REFERENCES Product(prodID)
@@ -565,28 +585,3 @@ CREATE table product_sale_item(
     ON UPDATE CASCADE
 );
 
-
-CREATE TABLE  Product  (
-   prodID  VARCHAR(10) NOT NULL,
-   prodName  VARCHAR(100) ,
-   unit_price  DECIMAL(10,2),
-   baseUnit  DECIMAL(10,2),
-   limitedTime  DATETIME,
-   taxPercent  DECIMAL(3,2),
-   prodStatus  VARCHAR(25),
-
-   PRIMARY KEY(prodID)
-);
-
-CREATE table stock(
-    prodID VARCHAR(10), 
-    inStock VARCHAR(10), 
-    lastUpdateTime DATETIME, 
-    quantity INT(11),
-    threshold INT(11),
-
-    FOREIGN KEY(prodID) REFERENCES Product(prodID)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE
-    
-);
