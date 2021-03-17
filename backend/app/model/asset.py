@@ -19,7 +19,7 @@ class Asset:
 
 class NCAsset(Asset): 
 
-    def __init__(self, accumDep, depType, disposalAmt ):
+    def __init__(self, accumDep, depType, disposalAmt, lifeSpan ):
         super().__init__()
         
         """ DepType - straight line method, double declining, units of production, sum of years digits
@@ -55,7 +55,7 @@ class NCAsset(Asset):
 
         def SumYearDigits(self):
             pass
-        
+
 class CAsset(Asset): 
-    def ___init__(self):
+    def ___init__(self, lifeSpan):
         super().__init__() 

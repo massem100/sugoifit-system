@@ -16,7 +16,7 @@ class User(UserMixin):
         self.l_name = l_name
         self.gender = gender
         self.dateOfBirth = dateOfBirth
-        self.hireDate = hireDate
+        
        
         
     def test(self, set):
@@ -40,8 +40,9 @@ class Owner(User, UserMixin):
 
 
 class Employee(User):
-    def __init__(self, id):
+    def __init__(self, id, hireDate):
         self.id = id
+        self.hireDate = hireDate
 
 
 if __name__ == '__main__':    
