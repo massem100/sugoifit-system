@@ -1,15 +1,9 @@
 import os
-from app import app, login_manager, jwt_token, csrf, cors
-from flask import render_template, request, jsonify, flash, session, _request_ctx_stack, g
-from werkzeug.utils import secure_filename
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import current_user, logout_user, login_user, login_required
+from app import app, db, csrf, cors
+from flask import jsonify, flash
 from app.forms import RegisterForm, LoginForm
-# from app.models import User, Post, Like, Follow
-from datetime import datetime
-from functools import wraps
-import jwt
-from sqlalchemy import desc
+from app.model import users, asset, financial_statement, product, big_mo
+
 
 csrf.init_app(app)
 
@@ -50,7 +44,14 @@ def requires_auth(f):
 @app.route('/api/test')
 def home():
     data = [{'message': 'Data deh ya'}]
+<<<<<<< Updated upstream
     return jsonify(data)
+=======
+    # result = users.User.test('Checkingg')
+    prod = product.loveisreal()
+    records = big_mo.User.query.all()
+    return jsonify([data, prod, records])
+>>>>>>> Stashed changes
 
 @app.route('/api/auth/login', methods=["POST"])
 def login(): 
