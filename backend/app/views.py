@@ -1,14 +1,9 @@
 import os
-from app import app, login_manager, jwt_token, csrf, cors
-from flask import render_template, request, jsonify, flash, session, _request_ctx_stack, g
-from werkzeug.utils import secure_filename
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import current_user, logout_user, login_user, login_required
-# from app.forms import RegisterForm, LoginForm
-from datetime import datetime
-from functools import wraps
-import jwt
-from sqlalchemy import desc
+from app import app, db
+from flask import jsonify, flash
+from app.forms import RegisterForm, LoginForm
+from app.model import users, asset, financial_statement, product
+
 
 
 
@@ -49,7 +44,9 @@ def requires_auth(f):
 @app.route('/api/test')
 def home():
     data = [{'message': 'Data deh ya'}]
-    return jsonify(data)
+    result = users.User.test('Checkingg')
+    prod = product.loveisreal()
+    return jsonify([data, result, prod])
 
 @app.route('/api/auth/login', methods=["POST"])
 def login(): 
@@ -64,8 +61,6 @@ def login():
             return jsonify([{'message': "Login successful", "token": "{{CSRF_token()}}"}])
            
 @app.route('/api/auth/logout', methods = ['GET'])
-@requires_auth
-@login_required
 def logout():
     logout_user()
     return jsonify(message = [{'message': "You have been logged out successfully"}])
