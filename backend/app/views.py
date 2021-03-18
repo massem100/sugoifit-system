@@ -9,8 +9,7 @@ from datetime import datetime
 from functools import wraps
 import jwt
 from sqlalchemy import desc
-
-
+from model.users import User
 
 # Create a JWT @requires_auth decorator
 # This decorator can be used to denote that a specific route should check
@@ -49,7 +48,8 @@ def requires_auth(f):
 @app.route('/api/test')
 def home():
     data = [{'message': 'Data deh ya'}]
-    return jsonify(data)
+    result= User.test("working")
+    return jsonify([data, result])
 
 @app.route('/api/auth/login', methods=["POST"])
 def login(): 
