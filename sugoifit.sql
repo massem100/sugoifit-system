@@ -45,7 +45,7 @@ CREATE table Business(
     PRIMARY KEY(busID)
 );
 
-
+/*
 CREATE table `FinancialStmt`(
     stmtID VARCHAR(10) NOT NULL unique, 
     fs_name VARCHAR(50), 
@@ -107,6 +107,7 @@ CREATE table FinancialStmtLineAlias(
 
 );
 
+*/
 
 CREATE table AccountType(
     typeID VARCHAR(10) NOT NULL, 
@@ -114,6 +115,7 @@ CREATE table AccountType(
 
     PRIMARY KEY(typeID)
 );
+
 
 CREATE table Account( 
     accountID VARCHAR(10) NOT NULL, 
@@ -127,7 +129,7 @@ CREATE table Account(
 
 );
 
-
+/*
 
 CREATE table Voucher(
     vouchID VARCHAR(5) NOT NULL unique, 
@@ -217,6 +219,8 @@ CREATE table SupportDoc(
     ON UPDATE CASCADE 
 
 );
+
+*/
 
 CREATE table Customer(
     custID VARCHAR(10) NOT NULL, 
