@@ -5,8 +5,7 @@ from sqlalchemy import create_engine
 # from numpy import random
 from datetime import datetime
 import random
-from sqlacodegen import sqlacodegen
-from
+# from sqlacodegen import sqlacodegen
 
 # Initialize the faker instance
 fake = Faker() 

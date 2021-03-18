@@ -4,8 +4,7 @@ from flask import render_template, request, jsonify, flash, session, _request_ct
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import current_user, logout_user, login_user, login_required
-from app.forms import RegisterForm, LoginForm
-# from app.models import User, Post, Like, Follow
+# from app.forms import RegisterForm, LoginForm
 from datetime import datetime
 from functools import wraps
 import jwt
