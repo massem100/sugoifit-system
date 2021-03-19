@@ -1,13 +1,13 @@
-from app import
+from app import db
 
-class Accounttype(Base):
+class Accounttype(db.Model):
     __tablename__ = 'accounttype'
 
     typeID = db.Column(db.String(10), primary_key=True)
-    accountCategory = db.Column(db.String(100))
+    accountCategory = db.Column(db.String(100)) 
 
 
-class Busines(Base):
+class Busines(db.Model):
     __tablename__ = 'business'
 
     busID = db.Column(db.Integer, primary_key=True, unique=True)
@@ -17,7 +17,7 @@ class Busines(Base):
     telephone = db.Column(db.String(100))
 
 
-class Customer(Base):
+class Customer(db.Model):
     __tablename__ = 'customer'
 
     custID = db.Column(db.String(10), primary_key=True)
@@ -27,24 +27,23 @@ class Customer(Base):
     email = db.Column(db.String(255))
 
 
-class Expense(Base):
+class Expense(db.Model):
     __tablename__ = 'expense'
 
     expenseID = db.Column(db.String(10), primary_key=True, unique=True)
     extype = db.Column(db.String(100))
     exname = db.Column(db.String(100))
-    DATEIncurred = db.Column(db.Date)
+    DATEIncurred = db.Column(db.Date())
     expenseAmt = db.Column(db.DECIMAL(10, 2))
-""" 
-""" 
-class Financialstmt(Base):
+
+class Financialstmt(db.Model):
     __tablename__ = 'financialstmt'
 
     stmtID = db.Column(db.String(10), primary_key=True, unique=True)
     fs_name = db.Column(db.String(50))
- """ """
 
-class Financialstmtline(Base):
+
+class Financialstmtline(db.Model):
     __tablename__ = 'financialstmtline'
 
     lineID = db.Column(db.Integer, primary_key=True, unique=True)
@@ -52,14 +51,14 @@ class Financialstmtline(Base):
     lineDesc = db.Column(db.String(50))
 
 
-class Product(Base):
+class Product(db.Model):
     __tablename__ = 'product'
 
     prodID = db.Column(db.String(10), primary_key=True)
     prodName = db.Column(db.String(100))
     unit_price = db.Column(db.DECIMAL(10, 2))
-    baseUnit = db.Column(db.DECIMAL(10, 2))
-    limitedTime = db.Column(db.DateTime)
+    db.ModelUnit = db.Column(db.DECIMAL(10, 2))
+    limitedTime = db.Column(db.DateTime())
     taxPercent = db.Column(db.DECIMAL(3, 2))
     prodStatus = db.Column(db.String(25))
 
@@ -69,17 +68,17 @@ class Stock(Product):
 
     prodID = db.Column(db.ForeignKey('product.prodID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True)
     inStock = db.Column(db.String(10))
-    lastUpdateTime = db.Column(db.DateTime)
+    lastUpdateTime = db.Column(db.DateTime())
     quantity = db.Column(db.Integer)
     threshold = db.Column(db.Integer)
 
 
-class Service(Base):
+class Service(db.Model):
     __tablename__ = 'service'
 
     serviceID = db.Column(db.String(11), primary_key=True)
     serv_name = db.Column(db.String(11))
-    serv_price = db.Column(db.Integer)
+    serv_cost = db.Column(db.Integer)
     taxPercent = db.Column(db.DECIMAL(3, 2))
     in_season = db.Column(db.String(11))
 
@@ -96,7 +95,7 @@ class ServiceSaleItem(Service):
     user = db.relationship('User')
 
 
-class User(Base):
+class User(db.Model):
     __tablename__ = 'user'
 
     userID = db.Column(db.String(5), primary_key=True, unique=True)
@@ -106,7 +105,7 @@ class User(Base):
     phone = db.Column(db.String(10))
  
 
-class Account(Base):
+class Account(db.Model):
     __tablename__ = 'account'
 
     accountID = db.Column(db.String(10), primary_key=True)
@@ -116,7 +115,7 @@ class Account(Base):
     accounttype = db.relationship('Accounttype')
 
 
-class Asset(Base):
+class Asset(db.Model):
     __tablename__ = 'asset'
 
     asset_id = db.Column(db.String(10), primary_key=True)
@@ -130,7 +129,7 @@ class Asset(Base):
     busines = db.relationship('Busines')
 
 
-class ConServiceSaleItem(Base):
+class ConServiceSaleItem(db.Model):
     __tablename__ = 'con_service_sale_item'
 
     cssiID = db.Column(db.String(11), primary_key=True)
@@ -146,7 +145,7 @@ class ConServiceSaleItem(Base):
     service = db.relationship('Service')
 
 
-class Credential(Base):
+class Credential(db.Model):
     __tablename__ = 'credentials'
 
     userID = db.Column(db.ForeignKey('user.userID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, unique=True)
@@ -158,7 +157,7 @@ class Credential(Base):
     user = db.relationship('User')
 
 
-class Financialstmtdesc(Base):
+class Financialstmtdesc(db.Model):
     __tablename__ = 'financialstmtdesc'
 
     fStmtDescID = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
@@ -175,7 +174,7 @@ class Financialstmtdesc(Base):
     financialstmtline = db.relationship('Financialstmtline')
 
 
-class Financialstmtlinealia(Base):
+class Financialstmtlinealia(db.Model):
     __tablename__ = 'financialstmtlinealias'
 
     lineID = db.Column(db.ForeignKey('financialstmtline.lineID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False, unique=True)
@@ -187,7 +186,7 @@ class Financialstmtlinealia(Base):
     financialstmtline = db.relationship('Financialstmtline')
 
 
-class Financialstmtlineseq(Base):
+class Financialstmtlineseq(db.Model):
     __tablename__ = 'financialstmtlineseq'
 
     lineSeqID = db.Column(db.Integer, primary_key=True, nullable=False)
@@ -199,7 +198,7 @@ class Financialstmtlineseq(Base):
     financialstmtline = db.relationship('Financialstmtline')
 
 
-class Invoice(Base):
+class Invoice(db.Model):
     __tablename__ = 'invoice'
 
     invoiceID = db.Column(db.String(10), primary_key=True)
@@ -210,7 +209,7 @@ class Invoice(Base):
     customer = db.relationship('Customer')
 
 
-class Liability(Base):
+class Liability(db.Model):
     __tablename__ = 'liability'
 
     liab_id = db.Column(db.String(5), primary_key=True, unique=True)
@@ -224,7 +223,7 @@ class Liability(Base):
     busines = db.relationship('Busines')
 
 
-class ProductSaleItem(Base):
+class ProductSaleItem(db.Model):
     __tablename__ = 'product_sale_item'
 
     psiID = db.Column(db.Integer, primary_key=True)
@@ -243,7 +242,7 @@ class ProductSaleItem(Base):
     product = db.relationship('Product')
 
 
-class Purchase(Base):
+class Purchase(db.Model):
     __tablename__ = 'purchase'
 
     purchaseID = db.Column(db.String(10), primary_key=True, unique=True)
@@ -258,7 +257,7 @@ class Purchase(Base):
     financialstmt = db.relationship('Financialstmt')
 
 
-class ConService(Base):
+class ConService(db.Model):
     __tablename__ = 'con_service'
 
     serviceID = db.Column(db.String(11), primary_key=True)
@@ -273,7 +272,7 @@ class ConService(Base):
     con_service_sale_item = db.relationship('ConServiceSaleItem')
 
 
-class Currentasset(Base):
+class Currentasset(db.Model):
     __tablename__ = 'currentasset'
 
     asset_id = db.Column(db.ForeignKey('asset.asset_id', ondelete='CASCADE', onupdate='CASCADE'), index=True)
@@ -289,7 +288,7 @@ class Currentasset(Base):
     busines = db.relationship('Busines')
 
 
-class Currentliability(Base):
+class Currentliability(db.Model):
     __tablename__ = 'currentliability'
 
     liab_id = db.Column(db.ForeignKey('liability.liab_id', ondelete='CASCADE', onupdate='CASCADE'), index=True)
@@ -305,7 +304,7 @@ class Currentliability(Base):
     liab = db.relationship('Liability')
 
 
-class Longtermliability(Base):
+class Longtermliability(db.Model):
     __tablename__ = 'longtermliability'
 
     liab_id = db.Column(db.ForeignKey('liability.liab_id', ondelete='CASCADE', onupdate='CASCADE'), index=True)
@@ -321,7 +320,7 @@ class Longtermliability(Base):
     liab = db.relationship('Liability')
 
 
-class Noncurrentasset(Base):
+class Noncurrentasset(db.Model):
     __tablename__ = 'noncurrentasset'
 
     asset_id = db.Column(db.ForeignKey('asset.asset_id', ondelete='CASCADE', onupdate='CASCADE'), index=True)
@@ -340,7 +339,7 @@ class Noncurrentasset(Base):
     busines = db.relationship('Busines')
 
 
-class Order(Base):
+class Order(db.Model):
     __tablename__ = 'order'
 
     orderID = db.Column(db.String(10), primary_key=True)
@@ -356,12 +355,12 @@ class Order(Base):
     invoice = db.relationship('Invoice')
 
 
-class Voucher(Base):
+class Voucher(db.Model):
     __tablename__ = 'voucher'
 
     vouchID = db.Column(db.String(5), primary_key=True, unique=True)
     accountID = db.Column(db.ForeignKey('account.accountID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    vType = db.Column(Enum('creditVoucher', 'debitVoucher'))
+    vType = db.Column(db.Enum('creditVoucher', 'debitVoucher'))
     vDATE = db.Column(db.Date)
     authBy = db.Column(db.ForeignKey('user.userID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     prepBy = db.Column(db.ForeignKey('user.userID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
@@ -427,7 +426,7 @@ class Voucherdetail(Voucher):
     Narration = db.Column(db.String(100))
 
 
-class Orderdetail(Base):
+class Orderdetail(db.Model):
     __tablename__ = 'orderdetails'
 
     orderID = db.Column(db.ForeignKey('order.orderID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False)
@@ -440,7 +439,7 @@ class Orderdetail(Base):
     order = db.relationship('Order')
 
 
-class Receipt(Base):
+class Receipt(db.Model):
     __tablename__ = 'receipt'
 
     receiptID = db.Column(db.String(10), primary_key=True)
@@ -452,7 +451,7 @@ class Receipt(Base):
     order = db.relationship('Order')
 
 
-class Supportdoc(Base):
+class Supportdoc(db.Model):
     __tablename__ = 'supportdoc'
 
     vouchID = db.Column(db.ForeignKey('voucher.vouchID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False)
@@ -463,7 +462,7 @@ class Supportdoc(Base):
     voucher = db.relationship('Voucher')
 
 
-class Receiptdetail(Base):
+class Receiptdetail(db.Model):
     __tablename__ = 'receiptdetails'
 
     receiptID = db.Column(db.ForeignKey('receipt.receiptID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, unique=True)
@@ -480,7 +479,7 @@ class Receiptdetail(Base):
     service = db.relationship('Service')
 
 
-class Sale(Base):
+class Sale(db.Model):
     __tablename__ = 'sale'
 
     saleID = db.Column(db.String(11), primary_key=True)

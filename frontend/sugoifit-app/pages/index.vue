@@ -68,7 +68,7 @@ export default {
       headers: {
         "accept": "application/json",
       },
-      credentials: "same-origin",
+      credentials: "cross-origin",
     })
       .then(function (response) {
         return response.json();

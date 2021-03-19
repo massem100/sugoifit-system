@@ -1,8 +1,9 @@
 import os
-from app import app, db
+from app import app, db, csrf, cors
 from flask import jsonify, flash
 from app.forms import RegisterForm, LoginForm
-from app.model import users, asset, financial_statement, product
+from app.model import  asset_liability, auth, financial_statement, sales, transactions
+from flask_cors import cross_origin
 
 
 
@@ -41,12 +42,14 @@ def requires_auth(f):
   return decorated     
 
 
-@app.route('/api/test')
+@app.route('/api/test', methods = ["GET"])
+@cross_origin(supports_credentials=True)
 def home():
     data = [{'message': 'Data deh ya'}]
-    result = users.User.test('Checkingg')
-    prod = product.loveisreal()
-    return jsonify([data, result, prod])
+    # result = users.User.test('Checkingg')
+    res = sales.Customer.query.filter_by(fname='Bob').first()
+    big_name = res.fname
+    return jsonify(data,big_name)
 
 @app.route('/api/auth/login', methods=["POST"])
 def login(): 

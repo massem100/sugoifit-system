@@ -1,2 +1,0 @@
-def loveisreal():
-    return 'Yup'
