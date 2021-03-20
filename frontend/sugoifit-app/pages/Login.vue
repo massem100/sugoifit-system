@@ -32,7 +32,7 @@
                                     <p> {Display error messages here} </p>
                                 </div>
                                 <button @click= "ChangeRoute" class="btn submit" id="submit"> Submit </button>
-                                <p class ="m-3">Dont have an account? <a href="">Sign up your business! </a></p>
+                                <p class ="login-text m-3">Dont have an account? <a href="">Sign up your business! </a></p>
                             </div>
                         </form>
                     </div>
@@ -108,10 +108,11 @@ export default {
         display:flex;
         justify-content: center;
         align-items: center;
+       
         /* background-color: green; */
     }
     .login-text{
-        font:200 0.6rem;
+        font:400 1rem "Poppins";
     }
     .login-image{
         margin: 0.8;
@@ -134,6 +135,7 @@ export default {
     }
     #msgBox{
         margin-top:16px;
+        font:400 1rem "Poppins";
     }
    
     #LoginForm input{
