@@ -52,6 +52,8 @@ def home():
     big_name = res.fname
     return jsonify(data,big_name)
 
+    return jsonify(data)
+
 @app.route('/api/auth/login', methods=["POST"])
 def login(): 
     form = LoginForm()
