@@ -48,6 +48,7 @@ def home():
     data = [{'message': 'Data deh ya'}]
     # result = users.User.test('Checkingg')
     res = sales.Customer.query.filter_by(fname='Bob').first()
+    
     big_name = res.fname
     return jsonify(data,big_name)
 
