@@ -17,12 +17,12 @@
           </div>
           <!-- <span class="heading">Main</span> -->
             <ul class="list-unstyled">
-                <li class="active"><a href=""><img class= "home-icon" src = "">Dashboard </a></li>
-                <li class ="d-flex flex-row align-items-center"><a href="">Manage Products </a></li>
-                <li class ="d-flex flex-row align-items-center"><a href="">Manage Sales </a><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
-                <li class ="d-flex flex-row align-items-center"><a href="">Manage Financial Statements </a><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
-                <li class ="d-flex flex-row align-items-center"><a href="">View Reports </a><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
-                <li class ="d-flex flex-row align-items-center"><a href="">Manage Roles </a><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
+                <li class="active"><NuxtLink to="/" ><img class= "home-icon" src = "">Dashboard </NuxtLink></li>
+                <li class ="d-flex flex-row align-items-center"><NuxtLink to="">Manage Products </NuxtLink></li>
+                <li class ="d-flex flex-row align-items-center"><NuxtLink to="">Manage Sales </NuxtLink><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
+                <li class ="d-flex flex-row align-items-center"><NuxtLink to="financial_stmt">Manage Financial Statements </NuxtLink><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
+                <li class ="d-flex flex-row align-items-center"><NuxtLink to="">View Reports </NuxtLink><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
+                <li class ="d-flex flex-row align-items-center"><NuxtLink to="">Manage Roles </NuxtLink><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
             
             </ul>
 

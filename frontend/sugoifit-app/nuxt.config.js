@@ -7,9 +7,9 @@ export default {
   head: {
     title: 'sugoifit-app',
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
+      {charset: 'utf-8'},
+      {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+      {hid: 'description', name: 'description', content: ''},
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     link: [{rel: 'preconnect', href: 'https://fonts.gstatic.com'}],
@@ -28,7 +28,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-
+    {src: '~/plugins/vee-validate', ssr: false},
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -39,8 +39,11 @@ export default {
     // https://go.nuxtjs.dev/eslint,
     // '@nuxtjs/fontawesome', 
     
+    // https://go.nuxtjs.dev/eslint
+    '@nuxtjs/eslint-module',
+
   ],
-    
+
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
@@ -50,7 +53,21 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    '@nuxtjs/fontawesome', 
+    // '@nuxtjs/fontawesome', 
+    [
+      'nuxt-fontawesome', {
+        imports: [
+         {
+           set: '@fortawesome/free-solid-svg-icons',
+           icons: ['fas']
+         },
+         {
+           set:'@fortawesome/free-brands-svg-icons',
+           icons: ['fab']
+         }
+       ]
+      }
+]
 
     
   ],

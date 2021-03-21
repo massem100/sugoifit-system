@@ -4,15 +4,15 @@
 * ==========================================================
 */
 nav.side-navbar {
-  background: #DFFBFF;
+  background: #A7E4EC;
   min-width: 320px;
   max-width: 320px;
   min-height: 100vh;
   color: #686a76;
   box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
   z-index: 9;
-  
-  
+
+
 }
 
 nav.side-navbar a {
@@ -94,8 +94,8 @@ nav.side-navbar ul li a {
 }
 
 nav.side-navbar ul li a:hover {
-  background-color: #00A99D;
-  border-left: 4px solid rgb(6, 83, 78);
+  background-color: #2d00a9;
+  border-left: 4px solid rgb(76, 6, 83);
   color: #fff;
 }
 
@@ -258,7 +258,7 @@ nav.side-navbar.shrinked .sidebar-header .title {
   }
 }
 
-/* 
+/*
 -------------------------
 Added Styles
 ------------------------- */
@@ -285,7 +285,7 @@ Added Styles
 .profile{
   margin-bottom: 15px;
   display: grid;
-  grid-template-areas: 'name name ' 
+  grid-template-areas: 'name name '
                         'ID ID'
                         'role role';
   grid-column-gap: 24px;
