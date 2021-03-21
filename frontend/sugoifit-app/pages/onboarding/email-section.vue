@@ -1,4 +1,8 @@
 <template>
+<div class="w-100"> 
+    <onboarding-side  class = "side-bar h-100 m-0"></onboarding-side>
+    <onboarding-side></onboarding-side>
+
      <div class="email-create-section" >
                 
                 <div class="email-form-section d-flex flex-column">
@@ -13,7 +17,7 @@
                                 <label class ="d-flex text-center align-items-center" for="email">Email Address</label>
                                 <input type="text" name ="email" class="form-control" >
                         </form>
-                        <div class="get-started btn btn-sm ">Get Started <span></span></div>
+                        <div @click ="ChangeComp" class="get-started btn btn-sm ">Get Started <span></span></div>
                     </div>
 
                 </div>
@@ -22,13 +26,28 @@
                     <img class="doodle" src="~assets/uploads/linecurve.svg" alt="">
                 </div>
             </div>
+    </div>
 </template>
 
 
 
 <script>
+import OnboardingSide from '/components/onboarding-side.vue';
+
 export default {
-    name: 'email-section'
+    components: {OnboardingSide},
+    name: 'email-section', 
+    data(){
+        return{
+
+        }
+    }, 
+    methods: {
+        ChangeComp: function() {
+           this.$router.push('onboarding/company-type');
+        //    this.nuxt.$options.router.push({path: this.localePath('company-type')});
+        }
+    }
     
 }
 </script>
@@ -42,7 +61,7 @@ export default {
         margin-left: 2rem;
         display: flex;
         flex-direction: row;
-    }
+           }
     .business-image{
         margin-left: 2rem;
         width: 28rem;

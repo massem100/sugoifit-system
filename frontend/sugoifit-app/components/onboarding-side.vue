@@ -41,7 +41,7 @@ export default {
                                 "list";
         margin: 20px;
         min-width: 18rem; 
-        height: 100vh;
+        min-height: 100vh;
         /* padding:25px; */
         /* border-right: 1px solid rgba(112,112, 0.05); */
         background-color: rgb(79, 201, 218,0.5);
