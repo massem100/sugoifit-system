@@ -18,7 +18,9 @@
 
 import OnboardingSide from '/components/onboarding-side.vue'
 export default {
-  components: { OnboardingSide},
+  components: { 
+      OnboardingSide
+    },
     name: 'on-boarding',
     data(){
     return{
@@ -29,7 +31,7 @@ export default {
 }, 
 methods: {
     GetStarted: function(){
-         this.$router.push('onboarding/company-type');
+         this.$router.push('onboarding/email-section');
 
 
     }
@@ -179,6 +181,10 @@ methods: {
         background-color: rgb(79, 201, 218,0.5);
         box-shadow: 0 2px 2px 0 rgba(107, 104, 104, 0.15), 0 6px 20px 0 rgba(119, 114, 114, 0.15);
     
+    }
+
+    .onboard-img{
+        max-height:100vh;
     }
 }
 </style>

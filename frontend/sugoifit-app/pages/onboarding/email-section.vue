@@ -1,11 +1,10 @@
 <template>
-<div class="w-100"> 
-    <onboarding-side  class = "side-bar h-100 m-0"></onboarding-side>
-    <onboarding-side></onboarding-side>
+<div class="d-flex flex-row w-100 color-bg"> 
+    <onboarding-side class = "side-bar h-100 m-0"></onboarding-side>
 
-     <div class="email-create-section" >
+     <div class="email-create-section w-100" >
                 
-                <div class="email-form-section d-flex flex-column">
+                <div class="email-form-section  d-flex flex-column">
                     <div class = "email-heading">
                         <h4 class ="mb-4">Set up your Business Profile.</h4>
                         <p class="email-text mb-5"> Managing your business has never been this easy. <br>
@@ -44,7 +43,7 @@ export default {
     }, 
     methods: {
         ChangeComp: function() {
-           this.$router.push('onboarding/company-type');
+           this.$router.push('company-type');
         //    this.nuxt.$options.router.push({path: this.localePath('company-type')});
         }
     }
@@ -61,6 +60,7 @@ export default {
         margin-left: 2rem;
         display: flex;
         flex-direction: row;
+        min-height:100vh;
            }
     .business-image{
         margin-left: 2rem;
@@ -135,14 +135,18 @@ export default {
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
-    .color-bg{
-        /* background-color: purple; */
-    }
+    /* .color-bg{
+        background-color: purple;
+    } */
     .side-bar{ 
         display:none;
     }
     .business-image{
         display: none;
+    }
+    .email-create-section{
+        /* align-items: center; */
+        justify-content: center ;
     }
     
 }

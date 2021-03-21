@@ -11,11 +11,12 @@
 
             <ul class = "list-nav d-flex flex-column"> 
                     <!-- <img class = "checked" src="~assets/uploads/checked.svg" alt=""> -->
-                <li><span>1</span>Company Type </li>
-                <li><span>2</span>Business Details </li>
-                <li><span>3</span>Business Location </li>
-                <li><span>4</span> Team </li>
-                <li><span>5</span> Personal Details</li>
+                <li><span>1</span>Email Details</li>
+                <li><span>2</span>Company Type </li>
+                <li><span>3</span>Business Details </li>
+                <li><span>4</span>Business Location </li>
+                <li><span>5</span> Team </li>
+                <li><span>6</span> Personal Details</li>
             </ul>
 
             <div class = "onboard-footer">
@@ -44,7 +45,7 @@ export default {
         min-height: 100vh;
         /* padding:25px; */
         /* border-right: 1px solid rgba(112,112, 0.05); */
-        background-color: rgb(79, 201, 218,0.5);
+        background-color: #A7E4EC;
         
     }
 
@@ -76,6 +77,7 @@ export default {
         display: inline-block;
         border: 2px solid #e6f3f3;
         color: #ffffff;
+        
 
     }
     .logo{
