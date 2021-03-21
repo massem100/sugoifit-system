@@ -1,15 +1,10 @@
 import os
-from app import app, login_manager, jwt_token, csrf, cors
-from flask import render_template, request, jsonify, flash, session, _request_ctx_stack, g
-from werkzeug.utils import secure_filename
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import current_user, logout_user, login_user, login_required
+from app import app, db, csrf, cors
+from flask import jsonify, flash
 from app.forms import RegisterForm, LoginForm
-# from app.models import User, Post, Like, Follow
-from datetime import datetime
-from functools import wraps
-import jwt
-from sqlalchemy import desc
+from app.model import  asset_liability, auth, financial_statement, sales, transactions
+from flask_cors import cross_origin
+
 
 
 
@@ -47,9 +42,16 @@ def requires_auth(f):
   return decorated     
 
 
-@app.route('/api/test')
+@app.route('/api/test', methods = ["GET"])
+@cross_origin(supports_credentials=True)
 def home():
     data = [{'message': 'Data deh ya'}]
+    # result = users.User.test('Checkingg')
+    res = sales.Customer.query.filter_by(fname='Bob').first()
+    
+    big_name = res.fname
+    return jsonify(data,big_name)
+
     return jsonify(data)
 
 @app.route('/api/auth/login', methods=["POST"])
@@ -65,8 +67,6 @@ def login():
             return jsonify([{'message': "Login successful", "token": "{{CSRF_token()}}"}])
            
 @app.route('/api/auth/logout', methods = ['GET'])
-@requires_auth
-@login_required
 def logout():
     logout_user()
     return jsonify(message = [{'message': "You have been logged out successfully"}])
