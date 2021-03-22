@@ -15,8 +15,7 @@
                 <div class="welcome-heading">
                   <h5 class=""> Welcome Back, <span> Jane</span></h5>
                   <p class="">Lorem ipsum dolor sit amet consectetur adi</p>
-                        
-                </div>
+         </div>
                    
             </div>
 
