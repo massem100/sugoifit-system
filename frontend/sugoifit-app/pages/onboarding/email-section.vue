@@ -1,7 +1,10 @@
 <template>
-     <div class="email-create-section" >
+<div class="d-flex flex-row w-100 color-bg"> 
+    <onboarding-side class = "side-bar h-100 m-0"></onboarding-side>
+
+     <div class="email-create-section w-100" >
                 
-                <div class="email-form-section d-flex flex-column">
+                <div class="email-form-section  d-flex flex-column">
                     <div class = "email-heading">
                         <h4 class ="mb-4">Set up your Business Profile.</h4>
                         <p class="email-text mb-5"> Managing your business has never been this easy. <br>
@@ -13,7 +16,7 @@
                                 <label class ="d-flex text-center align-items-center" for="email">Email Address</label>
                                 <input type="text" name ="email" class="form-control" >
                         </form>
-                        <div class="get-started btn btn-sm ">Get Started <span></span></div>
+                        <div @click ="ChangeComp" class="get-started btn btn-sm ">Get Started <span></span></div>
                     </div>
 
                 </div>
@@ -22,13 +25,28 @@
                     <img class="doodle" src="~assets/uploads/linecurve.svg" alt="">
                 </div>
             </div>
+    </div>
 </template>
 
 
 
 <script>
+import OnboardingSide from '/components/onboarding-side.vue';
+
 export default {
-    name: 'email-section'
+    components: {OnboardingSide},
+    name: 'email-section', 
+    data(){
+        return{
+
+        }
+    }, 
+    methods: {
+        ChangeComp: function() {
+           this.$router.push('company-type');
+        //    this.nuxt.$options.router.push({path: this.localePath('company-type')});
+        }
+    }
     
 }
 </script>
@@ -42,7 +60,8 @@ export default {
         margin-left: 2rem;
         display: flex;
         flex-direction: row;
-    }
+        min-height:100vh;
+           }
     .business-image{
         margin-left: 2rem;
         width: 28rem;
@@ -59,6 +78,9 @@ export default {
         font: 400 1rem "Poppins";
     }
 
+    .email-heading h4{ 
+        font: 600 1.6rem "Poppins";
+    }
     .email-container{
         display: flex;
         flex-direction: row;
@@ -116,14 +138,18 @@ export default {
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
-    .color-bg{
-        /* background-color: purple; */
-    }
+    /* .color-bg{
+        background-color: purple;
+    } */
     .side-bar{ 
         display:none;
     }
     .business-image{
         display: none;
+    }
+    .email-create-section{
+        /* align-items: center; */
+        justify-content: center ;
     }
     
 }

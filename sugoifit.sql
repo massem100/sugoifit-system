@@ -45,7 +45,7 @@ CREATE table Business(
     PRIMARY KEY(busID)
 );
 
-/*
+
 CREATE table `FinancialStmt`(
     stmtID VARCHAR(10) NOT NULL unique, 
     fs_name VARCHAR(50), 

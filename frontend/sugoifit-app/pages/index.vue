@@ -15,15 +15,8 @@
                 <div class="welcome-heading">
                   <h5 class=""> Welcome Back, <span> Jane</span></h5>
                   <p class="">Lorem ipsum dolor sit amet consectetur adi</p>
-                </div>
-                    <!-- Quick Actions -->
-                <div class="quick_actions_div d-flex flex-row text-center">
-                    <div class = "d-flex flex-column quick_actions"><img src="" alt=""><i class="fas fa-plus"></i><span>Add Transaction</span></div>
-                    <div class = "d-flex flex-column quick_actions"><img src="" alt=""><i class="fas fa-plus"></i><span> Place Order</span></div>
-                    <div class = "d-flex flex-column quick_actions"><img src="" alt=""><i class="fas fa-plus"></i><span> Create Invoice</span></div>
-                    <div class = "d-flex flex-column quick_actions"><img src="" alt=""><i class="fas fa-plus"></i><span> Create Invoice</span></div>
-
-                </div>
+         </div>
+                   
             </div>
 
             <div class="time_box ml-auto">
