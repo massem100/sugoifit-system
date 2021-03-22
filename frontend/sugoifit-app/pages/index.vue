@@ -15,12 +15,6 @@
                 <div class="welcome-heading">
                   <h5 class=""> Welcome Back, <span> Jane</span></h5>
                   <p class="">Lorem ipsum dolor sit amet consectetur adi</p>
-                        <div class ="time_box ml-auto"> 
-                            <p>7:00 PM</p>
-                            <p>EST</p>
-                            <p>12:00 AM</p>
-                            <p>LONDON</p>
-                        </div> 
                 </div>
                     <!-- Quick Actions -->
                 <div class="quick_actions_div d-flex flex-row text-center">
