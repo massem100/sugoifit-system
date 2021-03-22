@@ -13,10 +13,16 @@
                     <!-- <img class = "checked" src="~assets/uploads/checked.svg" alt=""> -->
                 <li><span>1</span>Email Details</li>
                 <li><span>2</span>Company Type </li>
-                <li><span>3</span>Business Details </li>
-                <li><span>4</span>Business Location </li>
-                <li><span>5</span> Team </li>
-                <li><span>6</span> Personal Details</li>
+                <!-- <li class = ""><span>3</span>Business Details </li> -->
+               <li><span>3</span></li>
+                <b-nav-item-dropdown text="Business Details" right>
+                    
+                    <b-dropdown-item class = "list-style-none" href="#">Corporation</b-dropdown-item>
+                    <b-dropdown-item href="#">About your business</b-dropdown-item>
+                   
+                </b-nav-item-dropdown>
+                <li><span>4</span> Team </li>
+                <li><span>5</span> Personal Details</li>
             </ul>
 
             <div class = "onboard-footer">
@@ -42,7 +48,7 @@ export default {
                                 "list";
         margin: 20px;
         min-width: 18rem; 
-        min-height: 100vh;
+        min-height: 100%;
         /* padding:25px; */
         /* border-right: 1px solid rgba(112,112, 0.05); */
         background-color: #A7E4EC;

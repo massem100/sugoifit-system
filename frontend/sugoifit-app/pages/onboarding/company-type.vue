@@ -3,7 +3,7 @@
                 <onboarding-side class="side-bar m-0 h-100" ></onboarding-side>
       <!--  COMPANY TYPE-->
                 <div  class="company-type-section  " >
-                    <div>
+                    <div class = "company-heading">
                         <h4 class=" m-4">Choose the type of business</h4>
                         <p class="m-4">Choose the option that best describes your business.</p>
                     </div>
@@ -50,7 +50,7 @@ export default {
   }, 
   methods: {
       BusDetail: function(){
-          this.$router.push('business-details');
+          this.$router.push('business-details/corporation');
       }
   }
     
@@ -78,7 +78,12 @@ export default {
     .company-type-section p{
         font:400 1rem "Poppins";
     }
-
+    /* .company-heading{ 
+        margin-top: 1rem;
+    } */
+    .company-heading h4{ 
+        font: 600 1.6rem "Poppins";
+    }
     .type-categories{
         display: grid;
         grid-template-rows: 1fr 1fr 1fr;

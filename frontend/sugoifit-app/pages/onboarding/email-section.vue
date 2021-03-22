@@ -78,6 +78,9 @@ export default {
         font: 400 1rem "Poppins";
     }
 
+    .email-heading h4{ 
+        font: 600 1.6rem "Poppins";
+    }
     .email-container{
         display: flex;
         flex-direction: row;

@@ -23,11 +23,11 @@ export default {
     },
     name: 'on-boarding',
     data(){
-    return{
-        secfocus: true,
-        secfocusN: true
+        return{
+            secfocus: true,
+            secfocusN: true
 
-    }
+        }
 }, 
 methods: {
     GetStarted: function(){

@@ -90,7 +90,7 @@ for _ in range(1,6):
     Business["busName"].append("Business "+ str(_))
     Business["busemail"].append(fake.email())
     Business["busaddress"].append(fake.address())
-    Business["telephone"].append(fake.cell_phone())
+    # Business["telephone"].append(fake.phone())
 
 df_business_table = pd.DataFrame(Business)
 
@@ -190,3 +190,10 @@ if __name__ == '__main__':
     # print (credentials)
     print(FinancialStmt)
     print (FinancialStmtDesc)
+    print(Order)
+    print(Business)
+    print(AccountType)
+    print(Account)
+    print(Customer)
+    print(Invoice)
+
