@@ -95,7 +95,7 @@ export default {
         display: grid;
         grid-template-areas: "icon type-name " 
                             "icon text ";
-        margin: 0.8rem 1rem;
+        margin: 0.5rem 1rem;
         width:25rem;
         height: 7.6rem;
         background-color: #ffffff;
@@ -174,9 +174,11 @@ export default {
             } */
             .side-bar{
                 display:block;
+                position:fixed;
             }
-
-             /* .type-btn-n{
+            .company-type-section{
+                margin-left: 20rem;
+            }             /* .type-btn-n{
                 margin: 2rem;
                 position: absolute;
                 top: 36rem; 

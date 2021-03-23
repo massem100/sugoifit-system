@@ -32,7 +32,7 @@ class Product(db.Model):
     prodID = db.Column(db.String(10), primary_key=True)
     prodName = db.Column(db.String(100))
     unit_price = db.Column(db.DECIMAL(10, 2))
-    db.ModelUnit = db.Column(db.DECIMAL(10, 2))
+    Unit = db.Column(db.DECIMAL(10, 2))
     limitedTime = db.Column(db.DateTime())
     taxPercent = db.Column(db.DECIMAL(3, 2))
     prodStatus = db.Column(db.String(25))

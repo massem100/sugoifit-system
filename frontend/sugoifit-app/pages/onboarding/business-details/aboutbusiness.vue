@@ -104,6 +104,7 @@ export default{
         /* min-height:100vh; */
     }
     .about-business-main{
+        margin-left: 15rem;
         margin: 2rem;
         margin-top: 4rem;
         font: 400 1rem "Poppins";
@@ -164,8 +165,13 @@ export default{
     @media only screen and (min-width: 768px) {
         .side-bar{
             display: block;
-           
-            
+            position:fixed;
+            /* height: 100vh; */
+        
+        }
+
+        .about-business-main{
+            margin-left: 20rem;
         }
     }
     /* Large devices (laptops/desktops, 992px and up) */

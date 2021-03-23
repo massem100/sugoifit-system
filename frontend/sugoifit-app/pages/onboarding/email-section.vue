@@ -161,6 +161,12 @@ export default {
     }
     .side-bar{ 
         display:block;
+        position: fixed;
+    }
+    .email-create-section{
+        margin-left: 18rem;
+        /* align-items: center; */
+        justify-content: center ;
     }
      .business-image{
         display: none;
