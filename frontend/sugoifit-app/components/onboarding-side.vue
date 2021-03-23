@@ -11,9 +11,16 @@
 
             <ul class = "list-nav d-flex flex-column"> 
                     <!-- <img class = "checked" src="~assets/uploads/checked.svg" alt=""> -->
-                <li><span>1</span>Company Type </li>
-                <li><span>2</span>Business Details </li>
-                <li><span>3</span>Business Location </li>
+                <li><span>1</span>Email Details</li>
+                <li><span>2</span>Company Type </li>
+                <!-- <li class = ""><span>3</span>Business Details </li> -->
+               <li><span>3</span></li>
+                <b-nav-item-dropdown text="Business Details" right>
+                    
+                    <b-dropdown-item class = "list-style-none" href="#">Corporation</b-dropdown-item>
+                    <b-dropdown-item href="#">About your business</b-dropdown-item>
+                   
+                </b-nav-item-dropdown>
                 <li><span>4</span> Team </li>
                 <li><span>5</span> Personal Details</li>
             </ul>
@@ -41,10 +48,10 @@ export default {
                                 "list";
         margin: 20px;
         min-width: 18rem; 
-        height: 100vh;
+        min-height: 100%;
         /* padding:25px; */
         /* border-right: 1px solid rgba(112,112, 0.05); */
-        background-color: rgb(79, 201, 218,0.5);
+        background-color: #A7E4EC;
         
     }
 
@@ -76,6 +83,7 @@ export default {
         display: inline-block;
         border: 2px solid #e6f3f3;
         color: #ffffff;
+        
 
     }
     .logo{

@@ -4,7 +4,7 @@
 * ==========================================================
 */
 nav.side-navbar {
-  background: #DFFBFF;
+  background: #A7E4EC;
   min-width: 320px;
   max-width: 320px;
   min-height: 100vh;
@@ -94,8 +94,8 @@ nav.side-navbar ul li a {
 }
 
 nav.side-navbar ul li a:hover {
-  background-color: #00A99D;
-  border-left: 4px solid rgb(6, 83, 78);
+  background-color: #2d00a9;
+  border-left: 4px solid rgb(76, 6, 83);
   color: #fff;
 }
 
