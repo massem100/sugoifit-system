@@ -57,7 +57,7 @@ export default {
     transition: all 0.9s ease;
     overflow: hidden;
     visibility: visible;
-    position: absolute;
+    position: relative;
     opacity: 1;
 }
 .fade-enter,
@@ -69,7 +69,7 @@ export default {
 img {
   height:700px;
   width:100%;
-  align-content: center;
+  position: center;
 }
 
 .prev, .next {

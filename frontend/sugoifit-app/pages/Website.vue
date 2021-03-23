@@ -1,89 +1,91 @@
 <template>
-    <div class="container">
+    <div class="wrapper">
+
         <div class="header">
             <WebsiteHeader />
         </div>
-        
-        <!-- welcome section -->
-        <div class="welcome">
-            <div class="welcome-left">
-                <div class="text">
-                    <h3> Welcome to my Boutique </h3>
-                    <p> Young aspiring entrepreneur, spreading love and peace through style</p>
-                </div>
-                <div class="btn">
-                    <button type="submit" class="submitbtn"> Place and Order</button>
-                </div>
-            </div>
-            <div class="welcome-right">
-                <img src="~/assets/uploads/products/boutique.jpg" alt="Picture">
-            </div>
-        </div>
 
-        <!-- product section -->
-        <div class="products">
-            <Slider />
-        </div>
-        
-
-        <!-- receipt section -->
-        <div class="receipt">
-            <div class="receipt-left">
-                <img class=" receipt-img" src="~/assets/uploads/products/boutique2.jpg" alt="Picture">
+        <div class="container">
+            <!-- welcome section -->
+            <div class="welcome">
+                <div class="welcome-left">
+                    <div class="text">
+                        <h3> Welcome to my Boutique </h3>
+                        <p> Young aspiring entrepreneur, spreading love and peace through style</p>
+                    </div>
+                    <div class="btn">
+                        <button type="submit" class="submitbtn"> Place an Order</button>
+                    </div>
+                </div>
+                <div class="welcome-right">
+                    <img src="~/assets/uploads/products/boutique.jpg" alt="Picture">
+                </div>
             </div>
-            <div class="receipt-right">
-                <div class="receipt-text">
-                    <h3> Welcome to my Boutique </h3>
-                    <p> Young aspiring entrepreneur, spreading love and peace through style</p>
-                </div>
-                <div class="form">
-                    <form id="receipt-upload" action="" method="post">
-                        <fieldset>
-                            <input placeholder="Order No." type="text" tabindex="1" required autofocus>
-                        </fieldset>
-                        <fieldset>
-                            <input placeholder="Customer Name" type="email" tabindex="2" required>
-                        </fieldset>
-                        <fieldset>
-                            <input placeholder="Upload File" type="tel" tabindex="3" required>
-                        </fieldset>
-                        <fieldset>
-                            <button name="submit" type="submit" id="receipt-submit" data-submit="...Sending">Submit</button>
-                        </fieldset>
-                    </form>
-                </div>
+
+            <!-- product section -->
+            <div class="products">
+                <Slider />
             </div>
             
-        </div>
-        <!-- contact section -->
-        <div class="contact">
-            <h2>Contact us!</h2>
-            <p>Contact us today, and get reply with in 24 hours!</p>
 
-            <form id="contact" action="" method="post">
-                <fieldset>
-                    <label for="name">Full Name</label>
-                    <input placeholder="" type="text" tabindex="1" required autofocus>
-                </fieldset>
-                <fieldset>
-                    <label for="mail">Email Address</label>
-                    <input placeholder="" type="email" tabindex="2" required>
-                </fieldset>
-                <fieldset>
-                    <label for="num">Phone Number</label>
-                    <input placeholder="" type="tel" tabindex="3" required>
-                </fieldset>
-                <fieldset>
-                    <label for="message">Message</label>
-                    <textarea placeholder="" tabindex="5" required></textarea>
-                </fieldset>
-                <fieldset>
-                    <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
-                </fieldset>
-            </form>
- 
-        </div>
+            <!-- receipt section -->
+            <div class="receipt">
+                <div class="receipt-left">
+                    <img class=" receipt-img" src="~/assets/uploads/products/boutique2.jpg" alt="Picture">
+                </div>
+                <div class="receipt-right">
+                    <div class="receipt-text">
+                        <h3> Welcome to my Boutique </h3>
+                        <p> Young aspiring entrepreneur, spreading love and peace through style</p>
+                    </div>
+                    <div class="form">
+                        <form id="receipt-upload" action="" method="post">
+                            <fieldset>
+                                <input placeholder="Order No." type="text" tabindex="1" required autofocus>
+                            </fieldset>
+                            <fieldset>
+                                <input placeholder="Customer Name" type="email" tabindex="2" required>
+                            </fieldset>
+                            <fieldset>
+                                <input placeholder="Upload File" type="tel" tabindex="3" required>
+                            </fieldset>
+                            <fieldset>
+                                <button name="submit" type="submit" id="receipt-submit" data-submit="...Sending">Submit</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+            <!-- contact section -->
+            <div class="contact">
+                <h2>Contact us!</h2>
+                <p>Contact us today, and get reply with in 24 hours!</p>
+
+                <form id="contact" action="" method="post">
+                    <fieldset>
+                        <label for="name">Full Name</label>
+                        <input placeholder="" type="text" tabindex="1" required autofocus>
+                    </fieldset>
+                    <fieldset>
+                        <label for="mail">Email Address</label>
+                        <input placeholder="" type="email" tabindex="2" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="num">Phone Number</label>
+                        <input placeholder="" type="tel" tabindex="3" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="message">Message</label>
+                        <textarea placeholder="" tabindex="5" required></textarea>
+                    </fieldset>
+                    <fieldset>
+                        <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
+                    </fieldset>
+                </form>
     
+            </div>
+        </div>
     </div>
 </template>
 
@@ -101,7 +103,9 @@ export default {
 </script>
 
 <style scoped>
-
+.wrapper{
+    margin: 2em;
+}
 .container{
     display: flex;
     flex-direction: column;
@@ -137,7 +141,7 @@ export default {
     box-shadow: 3rem -20px rgb(46, 158, 102);
 }
 
-
+/*
 .products{
     margin: 3em;
     display: grid;
@@ -157,7 +161,7 @@ export default {
 .box > img{
     max-width: 100%;
     height: auto;
-}
+}*/
 
 .receipt{
     display: flex;
@@ -174,15 +178,16 @@ export default {
     box-shadow: -3em -20px rgb(46, 158, 102);
 }
 #receipt-submit{
-    height: 50px;
-    width: 150px;
+    height: 3em;
+    width: 170px;
     border-radius: 15px;
     color: white;
-    font-size: 20px;
+    font-size: 15px;
     background-color: rgb(46, 158, 102);
 }
 .contact{
     margin: 3em;
+    position: center;
 }
 fieldset{
     padding: 10px 5px;
@@ -208,10 +213,11 @@ form{
     align-items: center;
 }
 #contact-submit{
+    height: 3em;
+    width: 170px;
     border-radius: 15px;
     color: white;
-    font-size: 20px;
+    font-size: 15px;
     background-color: rgb(46, 158, 102);
-    padding: 15px;
 }
 </style>

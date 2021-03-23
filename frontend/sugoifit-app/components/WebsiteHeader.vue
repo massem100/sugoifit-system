@@ -1,6 +1,8 @@
 <template>
     <header class="header">
-        <h6 class="title"><i class="fas fa-leaf"></i>Monique's Boutique</h6>
+        <nuxt-link to='/website'>
+            <h6 class="title"><i class=""></i>Monique's Boutique</h6>
+        </nuxt-link>
         <ul>
             <li>
                 <nuxt-link to='/products'>All Products</nuxt-link>

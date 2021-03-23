@@ -71,6 +71,9 @@ def logout():
     logout_user()
     return jsonify(message = [{'message': "You have been logged out successfully"}])
 
+
+
+
 # @login_manager.user_loader
 # def load_user(id):
 #     user = User.query.get(int(id))

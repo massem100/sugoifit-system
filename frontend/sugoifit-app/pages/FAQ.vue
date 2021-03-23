@@ -1,8 +1,13 @@
 <template>
-    <div class="container">
+    <div class="wrapper">
         
         <div class="header">
             <WebsiteHeader />
+        </div>
+        
+        <div class="container">
+
+
         </div>
         
     </div>
@@ -19,5 +24,16 @@ export default {
 </script>
 
 <style scoped>
-
+.wrapper{
+    margin: 2em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-content: center;
+}
 </style>
