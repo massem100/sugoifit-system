@@ -70,6 +70,7 @@ methods: {
         flex-direction: column;
         /* justify-content:flex-start; */
         /* align-items: center; */
+        margin-left: 15rem;
         width: 100vw;
         height:100vh;
     }
@@ -118,9 +119,7 @@ methods: {
     .color-bg{
         /* background-color: purple; */
     }
-    .side-bar{ 
-        display:none;
-    }
+    
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
@@ -132,6 +131,7 @@ methods: {
         display:block;
         z-index: 1; 
         height: 100%;
+
     }
 
     

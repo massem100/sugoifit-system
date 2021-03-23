@@ -1,68 +1,80 @@
 <template>
-    <div id="mainArea"> 
-        <side-bar/>
-        
-        <div class="d-flex flex-row align-items-center settings_bar ml-auto ">
-            <h6 class="d-flex ">Jane S.</h6>
-            <img class="m-2" id="top-user-icon" src="~assets/uploads/Profile_icon.svg" alt="">
-            <img class="m-2" src="~assets/uploads/settings.svg" alt="">
-        </div>
-        <div class ="time_box ml-auto"> 
-            <p>7:00 PM</p>
-            <p>EST</p>
-            <p>12:00 AM</p>
-            <p>LONDON</p>
-        </div> 
-        <div> 
-            <div id="title">
-                <h5> 
-                Manage Products
-                </h5>
-                <p> Mange your products here </p>
-            </div>
+    <div class="mainArea m-0"> 
+        <side-bar class="side-bar m-0 h-100"></side-bar>
 
-            <div id="formData"> 
-                <div>
-                    <label for="searchBox">Search</label>
-                    <input type="text" name="SearchBox" id="searchBox">
-                    <button class="buttons" type="button">Search</button>
+        <div class="products-page ">
+            <div class="sys-head w-100  ">
+                 <div class="mr-auto head-title">
+                    <h5> Manage Products</h5>
+                    <p> Mange your products here </p>
+                </div>
+                <div class="head-misc d-flex flex-column">
+                    <div class="d-flex flex-row  bg-secondary">
+                        <h6 class=" ">Jane S.</h6>
+                        <img class="top-user-icon m-2" src="~assets/uploads/Profile_icon.svg" alt="">
+                        <img class="m-2" src="~assets/uploads/settings.svg" alt="">
+                    </div>
+                    <div class ="time_box"> 
+                        <p>7:00 PM</p>
+                        <p>EST</p>
+                        <p>12:00 AM</p>
+                        <p>LONDON</p>
+                    </div> 
+                </div>
+            </div>
+           <div class ="product-card">
+                <h5> Product Overview</h5>ur
+                <p class="prod-p">Lorem ipsum dolor sit amet,  iste at facilis eos architecto 
+                    alias perferendis veritatis dolor ut cupiditate repellat reiciendis maxime,
+                     ipsam voluptatibus blanditiis quibusdam.  Lorem ipsum dolor, sititaque ab 
+                     obcaecati modi saepe minus necessitatibus?</p>
+            </div>
+            <div class = "products-main">
+               
+
+                <div class="formData"> 
+                    <div>
+                        <b-label for="searchBox">Search</b-label>
+                        <b-form-input type="text" name="SearchBox" class="searchBox"></b-form-input>
+                        <button class="buttons" type="button">Search</button>
+                    
+                    </div>
+
+                    <div class="prod-item">
+                        <b-label for="prodName"> Product Name </b-label>
+                        <b-form-input type="text" name="ProductName" class="prodName"></b-form-input>
+                    </div>
+                    <div class="prod-item">
+                        <b-label for="qtyinstock"> Quantity In Stock </b-label>
+                        <b-form-input type="number" name="QtyInStock" class="qtyinstock"></b-form-input>
+                    </div>
+                    <div class="prod-item">
+                        <b-label for="unitPrice"> Unit Price </b-label>
+                        <b-form-input type="number" name="UnitPrice" class="unitPrice"></b-form-input>
+                    </div>
+                    <div class="prod-item">
+                        <b-label for="threshold"> Threshold </b-label>
+                        <b-form-input type="number" name="threshold" class="threshold" min="0" step="1"></b-form-input>
+                    </div>
+                    <div class="prod-item">
+                        <b-label for="tax"> Tax </b-label>
+                        <b-form-input type="number" name="tax" class="tax" min="0" step="0.01"></b-form-input>
+                    </div>
+                    <div class="prod-item"> 
+                        <textarea rows= "3" cols="40" name = "description">
+                            Enter descripton here...
+                        </textarea>
+                    </div>
+                    
                 
                 </div>
+                <div class="crudBtn"> 
+                        <button class="buttons" type="button">Update</button>
+                        <button class="buttons" type="button">Delete</button>
+                        <button class="buttons" type="button">Cancel</button>
+                </div>
 
-                <div>
-                    <label for="prodName"> Product Name </label>
-                    <input type="text" name="ProductName" id="prodName">
-                </div>
-                <div>
-                    <label for="qtyinstock"> Quantity In Stock </label>
-                    <input type="number" name="QtyInStock" id="qtyinstock">
-                </div>
-                <div>
-                    <label for="unitPrice"> Unit Price </label>
-                    <input type="number" name="UnitPrice" id="unitPrice">
-                </div>
-                <div>
-                    <label for="threshold"> Threshold </label>
-                    <input type="number" name="threshold" id="threshold" min="0" step="1">
-                </div>
-                <div>
-                    <label for="tax"> Tax </label>
-                    <input type="number" name="tax" id="tax" min="0" step="0.01">
-                </div>
-                <div> 
-                    <textarea rows= "3" cols="40" name = "description">
-                        Enter descripton here...
-                    </textarea>
-                </div>
-                
-            
             </div>
-            <div id="crudBtn"> 
-                    <button class="buttons" type="button">Update</button>
-                    <button class="buttons" type="button">Delete</button>
-                    <button class="buttons" type="button">Cancel</button>
-            </div>
-
         </div>
     </div>
 </template>
@@ -81,69 +93,69 @@ export default {
 
 
 <style scoped>
-    #mainArea{
+    .mainArea{
         display:flex;
+        flex-direction: row;
+        font: 400 1rem "Poppins";
+        /* background-color: burlywood; */
+        /* min-height:100vh; */
+        
     
     }
-
-    input[type=text],input[type=number]{
-        align-content: center;
-        width: 100px;
-        height: 40px;
-        left: 392px;
-        top: 171px;
-        border: none;
-        background: #DFFBFF;
-        border-radius: 15px;
-        
-        
+    .products-page{
+        margin-left: 20rem;
+        /* margin:2rem; */
+        /* display: flex;
+        flex-direction: column; */
+        /* background-color: rgb(172, 235, 172); */
+        width:100vw;
+        grid-template-areas: "syshead syshead"
+                             "product-main";
     }
 
-    #title{
-        grid-area: title;
-        padding-left: 50%;
-        padding-top: 25%;
-        padding-bottom: 15%;
+    
+    .sys-head{
+        display: flex;
+        flex:row;
+        /* background-color: rgb(117, 77, 155); */
+        width:100%;
+        grid-area: 'sys-head';
     }
 
-    #crudBtn{
-        grid-area: crudBtn;
-        padding-left:50%;
-        display:block;
+    .products-main{
+        margin: 2rem;
+        width: 40rem;
+        /* background-color: peachpuff; */
+        grid-area: 'product-main';
     }
 
-    #formData{
-        grid-area: formData;
+    .head-title{
+        margin: 2rem;
+    }
+    .head-title h5{
+        font: 600 1.8rem "Poppins";
         align-items: center;
-        grid-template-columns: 150px 250px 250px 150px;
-        grid-template-rows: auto;
-        grid-template-areas:
-        " . title title ."
-        " . formData formData ."
-        " . formData formData crudBtn";
-        padding-left: 50%;
-    }
-   
-    #prodName, #searchBox{
-        align-content: center;
-        width: 300px;
-        height: 40px;
-        left: 392px;
-        top: 171px;
-        border: none;
-        background: #DFFBFF;
-        border-radius: 15px;
+
     }
 
-    .buttons{
-        background-color: #4DC4D4;
-        color: white;
-        border-radius: 80px;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        width: 7rem;
-        height: 2rem;
+    .product-card{
+        margin: 1rem 2rem;
+        width: 60rem; 
+        height: 15rem;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        /* background: url('~assets/uploads/green-product-background.jpg'); */
+        background-color: rgb(242, 251, 255);
+        background-size: 60rem 15rem;
+        border-radius: 20px;
+    }
+    .product-card h5 .prod-p{
+        margin: 4rem;
     }
 
+    .side-bar{
+        position:fixed; 
+
+    }
 </style>

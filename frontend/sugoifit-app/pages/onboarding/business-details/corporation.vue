@@ -160,6 +160,12 @@ export default{
     @media only screen and (min-width: 768px) {
         .side-bar{
             display:block;
+            position:fixed;
+        
+        }
+
+        .business-main{
+            margin-left: 20rem;
         }
 
         

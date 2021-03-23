@@ -1,9 +1,9 @@
 <template>
   <div class="d-flex flex-row ">
     <!-- Side Bar Component -->
-        <side-bar>Check</side-bar>
+        <side-bar class = "side-bar">Check</side-bar>
 
-        <div>
+        <div class="dashboard-main">
         <!-- Overview -->
         <div class="d-flex flex-column w-100">
             <div class="d-flex flex-row align-items-center settings_bar ml-auto ">
@@ -99,5 +99,12 @@ export default {
     position: absolute;
     top: 300px;
     right: 80px;
+  }
+  .side-bar{
+    position: fixed;
+  }
+
+  .dashboard-main{
+    margin-left: 20rem;
   }
 </style>

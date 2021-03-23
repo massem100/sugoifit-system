@@ -159,10 +159,15 @@ export default{
     @media only screen and (min-width: 768px) {
         .side-bar{
             display: block;
+            position:fixed;
            
             
         }
+        .about-business-main{
+            margin-left: 20rem;
+        }
     }
+
     /* Large devices (laptops/desktops, 992px and up) */
     @media only screen and (min-width: 992px) {
         

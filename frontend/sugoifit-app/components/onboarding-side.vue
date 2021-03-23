@@ -43,12 +43,13 @@ export default {
 <style scoped>
  
     .side-nav-on{
+        position:fixed;
         display:grid;
         grid-template-areas: "tophead"
                                 "list";
         margin: 20px;
         min-width: 18rem; 
-        min-height: 100%;
+        /* min-height: 200%; */
         /* padding:25px; */
         /* border-right: 1px solid rgba(112,112, 0.05); */
         background-color: #A7E4EC;
