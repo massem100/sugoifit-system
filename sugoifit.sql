@@ -397,7 +397,7 @@ CREATE table Expense(
     expenseID VARCHAR(10) NOT NULL unique, 
     extype VARCHAR(100), 
     exname VARCHAR(100), 
-    DATEIncurred DATE, 
+    dateIncurred DATE, 
     expenseAmt DECIMAL(10,2),
     
     PRIMARY KEY(expenseID)
@@ -405,7 +405,7 @@ CREATE table Expense(
 
 CREATE table Purchase(
     purchaseID VARCHAR(10) NOT NULL unique, 
-    p_DATE DATE, 
+    p_date DATE, 
     p_item VARCHAR(100), 
     p_quantity INT, 
     p_price DECIMAL(10,2), 
@@ -447,7 +447,7 @@ CREATE table Receipt(
     receiptID VARCHAR(10) NOT NULL, 
     orderID VARCHAR(10),
     busID INT(10), 
-    DATE_issued DATE,
+    date_issued DATE,
 
     PRIMARY KEY(receiptID),
     FOREIGN KEY(busID) REFERENCES Business(busID)

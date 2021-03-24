@@ -174,6 +174,97 @@ df_orderdetails_table = pd.DataFrame(OrderDetails)
 """ 
     Todo: Expense, Purchase, Product, stock, receipt etc
 """
+#Data for Expense
+
+Expense = defaultdict(list)
+
+expenseTypes = ["Bills", "Wages", 
+"Purchases"]
+
+for _ in range(1,6):
+    Expense["expenseID"].append("expense"+ str(_))
+    Expense["extype"].append(expenseTypes[random.randint(0,2)])
+    Expense["exname"].append("ExpenseName" + str(_))
+    Expense["dateIncurred"].append("03-19-2021")
+    Expense["expenseAmt"].append(1632.56 * _ )
+
+df_expense_table = pd.DataFrame(Expense)
+
+#Data for Purchase
+
+Purchase = defaultdict(list)
+
+for _ in range(1,6):
+    Purchase["purchaseID"].append("Pch" + str(_))
+    Purchase["p_date"].append("10-2-2021")
+    Purchase["p_item"].append("Item" + str(_))
+    Purchase["p_quantity"].append(( _ * 2) + 1)
+    Purchase["p_price"].append(2652.33 + (1200 / _ ))
+    Purchase["busID"].append("business" + str(random.randint(1,5)))
+    Purchase["stmtID"].append("stmt" + str(random.randint(1,5)))
+
+df_purchase_table = pd.DataFrame(Purchase)
+
+#Date for Product
+
+Product = defaultdict(list)
+
+products = ["Shoes", "Slipper", "Dress", "Skirt", "Pants"]
+
+for _ in range(1,6):
+    Product["prodID"].append("Prod" + str(_))
+    Product["prodName"].append(products[( _ - 1)])
+    Product["unit_price"].append(67.36 * 1.5 * _ )
+    Product["baseUnit"].append("None")
+    Product["limitedTime"].append("05-10-202" + str( _ - 1))
+    Product["taxPercent"].append((12.3 * 1.7) / _ )
+    Product["prodStatus"].append("In Stock")
+
+
+df_product_table = pd.DataFrame(Product)
+
+#Data for stock
+
+stock = defaultdict(list)
+
+for _ in range(1,6):
+    stock["prodID"].append("Prod" + str(_))
+    stock["inStock"].append("Yes")
+    stock["lastUpdateTime"].append("02-01-2021 13:23:44")
+    stock["quantity"].append(100)
+    stock["quantity"].append(25)
+
+df_stock_table = defaultdict(list)
+
+#Data for Receipt
+
+Receipt = defaultdict(list)
+
+for _ in range(1,6):
+    Receipt["receiptID"].append("Recp" + str(_))
+    Receipt["orderID"].append("order" + str(_))
+    Receipt["busID"].append("business" + str(_))
+    Receipt["date_issued"].append("23-03-2021")
+
+df_receipt_table = defaultdict(list)
+
+#Data for Service
+
+Service = defaultdict(list)
+
+servicename = ["Painting", "Plumbing", "Transporation", "Catering"]
+season = ["Summer", "Winter", "Fall", "Spring"]
+
+for _ in range(1,6):
+    Service["serviceID"].append("service" + str(_))
+    Service["serv_name"].append(servicename[random.randint(0,2)])
+    Service["serv_price"].append((326.56 + 4.3) * _ )
+    Service["taxPercent"].append(5.3)
+    Service["in_season"].append(season[random.randint(0,3)])
+
+df_service_table = defaultdict(list)
+
+
 
 # # Use the sqlalchemy engine to connect to the db. 
 # engine = create_engine('mysql://root:SQLpass@localhost/mybook', echo=False)
@@ -188,6 +279,7 @@ df_orderdetails_table = pd.DataFrame(OrderDetails)
 if __name__ == '__main__':
     # print (user)
     # print (credentials)
+    """
     print(FinancialStmt)
     print (FinancialStmtDesc)
     print(Order)
@@ -195,5 +287,6 @@ if __name__ == '__main__':
     print(AccountType)
     print(Account)
     print(Customer)
-    print(Invoice)
+    print(Invoice) """
+    print(Product)
 
