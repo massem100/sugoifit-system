@@ -6,42 +6,18 @@
         <div class="container">
             <div class="left">
                 <div class="column">
-                    <div class="card">
-                        <div class="card-image">
-                            <img src="~/assets/uploads/products/skirt1.jpg" alt="Picture" style="width:50%">
+                    <div class="card" v-for="card in cards" :card="card" :key="card">
+                        
+                        <div class="card-image"> 
+                            <img :src="card.img" alt="Image">
                         </div>
                         <div class="card-text">
-                            <p class="quantity">Quantity:</p>
-                            <p class="size">Size:</p>
-                            <p class="colour">Colour:</p>
-                            <p class="price">Price:</p>
+                            <p class="quantity">Quantity: {{ card.quantity }} </p>
+                            <p class="size">Size: {{card.size}} </p>
+                            <p class="colour">Colour: {{card.colour}} </p>
+                            <p class="price">Price: {{card.price}} </p>
                         </div>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="card">
-                        <div class="card-image">
-                            <img src="~/assets/uploads/products/pants3.jpg" alt="Picture" style="width:50%">
-                        </div>
-                        <div class="card-text">
-                            <p class="quantity">Quantity:</p>
-                            <p class="size">Size:</p>
-                            <p class="colour">Colour:</p>
-                            <p class="price">Price:</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="card">
-                        <div class="card-image">
-                            <img src="~/assets/uploads/products/top1.jpg" alt="Picture" style="width:50%">
-                        </div>
-                        <div class="card-text">
-                            <p class="quantity">Quantity:</p>
-                            <p class="size">Size:</p>
-                            <p class="colour">Colour:</p>
-                            <p class="price">Price:</p>
-                        </div>
+                
                     </div>
                 </div>
             </div>
@@ -49,9 +25,9 @@
             <div class="right">
                 <div class="column">
                     <div class="top">
-                        <div class="right-text">
+                        <div class="right-text"  v-for="card in cards" :card="card" :key="card">
                             <h3>Cost Breakdown</h3>
-                            <p>Item Cost: JMD 2000.99</p>
+                            <p>Item Cost: {{card.price}} + {{card.price}} </p>
                             <p>Delivery Cost/Pick up: JMD 500.00</p>
                             <p>Total Cost: JMD 2500.99</p>
                         </div>
@@ -108,7 +84,46 @@ export default {
     name: 'PlaceOrder',
     components: {
         WebsiteHeader
-    }
+    },
+    methods: {
+        priceTotal: () => {
+            for card in cards 
+            console.log('working');
+        }
+    },
+    data() {
+        return {
+            cards: [
+                { 
+                    id: 1,
+                    img: "~/assets/uploads/products/skirt1.jpg",
+                    name: 'skirt',
+                    quantity: '1',
+                    size: 'L',
+                    colour: 'black',
+                    price: "$500" 
+                },
+                { 
+                    id: 2,
+                    img: "~/assets/uploads/products/pants3.jpg",
+                    name: 'dress',
+                    quantity: '1',
+                    size: 'medium',
+                    colour: 'white',
+                    price: '$600' 
+                },
+                { 
+                    id: 3,
+                    img: "~/assets/uploads/products/top1.jpg",
+                    name: 'top',
+                    quantity: '1',
+                    size: 'medium',
+                    colour: 'white',
+                    price: '$600' 
+                }
+            ]
+        }
+  }
 }
 </script>
 
