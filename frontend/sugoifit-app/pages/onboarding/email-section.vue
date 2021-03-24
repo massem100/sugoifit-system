@@ -78,6 +78,9 @@ export default {
         font: 400 1rem "Poppins";
     }
 
+    .email-heading h4{ 
+        font: 600 1.6rem "Poppins";
+    }
     .email-container{
         display: flex;
         flex-direction: row;
@@ -158,6 +161,12 @@ export default {
     }
     .side-bar{ 
         display:block;
+        position: fixed;
+    }
+    .email-create-section{
+        margin-left: 18rem;
+        /* align-items: center; */
+        justify-content: center ;
     }
      .business-image{
         display: none;

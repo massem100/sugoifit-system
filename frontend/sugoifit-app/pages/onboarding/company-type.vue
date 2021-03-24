@@ -3,7 +3,7 @@
                 <onboarding-side class="side-bar m-0 h-100" ></onboarding-side>
       <!--  COMPANY TYPE-->
                 <div  class="company-type-section  " >
-                    <div>
+                    <div class = "company-heading">
                         <h4 class=" m-4">Choose the type of business</h4>
                         <p class="m-4">Choose the option that best describes your business.</p>
                     </div>
@@ -50,7 +50,7 @@ export default {
   }, 
   methods: {
       BusDetail: function(){
-          this.$router.push('business-details');
+          this.$router.push('business-details/corporation');
       }
   }
     
@@ -78,7 +78,12 @@ export default {
     .company-type-section p{
         font:400 1rem "Poppins";
     }
-
+    /* .company-heading{ 
+        margin-top: 1rem;
+    } */
+    .company-heading h4{ 
+        font: 600 1.6rem "Poppins";
+    }
     .type-categories{
         display: grid;
         grid-template-rows: 1fr 1fr 1fr;
@@ -90,7 +95,7 @@ export default {
         display: grid;
         grid-template-areas: "icon type-name " 
                             "icon text ";
-        margin: 0.8rem 1rem;
+        margin: 0.5rem 1rem;
         width:25rem;
         height: 7.6rem;
         background-color: #ffffff;
@@ -169,9 +174,11 @@ export default {
             } */
             .side-bar{
                 display:block;
+                position:fixed;
             }
-
-             /* .type-btn-n{
+            .company-type-section{
+                margin-left: 20rem;
+            }             /* .type-btn-n{
                 margin: 2rem;
                 position: absolute;
                 top: 36rem; 
