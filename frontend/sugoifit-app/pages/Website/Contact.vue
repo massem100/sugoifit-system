@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import WebsiteHeader from '../components/WebsiteHeader';
+import WebsiteHeader from '../../components/WebsiteHeader';
 export default {
     name: 'Contact',
     components: {

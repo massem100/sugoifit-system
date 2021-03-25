@@ -1,10 +1,10 @@
 import os
 from app import app, db, csrf, cors
-from flask import jsonify, flash
-from app.forms import RegisterForm, LoginForm
-from app.model import  asset_liability, auth, financial_statement, sales, transactions
+from flask import jsonify, flash, request
+from .forms import RegisterForm, LoginForm, orderForm
+from .model import  asset_liability, auth, financial_statement, sales, transactions
 from flask_cors import cross_origin
-
+from flask.templating import render_template
 
 
 
@@ -41,7 +41,7 @@ def requires_auth(f):
 
   return decorated     
 
-
+#########################################################################################################
 @app.route('/api/test', methods = ["GET"])
 @cross_origin(supports_credentials=True)
 def home():
@@ -54,6 +54,7 @@ def home():
 
     return jsonify(data)
 
+#########################################################################################################
 @app.route('/api/auth/login', methods=["POST"])
 def login(): 
     form = LoginForm()
@@ -64,13 +65,108 @@ def login():
 
         if email == "johndoe@gmail.com" and password == "pass":
             
-            return jsonify([{'message': "Login successful", "token": "{{CSRF_token()}}"}])
-           
+            return jsonify([{ 'message': "Login successful", "token": "{{ CSRF_token() }}" }])
+
+#########################################################################################################      
 @app.route('/api/auth/logout', methods = ['GET'])
 def logout():
     logout_user()
     return jsonify(message = [{'message': "You have been logged out successfully"}])
 
+#########################################################################################################
+@app.route('/api/products', methods = ['GET'])
+def products():
+  message = {}
+  data = {}
+  tprice = 0
+  deliver = 500
+
+  lst = [
+          { 
+            'id': 1,
+            'img': "https://5.imimg.com/data5/RU/WI/MY-46283651/school-skirts-500x500.jpg",
+            'name': 'skirt',
+            'quantity': '1',
+            'size': 'L',
+            'colour': 'black',
+            'price': "500" 
+          },
+          { 
+            'id': 2,
+            'img': "https://slimages.macysassets.com/is/image/MCY/products/2/optimized/17864922_fpx.tif?$browse$&wid=170&fmt=jpeg",
+            'name': 'pants',
+            'quantity': '1',
+            'size': 'medium',
+            'colour': 'white',
+            'price': '1000' 
+          },
+          { 
+            'id': 3,
+            'img': "https://di2ponv0v5otw.cloudfront.net/posts/2018/03/24/5ab6a736077b9758675a91e5/m_5ab6c769c9fcdfbadf53cd14.jpeg",
+            'name': 'top',
+            'quantity': '1',
+            'size': 'medium',
+            'colour': 'white',
+            'price': '800' 
+          }
+        ]
+
+  for card in lst:
+    tprice = tprice + int(card['price'])
+  
+  tcost = tprice + deliver
+
+  data['cards'] = lst
+  data['tprice'] = tprice
+  data['tcost'] = tcost
+  data['deliver'] = deliver
+
+  return jsonify(data)
+
+#########################################################################################################
+
+#########################################################################################################
+@app.route('/api/items', methods = ['GET'])
+def items():
+  data = {}
+  
+  file_cont = open("/Users/User/Desktop/test_data_capstone.txt", "r") 
+  content = file_cont.readlines()
+  
+  data['content'] = content
+  return jsonify(data)
+
+  return render_template("Products.vue", content=content) 
+
+#########################################################################################################
+@app.route('/api/order', methods = ['POST', 'GET'])
+def custOrder():
+  customer = {}
+  '''
+  form = orderForm()
+  if form.validate_on_submit():
+    if request.method == 'POST': 
+
+      # Get info.
+      fname = request.form['fname']
+      lname = request.form['lname']
+      trn = request.form['trn']
+      address = request.form['address']
+      phone_num = request.form['phone_num']
+      email = request.form['email']
+
+      customer['first_name'] = fname
+      customer['last_name'] = lname
+      customer['TRN'] = trn
+      customer['address'] = address
+      customer['telephone'] = phone_num
+      customer['emaile'] = email
+            '''
+  return jsonify(
+      [
+        {'message': "Data saved successfully"}, 
+        {'token': 'token' }
+      ])
 
 
 

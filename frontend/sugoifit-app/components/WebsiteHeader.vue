@@ -1,20 +1,20 @@
 <template>
     <header class="header">
-        <nuxt-link to='/website'>
+        <nuxt-link to='/website/website'>
             <h6 class="title"><i class=""></i>Monique's Boutique</h6>
         </nuxt-link>
         <ul>
             <li>
-                <nuxt-link to='/products'>All Products</nuxt-link>
+                <nuxt-link to='/website/products'>All Products</nuxt-link>
             </li>
             <li>
-                <nuxt-link to='/faq'>FAQ</nuxt-link>
+                <nuxt-link to='/website/faq'>FAQ</nuxt-link>
             </li>
             <li>
-                <nuxt-link to='/contact'>Contact</nuxt-link>
+                <nuxt-link to='/website/contact'>Contact</nuxt-link>
             </li>
             <li>
-                <nuxt-link to='/placeorder'>Place an Order</nuxt-link>
+                <nuxt-link to='/website/placeorder'>Place an Order</nuxt-link>
             </li>
         </ul>
 

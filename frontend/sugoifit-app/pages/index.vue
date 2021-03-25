@@ -83,13 +83,11 @@ export default {
        console.log(jsonResponse);
       })
       .catch(function (error) {
-        // console.log(error);
+         console.log(error);
       });    
   }
 
-    };
-
-    
+};
 </script>
 
 <style scoped>

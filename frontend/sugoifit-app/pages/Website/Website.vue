@@ -90,8 +90,8 @@
 </template>
 
 <script>
-import Slider from '../components/ImageSlider';
-import WebsiteHeader from '../components/WebsiteHeader';
+import Slider from '../../components/ImageSlider';
+import WebsiteHeader from '../../components/WebsiteHeader';
 export default {
     name: 'Website',
     components: {
