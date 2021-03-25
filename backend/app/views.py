@@ -5,7 +5,7 @@ from .forms import RegisterForm, LoginForm, orderForm
 from .model import  asset_liability, auth, financial_statement, sales, transactions
 from flask_cors import cross_origin
 from flask.templating import render_template
-
+import random, string
 
 
 # Create a JWT @requires_auth decorator
@@ -72,6 +72,14 @@ def login():
 def logout():
     logout_user()
     return jsonify(message = [{'message': "You have been logged out successfully"}])
+
+#########################################################################################################
+@app.route('/api/csrf', methods= ['GET'])
+def csrf():
+  letters = ['a','b','c','d','e','f','g']
+  token = ''.join(random.choice(letters) for i in range(10))
+
+  return token
 
 #########################################################################################################
 @app.route('/api/products', methods = ['GET'])

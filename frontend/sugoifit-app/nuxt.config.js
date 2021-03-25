@@ -18,6 +18,11 @@ export default {
     
   },
 
+  // Middleware setup for all pages
+  router: {
+    middleware: 'csrf'
+  },
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     'static/scss/sidebar.css',

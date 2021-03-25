@@ -128,7 +128,8 @@ export default {
                 credentials: "same-origin",
             })
             .then( response => response.json() );
-
+            
+            console.log(response);
         },
         
             
