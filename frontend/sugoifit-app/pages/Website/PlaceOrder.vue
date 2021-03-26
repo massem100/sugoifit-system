@@ -123,6 +123,7 @@ export default {
                 method: "POST",
                 body: form_data,
                 headers: {
+                    "Accept": "application/json",
                     "X-CSRFToken": token,
                 },
                 credentials: "same-origin",

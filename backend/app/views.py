@@ -10,11 +10,10 @@ import pandas as pd
 from sqlalchemy.event import listens_for
 import enum
 import secrets
-from jwt import jwt
 from flask_login import logout_user
 
 
-
+token =''
 
 # Create a JWT @requires_auth decorator
 # This decorator can be used to denote that a specific route should check
@@ -53,8 +52,7 @@ def requires_auth(f):
 @app.route('/api/csrf', methods = ["GET"])
 def token(): 
   token = csrf.generate_csrf(app.config['SECRET_KEY'])
-  print(token)
-  return jsonify({'csrf': token})
+  return token
 
 #########################################################################################################
 @app.route('/api/printstmtdata', methods= ["GET"])
@@ -143,7 +141,6 @@ def products():
   data['tprice'] = tprice
   data['tcost'] = tcost
   data['deliver'] = deliver
-
   return jsonify(data)
 
 #########################################################################################################
@@ -188,7 +185,7 @@ def custOrder():
   return jsonify(
       [
         {'message': "Data saved successfully"}, 
-        {'token': 'token' }
+        {'token': csrf }
       ])
 
 
