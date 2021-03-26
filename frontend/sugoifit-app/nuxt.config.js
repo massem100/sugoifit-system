@@ -18,20 +18,17 @@ export default {
     
   },
 
-  // Middleware setup for all pages
-  router: {
-    middleware: 'csrf'
-  },
-
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     'static/scss/sidebar.css',
     'static/scss/style.css',
     'static/scss/website.css'
 
-
   ],
-
+  router: {
+    middleware: 'csrf',
+  },
+  
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     {src: '~/plugins/vee-validate', ssr: false},
@@ -72,13 +69,16 @@ export default {
          }
        ]
       }
-]
-
-    
+], 
+        ['@nuxtjs/proxy']
   ],
-  
+  proxy:{
+    '/api': { target: 'http://localhost:8080/api', pathRewrite: {'^/api': ''} }
+  },
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {},
+  axios: {
+    proxy: true,
+  },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {

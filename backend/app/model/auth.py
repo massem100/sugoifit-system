@@ -11,6 +11,10 @@ class Busines(db.Model):
     busaddress = db.Column(db.String(100))
     telephone = db.Column(db.String(100))
 
+    def ___init__(self, busID):
+        self.busID = busID
+
+
 class User(db.Model):
     __tablename__ = 'user'
 

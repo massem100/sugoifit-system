@@ -17,13 +17,13 @@ user = defaultdict(list)
 
 
 # Populate dictionary 
-for _ in range(1,11):
+for _ in range(1,30):
     first_name = fake.first_name()
     last_name = fake.last_name()
-    user["userID"].append("user"+str(_))
-    user["first_name"].append( first_name )
-    user["last_name"].append( last_name )
-    user["user_address"].append( fake.address() )
+    user["userID"].append("u"+str(_))
+    user["fname"].append( first_name )
+    user["lname"].append( last_name )
+    user["user_address"].append( fake.country() )
     # user_table["phone"].append( fake.phone_number_with_country_code())
     
 
@@ -175,25 +175,79 @@ df_orderdetails_table = pd.DataFrame(OrderDetails)
     Todo: Expense, Purchase, Product, stock, receipt etc
 """
 
+# commercial_income_statement = Financialstmt('CIS1',fs_name='Commercial Income Statement')
+# commercial_balance_sheet = Financialstmt('CBS2',fs_name='Commercial Balance Sheet Statement')
+# commercial_cash_flow_statement = Financialstmt('CCF3',fs_name='Commercial Cash Flow Statement')
+
+# financial_income_statement = Financialstmt('FIS1',fs_name='Financial Income Statement')
+# financial_balance_sheet = Financialstmt('FBS2',fs_name='Financial Balance Sheet Statement')
+# financial_cash_flow_statement = Financialstmt('FCF3', fs_name='Financial Cash Flow Statement')
+
+# print('woo')
+# db.session.add(commercial_income_statement)
+# db.session.add(commercial_balance_sheet)
+# db.session.add(commercial_cash_flow_statement)
+# db.session.add(financial_income_statement)
+# db.session.add(financial_balance_sheet)
+# db.session.add(financial_cash_flow_statement)
+# db.session.commit()
+    
+    
+
+# financial_statement_lines = pd.read_csv(r"C:\Users\Masse\Desktop\Files\sugoifit-system\backend\app\financial_statements_lines.csv")
+# print (financial_statement_lines)
+# financial_statement_lines = financial_statement_lines[['tag', 'name']].drop_duplicates('tag')
+
+# for index, line in financial_statement_lines.iterrows():
+#     db.session.add(Financialstmtline(tag=line['tag'], line_name=line['name']))
+#     db.session.commit()        
+
+# financial_statement_lines = pd.read_csv(r"C:\Users\Masse\Desktop\Files\sugoifit-system\backend\app\financial_statements_lines.csv")
+# statement_types = ['commercial', 'financial']
+# statement_codes = ['income_statement', 'balance_sheet_statement', 'cash_flow_statement']
+
+# for statement_type in statement_types:
+#     for statement_code in statement_codes:
+#         statement_name = (statement_type + ' ' + statement_code.replace('_',' ')).title()
+#         statement = db.session.query(Financialstmt) \
+#             .filter(Financialstmt.fs_name == statement_name).one()
+#         financial_statement_sequence = financial_statement_lines[
+#             (financial_statement_lines['statement_type'] == statement_type) & \
+#             (financial_statement_lines['statement_code'] == statement_code)]
+        
+#         for index, row in financial_statement_sequence.iterrows():
+#             line = db.session.query(Financialstmtline) \
+#                 .filter(Financialstmtline.tag == row['tag']).one()
+#             db.session.add(Financialstmtlineseq(sequence=row['sequence'],
+#                                                     fsStmtID =statement.stmtID,
+#                                                     fsStmtLineID=line.lineID))
+#     db.session.commit()
+
+
 # # Use the sqlalchemy engine to connect to the db. 
-# engine = create_engine('mysql://root:SQLpass@localhost/mybook', echo=False)
+# engine = create_engine('mysql://root:SQLpass@localhost/sugoifit', echo=False)
 
 # # Add the pandas dataframe to the database
 # df_user_table.to_sql('test', con=engine,index=False)
+df_user_table.to_sql('user', con=engine, index=False, if_exists = "append")
 
 
 # sqlacodegen 
 # sqlacodegen mysql://root:SQLpass@localhost/sugoifit > generatedModels.py
 
-if __name__ == '__main__':
-    # print (user)
-    # print (credentials)
-    print(FinancialStmt)
-    print (FinancialStmtDesc)
-    print(Order)
-    print(Business)
-    print(AccountType)
-    print(Account)
-    print(Customer)
-    print(Invoice)
+result = pd.read_excel('Financial STatement.xls', index_col=0, sheet_name= 'Commercial Income Statement')
 
+
+if __name__ == '__main__':
+    print (user)
+    # print (credentials)
+    # print(FinancialStmt)
+    # print (FinancialStmtDesc)
+    # print(Order)
+    # print(Business)
+    # print(AccountType)
+    # print(Account)
+    # print(Customer)
+    # print(Invoice)
+
+    # print(result)

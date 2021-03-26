@@ -31,7 +31,7 @@
                                 <div  id="msgBox">
                                     <p> {Display error messages here} </p>
                                 </div>
-                                <button @click= "ChangeRoute" class="btn submit" id="submit"> Submit </button>
+                                <button  class="btn submit" id="submit"> Submit </button>
                                 <p class ="login-text m-3">Dont have an account? <a href="">Sign up your business! </a></p>
                             </div>
                         </form>
@@ -72,25 +72,28 @@ export default {
     }, 
     methods:{
         ChangeRoute: function(){
-            this.$router.push({name: 'index'});
+            // this.$router.push({name: 'index'});
         },
         LoginUser: function () {
       let self = this;
       let loginForm = document.getElementById("LoginForm");
       let form_data = new FormData(loginForm);
-      fetch("http://localhost:8080/api/auth/login", {
+      let PATH_API = 'auth/login'
+      fetch(`/api/${PATH_API}`, {
         method: "POST",
         body: form_data,
         headers: {
-          "X-CSRFToken": token,
+          "contentType":'application/json',
+          "Access-Control-Allow-Origin": '*',
         },
-        credentials: "same-origin",
+        
        })
         .then(function (response) {
           return response.json();
       })
       .then(function (jsonResponse){
             console.log("working");
+             this.$router.push({name: 'index'});
       }).catch(function (error) {
           console.log(error);
         });

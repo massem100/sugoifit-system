@@ -1,8 +1,10 @@
 <template>
-    <div class = "fin-page m-0"> 
+    <div class = "fin-page m-0 "> 
         <side-bar > </side-bar>
 
-        <b-table :items = "stmtData"> </b-table>
+        <b-table :items = "stmt"> </b-table>
+          <h6>{{stmt}}</h6>
+          <!-- <h1>{{msg}}</h1> -->
 
     </div>
 </template>
@@ -15,6 +17,8 @@ export default {
     name: 'IncomeStmt',
     data(){ 
         return { 
+            msg: 'Checking', 
+            stmt: [],
             stmtData:  [
                     { name: 32, '$': 'Cyndi', '$': 400.00 },
                     { age: 27, first_name: 'Havij' },
@@ -23,7 +27,57 @@ export default {
 
             
         }
-    } 
+    }, 
+    created: function() {
+      let self = this;
+      let path = 'printstmtdata';
+            fetch(`/api/${path}`,{
+                  method: "GET", 
+                  headers:{
+                    "Accept": "application/json"
+                  }, 
+                  credentials: "same-origin",
+              })
+              .then(function (response){
+                  return response.json();
+              })
+                .then(function(jsonResponse){
+                  console.log(jsonResponse);
+                 self.stmt = jsonResponse.response;
+                })
+                .catch( function(error){
+                 // console.log(error);
+              });
+    },
+    watch: {
+      stmt: function(){
+
+      }
+
+    },
+    methods: {
+      
+        ViewStmt: function (){
+              let self = this;
+              fetch("http://localhost:8080/api/printstmtdata",{
+                  method: "GET", 
+                  headers:{
+                    "Accept": "application/json"
+                  }, 
+                  credentials: "same-origin",
+              })
+              .then(function (response){
+                  return response.json();
+              })
+                .then(function(jsonResponse){
+                  console.log(jsonResponse);
+                  self.stmt = jsonResponse;
+                })
+                .catch( function(error){
+                 // console.log(error);
+              });
+        }
+    }
 }
 </script>
 
