@@ -9,7 +9,7 @@
       ref="observer"
       v-slot="{handleSubmit}"
     >
-      <b-form id= "AddNCAForm" @submit.stop.prevent="handleSubmit(AddAsset)">
+      <b-form id= "AddNCAForm" @submit.stop.prevent="handleSubmit(AddNCA)">
         
         <b-row>
           <b-col cols="12" class="text-info mb-3">Add Non Current Asset</b-col>
@@ -175,7 +175,7 @@
 </template>
 
 <script>
-    import axios from "axios";
+    // import axios from '@nuxtjs/axios';
     import {ValidationObserver, ValidationProvider} from "vee-validate";
 
     export default {
@@ -211,7 +211,24 @@
                 });
 
             }, 
-            
+            AddNCA: function(){
+              let self = this;
+              let PATH_API = 'test';
+              let NCAForm = document.getElementById('AddNCAForm');
+              let form_data = new FormData(NCAForm); 
+              $axios.post(`/api/${PATH_API}`, {
+                body:form_data,
+                headers:{
+                  'contentType': 'application/json',
+                }
+              })             
+              .then( jsonResponse =>{
+                return jsonResponse.json();
+              })
+              .then( jsonResponse =>{
+                console.log(jsonResponse);
+              })
+            },
             AddAsset: function(){
               let PATH_API = 'test';
               let NCAForm = document.getElementById("AddNCAForm");

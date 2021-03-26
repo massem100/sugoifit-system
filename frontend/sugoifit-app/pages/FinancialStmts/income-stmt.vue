@@ -3,7 +3,7 @@
         <side-bar > </side-bar>
 
         <b-table :items = "stmt"> </b-table>
-          <h6>{{stmt}}</h6>
+          <!-- <h6>{{stmt}}</h6> -->
           <!-- <h1>{{msg}}</h1> -->
 
     </div>
@@ -11,6 +11,7 @@
 
 
 <script> 
+// import axios from 'axios';
 import SideBar from '../../components/SideBar.vue'
 export default {
   components: { SideBar }, 
@@ -31,23 +32,10 @@ export default {
     created: function() {
       let self = this;
       let path = 'printstmtdata';
-            fetch(`/api/${path}`,{
-                  method: "GET", 
-                  headers:{
-                    "Accept": "application/json"
-                  }, 
-                  credentials: "same-origin",
-              })
-              .then(function (response){
-                  return response.json();
-              })
-                .then(function(jsonResponse){
-                  console.log(jsonResponse);
-                 self.stmt = jsonResponse.response;
-                })
-                .catch( function(error){
-                 // console.log(error);
-              });
+             self.$axios.$get(`/api/printstmtdata`).then( jsonResponse =>{
+              self.stmt = jsonResponse.response[0];
+              console.log(jsonResponse);
+            })
     },
     watch: {
       stmt: function(){

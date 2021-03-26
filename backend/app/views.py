@@ -5,10 +5,12 @@ from app.forms import RegisterForm, LoginForm
 from app.model import  asset_liability, auth, financial_statement, sales, transactions
 from app.model.financial_statement import Financialstmt, Financialstmtlineseq, Financialstmtlinealia, Financialstmtdesc, Financialstmtline
 from flask_cors import cross_origin, CORS
+from flask_wtf import csrf
 import pandas as pd
 from sqlalchemy.event import listens_for
 import enum
 import secrets
+import jwt
 
 
 
@@ -46,11 +48,11 @@ def requires_auth(f):
   return decorated     
 
 
-@app.route('/csrf', methods = ["GET"])
+@app.route('/api/csrf', methods = ["GET"])
 def token(): 
-  data = secrets.token_hex()
-  result = CSRF_token()
-  return jsonify(data)
+  token = csrf.generate_csrf(app.config['SECRET_KEY'])
+  print(token)
+  return jsonify(token)
 
 
 @app.route('/api/printstmtdata', methods= ["GET"])

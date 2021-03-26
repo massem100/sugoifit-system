@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from flask_wtf.csrf import CSRFProtect
+from flask_wtf import csrf
 # from flask_mysqldb import MySQL
 from flaskext.mysql import MySQL
 from flask_cors import CORS
@@ -32,7 +32,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 
 db = SQLAlchemy(app)
-# csrf = CSRFProtect(app)
+csrf_wrap = csrf.CSRFProtect(app)
 cors = CORS(app, support_credentials=True, resources = {r"/api/*": {"origins": "http://localhost:3000"}})
 # cors = CORS(app, support_credentials=True, )
 jwt = JWTManager(app)
