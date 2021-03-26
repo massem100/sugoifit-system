@@ -31,10 +31,15 @@
               <nuxt-link class="d-flex flex-column quick_actions" :to="{name:'add-transaction'}">
                 <img src="" alt=""><i class="fas fa-plus"></i><span>Add Transaction</span>
               </nuxt-link>
+
               <div class="d-flex flex-column quick_actions"><img src="" alt=""><i
-                class="fas fa-plus"></i><span> Place Order</span></div>
-              <div class="d-flex flex-column quick_actions"><img src="" alt=""><i class="fas fa-plus"></i><span> Create Invoice</span>
+                class="fas fa-plus"></i><span> Place Order</span>
               </div>
+
+              <nuxt-link class="d-flex flex-column quick_actions" :to="{name:'add-invoice'}">
+                <img src="" alt=""><i class="fas fa-plus"></i><span> Create Invoice</span>
+              </nuxt-link>
+              
               <div class="d-flex flex-column quick_actions"><img src="" alt=""><i class="fas fa-plus"></i><span> Create Invoice</span>
             </div>
 
@@ -83,13 +88,11 @@ export default {
        console.log(jsonResponse);
       })
       .catch(function (error) {
-        // console.log(error);
+         console.log(error);
       });    
   }
 
-    };
-
-    
+};
 </script>
 
 <style scoped>
