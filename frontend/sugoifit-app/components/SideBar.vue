@@ -20,7 +20,7 @@
                 <li class="active"><NuxtLink to="/" ><img class= "home-icon" src = "">Dashboard </NuxtLink></li>
                 <li class ="d-flex flex-row align-items-center"><NuxtLink to="manageproducts">Manage Products </NuxtLink></li>
                 <li class ="d-flex flex-row align-items-center"><NuxtLink to="">Manage Sales </NuxtLink><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
-                <li class ="d-flex flex-row align-items-center"><NuxtLink to="financial_stmt">Manage Financial Statements </NuxtLink><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
+                <li class ="d-flex flex-row align-items-center"><NuxtLink to="FinancialStmts/income-stmt">Manage Financial Statements </NuxtLink><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
                 <li class ="d-flex flex-row align-items-center"><NuxtLink to="">View Reports </NuxtLink><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
                 <li class ="d-flex flex-row align-items-center"><NuxtLink to="">Manage Roles </NuxtLink><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
             

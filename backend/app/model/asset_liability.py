@@ -161,11 +161,11 @@ def depreciationCalc(self, depType, assetName,assetCost):
 if depType == "Straight-Line Method": 
 dep_expense = straightLineDep(assetCost, salvageVal, lifeSpan)
 elif depType == "Double Decline Method":
-dep_expense = DDMethod()
+dep_expense = DDMethod(db.Model)
 elif depType == "Units of Production":
-dep_expense = UnitsOfProd()
+dep_expense = UnitsOfProd(db.Model)
 elif depType = "Sum of Years Digits": 
-dep_expense = SumYearDigits()
+dep_expense = SumYearDigits(db.Model)
 
 assetCost -= dep_expense
 """

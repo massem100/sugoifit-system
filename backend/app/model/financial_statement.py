@@ -1,27 +1,45 @@
 from app import db 
 from app.model.auth import Busines
- 
+import enum 
 class Financialstmt(db.Model):
     __tablename__ = 'financialstmt'
 
     stmtID = db.Column(db.String(10), primary_key=True, unique=True)
     fs_name = db.Column(db.String(50))
 
+    # financialstmt('1', 'commercial income statement') 
+    # financialstmt('1', 'financial income statement') 
+
     def __init__(self, stmtID, fs_name): 
         self.stmtID = stmtID
         self.fs_name = fs_name
+    def __repr__(self):
+        return 'Financial Statement {} {} '.format(self.stmtID, self.fs_name)
+    
+
+class FinancialStatementType(enum.Enum):
+    balance_sheet = 'balance sheet'
+    income_statement = 'income statement'
+    cash_flow_statement = 'cash flow statement'
 
 class Financialstmtline(db.Model):
     __tablename__ = 'financialstmtline'
 
-    lineID = db.Column(db.Integer, primary_key=True, unique=True)
+    lineID = db.Column(db.Integer, primary_key=True, unique=True, default = 0)
     line_name = db.Column(db.String(50))
     lineDesc = db.Column(db.String(50))
+    tag = db.Column(db.String(50))
+    sequence = db.Column(db.Integer)
+    fact = db.Column(db.Integer)
 
-    def __init__(self, lineID, line_name, lineDesc):
-        self.lineID = lineID
+
+    def __init__(self,  tag, line_name):
+        # self.lineID = lineID
         self.line_name = line_name
-        self.lineDesc = lineDesc
+        self.tag = tag
+        # self.sequence = sequence
+        # self.fact = fact
+        # self.lineDesc = lineDesc
 
 
 class Financialstmtdesc(db.Model):
@@ -35,7 +53,7 @@ class Financialstmtdesc(db.Model):
     fiscalYear = db.Column(db.Integer)
     startDATE = db.Column(db.Date)
     endDATE = db.Column(db.Date)
-    unit = db.Column(db.DECIMAL(10, 2))
+    unit = db.Column(db.String(80))
 
     busines = db.relationship('Busines')
     financialstmtline = db.relationship('Financialstmtline')
@@ -81,8 +99,10 @@ class Financialstmtlineseq(db.Model):
     financialstmt = db.relationship('Financialstmt')
     financialstmtline = db.relationship('Financialstmtline')
 
-    def __init__(self, lineSeqID, fsStmtID, fsStmtLineID, sequence): 
-        self.lineSeqID = lineSeqID
-        self.fsStmtID - fsStmtID
+    def __init__(self, sequence, fsStmtID, fsStmtLineID): 
+        # self.lineSeqID = lineSeqID
+        self.fsStmtID = fsStmtID
         self.fsStmtLineID = fsStmtLineID 
         self.sequence = sequence
+
+

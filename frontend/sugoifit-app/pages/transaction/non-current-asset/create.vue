@@ -9,7 +9,8 @@
       ref="observer"
       v-slot="{handleSubmit}"
     >
-      <b-form @submit.stop.prevent="handleSubmit(onSubmit)">
+      <b-form id= "AddNCAForm" @submit.stop.prevent="handleSubmit(AddAsset)">
+        
         <b-row>
           <b-col cols="12" class="text-info mb-3">Add Non Current Asset</b-col>
           <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
@@ -174,6 +175,7 @@
 </template>
 
 <script>
+    import axios from "axios";
     import {ValidationObserver, ValidationProvider} from "vee-validate";
 
     export default {
@@ -208,6 +210,29 @@
                     this.$refs.observer.reset();
                 });
 
+            }, 
+            
+            AddAsset: function(){
+              let PATH_API = 'test';
+              let NCAForm = document.getElementById("AddNCAForm");
+              let form_data =  new FormData(NCAForm);
+              fetch(`/api/${PATH_API}`,{
+                  method: "POST", 
+                  body: form_data,
+                  headers:{
+                    "contentType": "application/json"
+                  }, 
+                  credentials: "same-origin",
+              })
+              .then(function (response){
+                  return response.json();
+              })
+                .then(function(jsonResponse){
+                  console.log(jsonResponse);
+                })
+                .catch( function(error){
+                 // console.log(error);
+              });
             }
         }
     }

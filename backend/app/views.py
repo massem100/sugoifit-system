@@ -1,10 +1,14 @@
 import os
-from app import app, db, csrf, cors
-from flask import jsonify, flash
+from app import app,  db, login_manager, cors
+from flask import jsonify, flash, render_template, session, request
 from app.forms import RegisterForm, LoginForm
 from app.model import  asset_liability, auth, financial_statement, sales, transactions
-from flask_cors import cross_origin
-
+from app.model.financial_statement import Financialstmt, Financialstmtlineseq, Financialstmtlinealia, Financialstmtdesc, Financialstmtline
+from flask_cors import cross_origin, CORS
+import pandas as pd
+from sqlalchemy.event import listens_for
+import enum
+import secrets
 
 
 
@@ -42,29 +46,47 @@ def requires_auth(f):
   return decorated     
 
 
-@app.route('/api/test', methods = ["GET"])
-@cross_origin(supports_credentials=True)
+@app.route('/csrf', methods = ["GET"])
+def token(): 
+  data = secrets.token_hex()
+  result = CSRF_token()
+  return jsonify(data)
+
+
+@app.route('/api/printstmtdata', methods= ["GET"])
+def stmt(): 
+    resultstmt = []
+    financialstmt = Financialstmt.query.all()
+    for stmt in financialstmt: 
+        resultstmt.append({ 'id' :stmt.stmtID, 
+                            'Statement Name': stmt.fs_name})
+
+
+    return jsonify(response = [resultstmt])
+
+@app.route('/api/test', methods = ["GET", "POST"])
 def home():
     data = [{'message': 'Data deh ya'}]
     # result = users.User.test('Checkingg')
-    res = sales.Customer.query.filter_by(fname='Bob').first()
+    # res = sales.Customer.query.filter_by(fname='Bob').first()
     
-    big_name = res.fname
-    return jsonify(data,big_name)
-
+    # big_name = res.fname
     return jsonify(data)
+
+  
 
 @app.route('/api/auth/login', methods=["POST"])
 def login(): 
     form = LoginForm()
-    if request.method == "POST" and form.validate_on_submit() and form.username.data:
-            # Get the username and password values from the form.
-        email = form.username.data
+    if request.method == "POST":
+        email = form.email.data
         password = form.password.data
 
         if email == "johndoe@gmail.com" and password == "pass":
-            
-            return jsonify([{'message': "Login successful", "token": "{{CSRF_token()}}"}])
+            return jsonify([{'message': "Login successful" }])
+        return jsonify({'POST METHOD'})
+      
+
            
 @app.route('/api/auth/logout', methods = ['GET'])
 def logout():
@@ -126,6 +148,8 @@ def add_header(response):
     """
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
     response.headers['Cache-Control'] = 'public, max-age=0'
+    # response.headers['Access-Control-Allow-Origin'] = '*'
+    
     return response
 
 
@@ -136,5 +160,7 @@ def add_header(response):
 
 
 if __name__ == '__main__':
+    # insert_initial_values()
     app.run(debug=True, host="0.0.0.0", port="8080")
+    
 

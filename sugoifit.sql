@@ -56,9 +56,12 @@ CREATE table `FinancialStmt`(
 
 
 CREATE table FinancialStmtLine(
-    lineID INT(10) NOT NULL unique, 
-    line_name VARCHAR(50), 
+    lineID INT(10) NOT NULL unique AUTO_INCREMENT, 
+    line_name VARCHAR(200), 
     lineDesc VARCHAR(50), 
+    tag varchar(50),
+    sequence int, 
+    fact int, 
 
     PRIMARY KEY (lineID)
     
@@ -85,7 +88,7 @@ CREATE table FinancialStmtDesc(
 
 
 CREATE table FinancialStmtLineSeq(
-    lineSeqID INT(5) NOT NULL,
+    lineSeqID INT(5) NOT NULL AUTO_INCREMENT,
     fsStmtID VARCHAR(50) NOT NULL,     
     fsStmtLineID INT(10) NOT NULL, 
     sequence INT(10),
@@ -107,7 +110,7 @@ CREATE table FinancialStmtLineAlias(
 
 );
 
-*/
+
 
 CREATE table AccountType(
     typeID VARCHAR(10) NOT NULL, 
