@@ -3,10 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 # from flask_mysqldb import MySQL
-from flaskext.mysql import MySQL
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token
-from flask_security import Security
+#from flask_security import Security
 
 
 app = Flask(__name__, template_folder = None)
