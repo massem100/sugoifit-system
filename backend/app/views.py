@@ -1,6 +1,6 @@
 import os
 from app import app,  db, login_manager, cors
-from flask import *
+from flask import render_template, request, jsonify, flash, session, _request_ctx_stack, g
 from flask_cors import cross_origin, CORS
 from flask_wtf import csrf
 from app.forms import RegisterForm, LoginForm
@@ -114,10 +114,11 @@ def login():
                 #Redirect to Fmanager dashboard
                 return jsonify([{'message': "Login successful", "token": "{{CSRF_token()}}"}])
           else:
+                # Not using flash messages so for errors also return jsonify tag as error and handle in client.
               flash("Incorrect password given")
               return redirect('/api/auth/login')
 
-@app.route('/add-user', methods = "POST")
+@app.route('/add-user', methods = ["POST"])
 def addUser():
   #Write code to add user to database
   #Remember to sanitize data before putting in database

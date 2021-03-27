@@ -217,7 +217,7 @@
               let NCAForm = document.getElementById('AddNCAForm');
               let form_data = new FormData(NCAForm); 
               $axios.post(`/api/${PATH_API}`, {
-                body:form_data,
+                body: form_data,
                 headers:{
                   'contentType': 'application/json',
                 }

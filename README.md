@@ -12,20 +12,32 @@ daily operations and keep track of their financials.
 
 # Technologies
 This project is built using: 
-    - HTML5 
+    - HTML 
     - CSS3/SCSS
-    - Python 3.7.9
+    - Python 3.7.9 and above
+    - Pip 20.1.1
     - Flask 1.1.2
     - Vue JS 2.9.6
-    - NUXT JS 
+    - NUXT JS 2.14.12
     - MySQL 
-    - NPM
-   
+    - NPM 6.14.10
+   Check requirements.txt file to see specific versions used. 
 
 # Installation 
 Brief instructions and links to downloading each language or framework
 
-to be added.
+#### Backend
+    https://www.python.org/downloads/release/python-379/
+
+#### Frontend
+    https://nodejs.org/en/download/
+    https://vuejs.org/v2/guide/installation.html
+    https://cli.vuejs.org/guide/installation.html
+    https://nuxtjs.org/docs/2.x/get-started/installation
+
+#### Database
+    https://dev.mysql.com/downloads/
+
 
 ### Install Python and PIP
     - Check if python is installed by typing python -V
@@ -36,7 +48,7 @@ to be added.
 
 # How to Launch
 
-The frontend setup is separated from the backend. Since it is separated, each will need to be launched in a separate terminal and using ajax or fetch they will communicate.
+The frontend setup is separated from the backend. Since it is separated, each will need to be launched in a separate terminal. Run the backend server before starting the frontend.
 
 
 Create the venv folder inside the folder with frontend and backend.
@@ -46,8 +58,8 @@ Create the venv folder inside the folder with frontend and backend.
     - Activate  .\venv\scripts\activate on windows or source venv/bin/activate on MacOS or linux.
     - You should see (venv) at the start of your folder paths.
     - Deactivate your virtual environment 
-      tyoe deactivate or .\venv\scripts\deactivate or source venv/bin/deactivate
-    - Remember to include your virtual environment folder, venv in your .gitignore file.
+      type deactivate or .\venv\scripts\deactivate or source venv/bin/deactivate
+    - Remember to include your virtual environment folder, venv, in your .gitignore file.
     
 
 ## Frontend
@@ -69,7 +81,7 @@ Launching the backend
 ### Installing the Requirements.txt file 
     - While in an activated virtual environment, type pip install -r requirements.txt
     to install all packages for the project. 
-    - To update/ export all installed packages to the requirements.txt file
+    - To update/ export all installed packages installed in the environment to the requirements.txt file
      use the pip freeze > requirements.txt command.
      
     - run the development server by typing python run.py
