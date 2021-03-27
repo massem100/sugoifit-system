@@ -83,17 +83,6 @@ def home():
 @app.route('/api/auth/login', methods=["POST"])
 def login(): 
     form = LoginForm()
-<<<<<<< HEAD
-    if request.method == "POST":
-        email = form.email.data
-        password = form.password.data
-
-        if email == "johndoe@gmail.com" and password == "pass":
-            return jsonify([{'message': "Login successful" }])
-    return jsonify({'POST METHOD'})
-      
-#########################################################################################################           
-=======
     if request.method == "POST" and form.validate_on_submit() and form.username.data:
         # Get the username and password values from the form.
         email = form.username.data
@@ -161,7 +150,6 @@ def sucessful_prods():
 
 
 
->>>>>>> origin/Eversley
 @app.route('/api/auth/logout', methods = ['GET'])
 def logout():
     logout_user()
