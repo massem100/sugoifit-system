@@ -24,6 +24,13 @@ class User(db.Model):
     user_address = db.Column(db.String(50))
     phone = db.Column(db.String(10))
 
+    def __init__(self, userID, fname, lname, user_address, phone):  
+      self.userID = userID
+      self.fname = fname
+      self.lname = lname
+      self.user_address = user_address
+      self.phone = phone 
+
 
 class Credential(db.Model):
     __tablename__ = 'credentials'
@@ -35,3 +42,10 @@ class Credential(db.Model):
     pass_salt = db.Column(db.String(50))
 
     user = db.relationship('User')
+
+    def __init__(self, userID, role, email, user_password, pass_salt):  
+      self.userID = userID
+      self.role = role
+      self.email = email
+      self.user_password = user_password
+      self.pass_salt = pass_salt

@@ -1,6 +1,6 @@
 import os
 from app import app,  db, login_manager, cors
-from flask import jsonify, flash, render_template, session, request
+from flask import *
 from flask_cors import cross_origin, CORS
 from flask_wtf import csrf
 from app.forms import RegisterForm, LoginForm
@@ -12,7 +12,7 @@ import enum
 import secrets
 import jwt
 from flask_login import logout_user
-
+import hashlib, random
 
 token =''
 
@@ -83,6 +83,7 @@ def home():
 @app.route('/api/auth/login', methods=["POST"])
 def login(): 
     form = LoginForm()
+<<<<<<< HEAD
     if request.method == "POST":
         email = form.email.data
         password = form.password.data
@@ -92,6 +93,75 @@ def login():
     return jsonify({'POST METHOD'})
       
 #########################################################################################################           
+=======
+    if request.method == "POST" and form.validate_on_submit() and form.username.data:
+        # Get the username and password values from the form.
+        email = form.username.data
+        passwordGiven = form.password.data
+
+        #Check if email exists
+        user = session.query(Credentials).filter(Credentials.email == email)
+
+        if not user:
+          flash("Sorry, Account not found")
+          return redirect('/api/auth/login')
+        else:
+          user_password = user.user_password
+          pass_salt = user.pass_salt
+          #Combine password and salt
+          passwordGiven = passwordGiven + pass_salt
+          #Generate the hash
+          passwordGiven = hashlib.sha256(passwordGiven.encode('utf-8')).hexdigest()
+          if user_password == passwordGiven:
+              role = user.role
+
+              if role =="Employee":
+                #Redirect to employee dashboard
+                pass
+              elif role =="Owner":
+                  #Redirect to owner dashboard
+                  pass
+              else:
+                #Redirect to Fmanager dashboard
+                return jsonify([{'message': "Login successful", "token": "{{CSRF_token()}}"}])
+          else:
+              flash("Incorrect password given")
+              return redirect('/api/auth/login')
+
+@app.route('/add-user', methods = "POST")
+def addUser():
+  #Write code to add user to database
+  #Remember to sanitize data before putting in database
+  #Code to generate random salt below:
+  ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  chars=[]
+  for i in range(16):
+    chars.append(random.choice(ALPHABET))
+  salt = "".join(chars)
+  
+@app.route('/view-reports/view-performance')
+def sucessful_prods():
+  #Remember to use busID as filter for products
+  #Find a way to get business ID here
+  #Get all products for the busID
+
+  busID = "Test123"
+  result = session.query(Product).filter(Product.busID == busID)
+  prod_numbers = []
+  
+  for product in result:
+    #Add to list as tuple with product name and amount sold
+    #Other fields required can be added
+    prod_numbers.append([product.prodName, product.amtSold])
+
+  #Item with highest number of sales would be at the top
+  prod_numbers.sort(key= lambda x: x[1], reverse=True)
+
+  return prod_numbers
+
+
+
+>>>>>>> origin/Eversley
 @app.route('/api/auth/logout', methods = ['GET'])
 def logout():
     logout_user()
