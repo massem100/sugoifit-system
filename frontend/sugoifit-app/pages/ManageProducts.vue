@@ -3,24 +3,15 @@
         <side-bar class="side-bar m-0 h-100"></side-bar>
 
         <div class="products-page ">
-            <div class="sys-head w-100  ">
+            <div>
+            <b-tabs content-class="mt-3" fill>
+                <b-tab title="First" active>
+                    <div class="sys-head w-100  ">
                  <div class="mr-auto head-title">
                     <h5> Manage Products</h5>
                     <p> Mange your products here </p>
                 </div>
-                <div class="head-misc d-flex flex-column">
-                    <div class="d-flex flex-row  bg-secondary">
-                        <h6 class=" ">Jane S.</h6>
-                        <img class="top-user-icon m-2" src="~assets/uploads/Profile_icon.svg" alt="">
-                        <img class="m-2" src="~assets/uploads/settings.svg" alt="">
-                    </div>
-                    <div class ="time_box"> 
-                        <p>7:00 PM</p>
-                        <p>EST</p>
-                        <p>12:00 AM</p>
-                        <p>LONDON</p>
-                    </div> 
-                </div>
+               
             </div>
            <div class ="product-card">
                 <h5> Product Overview</h5>ur
@@ -75,6 +66,17 @@
                 </div>
 
             </div>
+                </b-tab>
+                <b-tab title="Second"><p>I'm the second tab</p></b-tab>
+                <b-tab title="Very, very long title">
+            <p>I'm the tab with the very, very long title</p>
+            <div class = "bg-primary"> Click </div>
+            </b-tab>
+                <b-tab title="Disabled" disabled><p>I'm a disabled tab!</p></b-tab>
+            <b-tab title="Disabled" disabled><p>I'm a disabled tab!</p></b-tab>
+            </b-tabs>
+            </div>
+            
         </div>
     </div>
 </template>
