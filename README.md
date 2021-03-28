@@ -8,7 +8,7 @@ daily operations and keep track of their financials.
 - [Technologies](#technologies)
 - [Installation](#installation)
 - [How to Launch](#how-to-launch)
-- [Generating Data for Database](#generate-data)
+- [Generating Data for Database](#generate-data-for-database)
 
 
 # Technologies
