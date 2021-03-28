@@ -8,7 +8,7 @@ daily operations and keep track of their financials.
 - [Technologies](#technologies)
 - [Installation](#installation)
 - [How to Launch](#how-to-launch)
-- [Generating Data for Database](#generate-data-for-database)
+- [Generating Data for Database](#generating-data-for-database)
 
 
 # Technologies
@@ -144,7 +144,13 @@ Pandas Documentation
 ##### Managing data that is outside of faker's scope: 
 
     Store a list of sample data and randomly pick a index to cycle through the list when appending. 
+
+    service = ["Painting", "Plumbing", "Transporation", "Catering"]
     
+    E.g.
+    for _ in range(0,10):
+        service["serv_name"].append(service[random.randint(0,2)])
+
 ##### Packaging data into pandas data frame
         A data frame is 2-Dimensional data structure resembling a table. 
 
