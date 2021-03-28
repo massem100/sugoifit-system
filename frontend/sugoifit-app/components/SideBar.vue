@@ -10,10 +10,10 @@
           <div class="profile mt-3 mb-4 ">
                 <h6 id = "profile_name"> Jane S.</h6>
                 <h6  id= "profile_ID"> ID 1234567</h6>
-                <h6 id ="role"> Role: Business Owner</h6>     
+                <h6 id ="role"> Role: Business Owner</h6>
           </div>
           <img class ="" id = "profile-icon" src="~/assets/uploads/Profile_icon.png" alt="">
-         
+
           </div>
           <!-- <span class="heading">Main</span> -->
             <ul class="list-unstyled">
@@ -21,9 +21,9 @@
                 <li class ="d-flex flex-row align-items-center"><NuxtLink to="manageproducts">Manage Products </NuxtLink></li>
                 <li class ="d-flex flex-row align-items-center"><NuxtLink to="">Manage Sales </NuxtLink><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
                 <li class ="d-flex flex-row align-items-center"><NuxtLink to="financial_stmt">Manage Financial Statements </NuxtLink><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
-                <li class ="d-flex flex-row align-items-center"><NuxtLink to="">View Reports </NuxtLink><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
+                <li class ="d-flex flex-row align-items-center"><NuxtLink to="reports">View Reports </NuxtLink><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
                 <li class ="d-flex flex-row align-items-center"><NuxtLink to="">Manage Roles </NuxtLink><i class="fas fa-angle-down fa-lg ml-auto mr-4"></i></li>
-            
+
             </ul>
 
       </nav>
@@ -35,7 +35,7 @@ export default {
     name: 'SideBar',
     data() {
         return {
-            
+
         }
     }
 }
