@@ -592,4 +592,22 @@ CREATE table product_sale_item(
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
+CREATE table WebsiteDetails(
+    section_detail VARCHAR(11), 
+    sec_header VARCHAR(11), 
+    sec_message VARCHAR(11),
+
+    PRIMARY KEY(section_detail)
+);
+CREATE table WebsiteDrag(
+    sectionID INT(11) NOT NULL,
+    positionID INT(11) NOT NULL, 
+    sectionName VARCHAR(11),
+    section_detail VARCHAR(11),
+
+    PRIMARY KEY(sectionID),
+    FOREIGN KEY(section_detail) REFERENCES website_details(section_detail)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
 

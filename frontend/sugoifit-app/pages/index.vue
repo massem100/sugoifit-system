@@ -9,7 +9,10 @@
             <div class="d-flex flex-row align-items-center settings_bar ml-auto ">
               <h6 class="d-flex ">Jane S.</h6>
               <img class="m-2" id="top-user-icon" src="~assets/uploads/Profile_icon.svg" alt="">
-              <img class="m-2" src="~assets/uploads/settings.svg" alt="">
+              <nuxt-link  :to="{name:'Settings'}">
+                <img class="m-2" src="~assets/uploads/settings.svg" alt="">
+              </nuxt-link>
+              
             </div>
             <div class="d-flex flex-row">
                 <div class="welcome-heading">
