@@ -1,6 +1,6 @@
 <template>
     <div class="m-0 d-flex flex-row w-100 ">
-        <onboarding-side  class = "side-bar h-100 m-0 "></onboarding-side>
+        <onboarding-side  class = "side-bar h-100 m-0"></onboarding-side>
         <div class="main-area d-flex flex-column">
             <img src="~assets/uploads/onboard-img.svg" alt="" class="onboard-img ">
             <div class = "onboard-container d-flex flex-column align-items-center ">
@@ -9,38 +9,18 @@
                          Get Started
                 </button>
             </div>
-            <div class="d-flex flex-column">
-                <div class = "company-options">
-                    <div class="d-flex flex-column">
-                        <img class = "icon-placeholder"  src="~/assets/uploads/Profile_icon.png" alt="">
-                    </div>
-                    <div class="d-flex flex-column">
-                        <h5>Private Company</h5>
-                        <h6> Privately incorporated, owned by individuals</h6>
-                    </div>
-                </div>
-                <div class = "company-options">
-                    <div class="d-flex flex-column">
-                        <img class = "icon-placeholder"  src="~/assets/uploads/Profile_icon.png" alt="">
-                    </div>
-                    <div class="d-flex flex-column">
-                        <h5>Public Company</h5>
-                        <h6>The business is owned by stakeholders</h6>
-                    </div>
-                </div>
-                
-            </div>
-        </div>  
-    </div>
-
+        </div>
     </div>
 </template>
 
 
 <script>
-import OnboardingSide from '../components/onboarding/onboarding-side.vue'
+
+import OnboardingSide from '/components/onboarding-side.vue'
 export default {
-  components: { OnboardingSide },
+  components: { 
+      OnboardingSide
+    },
     name: 'on-boarding',
     data(){
         return{
@@ -51,17 +31,32 @@ export default {
 }, 
 methods: {
     GetStarted: function(){
-        //  this.$router.push(name: '');
+         this.$router.push('onboarding/email-section');
 
 
     }
 }
 }
+
 </script>
 
 <style scoped>
     .side-bar{ 
-        /* display:none; */
+        display:none;
+
+    }
+    .icon-placeholder{
+        width:5rem;
+        height: 5rem;
+    }
+
+    .company-options{
+        margin:40px;
+        padding:10px;
+        display:flex; 
+        flex-direction: row;
+        width: 8rem; 
+        height:2rem;
     }
 
     .company-type-section{
@@ -75,7 +70,7 @@ methods: {
         flex-direction: column;
         /* justify-content:flex-start; */
         /* align-items: center; */
-        /* margin-left: 15rem; */
+        margin-left: 15rem;
         width: 100vw;
         height:100vh;
     }

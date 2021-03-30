@@ -1,11 +1,20 @@
 import os
-from app import app, db
-from flask import jsonify, flash
+from app import app,  db, login_manager, cors
+from flask import render_template, request, jsonify, flash, session, _request_ctx_stack, g
+from flask_cors import cross_origin, CORS
+from flask_wtf import csrf
 from app.forms import RegisterForm, LoginForm
-from app.model import users, asset, financial_statement, product
+from app.model import  asset_liability, auth, financial_statement, sales, transactions
+from app.model.financial_statement import Financialstmt, Financialstmtlineseq, Financialstmtlinealia, Financialstmtdesc, Financialstmtline
+import pandas as pd
+from sqlalchemy.event import listens_for
+import enum
+import secrets
+import jwt
+from flask_login import logout_user
+import hashlib, random
 
-
-
+token =''
 
 # Create a JWT @requires_auth decorator
 # This decorator can be used to denote that a specific route should check
@@ -73,6 +82,7 @@ def home():
          print(request.form['description'])
     return jsonify(data)
 
+#########################################################################################################
 @app.route('/api/auth/login', methods=["POST"])
 def login(): 
     form = LoginForm()
@@ -150,6 +160,102 @@ def logout():
     logout_user()
     return jsonify(message = [{'message': "You have been logged out successfully"}])
 
+#########################################################################################################
+@app.route('/api/products', methods = ['GET'])
+def products():
+  message = {}
+  data = {}
+  tprice = 0
+  deliver = 500
+
+  lst = [
+          { 
+            'id': 1,
+            'img': "https://5.imimg.com/data5/RU/WI/MY-46283651/school-skirts-500x500.jpg",
+            'name': 'skirt',
+            'quantity': '1',
+            'size': 'L',
+            'colour': 'black',
+            'price': "500" 
+          },
+          { 
+            'id': 2,
+            'img': "https://slimages.macysassets.com/is/image/MCY/products/2/optimized/17864922_fpx.tif?$browse$&wid=170&fmt=jpeg",
+            'name': 'pants',
+            'quantity': '1',
+            'size': 'medium',
+            'colour': 'white',
+            'price': '1000' 
+          },
+          { 
+            'id': 3,
+            'img': "https://di2ponv0v5otw.cloudfront.net/posts/2018/03/24/5ab6a736077b9758675a91e5/m_5ab6c769c9fcdfbadf53cd14.jpeg",
+            'name': 'top',
+            'quantity': '1',
+            'size': 'medium',
+            'colour': 'white',
+            'price': '800' 
+          }
+        ]
+
+  for card in lst:
+    tprice = tprice + int(card['price'])
+  
+  tcost = tprice + deliver
+
+  data['cards'] = lst
+  data['tprice'] = tprice
+  data['tcost'] = tcost
+  data['deliver'] = deliver
+  return jsonify(data)
+
+#########################################################################################################
+
+#########################################################################################################
+@app.route('/api/items', methods = ['GET'])
+def items():
+  data = {}
+  
+  file_cont = open("/Users/User/Desktop/test_data_capstone.txt", "r") 
+  content = file_cont.readlines()
+  
+  data['content'] = content
+  return jsonify(data)
+
+  return render_template("Products.vue", content=content) 
+
+#########################################################################################################
+@app.route('/api/order', methods = ['POST', 'GET'])
+def custOrder():
+  customer = {}
+  '''
+  form = orderForm()
+  if form.validate_on_submit():
+    if request.method == 'POST': 
+
+      # Get info.
+      fname = request.form['fname']
+      lname = request.form['lname']
+      trn = request.form['trn']
+      address = request.form['address']
+      phone_num = request.form['phone_num']
+      email = request.form['email']
+
+      customer['first_name'] = fname
+      customer['last_name'] = lname
+      customer['TRN'] = trn
+      customer['address'] = address
+      customer['telephone'] = phone_num
+      customer['emaile'] = email
+            '''
+  return jsonify(
+      [
+        {'message': "Data saved successfully"}, 
+        {'token': csrf }
+      ])
+
+
+
 # @login_manager.user_loader
 # def load_user(id):
 #     user = User.query.get(int(id))
@@ -205,6 +311,8 @@ def add_header(response):
     """
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
     response.headers['Cache-Control'] = 'public, max-age=0'
+    # response.headers['Access-Control-Allow-Origin'] = '*'
+    
     return response
 
 
@@ -215,5 +323,7 @@ def add_header(response):
 
 
 if __name__ == '__main__':
+    # insert_initial_values()
     app.run(debug=True, host="0.0.0.0", port="8080")
+    
 

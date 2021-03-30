@@ -13,12 +13,15 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.2",
     "@nuxtjs/axios": "^5.12.5",
+    "@nuxtjs/proxy": "^2.1.0",
     "@nuxtjs/pwa": "^3.3.5",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.8.3",
     "nuxt": "^2.14.12",
-    "vue-csrf": "^2.0.4"
+    "nuxt-fontawesome": "^0.4.0",
+    "vee-validate": "^3.4.5",
+    "vue-router": "^3.5.1"
   },
   "devDependencies": {
     "@fortawesome/free-brands-svg-icons": "^5.15.2",

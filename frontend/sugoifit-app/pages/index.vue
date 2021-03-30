@@ -62,14 +62,36 @@
                 </div>
                 </div>
 
+            <div class="time_box ml-auto">
+              <p>7:00 PM</p>
+              <p>EST</p>
+              <p>12:00 AM</p>
+              <p>LONDON</p>
             </div>
         </div>
+          <!-- Quick Actions -->
+          <div class="quick_actions_div d-flex flex-row p-2 text-center">
+              <nuxt-link class="d-flex flex-column quick_actions" :to="{name:'add-transaction'}">
+                <img src="" alt=""><i class="fas fa-plus"></i><span>Add Transaction</span>
+              </nuxt-link>
+
+              <div class="d-flex flex-column quick_actions"><img src="" alt=""><i
+                class="fas fa-plus"></i><span> Place Order</span>
+              </div>
+
+              <nuxt-link class="d-flex flex-column quick_actions" :to="{name:'add-invoice'}">
+                <img src="" alt=""><i class="fas fa-plus"></i><span> Create Invoice</span>
+              </nuxt-link>
+              
+              <div class="d-flex flex-column quick_actions"><img src="" alt=""><i class="fas fa-plus"></i><span> Create Invoice</span>
+            </div>
 
  </div>
 </div>
 </template>
 
 <script>
+    
 import SideBar from '/components/SideBar.vue'
 import NavHeader from '/components/nav-header.vue'
 
@@ -109,7 +131,7 @@ export default {
       headers: {
         "accept": "application/json",
       },
-      credentials: "same-origin",
+      credentials: "cross-origin",
     })
       .then(function (response) {
         return response.json();
@@ -118,13 +140,11 @@ export default {
        console.log(jsonResponse);
       })
       .catch(function (error) {
-        // console.log(error);
+         console.log(error);
       });    
   }
 
 };
-
-
 </script>
 
 <style scoped>

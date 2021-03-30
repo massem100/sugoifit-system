@@ -26,17 +26,40 @@ $secondary-2: #7CC3CD;
   ul, ol {
     margin: 0 0 1rem;
     padding: 0 0 1rem;
-  }
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
 
-.settings_bar{
+
+html, body {
+  margin: 0;
+  padding: 0;
+  // background-color: aquamarine;
+}
+
+body, input, button, select, textarea {
+  font: 600 1rem 'Poppins', sans-serif;
+  color: #222222;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul, ol {
+  margin: 0 0 1rem;
+  padding: 0 0 1rem;
+}
+
+.settings_bar {
   position: absolute;
   top: 16px;
   right: 48px;
 }
 
 
-#top-user-icon{
-  width:36px;
+#top-user-icon {
+  width: 36px;
   height: 36px;
 }
 

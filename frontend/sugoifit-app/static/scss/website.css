@@ -8,10 +8,6 @@ body{
   margin: 0;
 };
 
-.container{
-  display: flex;
-  flex-direction: column;
-}
 .header {
   overflow: hidden;
   padding: 20px 10px;
@@ -54,13 +50,7 @@ body{
   padding-bottom: 50px;
 }
 
-
-/* SIDEBAR MEDIAQUERIES ----------------------------------- */
-@media (max-width: 1199px) {
-  
-}
-
-/* 
+/*
 -------------------------
 Added Styles
 ------------------------- */

@@ -45,7 +45,7 @@ CREATE table Business(
     PRIMARY KEY(busID)
 );
 
-/*
+
 CREATE table `FinancialStmt`(
     stmtID VARCHAR(10) NOT NULL unique, 
     fs_name VARCHAR(50), 
@@ -56,9 +56,12 @@ CREATE table `FinancialStmt`(
 
 
 CREATE table FinancialStmtLine(
-    lineID INT(10) NOT NULL unique, 
-    line_name VARCHAR(50), 
+    lineID INT(10) NOT NULL unique AUTO_INCREMENT, 
+    line_name VARCHAR(200), 
     lineDesc VARCHAR(50), 
+    tag varchar(50),
+    sequence int, 
+    fact int, 
 
     PRIMARY KEY (lineID)
     
@@ -85,7 +88,7 @@ CREATE table FinancialStmtDesc(
 
 
 CREATE table FinancialStmtLineSeq(
-    lineSeqID INT(5) NOT NULL,
+    lineSeqID INT(5) NOT NULL AUTO_INCREMENT,
     fsStmtID VARCHAR(50) NOT NULL,     
     fsStmtLineID INT(10) NOT NULL, 
     sequence INT(10),
@@ -107,7 +110,7 @@ CREATE table FinancialStmtLineAlias(
 
 );
 
-*/
+
 
 CREATE table AccountType(
     typeID VARCHAR(10) NOT NULL, 
@@ -397,7 +400,7 @@ CREATE table Expense(
     expenseID VARCHAR(10) NOT NULL unique, 
     extype VARCHAR(100), 
     exname VARCHAR(100), 
-    DATEIncurred DATE, 
+    dateIncurred DATE, 
     expenseAmt DECIMAL(10,2),
     
     PRIMARY KEY(expenseID)
@@ -405,7 +408,7 @@ CREATE table Expense(
 
 CREATE table Purchase(
     purchaseID VARCHAR(10) NOT NULL unique, 
-    p_DATE DATE, 
+    p_date DATE, 
     p_item VARCHAR(100), 
     p_quantity INT, 
     p_price DECIMAL(10,2), 
@@ -447,7 +450,7 @@ CREATE table Receipt(
     receiptID VARCHAR(10) NOT NULL, 
     orderID VARCHAR(10),
     busID INT(10), 
-    DATE_issued DATE,
+    date_issued DATE,
 
     PRIMARY KEY(receiptID),
     FOREIGN KEY(busID) REFERENCES Business(busID)
