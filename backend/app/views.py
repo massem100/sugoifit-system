@@ -144,10 +144,7 @@ def sucessful_prods():
 
 
 
-        if email == "johndoe@gmail.com" and password == "pass":
-            
-            return jsonify([{'message': "Login successful", "token": "{{CSRF_token()}}"}])
-           
+        
 @app.route('/api/auth/logout', methods = ['GET'])
 def logout():
     logout_user()
