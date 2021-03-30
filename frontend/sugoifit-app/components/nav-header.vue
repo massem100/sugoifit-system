@@ -6,8 +6,8 @@
                 <div class="navbar-holder d-flex align-items-center justify-content-between">
                     <!-- Navbar Header-->
                     <div class="navbar-header">
-                         <img src = "~assets/uploads/reg_nav.svg" class = "ml-5 nav-icon" @click = "SideToggle" >
-                          <font-awesome-icon icon="['fas','fa-bars']" v-b-toggle.sidebar-1></font-awesome-icon>
+                         <img src = "~assets/uploads/reg_nav.svg" class = "ml-5 nav-icon" v-b-toggle.sidebar-1  >
+                          <font-awesome-icon :icon="['fas','fa-align-justify']" />
                          <!-- <a id="toggle-btn" href="#" class="menu-btn active"><span></span><span></span><span></span></a> -->
                         <!-- Navbar Brand -->
                         <a href="" class="navbar-brand d-none d-sm-inline-block">
