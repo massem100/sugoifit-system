@@ -41,20 +41,108 @@ def requires_auth(f):
   return decorated     
 
 
-@app.route('/api/test')
+@app.route('/api/csrf', methods = ["GET"])
+def token(): 
+  token = csrf.generate_csrf(app.config['SECRET_KEY'])
+  # print(token)
+  return jsonify(token)
+
+
+#########################################################################################################
+@app.route('/api/printstmtdata', methods= ["GET"])
+def stmt(): 
+    resultstmt = []
+    financialstmt = Financialstmt.query.all()
+    for stmt in financialstmt: 
+        resultstmt.append({ 'id' :stmt.stmtID, 
+                            'Statement Name': stmt.fs_name})
+
+
+    return jsonify(response = [resultstmt])
+
+#########################################################################################################
+@app.route('/api/test', methods = ["GET", "POST"])
 def home():
     data = [{'message': 'Data deh ya'}]
-    result = users.User.test('Checkingg')
-    prod = product.loveisreal()
-    return jsonify([data, result, prod])
+    # result = users.User.test('Checkingg')
+    # res = sales.Customer.query.filter_by(fname='Bob').first()
+    
+    # big_name = res.fname
+
+    if request.method =="POST":
+         print(request.form['description'])
+    return jsonify(data)
 
 @app.route('/api/auth/login', methods=["POST"])
 def login(): 
     form = LoginForm()
-    if request.method == "POST" and form.validate_on_submit() and form.username.data:
-            # Get the username and password values from the form.
-        email = form.username.data
-        password = form.password.data
+    if request.method == "POST" and form.validate_on_submit() and form.email.data:
+        # Get the username and password values from the form.
+        email = form.email.data
+        passwordGiven = form.password.data
+
+        #Check if email exists
+        user = session.query(Credentials).filter(Credentials.email == email)
+
+        if not user:
+          flash("Sorry, Account not found")
+          return jsonify({error: 'redirect'})
+        else:
+          user_password = user.user_password
+          pass_salt = user.pass_salt
+          #Combine password and salt
+          passwordGiven = passwordGiven + pass_salt
+          #Generate the hash
+          passwordGiven = hashlib.sha256(passwordGiven.encode('utf-8')).hexdigest()
+          if user_password == passwordGiven:
+              role = user.role
+
+              if role =="Employee":
+                #Redirect to employee dashboard
+                pass
+              elif role =="Owner":
+                  #Redirect to owner dashboard
+                  pass
+              else:
+                #Redirect to Fmanager dashboard
+                return jsonify([{'message': "Login successful"}])
+          else:
+                # Not using flash messages so for errors also return jsonify tag as error and handle in client.
+           
+              return jsonify({'msg': 'success'})
+
+@app.route('/add-user', methods = ["POST"])
+def addUser():
+  #Write code to add user to database
+  #Remember to sanitize data before putting in database
+  #Code to generate random salt below:
+  ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  chars=[]
+  for i in range(16):
+    chars.append(random.choice(ALPHABET))
+  salt = "".join(chars)
+  
+@app.route('/view-reports/view-performance')
+def sucessful_prods():
+  #Remember to use busID as filter for products
+  #Find a way to get business ID here
+  #Get all products for the busID
+
+  busID = "Test123"
+  result = session.query(Product).filter(Product.busID == busID)
+  prod_numbers = []
+  
+  for product in result:
+    #Add to list as tuple with product name and amount sold
+    #Other fields required can be added
+    prod_numbers.append([product.prodName, product.amtSold])
+
+  #Item with highest number of sales would be at the top
+  prod_numbers.sort(key= lambda x: x[1], reverse=True)
+
+  return prod_numbers
+
+
 
         if email == "johndoe@gmail.com" and password == "pass":
             

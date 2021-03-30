@@ -1,11 +1,11 @@
 export default {
-  ssr: true,
+  ssr: false,
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'sugoifit-app',
+    title: 'SugoiFit Financials',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -16,6 +16,7 @@ export default {
     link: [{rel:'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap' }]
     
   },
+  src: 'static/js/app.js', 
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [

@@ -73,27 +73,24 @@ export default {
             this.$router.push({name: 'index'});
         },
         LoginUser: function () {
-      let self = this;
-      let loginForm = document.getElementById("LoginForm");
-      let form_data = new FormData(loginForm);
-      fetch("http://localhost:8080/api/auth/login", {
-        method: "POST",
-        body: form_data,
-        headers: {
-          "X-CSRFToken": token,
-        },
-        credentials: "same-origin",
-       })
-        .then(function (response) {
-          return response.json();
-      })
-      .then(function (jsonResponse){
-            console.log("working");
-      }).catch(function (error) {
-          console.log(error);
-        });
-
-    }
+            let self = this;
+            let loginForm = document.getElementById("LoginForm");
+            let form_data = new FormData(loginForm);
+            let PATH_API = 'test';
+                this.$axios({
+                    method: "POST",
+                    headers:{
+                        'Content-Type': 'application/json',
+                    },
+                    url: `/api/${PATH_API}`,
+                    data: form_data,
+                    }).then (res => {
+                        console.log("working");
+                        this.$router.push({name: 'index'});
+                    }), error =>{
+                        console.log(error);
+                    }
+                    }
     }
     }
 
