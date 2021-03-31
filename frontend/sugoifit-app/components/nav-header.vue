@@ -1,34 +1,21 @@
 <template>
- <header class="header ">
-        <nav class="navbar">
-                       
-            <div class="container-fluid">
-                <div class="navbar-holder d-flex align-items-center justify-content-between">
-                    <!-- Navbar Header-->
-                    <div class="navbar-header">
-                         <img src = "~assets/uploads/reg_nav.svg" class = "ml-5 nav-icon" v-b-toggle.sidebar-1  >
-                          <font-awesome-icon :icon="['fas','fa-align-justify']" />
-                         <!-- <a id="toggle-btn" href="#" class="menu-btn active"><span></span><span></span><span></span></a> -->
-                        <!-- Navbar Brand -->
-                        <a href="" class="navbar-brand d-none d-sm-inline-block">
-                        <!-- <div class="test brand-text d-none d-lg-inline-block"><span>MyBook </span><strong>Social</strong></div>    -->
-                        <h5 class = "text-white"> SugoiFit Financials</h5>
-                        </a>
-                        <!-- Toggle Button-->
-                        <!-- <a id="toggle-btn" href="#" class="menu-btn active"><span></span><span></span><span></span></a>     -->
-                        <!-- <img class = "nav_icon" src="~/assets/uploads/align-left.png" alt=""> -->
-                    </div>
+
+        <b-navbar class = "" toggleable="lg" type="light" >       
+                <b-row class="">
+                      <b-row class="mr-auto">
+                         <b-img src = "~assets/uploads/reg_nav.svg" class = "ml-5 nav-icon" v-b-toggle.sidebar-1  ></b-img>
+                         <font-awesome-icon :icon="['fas','fa-align-justify']" /> 
+                         <b-link :to = "{name: 'index'}" class=""><b-navbar-brand class = "text-white"> SugoiFit Financials</b-navbar-brand></b-link>
+                      </b-row>
                     
-                   
-                        <div class="d-flex flex-row align-items-center settings_bar ml-auto  bg-danger">
-                        <h6 class="d-flex ">Jane S.</h6>
-                        <img class="m-1" id="top-user-icon" src="~assets/uploads/Profile_icon.svg" alt="">
-                        <img class="m-1" src="~assets/uploads/settings.svg" alt="">
-                        </div>
-                </div>
-            </div>
-        </nav>
-    </header>
+                        <b-row class="align-items-center justify-content-between ml-auto bg-info">
+                            <h6 class="d-flex ">Jane S.</h6>
+                            <img class="m-1" id="top-user-icon" src="~assets/uploads/Profile_icon.svg" alt="">
+                            <img class="m-1" src="~assets/uploads/settings.svg" alt="">
+                        </b-row>
+                </b-row>
+        </b-navbar>
+
 </template>
 <script>
 export default {
