@@ -76,6 +76,7 @@
 <script>
 export default {
     name: 'ManageProducts',
+    layout: 'dashboard',
     data(){
         return{
 

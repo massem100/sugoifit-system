@@ -1,3 +1,6 @@
+import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
+import pkg from './package'
+
 export default {
   ssr: false,
   // Target: https://go.nuxtjs.dev/config-target
@@ -23,7 +26,8 @@ export default {
   css: [
     'static/scss/sidebar.css',
     'static/scss/style.css',
-    'static/scss/website.css'
+    'static/scss/website.css',
+    '~assets/style/index.scss'
 
   ],
   router: {
@@ -34,6 +38,8 @@ export default {
   plugins: [
     {src: '~/plugins/vee-validate', ssr: false},
     {src: '~/plugins/axios'},
+    '~/plugins/vuetify',
+    { src: '~/plugins/chartist', mode: 'client' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -90,6 +96,17 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: { }
+  build: {
+    transpile: ['vuetify/lib'],
+    plugins: [new VuetifyLoaderPlugin()],
+    loaders: {
+
+    },
+    /*
+    ** You can extend webpack config here
+    */
+    extend(config, ctx) {
+    }
+   }
 }
 
