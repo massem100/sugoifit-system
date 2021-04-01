@@ -5,7 +5,7 @@
         <top-bar/>
         <settings-top/>
         <validation-observer ref="observer" v-slot="{handleSubmit}">
-        <b-form @submit.stop.prevent="handleSubmit(onSubmit)">
+        <b-form id = "websiteForm" @submit.stop.prevent="handleSubmit(onSubmit)">
             <b-row>
                 <b-col cols="12" class="text-info mb-3">Welcome Section</b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
@@ -14,6 +14,7 @@
                         <b-form-input v-model="form.ref_no"
                                         type="text"
                                         id="wel_head"
+                                        name="wel_head"
                                         :state="getValidationState(errors)">
                         </b-form-input>
                         <b-form-invalid-feedback>
@@ -27,6 +28,7 @@
                         <b-form-input v-model="form.ref_no"
                                         type="text"
                                         id="Wel_mess"
+                                        name="Wel_mess"
                                         :state="getValidationState(errors)">
                         </b-form-input>
                         <b-form-invalid-feedback>
@@ -40,6 +42,7 @@
                         <b-form-input v-model="form.ref_no"
                                         type="text"
                                         id="wel_img"
+                                        name="wel_img"
                                         :state="getValidationState(errors)">
                         </b-form-input>
                         <b-form-invalid-feedback>
@@ -55,6 +58,7 @@
                         <b-form-input v-model="form.ref_no"
                                         type="text"
                                         id="prod_mess"
+                                        name="prod_mess"
                                         :state="getValidationState(errors)">
                         </b-form-input>
                         <b-form-invalid-feedback>
@@ -70,6 +74,7 @@
                         <b-form-input v-model="form.ref_no"
                                         type="text"
                                         id="rec_head"
+                                        name="rec_head"
                                         :state="getValidationState(errors)">
                         </b-form-input>
                         <b-form-invalid-feedback>
@@ -83,6 +88,7 @@
                         <b-form-input v-model="form.ref_no"
                                         type="text"
                                         id="rec_mess"
+                                        name="rec_mess"
                                         :state="getValidationState(errors)">
                         </b-form-input>
                         <b-form-invalid-feedback>
@@ -98,6 +104,7 @@
                         <b-form-input v-model="form.ref_no"
                                         type="text"
                                         id="con_head"
+                                        name="con_head"
                                         :state="getValidationState(errors)">
                         </b-form-input>
                         <b-form-invalid-feedback>
@@ -111,6 +118,7 @@
                         <b-form-input v-model="form.ref_no"
                                         type="text"
                                         id="con_mess"
+                                        name="con_mess"
                                         :state="getValidationState(errors)">
                         </b-form-input>
                         <b-form-invalid-feedback>
@@ -175,6 +183,25 @@
             }
         },
         methods: {
+            SubmitForm(){
+                let self = this;
+              let PATH_API = 'test';
+              let WebsiteForm = document.getElementById('websiteForm');
+              let form_data = new FormData(WebsiteForm); 
+              $axios.post(`/api/${PATH_API}`, {
+                body: form_data,
+                headers:{
+                  'contentType': 'application/json',
+                }
+              })             
+              .then( jsonResponse =>{
+                return jsonResponse.json();
+              })
+              .then( jsonResponse =>{
+                console.log(jsonResponse);
+              });
+
+            },
             getValidationState(errors) {
                 return errors.length > 0 ? false : null;
             },

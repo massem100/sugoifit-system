@@ -1,5 +1,4 @@
 * {
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
 
@@ -9,7 +8,27 @@ html, body {
 }
 
 body, input, button, select, textarea {
-  font: 600 1rem 'Poppins', sans-serif;
+  font: 300 1rem "Poppins", sans-serif;
+  color: #222222;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul, ol {
+  margin: 0 0 1rem;
+  padding: 0 0 1rem;
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body, input, button, select, textarea {
+  font: 600 1rem "Poppins", sans-serif;
   color: #222222;
 }
 
@@ -29,12 +48,8 @@ ul, ol {
 }
 
 .quick_actions_div {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
+  justify-content: flex-start;
   margin-top: 155px;
   margin-left: 20px;
   height: 6rem;
@@ -46,23 +61,16 @@ ul, ol {
   width: 15rem;
   height: 5rem;
   padding: 20px;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  border-radius: 15px;
+  justify-content: center;
+  border-radius: 20px;
+  text-decoration: none;
+  color: #222222;
 }
-
 .quick_actions span {
   font-size: 16px;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  align-items: center;
+  justify-content: center;
 }
 
 #top-user-icon {
@@ -71,29 +79,23 @@ ul, ol {
 }
 
 .time_box {
-  display: -ms-grid;
   display: grid;
-      grid-template-areas: 'Time 1 Time 2'
- 'Timezone 1 Timezone 2';
+  grid-template-areas: "Time 1 Time 2" "Timezone 1 Timezone 2";
   grid-column-gap: 24px;
   position: absolute;
   top: 72px;
   right: 48px;
   text-align: center;
 }
-
 .time_box :nth-child(1) {
   grid-area: Time 1;
 }
-
 .time_box :nth-child(2) {
   grid-area: Timezone 1;
 }
-
 .time_box :nth-child(3) {
   grid-area: Time 2;
 }
-
 .time_box :nth-child(4) {
   grid-area: Timezone 2;
 }
@@ -104,32 +106,7 @@ ul, ol {
   text-align: start;
   margin: 16px 16px 16px 24px;
 }
-
 .welcome-heading p {
   font-weight: 200;
-  font-family: 'Poppins';
-}
-/*# sourceMappingURL=style.css.map */
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.custom-popover .popover-body {
-  padding: 0;
-}
-
-.custom-popover .pop-link {
-  text-decoration: none;
-  color: #222222;
-  font-size: 16px;
-  padding: 10px;
-}
-
-.custom-popover .pop-link:hover {
-  background: #428B95;
-  color: white;
-}
-.c-box{
-  height: 100px;
-}
+  font-family: "Poppins";
+}/*# sourceMappingURL=style.css.map */
