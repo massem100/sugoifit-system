@@ -3,7 +3,7 @@ from app import app,  db, login_manager, cors
 from flask import render_template, request, jsonify, flash, session, _request_ctx_stack, g
 from flask_cors import cross_origin, CORS
 from flask_wtf import csrf
-from app.forms import RegisterForm, LoginForm
+from app.forms import RegisterForm, LoginForm, websiteForm
 from app.model import  asset_liability, auth, financial_statement, sales, transactions
 from app.model.financial_statement import Financialstmt, Financialstmtlineseq, Financialstmtlinealia, Financialstmtdesc, Financialstmtline
 import pandas as pd
@@ -57,7 +57,7 @@ def token():
   return jsonify(token)
 
 
-#########################################################################################################
+################## PRINT FINANCIAL STATEMENTS ############################
 @app.route('/api/printstmtdata', methods= ["GET"])
 def stmt(): 
     resultstmt = []
@@ -79,7 +79,7 @@ def home():
     # big_name = res.fname
     return jsonify(data)
 
-#########################################################################################################
+################## LOGIN ############################
 @app.route('/api/auth/login', methods=["POST"])
 def login(): 
     form = LoginForm()
@@ -118,6 +118,7 @@ def login():
               flash("Incorrect password given")
               return redirect('/api/auth/login')
 
+
 @app.route('/add-user', methods = ["POST"])
 def addUser():
   #Write code to add user to database
@@ -129,6 +130,7 @@ def addUser():
     chars.append(random.choice(ALPHABET))
   salt = "".join(chars)
   
+
 @app.route('/view-reports/view-performance')
 def sucessful_prods():
   #Remember to use busID as filter for products
@@ -206,6 +208,47 @@ def products():
   return jsonify(data)
 
 #########################################################################################################
+@app.route('/api/website-settings', methods = ['POST', 'GET'])
+def websiteinfo():
+  
+  form = websiteForm()
+  settings={}
+  if request.method == 'POST':
+    
+      wel_head = request.form['wel_head']
+      wel_mess = request.form['wel_mess']
+      prod_mess = request.form['prod_mess']
+      rec_head = request.form['rec_head']
+      rec_mess = request.form['rec_mess']
+      con_head = request.form['con_head']
+      con_mess = request.form['con_mess']
+
+      settings['welcome_head'] = wel_head
+      settings['welcome_mess'] = wel_mess
+      settings['product_mess'] = prod_mess
+      settings['receipt_head'] = rec_head
+      settings['receipt_mess'] = rec_mess
+      settings['contact_head'] = con_head
+      settings['contact_mess'] = con_mess
+
+      #welcome = Websitedetails( section_detail='wel' sec_header=wel_head, sec_message=wel_mess)
+      #product = Websitedetails( section_detail='prod' sec_message=prod_mess)
+      #receipt = Websitedetails( section_detail='rec' sec_header=rec_head, sec_message=rec_mess)
+      #contact = Websitedetails( section_detail='con' sec_header=con_head, sec_message=con_mess)
+      #db.session.add(welcome)
+      #db.session.add(product)
+      #db.session.add(receipt)
+      #db.session.add(contact)
+      #db.session.commit()
+      '''
+      return jsonify(settings)
+
+  elif request.method == 'GET':
+    website = sales.Websitedrag
+    sections = website.query.filter_by().all()
+    return jsonify(sections.sectionName)
+'''
+  return jsonify({'message':"Success"}, settings)
 
 #########################################################################################################
 @app.route('/api/items', methods = ['GET'])

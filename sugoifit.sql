@@ -606,7 +606,7 @@ CREATE table WebsiteDrag(
     section_detail VARCHAR(11),
 
     PRIMARY KEY(sectionID),
-    FOREIGN KEY(section_detail) REFERENCES website_details(section_detail)
+    FOREIGN KEY(section_detail) REFERENCES WebsiteDetails(section_detail)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

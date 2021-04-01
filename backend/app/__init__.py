@@ -8,7 +8,8 @@ from flask_jwt_extended import JWTManager, create_access_token
 #from flask_security import Security
 
 username = 'root'
-password = 'SQLpass'
+#password = 'SQLpass'
+password = ''
 server = 'localhost'
 
 app = Flask(__name__, template_folder = None)

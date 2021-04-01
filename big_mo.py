@@ -494,3 +494,4 @@ class Sale(db.Model):
     customer = db.relationship('Customer')
     receipt = db.relationship('Receipt')
 
+    

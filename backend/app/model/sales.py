@@ -182,8 +182,6 @@ class Receipt(db.Model):
     order = db.relationship('Order')
 
 
-
-
 class Receiptdetail(db.Model):
     __tablename__ = 'receiptdetails'
 
@@ -200,4 +198,31 @@ class Receiptdetail(db.Model):
     receipt = db.relationship('Receipt')
     service = db.relationship('Service')
 
- 
+
+class Websitedetails(db.Model):
+    __tablename__ = 'websitedetails'
+    
+    section_detail = db.Column(db.String(10), primary_key=True, unique=True) 
+    sec_header = db.Column(db.String(50)) 
+    sec_message = db.Column(db.String(50))
+
+    def __init__(self, section_detail, sec_header, sec_message): 
+        self.section_detail = section_detail
+        self.sec_header = sec_header
+        self.sec_message = sec_message
+
+class Websitedrag(db.Model):
+    __tablename__ = 'websitedrag'
+
+    sectionID = db.Column(db.Integer, primary_key=True, unique=True, default = 0)
+    positionID = db.Column(db.String(50)) 
+    sectionName = db.Column(db.String(50)) 
+    section_detail = db.Column(db.ForeignKey('websitedetails.section_detail', ondelete='CASCADE', onupdate='CASCADE'))
+    
+    websitedetails = db.relationship('websitedetails')
+
+    def __init__(self,  sectionID, positionID, sectionName, section_detail):
+        self.sectionID = sectionID
+        self.positionID = positionID
+        self.sectionName = sectionName
+        self.section_detail = section_detail

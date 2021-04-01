@@ -5,13 +5,14 @@
         <top-bar/>
         <settings-top/>
         <validation-observer ref="observer" v-slot="{handleSubmit}">
+
         <b-form @submit.stop.prevent="handleSubmit(onSubmit)">
             <b-row>
                 <b-col cols="12" class="text-info mb-3">Welcome Section</b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-                        <validation-provider v-slot="{ errors }" rules="required" name="reference number">
+                        <validation-provider v-slot="{ errors }" rules="required" name="welcome header">
                         <label for="ref_no">Welcome Heading: </label>
-                        <b-form-input v-model="form.ref_no"
+                        <b-form-input v-model="form.wel_head"
                                         type="text"
                                         id="wel_head"
                                         :state="getValidationState(errors)">
@@ -22,11 +23,11 @@
                         </validation-provider>
                     </b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-                        <validation-provider v-slot="{ errors }" rules="required" name="reference number">
-                        <label for="ref_no">Welcome message: </label>
-                        <b-form-input v-model="form.ref_no"
+                        <validation-provider v-slot="{ errors }" rules="required" name="welcome message">
+                        <label for="ref_no">Welcome Message: </label>
+                        <b-form-input v-model="form.wel_mess"
                                         type="text"
-                                        id="Wel_mess"
+                                        id="wel_mess"
                                         :state="getValidationState(errors)">
                         </b-form-input>
                         <b-form-invalid-feedback>
@@ -34,25 +35,13 @@
                         </b-form-invalid-feedback>
                         </validation-provider>
                     </b-col>
-                    <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-                        <validation-provider v-slot="{ errors }" rules="required" name="reference number">
-                        <label for="ref_no">Welcome image: </label>
-                        <b-form-input v-model="form.ref_no"
-                                        type="text"
-                                        id="wel_img"
-                                        :state="getValidationState(errors)">
-                        </b-form-input>
-                        <b-form-invalid-feedback>
-                            {{ errors[0] }}
-                        </b-form-invalid-feedback>
-                        </validation-provider>
-                    </b-col>
+                    
 
                 <b-col cols="12" class="text-info mb-3">Product Section</b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-                        <validation-provider v-slot="{ errors }" rules="required" name="reference number">
-                        <label for="ref_no">Product message: </label>
-                        <b-form-input v-model="form.ref_no"
+                        <validation-provider v-slot="{ errors }" rules="required" name="product message">
+                        <label for="ref_no">Product Message: </label>
+                        <b-form-input v-model="form.prod_mess"
                                         type="text"
                                         id="prod_mess"
                                         :state="getValidationState(errors)">
@@ -65,9 +54,9 @@
                     
                 <b-col cols="12" class="text-info mb-3">Receipt Section</b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-                        <validation-provider v-slot="{ errors }" rules="required" name="reference number">
+                        <validation-provider v-slot="{ errors }" rules="required" name="receipt header">
                         <label for="ref_no">Receipt Heading: </label>
-                        <b-form-input v-model="form.ref_no"
+                        <b-form-input v-model="form.rec_head"
                                         type="text"
                                         id="rec_head"
                                         :state="getValidationState(errors)">
@@ -78,9 +67,9 @@
                         </validation-provider>
                     </b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-                        <validation-provider v-slot="{ errors }" rules="required" name="reference number">
-                        <label for="ref_no">Receipt message: </label>
-                        <b-form-input v-model="form.ref_no"
+                        <validation-provider v-slot="{ errors }" rules="required" name="receipt message">
+                        <label for="ref_no">Receipt Message: </label>
+                        <b-form-input v-model="form.rec_mess"
                                         type="text"
                                         id="rec_mess"
                                         :state="getValidationState(errors)">
@@ -93,9 +82,9 @@
                 
                 <b-col cols="12" class="text-info mb-3">Contact Section</b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-                        <validation-provider v-slot="{ errors }" rules="required" name="reference number">
+                        <validation-provider v-slot="{ errors }" rules="required" name="contact header">
                         <label for="ref_no">Contact Heading: </label>
-                        <b-form-input v-model="form.ref_no"
+                        <b-form-input v-model="form.con_head"
                                         type="text"
                                         id="con_head"
                                         :state="getValidationState(errors)">
@@ -106,9 +95,9 @@
                         </validation-provider>
                     </b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-                        <validation-provider v-slot="{ errors }" rules="required" name="reference number">
-                        <label for="ref_no">Contact message: </label>
-                        <b-form-input v-model="form.ref_no"
+                        <validation-provider v-slot="{ errors }" rules="required" name="contact message">
+                        <label for="ref_no">Contact Message: </label>
+                        <b-form-input v-model="form.con_mess"
                                         type="text"
                                         id="con_mess"
                                         :state="getValidationState(errors)">
@@ -170,8 +159,14 @@
         data() {
             return {
                 form: {
-                    date: new Date().toISOString()
-                }
+                    wel_head: '',
+                    wel_mess: '',
+                    prod_mess: '',
+                    rec_head: '',
+                    rec_mess: '',
+                    con_head: '',
+                    con_mess: ''
+                },
             }
         },
         methods: {
@@ -180,7 +175,11 @@
             },
 
             onSubmit() {
-                alert(JSON.stringify(this.form))
+                
+                this.$axios.post('/api/website-settings', this.form)                    
+                .then((result) => { console.log(result.data); })
+                .catch(function (error) { console.log(error); });
+
             },
             resetForm() {
                 this.form = {};
@@ -194,7 +193,4 @@
 </script>
 
 <style scoped>
-.side-bar{
-  position: fixed;
-}
 </style>

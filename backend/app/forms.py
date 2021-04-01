@@ -25,3 +25,12 @@ class orderForm(FlaskForm):
     phone_num = StringField ('Telephone', validators =[InputRequired('Please enter your your phone number')])
     email = EmailField('Email', validators = [InputRequired('Email Field should not be  empty'), Email()])
     submit = SubmitField('Submit')
+
+class websiteForm(FlaskForm):
+    wel_head = StringField('Welcome Header', validators=[InputRequired('Welcome Header field should not be empty')])
+    wel_mess = StringField('Welcome Message', validators=[InputRequired('Welcome Message field should not be empty')])
+    prod_mess = StringField('Product Message', validators=[InputRequired('Product Message field should not be empty')])
+    rec_head = StringField ('Receipt Header', validators =[InputRequired('Receipt Header field should not be empty')])
+    rec_mess = StringField('Receipt Message', validators = [InputRequired('Receipt Message field should not be empty')])
+    con_head = StringField('Contact Header', validators = [InputRequired('Contact Header field should not be empty')])
+    con_mess = StringField('Contact Message', validators = [InputRequired('Contact Message field should not be empty')])
