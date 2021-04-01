@@ -3,13 +3,12 @@
     id="app-drawer"
     v-model="inputValue"
     app
-    dark
     floating
-    persistent
     mobile-break-point="991"
     width="260"
   >
     <v-img
+     style="background: #C7ECF2;"
       :src="image"
       height="100%"
     >
@@ -30,11 +29,23 @@
               />
             </v-list-tile-avatar>
             <v-list-tile-title class="title">
-              Vuetify MD
+              SugoiFit Financials
             </v-list-tile-title>
           </v-list-tile>
         </v-list>
         <v-divider/>
+
+        <div class="d-flex flex-row">
+          <div class="profile mt-3 mb-2 ">
+                <h6 id = "profile_name"> Jane S.</h6>
+                <h6  id= "profile_ID"> ID 1234567</h6>
+                <h6 id ="role"> Role: Business Owner</h6>     
+          </div>
+          <img class ="" id = "profile-icon" src="~/assets/uploads/Profile_icon.png" alt="">
+         
+          </div>
+
+
         <v-list dense>
           <v-list-tile
             v-if="responsive"
@@ -83,54 +94,29 @@
           {
             to: '/user-profile',
             icon: 'mdi-account',
-            text: 'User Profile'
+            text: 'Manage Products'
           },
           {
             to: '/table-list',
             icon: 'mdi-clipboard-outline',
-            text: 'Table List'
+            text: 'Manage Sales'
           },
           {
             to: '/typography',
             icon: 'mdi-format-font',
-            text: 'Typography'
+            text: 'Financial Statements'
           },
           {
             to: '/icons',
             icon: 'mdi-chart-bubble',
-            text: 'Icons'
+            text: 'View Reports'
           },
-          {
-            to: '/maps',
-            icon: 'mdi-map-marker',
-            text: 'Maps'
-          },
-          {
-            to: '/notifications',
-            icon: 'mdi-bell',
-            text: 'Notifications'
-          }
+          
         ],
         responsive: true
       }
     },
-    computed: {
-      ...mapGetters({
-        image: 'app/getImage',
-        color: 'app/getColor',
-        drawer: 'app/getDrawer'
-      }),
-
-
-      inputValue: {
-        get() {
-          return this.drawer
-        },
-        set(val) {
-          this.setDrawer(val)
-        }
-      }
-    },
+ 
     mounted () {
       this.onResponsiveInverted()
       window.addEventListener('resize', this.onResponsiveInverted)
@@ -139,11 +125,7 @@
       window.removeEventListener('resize', this.onResponsiveInverted)
     },
     methods: {
-      ...mapActions({
-        setDrawer: 'app/setDrawer'
-      }),
-
-      onResponsiveInverted() {
+        onResponsiveInverted() {
         this.responsive = window.innerWidth < 991;
       }
     }
@@ -154,7 +136,7 @@
   #app-drawer {
 
     &.v-navigation-drawer .v-list {
-      background: rgba(27, 27, 27, 0.4);
+      // background: rgba(27, 27, 27, 0.4);
       padding: 0;
     }
 
@@ -171,7 +153,7 @@
       }
 
       &__title {
-        color: #ffffff;
+        color: #292929;
       }
     }
 

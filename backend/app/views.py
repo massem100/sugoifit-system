@@ -79,7 +79,7 @@ def home():
     # big_name = res.fname
 
     if request.method =="POST":
-         print(request.form['description'])
+        #  print(request.form['description'])
     return jsonify(data)
 
 #########################################################################################################

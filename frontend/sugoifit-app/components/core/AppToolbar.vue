@@ -3,7 +3,7 @@
     id="core-toolbar"
     flat
     prominent
-    style="background: #eee;"
+    style="background: #7CC3CD;"
   >
     <div class="v-toolbar-title">
       <v-toolbar-title

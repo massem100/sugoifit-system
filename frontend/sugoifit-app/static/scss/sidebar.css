@@ -289,7 +289,8 @@ Added Styles
   grid-template-areas: 'name name '
                         'ID ID'
                         'role role';
-  grid-column-gap: 24px;
+  width: 45%;
+  background-color:#8e81f1;
   z-index: 1;
 }
 
@@ -305,9 +306,10 @@ Added Styles
 }
 
 #profile-icon{
-  width: 80px;
-  height:80px;
+  width: 70px;
+  height:70px;
   align-items: center;
+  background-color: #333;
   margin-top: 5px;
 }
 

@@ -29,7 +29,7 @@ $padding-general:                   15px !default;
 $margin-general:                    $padding-general;
 $margin-small:                      $padding-small;
 $font-size-general:                 14px !default;
-$list-item-hover:                   rgba(200, 200, 200, .2) !default;
+$list-item-hover:                   #4DC4D4 !default;
 $list-item-icon-opacity:            .8 !default;
 $list-item-height:                  48px !default;
 $badge-border:                      1px solid $white !default;
@@ -48,7 +48,7 @@ $divider-margins:                   -1px !default;
 $divider-border:                    1px solid #eee;
 
 // Sidebar Background
-$sidebar-bg:                        rgba(27, 27, 27, .74) !default;
+$sidebar-bg:                        #C7ECF2 !default;
 
 // Font size
 $font-size-mini:                    9px !default;
@@ -123,7 +123,7 @@ $card-stats-icons-dim:              56px !default;
 $card-profile-avatar-pos:           -50px !default;
 
 // Typography
-$font-family-sans-serif:            'Roboto', 'Helvetica', 'Arial', sans-serif !default;
+$font-family-sans-serif:            'Poppins' !default;
 $font-family-serif:                 'Roboto Slab', 'Times New Roman', serif !default;
 
 // Tooltips
