@@ -5,8 +5,7 @@
         <top-bar/>
         <settings-top/>
         <validation-observer ref="observer" v-slot="{handleSubmit}">
-
-        <b-form @submit.stop.prevent="handleSubmit(onSubmit)" id="websiteForm">
+        <b-form id = "websiteForm" @submit.stop.prevent="handleSubmit(onSubmit)">
             <b-row>
                 <b-col cols="12" class="text-info mb-3">Welcome Section</b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
@@ -25,11 +24,11 @@
                     </b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
                         <validation-provider v-slot="{ errors }" rules="required" name="welcome message">
-                        <label for="ref_no">Welcome Message: </label>
-                        <b-form-input v-model="form.wel_mess"
+                        <label for="ref_no">Welcome message: </label>
+                        <b-form-input v-model="form.ref_no"
                                         type="text"
-                                        id="wel_mess"
-                                        name="wel_mess"
+                                        id="Wel_mess"
+                                        name="Wel_mess"
                                         :state="getValidationState(errors)">
                         </b-form-input>
                         <b-form-invalid-feedback>
@@ -37,7 +36,22 @@
                         </b-form-invalid-feedback>
                         </validation-provider>
                     </b-col>
-                    
+                    <!--
+                    <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
+                        <validation-provider v-slot="{ errors }" rules="required" name="reference number">
+                        <label for="ref_no">Welcome image: </label>
+                        <b-form-input v-model="form.ref_no"
+                                        type="text"
+                                        id="wel_img"
+                                        name="wel_img"
+                                        :state="getValidationState(errors)">
+                        </b-form-input>
+                        <b-form-invalid-feedback>
+                            {{ errors[0] }}
+                        </b-form-invalid-feedback>
+                        </validation-provider>
+                    </b-col>
+                    -->
 
                 <b-col cols="12" class="text-info mb-3">Product Section</b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
@@ -169,6 +183,25 @@
             }
         },
         methods: {
+            SubmitForm(){
+                let self = this;
+              let PATH_API = 'test';
+              let WebsiteForm = document.getElementById('websiteForm');
+              let form_data = new FormData(WebsiteForm); 
+              $axios.post(`/api/${PATH_API}`, {
+                body: form_data,
+                headers:{
+                  'contentType': 'application/json',
+                }
+              })             
+              .then( jsonResponse =>{
+                return jsonResponse.json();
+              })
+              .then( jsonResponse =>{
+                console.log(jsonResponse);
+              });
+
+            },
             getValidationState(errors) {
                 return errors.length > 0 ? false : null;
             },

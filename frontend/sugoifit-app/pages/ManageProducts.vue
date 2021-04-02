@@ -78,7 +78,7 @@
             </div>
             
         </div>
-    </div>
+
 </template>
 
 <script>
@@ -105,7 +105,7 @@ export default {
     
     }
     .products-page{
-        margin-left: 20rem;
+        /* margin-left: 20rem; */
         /* margin:2rem; */
         /* display: flex;
         flex-direction: column; */
