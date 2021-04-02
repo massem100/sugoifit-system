@@ -13,6 +13,8 @@ import secrets
 import jwt
 from flask_login import logout_user
 import hashlib, random
+from datetime import date
+from app.model.sales import Customer, Invoice, Order
 
 token =''
 
@@ -155,6 +157,38 @@ def sucessful_prods():
 def logout():
     logout_user()
     return jsonify(message = [{'message': "You have been logged out successfully"}])
+
+"""
+  NEED TO GET PRODUCTS NEEDED TO FULFILL ORDER
+"""
+@app.route('/website/placeorder', methods = ['POST'])
+def place_order():
+  #Display order based on rank
+  if request.method == "POST":
+    fname = request.form['fname']
+    lname = request.form['lname']
+    trn = request.form['trn']
+    phone = request.form['phone']
+    email = request.form['email']
+
+    customer = Customer.query.filter_by(trn = trn)
+
+    if customer.trn == None:
+      # Add new customer
+      new_customer = Customer(fname, lname, trn, email, phone)
+      db.session.add(new_customer)
+      db.session.commit()
+
+    else:
+      today = date.today()
+      today = today.strftime("%d-%m-%Y")
+      new_order = Order(2800, today, customer.custID, 'test_invoiceID','test_businessID')
+      db.session.add(new_order)
+      db.session.commit()
+
+      
+
+
 
 #########################################################################################################
 @app.route('/api/products', methods = ['GET'])
