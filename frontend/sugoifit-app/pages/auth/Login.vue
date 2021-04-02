@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import sfNavBar from '../components/sf-nav-bar.vue'
+import sfNavBar from '../../components/sf-nav-bar.vue'
 
 export default {
   components: { sfNavBar },

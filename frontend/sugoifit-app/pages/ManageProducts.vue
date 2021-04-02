@@ -1,8 +1,5 @@
 <template>
-    <div class="mainArea m-0"> 
-        <side-bar class="side-bar m-0 h-100"></side-bar>
-
-        <div class="products-page ">
+           <div class="products-page m-2 ">
            
             <b-tabs content-class="mt-3" fill>
                 <b-tab title="Add New Product" active>
@@ -13,13 +10,7 @@
                             </div>
                         
                     </div>
-                    <!-- <div class ="product-card">
-                            <h5> Product Overview</h5>ur
-                            <p class="prod-p">Lorem ipsum dolor sit amet,  iste at facilis eos architecto 
-                                alias perferendis veritatis dolor ut cupiditate repellat reiciendis maxime,
-                                ipsam voluptatibus blanditiis quibusdam.  Lorem ipsum dolor, sititaque ab 
-                                obcaecati modi saepe minus necessitatibus?</p>
-                    </div> -->
+                
                     <div class = "products-main">
                     
 
@@ -70,7 +61,6 @@
             </b-tabs>
             
         </div>
-    </div>
 </template>
 
 <script>
@@ -88,73 +78,5 @@ export default {
 
 
 <style scoped>
-    .mainArea{
-        display:flex;
-        flex-direction: row;
-        font: 400 1rem "Poppins";
-        /* background-color: burlywood; */
-        /* min-height:100vh; */
-        
-    
-    }
-    .products-page{
-        margin-left: 20rem;
-        /* margin:2rem; */
-        /* display: flex;
-        flex-direction: column; */
-        /* background-color: rgb(172, 235, 172); */
-        width:100vw;
-        grid-template-areas: "syshead syshead"
-                             "product-main";
-    }
-
-    
-    .sys-head{
-        display: flex;
-        flex:row;
-        /* background-color: rgb(117, 77, 155); */
-        width:100%;
-        grid-area: 'sys-head';
-    }
-
-    .products-main{
-        margin: 2rem;
-        width: 40rem;
-        /* background-color: peachpuff; */
-        grid-area: 'product-main';
-    }
-
-    .head-title{
-        margin: 2rem;
-    }
-    .head-title h5{
-        font: 600 1.8rem "Poppins";
-        align-items: center;
-
-    }
-
-    .product-card{
-        margin: 1rem 2rem;
-        width: 60rem; 
-        height: 15rem;
-        padding: 2rem;
-        display: flex;
-        flex-direction: column;
-        /* background: url('~assets/uploads/green-product-background.jpg'); */
-        background-color: rgb(242, 251, 255);
-        background-size: 60rem 15rem;
-        border-radius: 20px;
-    }
-    .product-card h5 .prod-p{
-        margin: 4rem;
-    }
-
-    .side-bar{
-        position:fixed; 
-
-    }
-
-    .prod-item{
-        margin: 1rem;
-    }
+  
 </style>

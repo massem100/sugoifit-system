@@ -80,7 +80,7 @@ def home():
 
     if request.method =="POST":
         #  print(request.form['description'])
-    return jsonify(data)
+      return jsonify(data)
 
 #########################################################################################################
 @app.route('/api/auth/login', methods=["POST"])

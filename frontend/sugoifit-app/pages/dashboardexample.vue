@@ -25,10 +25,11 @@
               mdi-arrow-up
             </v-icon>
             <span class="green--text">55%</span>&nbsp;
-            increase in today's sales
+                 
+                
           </p>
 
-          <template slot="actions">
+          <template slot="z">
             <v-icon
               class="mr-2"
               small
