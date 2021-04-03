@@ -180,6 +180,7 @@
 
     export default {
         name: "non-current-asset-create",
+        layout:"dashboard",
         components: {
             ValidationProvider,
             ValidationObserver,
