@@ -1,6 +1,7 @@
 from app import db 
 from app.model.auth import Busines
 import enum 
+
 class Financialstmt(db.Model):
     __tablename__ = 'financialstmt'
 

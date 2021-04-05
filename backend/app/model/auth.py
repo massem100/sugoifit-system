@@ -5,7 +5,7 @@ from app import db
 class Busines(db.Model):
     __tablename__ = 'business'
 
-    busID = db.Column(db.Integer, primary_key=True, unique=True)
+    busID = db.Column(db.String(200), primary_key=True, unique=True)
     busName = db.Column(db.String(100))
     busemail = db.Column(db.String(255))
     busaddress = db.Column(db.String(100))
@@ -37,7 +37,7 @@ class Credential(db.Model):
 
     userID = db.Column(db.ForeignKey('user.userID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, unique=True)
     role = db.Column(db.String(10))
-    email = db.Column(db.String(50), primary_key=True)
+    user_email = db.Column(db.String(50), primary_key=True)
     user_password = db.Column(db.String(255))
     pass_salt = db.Column(db.String(50))
 

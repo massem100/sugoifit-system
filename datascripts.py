@@ -326,7 +326,7 @@ df_user_table.to_sql('user', con=engine, index=False, if_exists = "append")
 # sqlacodegen 
 # sqlacodegen mysql://root:SQLpass@localhost/sugoifit > generatedModels.py
 
-result = pd.read_excel('Financial STatement.xls', index_col=0, sheet_name= 'Commercial Income Statement')
+# result = pd.read_excel('Financial STatement.xls', index_col=0, sheet_name= 'Commercial Income Statement')
 
 
 if __name__ == '__main__':

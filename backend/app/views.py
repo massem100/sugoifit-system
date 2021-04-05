@@ -4,7 +4,7 @@ from flask import render_template, request, jsonify, flash, session, _request_ct
 from flask_cors import cross_origin, CORS
 from flask_wtf import csrf
 from app.forms import RegisterForm, LoginForm
-from app.model import  asset_liability, auth, financial_statement, sales, transactions
+from app.model import  accounts, auth, financial_statement, sales, transactions
 from app.model.financial_statement import Financialstmt, Financialstmtlineseq, Financialstmtlinealia, Financialstmtdesc, Financialstmtline
 import pandas as pd
 from sqlalchemy.event import listens_for
@@ -16,6 +16,10 @@ import hashlib, random
 
 token =''
 
+
+"""
+--------------------------------------- JWT Authorization Function ----------------------------------------------------------
+"""
 # Create a JWT @requires_auth decorator
 # This decorator can be used to denote that a specific route should check
 # for a valid JWT token before displaying the contents of that route.
@@ -57,7 +61,9 @@ def token():
   return jsonify(token)
 
 
-#########################################################################################################
+"""
+--------------------------------------- Financial Statement Routes ----------------------------------------------------------
+"""
 @app.route('/api/printstmtdata', methods= ["GET"])
 def stmt(): 
     resultstmt = []
@@ -69,20 +75,23 @@ def stmt():
 
     return jsonify(response = [resultstmt])
 
-#########################################################################################################
+"""
+--------------------------------------- Testing Route (To be removed) ----------------------------------------------------------
+"""
 @app.route('/api/test', methods = ["GET", "POST"])
 def home():
     data = [{'message': 'Data deh ya'}]
     # result = users.User.test('Checkingg')
     # res = sales.Customer.query.filter_by(fname='Bob').first()
-    
     # big_name = res.fname
 
     if request.method =="POST":
         #  print(request.form['description'])
       return jsonify(data)
 
-#########################################################################################################
+"""
+--------------------------------------- User Authentication Routes ----------------------------------------------------------
+"""
 @app.route('/api/auth/login', methods=["POST"])
 def login(): 
     form = LoginForm()
@@ -131,7 +140,20 @@ def addUser():
   for i in range(16):
     chars.append(random.choice(ALPHABET))
   salt = "".join(chars)
-  
+
+# @login_manager.user_loader
+# def load_user(id):
+#     user = User.query.get(int(id))
+#     return user
+
+"""
+--------------------------------------- Onboarding Routes (To be added)----------------------------------------------------------
+"""
+
+
+"""
+--------------------------------------- Report Generation Routes ----------------------------------------------------------
+"""
 @app.route('/view-reports/view-performance')
 def sucessful_prods():
   #Remember to use busID as filter for products
@@ -160,7 +182,9 @@ def logout():
     logout_user()
     return jsonify(message = [{'message': "You have been logged out successfully"}])
 
-#########################################################################################################
+"""
+--------------------------------------- Product/Services Routes ----------------------------------------------------------
+"""
 @app.route('/api/products', methods = ['GET'])
 def products():
   message = {}
@@ -208,10 +232,9 @@ def products():
   data['tcost'] = tcost
   data['deliver'] = deliver
   return jsonify(data)
-
-#########################################################################################################
-
-#########################################################################################################
+"""
+------------------------------------------------------------------------------------------------------------
+"""
 @app.route('/api/items', methods = ['GET'])
 def items():
   data = {}
@@ -223,8 +246,9 @@ def items():
   return jsonify(data)
 
   return render_template("Products.vue", content=content) 
-
-#########################################################################################################
+"""
+--------------------------------------- Orders ----------------------------------------------------------
+"""
 @app.route('/api/order', methods = ['POST', 'GET'])
 def custOrder():
   customer = {}
@@ -256,26 +280,10 @@ def custOrder():
 
 
 
-# @login_manager.user_loader
-# def load_user(id):
-#     user = User.query.get(int(id))
-#     return user
 
-# # Please create all new routes and view functions above this route.
-# # This route is now our catch all route for our VueJS single page
-# # application.
-# @app.route('/', defaults={'path': ''})
-# @app.route('/<path:path>')
-# def index(path):
-#     """
-#     Because we use HTML5 history mode in vue-router we need to configure our
-#     web server to redirect all routes to index.html. Hence the additional route
-#     "/<path:path".
-
-#     Also we will render the initial webpage and then let VueJS take control.
-#     """
-#     return render_template('index.html')
-
+"""
+--------------------------------------- Form Error Catcher ----------------------------------------------------------
+"""
 # Here we define a function to collect form errors from Flask-WTF
 # which we can later use
 def form_errors(form):
@@ -291,6 +299,12 @@ def form_errors(form):
 
     return error_messages
 
+
+
+"""
+--------------------------------------- DO NOT CREATE VIEW ROUTES BELOW HERE ----------------------------------------------------------
+"""
+
 ###
 # The functions below should be applicable to all Flask apps.
 ###
@@ -300,7 +314,6 @@ def send_text_file(file_name):
     """Send your static text file."""
     file_dot_text = file_name + '.txt'
     return app.send_static_file(file_dot_text)
-
 
 @app.after_request
 def add_header(response):
@@ -315,15 +328,14 @@ def add_header(response):
     
     return response
 
-
-# @app.errorhandler(404)
-# def page_not_found(error):
-#     """Custom 404 page."""
-#     return render_template('404.html'), 404
+# To be edited
+@app.errorhandler(404)
+def page_not_found(error):
+    """Custom 404 page."""
+    return "error message"
 
 
 if __name__ == '__main__':
-    # insert_initial_values()
     app.run(debug=True, host="0.0.0.0", port="8080")
     
 

@@ -1,5 +1,10 @@
-/* SugoiFit Database */
+/* SugoiFit Database 
 
+This is not the most recent copy of the database structure 
+Edits have been made directly to the db Models and migrated
+When the project is completed we will create export sql dump to get the updated structure
+Another option is just to migrate the latest version of the database. 
+.*/
 DROP DATABASE IF EXISTS sugoifit;
 
 CREATE DATABASE sugoifit;
