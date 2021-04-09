@@ -18,7 +18,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-center m-3">
-                        <form id = "LoginForm" class ="d-flex flex-column" @submit.prevent = "LoginUser " method ="POST">
+                        <form id = "LoginForm" class ="d-flex flex-column" @submit.prevent = "LoginUser" method ="POST">
                             <input type="hidden" name="_token" :value="token">
                            
                             <label class =" form-label text-left" for ="email">Email:</label>
@@ -78,7 +78,7 @@ export default {
             let self = this;
             let loginForm = document.getElementById("LoginForm");
             let form_data = new FormData(loginForm);
-            let PATH_API = 'test';
+            let PATH_API = 'auth/login';
                 this.$axios({
                     method: "POST",
                     headers:{
@@ -87,8 +87,7 @@ export default {
                     url: `/api/${PATH_API}`,
                     data: form_data,
                     }).then (res => {
-                        console.log("working");
-                        this.$router.push({name: 'index'});
+                        this.$router.replace({name: 'index'});
                     }), error =>{
                         console.log(error);
                     }

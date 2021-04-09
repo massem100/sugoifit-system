@@ -25,9 +25,9 @@ export default {
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     'static/scss/sidebar.css',
-    'static/scss/style.css',
     'static/scss/website.css',
-    '~assets/style/index.scss'
+    '~assets/style/index.scss',
+    'static/scss/style.css',
 
   ],
   router: {
@@ -41,7 +41,14 @@ export default {
     '~/plugins/vuetify',
     { src: '~/plugins/chartist', mode: 'client' }
   ],
-
+  vuetify: {
+    treeShake: true,
+    customVariables: ['~/assets/variables.scss'],
+    theme: {
+      light: true,
+  
+    }
+  },
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 

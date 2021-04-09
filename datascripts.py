@@ -320,8 +320,10 @@ df_service_table = defaultdict(list)
 
 # # Add the pandas dataframe to the database
 # df_user_table.to_sql('test', con=engine,index=False)
-df_user_table.to_sql('user', con=engine, index=False, if_exists = "append")
+# df_user_table.to_sql('user', con=engine, index=False, if_exists = "append")
 
+read_file = pd.read_csv(r"C:\Users\Masse\Desktop\Files\sugoifit-system\backend\app\financial_statements_lines.csv")
+read_file.to_excel (r'C:\Users\Masse\Desktop\Files\sugoifit-system\backend\app\finstmt.xlsx', index = None, header=True)
 
 # sqlacodegen 
 # sqlacodegen mysql://root:SQLpass@localhost/sugoifit > generatedModels.py

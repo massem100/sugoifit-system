@@ -1,7 +1,6 @@
 <template>
   <v-navigation-drawer
     id="app-drawer"
-    v-model="inputValue"
     app
     floating
     mobile-break-point="991"
@@ -9,7 +8,6 @@
   >
     <v-img
      style="background: #C7ECF2;"
-      :src="image"
       height="100%"
     >
       <v-layout
@@ -60,7 +58,6 @@
             v-for="(link, i) in links"
             :key="i"
             :to="link.to"
-            :active-class="color"
             avatar
             class="v-list-item"
           >
@@ -167,5 +164,9 @@
       padding-left: 15px;
       padding-right: 15px;
     }
+  }
+
+  html, body{
+    font: 400 1rem "Poppins";
   }
 </style>

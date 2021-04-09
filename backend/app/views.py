@@ -1,24 +1,32 @@
-import os
-from app import app,  db, login_manager, cors
-from flask import render_template, request, jsonify, flash, session, _request_ctx_stack, g
-from flask_cors import cross_origin, CORS
-from flask_wtf import csrf
-from app.forms import RegisterForm, LoginForm
-from app.model import  accounts, auth, financial_statement, sales, transactions
-from app.model.financial_statement import Financialstmt, Financialstmtlineseq, Financialstmtlinealia, Financialstmtdesc, Financialstmtline
+import os, sys 
 import pandas as pd
-from sqlalchemy.event import listens_for
-import enum
-import secrets
-import jwt
-from flask_login import logout_user
+import jwt, secrets
 import hashlib, random
+from app import app,  db, login_manager, cors, csrf_, principal, admin_permission, \
+                owner_permission, employee_permission, fin_manger_permission
+# WTF Forms and SQLAlchemy Models 
+from app.forms import RegisterForm, LoginForm
+from app.model import  accounts, auth, sales, transactions
+from app.model.financial_statement import Financialstmt, Financialstmtlineseq, Financialstmtlinealia,\
+                                          Financialstmtdesc, Financialstmtline
+from sqlalchemy.event import listens_for
+
+from flask import render_template, request, jsonify, flash, session, \
+                  _request_ctx_stack, g
+from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
+
+# Flask-Login imports for session management. 
+from flask_login import logout_user, current_user, login_required, login_user
+from flask_principal import Principal, Permission, Identity, AnonymousIdentity
+from flask_principal import RoleNeed, UserNeed, identity_changed, identity_loaded
+
 
 token =''
 
 
 """
---------------------------------------- JWT Authorization Function ----------------------------------------------------------
+--------------------------------------- JWT Authorization Function and CSRF Handler----------------------------------------------------------
 """
 # Create a JWT @requires_auth decorator
 # This decorator can be used to denote that a specific route should check
@@ -56,14 +64,18 @@ def requires_auth(f):
 
 @app.route('/api/csrf', methods = ["GET"])
 def token(): 
-  token = csrf.generate_csrf(app.config['SECRET_KEY'])
-  # print(token)
-  return jsonify(token)
+    token = csrf.generate_csrf(app.config['SECRET_KEY'])
+    # print(token)
+    return jsonify(token)
 
 
 """
 --------------------------------------- Financial Statement Routes ----------------------------------------------------------
 """
+# def classifyAccounts():
+
+      
+      
 @app.route('/api/printstmtdata', methods= ["GET"])
 def stmt(): 
     resultstmt = []
@@ -87,64 +99,102 @@ def home():
 
     if request.method =="POST":
         #  print(request.form['description'])
-      return jsonify(data)
+        return jsonify(data)
 
 """
 --------------------------------------- User Authentication Routes ----------------------------------------------------------
 """
+
+@identity_loaded.connect_via(app)
+def on_identity_loaded (sender, identity): 
+    # Set th identity user object 
+    identity.user = current_user
+
+    # Update identity with a list of role for the user 
+    if hasattr(current_user, 'roles'): 
+        for role in current_user.roles: 
+        identity.provides.add(RoleNeed(role.name))
+
+
 @app.route('/api/auth/login', methods=["POST"])
 def login(): 
-    form = LoginForm()
+    form = LoginForm(request.form)
     if request.method == "POST" and form.validate_on_submit() and form.email.data:
         # Get the username and password values from the form.
         email = form.email.data
         passwordGiven = form.password.data
+        print({email, passwordGiven})
 
         #Check if email exists
-        user = session.query(Credentials).filter(Credentials.email == email)
+        user_email = auth.Credential.user_email
+        user_credential = User.query.filter_by(user_email=email).first()
+        # user = db.session.query(auth.Credential).filter(auth.Credential.user_email = email).first()
 
-        if not user:
-          flash("Sorry, Account not found")
-          return jsonify({error: 'redirect'})
-        else:
-          user_password = user.user_password
-          pass_salt = user.pass_salt
-          #Combine password and salt
-          passwordGiven = passwordGiven + pass_salt
-          #Generate the hash
-          passwordGiven = hashlib.sha256(passwordGiven.encode('utf-8')).hexdigest()
-          if user_password == passwordGiven:
-              role = user.role
+        if user is not None:           
+            user_password = user_credential.user_password      
+            if check_password_hash(user_password, passwordGiven):
+                # get user id, load into session
+                login_user(user_credential)
+                # Flask-Principal, register user identity into the system
+                identity_changed.send(app, identity = Identity(auth.Credential.userID))
+                role = user.role
 
-              if role =="Employee":
                 #Redirect to employee dashboard
-                pass
-              elif role =="Owner":
-                  #Redirect to owner dashboard
-                  pass
-              else:
+                with employee_permission.require()
+                    return jsonify({'access': 'employee', 'message': 'Login Successful, Entering Employee Dashboard'})
+                #Redirect to owner dashboard
+                with owner_permission.require()
+                    return jsonify({'access': 'owner','message': 'Login Successful' })
+            
                 #Redirect to Fmanager dashboard
-                return jsonify([{'message': "Login successful"}])
-          else:
-                # Not using flash messages so for errors also return jsonify tag as error and handle in client.
-           
-              return jsonify({'msg': 'success'})
+                with fin_manager_permission.require()
+                    return jsonify({'access': 'financialmanager', 'message': 'Login Successful, Entering Financial Dashboard'})
+                
+            else: 
+                return jsonify({'error msg': 'Login credentials failed: Please check email or password.'})
+            return jsonify({'error msg': 'Account not found, try again or Sign up.',  })
+    else: 
+        form_errors = form_errors(form)
+        return jsonify({'errors': form_errors})
+        
 
-@app.route('/add-user', methods = ["POST"])
-def addUser():
-  #Write code to add user to database
-  #Remember to sanitize data before putting in database
-  #Code to generate random salt below:
-  ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  chars=[]
-  for i in range(16):
-    chars.append(random.choice(ALPHABET))
-  salt = "".join(chars)
+                       
+@app.route('/api/auth/logout', methods = ['GET'])
+def logout():
+    logout_user()
 
-# @login_manager.user_loader
-# def load_user(id):
-#     user = User.query.get(int(id))
-#     return user
+    # Flask-Prinicpal send identity_changed to anonymous 
+    # Attach requires_auth decorator
+    return jsonify(message = [{'message': "You have been logged out successfully"}])
+          
+
+@app.route('/api/users/register', methods=["POST"])
+def register():
+    form = RegisterForm(request.form)
+    if request.method == "POST" and form.validate_on_submit():
+    
+        
+    #    Add form fields
+        
+        # Checks if another user has this email address
+        existing_email = db.session.query(User).filter_by(email=email).first()
+
+        # If unique email address and username provided then log new user
+        if existing_username is None and existing_email is None:
+            # user = User(username=username 
+
+            db.session.add(user)
+            db.session.commit()
+                                    
+            return jsonify(success =[{'message': 'Successfully registered'}])
+    else: 
+        error_list = form_errors(form)
+        return jsonify(errors= error_list)
+
+@login_manager.user_loader
+def load_user(id):
+    user = User.query.get(userID)
+    return user
 
 """
 --------------------------------------- Onboarding Routes (To be added)----------------------------------------------------------
@@ -176,11 +226,6 @@ def sucessful_prods():
 
 
 
-        
-@app.route('/api/auth/logout', methods = ['GET'])
-def logout():
-    logout_user()
-    return jsonify(message = [{'message': "You have been logged out successfully"}])
 
 """
 --------------------------------------- Product/Services Routes ----------------------------------------------------------
@@ -232,6 +277,7 @@ def products():
   data['tcost'] = tcost
   data['deliver'] = deliver
   return jsonify(data)
+
 """
 ------------------------------------------------------------------------------------------------------------
 """

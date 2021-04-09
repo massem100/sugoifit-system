@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 19aba07e041a
+Revision ID: f84412ebe95d
 Revises: 
-Create Date: 2021-04-05 02:19:25.030233
+Create Date: 2021-04-09 10:57:44.789043
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '19aba07e041a'
+revision = 'f84412ebe95d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -43,7 +43,7 @@ def upgrade():
     )
     op.create_table('financialstmtline',
     sa.Column('lineID', sa.Integer(), nullable=False),
-    sa.Column('line_name', sa.String(length=50), nullable=True),
+    sa.Column('line_name', sa.String(length=250), nullable=True),
     sa.Column('lineDesc', sa.String(length=50), nullable=True),
     sa.Column('tag', sa.String(length=50), nullable=True),
     sa.Column('sequence', sa.Integer(), nullable=True),
@@ -70,7 +70,7 @@ def upgrade():
     sa.PrimaryKeyConstraint('serviceID')
     )
     op.create_table('user',
-    sa.Column('userID', sa.String(length=5), nullable=False),
+    sa.Column('userID', sa.String(length=100), nullable=False),
     sa.Column('fname', sa.String(length=25), nullable=True),
     sa.Column('lname', sa.String(length=25), nullable=True),
     sa.Column('user_address', sa.String(length=50), nullable=True),
@@ -108,14 +108,14 @@ def upgrade():
     )
     op.create_index(op.f('ix_con_service_sale_item_serviceID'), 'con_service_sale_item', ['serviceID'], unique=False)
     op.create_table('credentials',
-    sa.Column('userID', sa.String(length=5), nullable=False),
-    sa.Column('role', sa.String(length=10), nullable=True),
-    sa.Column('email', sa.String(length=50), nullable=False),
+    sa.Column('userID', sa.String(length=100), nullable=False),
+    sa.Column('active', sa.Boolean(), nullable=False),
+    sa.Column('user_email', sa.String(length=50), nullable=False),
     sa.Column('user_password', sa.String(length=255), nullable=True),
-    sa.Column('pass_salt', sa.String(length=50), nullable=True),
     sa.ForeignKeyConstraint(['userID'], ['user.userID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('email'),
-    sa.UniqueConstraint('userID')
+    sa.PrimaryKeyConstraint('user_email'),
+    sa.UniqueConstraint('userID'),
+    sa.UniqueConstraint('user_email')
     )
     op.create_table('equity',
     sa.Column('equityID', sa.Integer(), autoincrement=True, nullable=False),
@@ -284,7 +284,7 @@ def upgrade():
     sa.Column('serv_price', sa.Integer(), nullable=True),
     sa.Column('taxAmt', sa.Integer(), nullable=True),
     sa.Column('serviceID', sa.String(length=11), nullable=True),
-    sa.Column('userID', sa.String(length=5), nullable=True),
+    sa.Column('userID', sa.String(length=100), nullable=True),
     sa.ForeignKeyConstraint(['serviceID'], ['service.serviceID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['userID'], ['user.userID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('ssiID')
@@ -418,6 +418,12 @@ def upgrade():
     op.create_index(op.f('ix_order_busID'), 'order', ['busID'], unique=False)
     op.create_index(op.f('ix_order_custID'), 'order', ['custID'], unique=False)
     op.create_index(op.f('ix_order_invoiceID'), 'order', ['invoiceID'], unique=False)
+    op.create_table('role',
+    sa.Column('rolename', sa.String(length=60), nullable=False),
+    sa.Column('email', sa.String(length=50), nullable=True),
+    sa.ForeignKeyConstraint(['email'], ['credentials.user_email'], ),
+    sa.PrimaryKeyConstraint('rolename')
+    )
     op.create_table('orderdetails',
     sa.Column('orderID', sa.String(length=10), nullable=False),
     sa.Column('detailsID', sa.String(length=10), nullable=False),
@@ -488,6 +494,7 @@ def downgrade():
     op.drop_index(op.f('ix_receipt_busID'), table_name='receipt')
     op.drop_table('receipt')
     op.drop_table('orderdetails')
+    op.drop_table('role')
     op.drop_index(op.f('ix_order_invoiceID'), table_name='order')
     op.drop_index(op.f('ix_order_custID'), table_name='order')
     op.drop_index(op.f('ix_order_busID'), table_name='order')

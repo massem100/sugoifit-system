@@ -2,10 +2,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf import csrf
-# from flask_mysqldb import MySQL
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, create_access_token
-#from flask_security import Security
+from flask_principal import Principal, Permission, Identity, AnonymousIdentity
+from flask_principal import RoleNeed, UserNeed
+
+
 
 username = 'root'
 password = 'SQLpass'
@@ -19,7 +21,8 @@ db = SQLAlchemy(app)
 
 
 # CSRF Attack Protection
-csrf_wrap = csrf.CSRFProtect(app)
+csrf_ = csrf
+csrf_wrap = csrf_.CSRFProtect(app)
 
 # Cross Site Resource Sharing Protection
 cors = CORS(app, support_credentials=True, resources = {r"/api/*": {"origins": "http://localhost:3000"}})
@@ -32,6 +35,24 @@ jwt_token = app.config['TOKEN_KEY'] = "3cc8464f0b2eef61bf0872ebf640505db394175ed
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+# Flask-Principal Setup
+principal = Principal(app)
+principal.init_app(app)
+
+
+# Admin has access to admin interface to manage all businesses.
+admin_permission = Permission(RoleNeed('admin'))
+
+# Owner can access all areas of the system 
+owner_permission= Permission (RoleNeed('owner'))
+
+# Employee should not have access to financial information 
+# Employee should not be able to delete transactions. 
+employee_permission= Permission (RoleNeed('employee'))
+
+# Financial Manager should only be able to see invoices and Accounting statements.
+fin_manger_permission= Permission (RoleNeed('manager'))
 
 
 app.config.from_object(__name__)

@@ -11,8 +11,7 @@ class RegisterForm(FlaskForm):
     first_name = StringField('first Name', validators=[InputRequired('First name field should not be empty')])
     last_name = StringField('last Name', validators=[InputRequired('Last Name field should not be empty')])
     business_name = StringField('business name', validators=[InputRequired('Please enter your business name')])
-    revenue = IntegerField ('revenue', validators =[InputRequired('If you have not started earning enter 0')])
-
+    
 class LoginForm(FlaskForm):
     email = EmailField('Email', validators = [InputRequired('Email Field should not be  empty'), Email()])
     password = PasswordField('Password', validators = [InputRequired('Please enter a password')]) 
@@ -25,3 +24,5 @@ class orderForm(FlaskForm):
     phone_num = StringField ('Telephone', validators =[InputRequired('Please enter your your phone number')])
     email = EmailField('Email', validators = [InputRequired('Email Field should not be  empty'), Email()])
     submit = SubmitField('Submit')
+
+    
