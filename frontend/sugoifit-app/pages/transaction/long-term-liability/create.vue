@@ -9,7 +9,7 @@
       ref="observer"
       v-slot="{handleSubmit}"
     >
-      <b-form @submit.stop.prevent="handleSubmit(onSubmit)">
+      <b-form id = "LTLiabForm" @submit.stop.prevent="handleSubmit(onSubmit)">
         <b-row>
           <b-col cols="12" class="text-info mb-3">Add Long Term Liability</b-col>
           <b-col class="mb-2 c-box" xl="3" md="6" sm="12">

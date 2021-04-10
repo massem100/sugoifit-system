@@ -10,22 +10,31 @@
                 <img class = "login-image" src="~assets/uploads/login.svg" alt="">
             </div>
             
-            <div class="form-container">
+            <div class="form-container p-3">
                     <div class = "d-flex flex-column justify-content-start">
-                        <h2 class ="text-center"> Login </h2>   
+                        <h3 class ="text-center"> Sign Up </h3>   
                         <div id="d-flex justify-content-center">               
                             <p class ="login-text tcext-center"> Welcome back, enter your username and password</p>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-center m-3">
+                    <div class="d-flex justify-content-center ml-3">
                         <form id = "LoginForm" class ="d-flex flex-column" @submit.prevent = "LoginUser" method ="POST">
                             <input type="hidden" name="_token" :value="token">
-                           
-                            <label class =" form-label text-left" for ="email">Email:</label>
+                    
+                            <label class =" form-label mt-3 text-left" for ="first_name">First Name:</label>
+                            <input class ="form-control mt-2" type="text" name="first_name" id="first_name">
+
+                            <label class =" form-label mt-3 text-left" for ="last_name">Last Name:</label>
+                            <input class ="form-control mt-2" type="text" name="last_name" id="last_name">
+                        
+                            <label class =" form-label mt-3 text-left" for ="email">Email:</label>
                             <input class ="form-control mt-2" type="text" name="email" id="email">
                         
-                            <label class ="form-label mt-4" for="password"> Password:</label> 
+                            <label class ="form-label mt-3" for="password"> Password:</label> 
                             <input class ="form-control mt-2" type="text" name="password" id="password">
+                           
+                            <label class ="form-label mt-3" for="bus_name"> Business Name:</label> 
+                            <input class ="form-control mt-2 " type="text" name="bus_name" id="bus_name">
                            
                             <div class ="d-flex flex-column align-items-center">
                                 <div  id="msgBox">
@@ -100,7 +109,7 @@ export default {
 <style scoped>
     .login-page{
         width: 100%; 
-        height: 100vh;
+        min-height: 100vh;
         display:flex;
         justify-content: center;
         align-items: center;
@@ -143,7 +152,8 @@ export default {
     }
 
     .form-container{
-          width:50rem;
+        margin-top: 10rem;
+        width:50rem;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -209,7 +219,7 @@ export default {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        margin: 10px;
+        margin-top: 8rem;
         width: 40vw;
 
     }

@@ -6,10 +6,10 @@ from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 
 class RegisterForm(FlaskForm):
-    email = EmailField('Email', validators = [InputRequired('Email Field should not be  empty'), Email()])
-    password = PasswordField('password', validators=[InputRequired('Please enter a password.')])
     first_name = StringField('first Name', validators=[InputRequired('First name field should not be empty')])
     last_name = StringField('last Name', validators=[InputRequired('Last Name field should not be empty')])
+    email = EmailField('Email', validators = [InputRequired('Email Field should not be  empty'), Email()])
+    password = PasswordField('password', validators=[InputRequired('Please enter a password.')])
     business_name = StringField('business name', validators=[InputRequired('Please enter your business name')])
     
 class LoginForm(FlaskForm):
@@ -25,4 +25,6 @@ class orderForm(FlaskForm):
     email = EmailField('Email', validators = [InputRequired('Email Field should not be  empty'), Email()])
     submit = SubmitField('Submit')
 
-    
+
+class NCAForm(FlaskForm): 
+    pass

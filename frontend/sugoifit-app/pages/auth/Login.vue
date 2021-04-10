@@ -78,6 +78,7 @@ export default {
             let self = this;
             let loginForm = document.getElementById("LoginForm");
             let form_data = new FormData(loginForm);
+            form_data.append('form id', loginForm.getAttribute("id"));
             let PATH_API = 'auth/login';
                 this.$axios({
                     method: "POST",
@@ -87,7 +88,12 @@ export default {
                     url: `/api/${PATH_API}`,
                     data: form_data,
                     }).then (res => {
-                        this.$router.replace({name: 'index'});
+                        if (res){
+                            console.log(res);
+                        }else{
+                            this.$router.push({name: 'index'});
+                        }
+                        
                     }), error =>{
                         console.log(error);
                     }

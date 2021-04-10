@@ -45,10 +45,10 @@ class Financialstmtline(db.Model):
 class Financialstmtdesc(db.Model):
     __tablename__ = 'financialstmtdesc'
     __table_args__ = tuple(
-        [UniqueConstraint('company_id',
-                          'financial_statement_line_id',
-                          'fiscal_year',
-                          'fiscal_period')])
+        [db.UniqueConstraint('busID',
+                          'fsLineID',
+                          'fiscalYear',
+                          'fiscalPeriod')])
     fStmtDescID = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'),nullable=False, unique=True)
     fsLineID = db.Column(db.ForeignKey('financialstmtline.lineID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, unique=True)
@@ -62,9 +62,9 @@ class Financialstmtdesc(db.Model):
 
     busines = db.relationship('Busines')
 
-    def __init__(self, fStmtDescID, companyID, fsLineID, fiscalPeriod, fillingDATE, fiscalYear, startDATE, endDATE, amount):
+    def __init__(self, fStmtDescID, busID, fsLineID, fiscalPeriod, fillingDATE, fiscalYear, startDATE, endDATE, amount):
         self.fStmtDescID = fStmtDescID
-        self.companyID = companyID
+        self.busID = busID
         self.fsLineID = fsLineID
         self.fiscalPeriod = fiscalPeriod
         self.fillingDATE = fillingDATE
