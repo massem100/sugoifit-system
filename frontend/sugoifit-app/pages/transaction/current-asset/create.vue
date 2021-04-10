@@ -1,8 +1,6 @@
 <template>
-  <div class="d-flex">
-    <side-bar></side-bar>
+  <div class="d-flex mx-3">
     <b-container fluid>
-      <top-bar/>
       <h3 class="m-2">Add Transaction</h3>
       <transaction-top/>
       <validation-observer
@@ -160,6 +158,7 @@
     import {ValidationObserver, ValidationProvider} from "vee-validate";
 
     export default {
+        layout:'dashboard',
         name: "current-asset-create",
         components: {
             ValidationProvider,

@@ -31,7 +31,7 @@
                                 <div  id="msgBox">
                                     <p> {Display error messages here} </p>
                                 </div>
-                                <button @click= "ChangeRoute" class="btn submit" id="submit"> Submit </button>
+                                <button  class="btn submit" id="submit"> Submit </button>
                                 <p class ="login-text m-3">Dont have an account? <a href="">Sign up your business! </a></p>
                             </div>
                         </form>
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import sfNavBar from '../components/sf-nav-bar.vue'
+import sfNavBar from '../../components/sf-nav-bar.vue'
 
 export default {
   components: { sfNavBar },
@@ -72,30 +72,27 @@ export default {
     }, 
     methods:{
         ChangeRoute: function(){
-            this.$router.push({name: 'index'});
+            // this.$router.push({name: 'index'});
         },
         LoginUser: function () {
-      let self = this;
-      let loginForm = document.getElementById("LoginForm");
-      let form_data = new FormData(loginForm);
-      fetch("http://localhost:8080/api/auth/login", {
-        method: "POST",
-        body: form_data,
-        headers: {
-          "X-CSRFToken": token,
-        },
-        credentials: "same-origin",
-       })
-        .then(function (response) {
-          return response.json();
-      })
-      .then(function (jsonResponse){
-            console.log("working");
-      }).catch(function (error) {
-          console.log(error);
-        });
-
-    }
+            let self = this;
+            let loginForm = document.getElementById("LoginForm");
+            let form_data = new FormData(loginForm);
+            let PATH_API = 'test';
+                this.$axios({
+                    method: "POST",
+                    headers:{
+                        'Content-Type': 'application/json',
+                    },
+                    url: `/api/${PATH_API}`,
+                    data: form_data,
+                    }).then (res => {
+                        console.log("working");
+                        this.$router.push({name: 'index'});
+                    }), error =>{
+                        console.log(error);
+                    }
+                    }
     }
     }
 

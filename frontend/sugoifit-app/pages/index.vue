@@ -1,110 +1,62 @@
 <template>
-  <div class="d-flex flex-row ">
-    <!-- Side Bar Component -->
-        <side-bar class = "side-bar">Check</side-bar>
-
-        <div class="dashboard-main">
-        <!-- Overview -->
-        <div class="d-flex flex-column w-100">
-            <div class="d-flex flex-row align-items-center settings_bar ml-auto ">
-              <h6 class="d-flex ">Jane S.</h6>
-              <img class="m-2" id="top-user-icon" src="~assets/uploads/Profile_icon.svg" alt="">
-              <img class="m-2" src="~assets/uploads/settings.svg" alt="">
-            </div>
-            <div class="d-flex flex-row">
-                <div class="welcome-heading">
-                  <h5 class=""> Welcome Back, <span> Jane</span></h5>
-                  <p class="">Lorem ipsum dolor sit amet consectetur adi</p>
-         </div>
-                   
-            </div>
-
-            <div class="time_box ml-auto">
-              <p>7:00 PM</p>
-              <p>EST</p>
-              <p>12:00 AM</p>
-              <p>LONDON</p>
-            </div>
+  <div class="mx-3">
+    <b-row class="justify-content-between mx-0 flex-nowrap">
+      <div class="welcome-heading">
+        <h5 class="font-weight-bold"> Welcome Back, <span> Jane</span></h5>
+        <p class="">Lorem ipsum dolor sit amet consectetur adi</p>
+      </div>
+      <div class="d-flex font-weight-bold">
+        <div class="m-3 text-center">
+          <p>EST</p>
+          <p>7:00 PM</p>
         </div>
-          <!-- Quick Actions -->
-          <div class="quick_actions_div d-flex flex-row p-2 text-center">
-              <nuxt-link class="d-flex flex-column quick_actions" :to="{name:'add-transaction'}">
-                <img src="" alt=""><i class="fas fa-plus"></i><span>Add Transaction</span>
-              </nuxt-link>
-              <div class="d-flex flex-column quick_actions"><img src="" alt=""><i
-                class="fas fa-plus"></i><span> Place Order</span></div>
-              <div class="d-flex flex-column quick_actions"><img src="" alt=""><i class="fas fa-plus"></i><span> Create Invoice</span>
-              </div>
-              <div class="d-flex flex-column quick_actions"><img src="" alt=""><i class="fas fa-plus"></i><span> Create Invoice</span>
-            </div>
-
-          </div>
+        <div class="m-3 text-center">
+          <p>LONDON</p>
+          <p>12:00 AM</p>
         </div>
+      </div>
+    </b-row>
+    <b-row class="quick_actions_div p-2 text-center mx-0">
+      <nuxt-link class="quick_actions" :to="{name:'add-transaction'}">
+        <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon><span>Add Transaction</span>
+      </nuxt-link>
 
+      <div class="quick_actions">
+        <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon><span> Place Order</span>
+      </div>
 
- </div>
+      <nuxt-link class="quick_actions" :to="{name:'add-invoice'}">
+        <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon><span> Create Invoice</span>
+      </nuxt-link>
+
+      <div class="quick_actions">
+        <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon><span> Create Invoice</span>
+      </div>
+
+    </b-row>
+  </div>
 
 </template>
 
 <script>
-    
-import SideBar from '/components/SideBar.vue'
-export default {
-    components: { SideBar },
-    name: 'Dashboard',
-    head(){
-        return{
-            title:"Dashboard",
-            meta: [
-                {
-                    hid:"description", 
-                    name: "description",
-                    content: "SugoiFit Business Management System Dashboard"
-                }
-            ]
-        };
-    },
-    methods: {
-
-    }, 
-    created: function () {
-    let self = this;
-    fetch("http://localhost:8080/api/test", {
-      method: "GET",
-      headers: {
-        "accept": "application/json",
-      },
-      credentials: "cross-origin",
-    })
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (jsonResponse) {
-       console.log(jsonResponse);
-      })
-      .catch(function (error) {
-        // console.log(error);
-      });    
-  }
-
-    };
-
-    
+    export default {
+        layout: 'dashboard',
+        name:'dashboard',
+        head() {
+            return {
+                title: "Dashboard",
+                meta: [
+                    {
+                        hid: "description",
+                        name: "dashboard",
+                        content: "SugoiFit Business Management System Dashboard"
+                    }
+                ]
+            };
+        },
+    }
 </script>
 
-<style scoped>
-  #chartDiv {
-    width: 50%;
-    height: 30%;
-    position: absolute;
-    top: 300px;
-    right: 80px;
-  }
-  .side-bar{
-    position: fixed;
-  }
+<style lang="scss">
 
-  .dashboard-main{
-    margin-left: 20rem;
-  }
 </style>

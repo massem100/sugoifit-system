@@ -4,10 +4,10 @@
 * ==========================================================
 */
 nav.side-navbar {
-  background: #A7E4EC;
+  background: #e9fcff;
   min-width: 320px;
   max-width: 320px;
-  min-height: 100vh;
+  max-height: 100vh;
   color: #686a76;
   box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
   z-index: 9;
@@ -94,8 +94,8 @@ nav.side-navbar ul li a {
 }
 
 nav.side-navbar ul li a:hover {
-  background-color: #2d00a9;
-  border-left: 4px solid rgb(76, 6, 83);
+  background-color: #7CC3CD;
+  border-left: 4px solid rgb(2, 67, 78);
   color: #fff;
 }
 
@@ -105,13 +105,13 @@ nav.side-navbar ul li li a {
 }
 
 nav.side-navbar ul li.active > a {
-  background-color: #00A99D;
+  background-color: #7CC3CD;
   color: #fff;
   border-left: 4px solid rgb(6, 83, 78);
 }
 
 nav.side-navbar ul li.active > a:hover {
-  background-color: #00A99D;
+  background-color: #7CC3CD;
 }
 
 nav.side-navbar ul li li.active > a {
@@ -186,7 +186,7 @@ nav.side-navbar.shrinked ul li.active > a i {
 }
 
 nav.side-navbar.shrinked .sidebar-header .title {
-  display: none;
+  /* display: none; */
 }
 
 /* SIDEBAR MEDIAQUERIES ----------------------------------- */
@@ -245,7 +245,7 @@ nav.side-navbar.shrinked .sidebar-header .title {
     color: #fff;
   }
   nav.side-navbar .sidebar-header .title {
-    display: none;
+    /* display: none; */
   }
   nav.side-navbar.shrinked {
     margin-left: 0;
@@ -280,15 +280,17 @@ Added Styles
 }
 
 .nav_logo span{
-  color: #428B95
+  color: #428B95;
 }
+
 .profile{
   margin-bottom: 15px;
   display: grid;
   grid-template-areas: 'name name '
                         'ID ID'
                         'role role';
-  grid-column-gap: 24px;
+  width: 45%;
+  /*background-color:#8e81f1;*/
   z-index: 1;
 }
 
@@ -303,12 +305,6 @@ Added Styles
   font-size: 16px;
 }
 
-#profile-icon{
-  width: 80px;
-  height:80px;
-  align-items: center;
-  margin-top: 5px;
-}
 
 #role{
   grid-area: role;
@@ -329,6 +325,7 @@ Added Styles
 .list-unstyled{
   padding-right: 2px;
 }
+
 
 .list-unstyled li {
   background-color: white;

@@ -11,6 +11,7 @@
             </div>
         </div>
     </div>
+   
 </template>
 
 
@@ -101,6 +102,9 @@ methods: {
         background-color: rgb(79, 201, 218,0.5);
         box-shadow: 0 2px 2px 0 rgba(107, 104, 104, 0.15), 0 6px 20px 0 rgba(119, 114, 114, 0.15);
     
+    }
+    .onboard-img{
+        width: 100vw;
     }
     /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
