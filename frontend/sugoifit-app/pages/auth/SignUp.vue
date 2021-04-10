@@ -1,295 +1,189 @@
 <template>
-    
-    <div class=" login-page">
-        <!-- Add nav component here -->
-        <!-- <sf-nav-bar class="w-100"/> -->
-
-        <div class="w-100 d-flex flex-row ">
-            <div  class="login-div">
-                
-                <img class = "login-image" src="~assets/uploads/login.svg" alt="">
-            </div>
+    <div id="entirePage">
+        <div id="logo">
+                <h2>SugoiFit</h2>
+        </div>
+        <div id="leftColumn">
             
-            <div class="form-container p-3">
-                    <div class = "d-flex flex-column justify-content-start">
-                        <h3 class ="text-center"> Sign Up </h3>   
-                        <div id="d-flex justify-content-center">               
-                            <p class ="login-text tcext-center"> Welcome back, enter your username and password</p>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center ml-3">
-                        <form id = "LoginForm" class ="d-flex flex-column" @submit.prevent = "LoginUser" method ="POST">
-                            <input type="hidden" name="_token" :value="token">
-                    
-                            <label class =" form-label mt-3 text-left" for ="first_name">First Name:</label>
-                            <input class ="form-control mt-2" type="text" name="first_name" id="first_name">
+            <div id="logoHolder">
+                <div id="square1">
 
-                            <label class =" form-label mt-3 text-left" for ="last_name">Last Name:</label>
-                            <input class ="form-control mt-2" type="text" name="last_name" id="last_name">
-                        
-                            <label class =" form-label mt-3 text-left" for ="email">Email:</label>
-                            <input class ="form-control mt-2" type="text" name="email" id="email">
-                        
-                            <label class ="form-label mt-3" for="password"> Password:</label> 
-                            <input class ="form-control mt-2" type="text" name="password" id="password">
-                           
-                            <label class ="form-label mt-3" for="bus_name"> Business Name:</label> 
-                            <input class ="form-control mt-2 " type="text" name="bus_name" id="bus_name">
-                           
-                            <div class ="d-flex flex-column align-items-center">
-                                <div  id="msgBox">
-                                    <p> {Display error messages here} </p>
-                                </div>
-                                <button  class="btn submit" id="submit"> Submit </button>
-                                <p class ="login-text m-3">Dont have an account? <a href="">Sign up your business! </a></p>
-                            </div>
-                        </form>
-                    </div>
-                    
-            </div> 
-        </div>  
+                </div>
+                <div id="square2">
+
+                </div>
+
+            </div>
+        </div>
+
+        <div id="rightColumn">
+            <h4> Sign Up </h4>
+            <p>Welcome to SugoiFit! Fill out the form to Sign Up.</p>
+            <form> 
+                <div style="float:left;">
+                    <label for="firstname">First Name</label>
+                    <input type="text" name="firstname" id="firstname">
+                </div>
+                <br>
+                <div style="float:left;">
+                    <label for="lastname">Last Name</label>
+                    <input type="text" name="lastname" id="lastname">
+                </div>
+                <br>
+                <div style="float:left;">
+                    <label for="b_name">Business Name</label>
+                    <input type="text" name="b_name" id="b_name">
+                </div>
+                <br>
+                <div style="float:left;">
+                    <label for="email">E-Mail</label>
+                    <input type="email" name="email" id="email">
+                </div>
+                <br>
+                <div style="float:left;">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password">
+                </div>
+                <br>
+                <div style="float:left;">
+                    <label for="password2">Confirm Password</label>
+                    <input type="password" name="password" id="password2">
+                </div>
+                <br>
+                <div style="float:left;">
+                    <label for="revenue">Revenue</label>
+                    <input type="number" name="revenue" id="revenue" pattern="^\d*(\.\d{0,2})?$">
+                </div>
+            
+
+                <div id="disclaimer">
+                    <p><small>This information will not be saved but used only
+                    to determine the scale of your business </small> </p>
+                </div>
+
+                <div  id="msgBox">
+                    <p> {Display error messages here} </p>
+                </div>
+
+                <div>
+                    <button id="submitBtn" type="button">Sign Up</button>
+                </div>
+
+                <div> 
+                    <a href=""> Dont have an account? Sign up your business! </a>
+                </div>
+            </form>
+
+            
+        </div>
     </div>
+    
 </template>
 
 <script>
-import sfNavBar from '../../components/sf-nav-bar.vue'
-
 export default {
-  components: { sfNavBar },
-    name: 'Login',
-    head(){
-    return{
-    //   meta: [{
-    //         name:"csrf-token",
-    //         content: "{{ csrf_token()}}"
-    //   }
-                
-    
-    //   ]
-    }
-  },
-  mounted(){
-      
-     
-  },
+    name: 'SignUp',
     data(){
         return{
-           token: ''
-           
+
         }
-
-    }, 
-    methods:{
-        ChangeRoute: function(){
-            // this.$router.push({name: 'index'});
-        },
-        LoginUser: function () {
-            let self = this;
-            let loginForm = document.getElementById("LoginForm");
-            let form_data = new FormData(loginForm);
-            let PATH_API = 'auth/login';
-                this.$axios({
-                    method: "POST",
-                    headers:{
-                        'Content-Type': 'application/json',
-                    },
-                    url: `/api/${PATH_API}`,
-                    data: form_data,
-                    }).then (res => {
-                        this.$router.replace({name: 'index'});
-                    }), error =>{
-                        console.log(error);
-                    }
-                    }
     }
-    }
-
+    
+}
 </script>
 
 <style scoped>
-    .login-page{
-        width: 100%; 
-        min-height: 100vh;
-        display:flex;
-        justify-content: center;
-        align-items: center;
-       
-        /* background-color: green; */
-    }
-    .login-text{
-        font:400 1rem "Poppins";
-    }
-    .login-image{
-        margin: 0.8;
-        width: 40rem;
-        /* background-color: navy; */
-        display: none;
-    }   
-  
-    .submit{
-        display:flex;
-        width: 10rem;
-        height: 3rem;
-        background-color: #428B95;
-        border-radius: 80px;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        color: white;
-       
-    }
-    #msgBox{
-        margin-top:16px;
-        font:400 1rem "Poppins";
-    }
-   
-    #LoginForm input{
-        width: 24rem;
-        height: 2.7rem;
-        border-radius: 20px;
-        box-shadow: 1px 2px 12px #d6d8d8;
-
-    }
-
-    .form-container{
-        margin-top: 10rem;
-        width:50rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-      /* Extra small devices (phones, 600px and down)
-@media only screen and (max-width: 600px) {
-    .login-page{
-        background-color: green;
+    @media(min-width: 768px){
+        #entirePage{
+            display:flex;
+            align-items:center;
+            justify-content: center;
+        }
     }
     
-
-} */
-
-/* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) {
-  
-    .login-page{
-        /* background-color: purple; */
-        width: 100%; 
-        height: 100vh;
-        display:flex; 
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        /* background-color: green; */
-    }
-    .form-container{
-        margin: 2rem;
-        /* background-color: beige; */
-        display:flex; 
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-}
-
-/* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 768px) {
-    .login-page{
-        /* background-color: yellow; */
-    }
-
-    .login-div{
-        margin: 1rem;
-        /* background-color: beige; */
-        display:flex;
-        justify-content: center;  
-        align-items: center;
-    }
-    
-    .login-image{
-        margin: 1rem;
-        /* padding: 20px; */
-        display: block;
-        width: 50vw;
-        height: 80vh;
-    }
-    
-    .form-container{
-        /* background-color: #428B95; */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-top: 8rem;
-        width: 40vw;
-
-    }
-      #LoginForm input{
-        width: 18rem;
-        height: 2.4rem;
-        border-radius: 20px;
-        box-shadow: 1px 2px 12px #d6d8d8;
-      
-      }
-
-      .login-text{
-          font-size: 0.8rem;
-          margin: 10px;
-          text-align: center;
-      }
-}
-
-/* Large devices (laptops/desktops, 992px and up) */
-@media only screen and (min-width: 992px) {
-    .login-page{
-        /* background-color: red; */
-    }
-
-    #LoginForm input{
-        width: 24rem;
-    }
-    .login-image{
-         margin: 1rem;
-        /* padding: 20px; */
-        display: block;
-        width: 30rem;
-        /* height: 80vh; */
-    }
-
-    .login-text{
-         font-size: 1rem;
-         margin: 10px;
-         text-align:center;
-
-    }
-}
-
-/* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-width: 1200px) {
-    .login-page{
-        /* background-color: blue; */
+    input[type=text], input[type=password],input[type=number],input[type=email] {
+        align-content: center;
+        width: 500px;
+        height: 45px;
+        left: 392px;
+        top: 171px;
+        border: none;
+        background: #DFFBFF;
+        border-radius: 15px;
+        display:block;
         
     }
 
-    .form-container{
-        /* background-color: tomato; */
-        width:50vw; 
-        height: 100vh;
+    label{
+        display:block;
     }
 
-    .login-div{
-        width: 50vw;
-        height:100vh;
-        /* background-color: gold; */
-    }
-    #loginForm input{
-        width: 32rem;
-    }
-
-    .login-image{
-        /* background: #428B95; */
-        width:100%;
+    #submitBtn{
+        background-color: #4DC4D4;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: pointer;
+        width: 35%;
+        border-radius: 10px;
     }
 
+    #logo{
+        position: absolute;
+        top: 5%;
+        left:5%;
+        
+    }
+
+    h2{
+      font-family: fantasy; 
+      color: black; 
+    }
+    h4{
+      font-family: fantasy; 
+      color: black; 
+    }
+
+
+    #square2{
+        position: absolute;
+        width: 216px;
+        height: 300px;
+        left: 134px;
+        top: 70px;
+
+        background: #DFFBFF;
+    }
+
+    #square1{
+        position: absolute;
+        width: 216px;
+        height: 300px;
+        
+        left: 36px;
+        top: 120px;
+
+        background: #7CC3CD;
+    }
+
+    #leftColumn{
+        flex: 5%;
+        padding-left: 15%;
+        padding-bottom: 30%;
+        align-items: flex-start;
+        position: relative;
+        left: 10%;
+        top: 0%; 
+        
     
-}
+    }
+
+    #rightColumn{
+        padding-top: 5%;
+        padding-right: 35%;
+        
+        
+    }
+
 </style>

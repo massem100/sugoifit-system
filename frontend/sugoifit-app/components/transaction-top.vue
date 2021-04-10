@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-row py-2 text-center flex-wrap">
+  <div class="d-flex py-2 text-center flex-wrap">
     <button class="btnStyle" id="assetBtn" tabindex="0">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
       <span>Add Asset</span>
@@ -55,7 +55,6 @@
   .btnStyle {
     margin: 5px;
     background-color: #DFFBFF;
-    width: 10rem;
     padding: 10px;
     display: flex;
     flex-direction: column;

@@ -1,64 +1,65 @@
 <template>
   <v-navigation-drawer
     id="app-drawer"
+    :value="drawer"
     app
     floating
     mobile-break-point="991"
     width="260"
+    style="background: #C7ECF2;"
+    @input="navChanged"
   >
-    <v-img
-     style="background: #C7ECF2;"
-      height="100%"
+    <v-layout
+      class="fill-height"
+      tag="v-list"
+      column
     >
-      <v-layout
-        class="fill-height"
-        tag="v-list"
-        column
-      >
-        <v-list dense>
-          <v-list-tile avatar to="/">
+      <v-list dense>
+        <v-list-tile avatar to="/">
           <v-list-tile-avatar
             color="white"
           >
-              <v-img
-                :src="logo"
-                height="34"
-                contain
-              />
-            </v-list-tile-avatar>
-            <v-list-tile-title class="title">
-              SugoiFit Financials
-            </v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-        <v-divider/>
-
-        <div class="d-flex flex-row">
-          <div class="profile mt-3 mb-2 ">
-                <h6 id = "profile_name"> Jane S.</h6>
-                <h6  id= "profile_ID"> ID 1234567</h6>
-                <h6 id ="role"> Role: Business Owner</h6>     
-          </div>
-          <img class ="" id = "profile-icon" src="~/assets/uploads/Profile_icon.png" alt="">
-         
-          </div>
-
-
-        <v-list dense>
-          <v-list-tile
-            v-if="responsive"
-          >
-            <v-text-field
-              class="purple-input search-input"
-              label="Search..."
-              color="purple"
+            <v-img
+              :src="logo"
+              height="34"
+              contain
             />
-          </v-list-tile>
+          </v-list-tile-avatar>
+          <v-list-tile-title class="title">
+            SugoiFit Financials
+          </v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+      <v-divider/>
+
+      <div class="d-flex flex-row align-items-center mx-3">
+        <div class="profile mt-3 mb-2 ">
+          <h6 id="profile_name" class="my-1 font-weight-bold"> Jane S.</h6>
+          <h6 id="profile_ID" class="my-1"> ID 1234567</h6>
+          <h6 id="role" class="my-1"> Role: Business Owner</h6>
+        </div>
+        <v-img id="profile-icon" :src="user" alt="" aspect-ratio="1" class="mr-2"/>
+
+      </div>
+
+
+      <v-list>
+        <v-list-tile
+          v-if="responsive"
+          class="my-3"
+        >
+          <v-text-field
+            class="purple-input search-input"
+            label="Search..."
+            color="purple"
+          />
+        </v-list-tile>
+        <div v-for="(link, i) in links"
+             :key="i">
           <v-list-tile
-            v-for="(link, i) in links"
-            :key="i"
+            v-if="link.to"
             :to="link.to"
-            avatar
+            active-class="secondary white--text"
             class="v-list-item"
           >
             <v-list-tile-action>
@@ -68,65 +69,124 @@
               v-text="link.text"
             />
           </v-list-tile>
-        </v-list>
-      </v-layout>
-    </v-img>
+          <v-list-group
+            v-else
+            class="v-list-item"
+            active-class="secondary"
+          >
+            <template v-slot:activator>
+              <v-list-tile>
+                <v-list-tile-action>
+                  <v-icon>{{ link.icon }}</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-title>{{ link.text }}</v-list-tile-title>
+              </v-list-tile>
+            </template>
+            <v-list-tile
+              v-for="subItem in link.subItems"
+              :key="subItem.text"
+              :to="subItem.to"
+              class="v-list-item"
+              active-class="secondary white--text"
+            >
+              <v-list-tile-content>
+                <v-list-tile-title>{{ subItem.text }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list-group>
+        </div>
+
+
+      </v-list>
+    </v-layout>
   </v-navigation-drawer>
 </template>
 
 <script>
-  // Utilities
-  import { mapActions, mapGetters } from 'vuex'
+    // Utilities
+    import {mapActions, mapGetters} from 'vuex'
 
-  export default {
-    data() {
-      return {
-        logo: '/vuetifylogo.png',
-        links: [
-          {
-            to: '/dashboard',
-            icon: 'mdi-view-dashboard',
-            text: 'Dashboard'
-          },
-          {
-            to: '/user-profile',
-            icon: 'mdi-account',
-            text: 'Manage Products'
-          },
-          {
-            to: '/table-list',
-            icon: 'mdi-clipboard-outline',
-            text: 'Manage Sales'
-          },
-          {
-            to: '/typography',
-            icon: 'mdi-format-font',
-            text: 'Financial Statements'
-          },
-          {
-            to: '/icons',
-            icon: 'mdi-chart-bubble',
-            text: 'View Reports'
-          },
-          
-        ],
-        responsive: true
-      }
-    },
- 
-    mounted () {
-      this.onResponsiveInverted()
-      window.addEventListener('resize', this.onResponsiveInverted)
-    },
-    beforeDestroy () {
-      window.removeEventListener('resize', this.onResponsiveInverted)
-    },
-    methods: {
-        onResponsiveInverted() {
-        this.responsive = window.innerWidth < 991;
-      }
+    export default {
+        data() {
+            return {
+                logo: require('~/assets/uploads/align-left.png'),
+                user: require('~/assets/uploads/Profile_icon.png'),
+                links: [
+                    {
+                        to: '/',
+                        icon: 'mdi-view-dashboard',
+                        text: 'Dashboard'
+                    },
+                    {
+                        to: null,
+                        icon: 'mdi-account',
+                        text: 'Manage Products',
+                        subItems: [
+                            {
+                                to: '/manageProducts/analytics',
+                                icon: 'mdi-view-dashboard',
+                                text: 'Analytics'
+                            }
+                        ]
+                    },
+                    {
+                        to: '/table-list',
+                        icon: 'mdi-clipboard-outline',
+                        text: 'Manage Sales'
+                    },
+                    {
+                        to: '/typography',
+                        icon: 'mdi-format-font',
+                        text: 'Financial Statements'
+                    },
+                    {
+                        to: null,
+                        icon: 'mdi-chart-bubble',
+                        text: 'View Reports',
+                        subItems: [
+                            {
+                                to: '/reports/charts',
+                                icon: 'mdi-view-dashboard',
+                                text: 'Charts'
+                            },
+                            {
+                                to: '/projectionsRecommendations',
+                                icon: 'mdi-view-dashboard',
+                                text: 'Projections & recommendations'
+                            }
+                        ]
+                    },
+
+                ],
+                responsive: true
+            }
+        },
+        computed: {
+            ...mapGetters({
+                drawer: 'app/getDrawer'
+            })
+        },
+
+        mounted() {
+            this.onResponsiveInverted()
+            window.addEventListener('resize', this.onResponsiveInverted)
+        },
+        beforeDestroy() {
+            window.removeEventListener('resize', this.onResponsiveInverted)
+        },
+        methods: {
+            ...mapActions({
+                setUsername: 'user/setUsername',
+                setDrawer: 'app/setDrawer'
+            }),
+            onResponsiveInverted() {
+                this.responsive = window.innerWidth < 991;
+            },
+            navChanged(e) {
+                this.setDrawer(e)
+            }
+        }
     }
-  }
 </script>
 
 <style lang="scss">
@@ -153,6 +213,14 @@
         color: #292929;
       }
     }
+    .v-list__tile--active{
+      .v-list__tile__title {
+        color: white!important;
+      }
+      .title{
+        color: #292929!important;
+      }
+    }
 
     .v-image__image--contain {
       top: 9px;
@@ -164,9 +232,5 @@
       padding-left: 15px;
       padding-right: 15px;
     }
-  }
-
-  html, body{
-    font: 400 1rem "Poppins";
   }
 </style>

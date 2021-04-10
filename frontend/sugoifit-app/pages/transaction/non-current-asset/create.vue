@@ -1,8 +1,6 @@
 <template>
-  <div class="d-flex">
-    <side-bar></side-bar>
+  <div class="d-flex mx-3">
   <b-container fluid>
-    <top-bar/>
     <h3 class="m-2">Add Transaction</h3>
     <transaction-top/>
     <validation-observer
@@ -10,7 +8,6 @@
       v-slot="{handleSubmit}"
     >
       <b-form id= "AddNCAForm" @submit.stop.prevent="handleSubmit(AddNCA)">
-        
         <b-row>
           <b-col cols="12" class="text-info mb-3">Add Non Current Asset</b-col>
           <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
@@ -211,17 +208,17 @@
                     this.$refs.observer.reset();
                 });
 
-            }, 
+            },
             AddNCA: function(){
               let self = this;
               let PATH_API = 'test';
               let NCAForm = document.getElementById('AddNCAForm');
-              // let form_data = new FormData(NCAForm); 
+              // let form_data = new FormData(NCAForm);
               this.$axios.post(`/api/${PATH_API}`, new FormData(NCAForm), {
                   headers: {
                   'contentType': 'application/json',
                 }
-              })             
+              })
               .then( jsonResponse =>{
                 return jsonResponse.json();
               })
@@ -234,11 +231,11 @@
               let NCAForm = document.getElementById("AddNCAForm");
               let form_data =  new FormData(NCAForm);
               fetch(`/api/${PATH_API}`,{
-                  method: "POST", 
+                  method: "POST",
                   body: form_data,
                   headers:{
                     "contentType": "application/json"
-                  }, 
+                  },
                   credentials: "same-origin",
               })
               .then(function (response){

@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex">
+  <div class="d-flex mx-3">
     <side-bar></side-bar>
   <b-container fluid>
     <top-bar/>
@@ -21,7 +21,7 @@
               name="cust-name"
             >
               <label for="cust-name">Billed to:</label>
-               <b-form-input v-model="form.cust-name"
+               <b-form-input v-model="form.cust_name"
                             id="cust-name"
                             :state="getValidationState(errors)">
               </b-form-input>
@@ -136,7 +136,6 @@
             </validation-provider>
             </b-col>
 
-            
             <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
             <validation-provider
               v-slot="{ errors }"

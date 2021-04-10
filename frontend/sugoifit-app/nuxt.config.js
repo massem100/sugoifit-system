@@ -13,14 +13,14 @@ export default {
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},
       {hid: 'description', name: 'description', content: ''},
-      
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
-    link: [{rel: 'preconnect', href: 'https://fonts.gstatic.com'}],
-    link: [{rel:'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap' }]
-    
+    link: [{rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}, {
+      rel: 'preconnect',
+      href: 'https://fonts.gstatic.com'
+    }, {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap'}]
+
   },
-  src: 'static/js/app.js', 
+  src: 'static/js/app.js',
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
@@ -39,7 +39,8 @@ export default {
     {src: '~/plugins/vee-validate', ssr: false},
     {src: '~/plugins/axios'},
     '~/plugins/vuetify',
-    { src: '~/plugins/chartist', mode: 'client' }
+    {src: '~/plugins/chartist', mode: 'client'},
+    {src: '~/plugins/vue-ellipse-progress', ssr: false},
   ],
   vuetify: {
     treeShake: true,
@@ -70,7 +71,7 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    // '@nuxtjs/fontawesome', 
+    // '@nuxtjs/fontawesome',
     [
       'nuxt-fontawesome', {
         imports: [
@@ -106,9 +107,7 @@ export default {
   build: {
     transpile: ['vuetify/lib'],
     plugins: [new VuetifyLoaderPlugin()],
-    loaders: {
-
-    },
+    loaders: {},
     /*
     ** You can extend webpack config here
     */

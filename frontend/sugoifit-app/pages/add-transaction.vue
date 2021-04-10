@@ -1,7 +1,7 @@
 <template>
-  <div class="d-flex flex-row">
+  <div>
     <!-- Quick Actions -->
-    <div class="ml-5">
+    <div class="mx-3">
       <h3 class="m-2">Add Transaction</h3>
       <transaction-top/>
     </div>

@@ -4,7 +4,6 @@
   .v-list {
     background: $sidebar-bg;
     padding: 0;
-
     .v-list-item {
       &:not(:nth-child(3)){
         margin: $margin-small $margin-general 0;
@@ -47,6 +46,14 @@
         @include shadow-big-color($brand-success);
       }
     }
+    .v-list__group__header{
+      &:hover,
+        &:focus,
+        &:active {
+          background-color: $list-item-hover!important;
+        }
+      border-radius: 4px;
+    }
 
     .v-list__tile--avatar {
       height: unset;
@@ -63,7 +70,7 @@
       line-height: $line-height;
       padding: $padding-avatar-title 0;
       height: unset;
-      font-size: $font-size-avatar-title !important;
+      font-size: $font-size-general!important;
       font-weight: $font-weight-base;
       letter-spacing: unset !important;
     }

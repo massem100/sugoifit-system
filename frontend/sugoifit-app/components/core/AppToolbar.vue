@@ -120,7 +120,7 @@
     }),
     watch: {
       '$route' (val) {
-        this.title = val.name
+        this.title = val.name === 'index'?'Dashboard':val.name
       }
     },
     computed: {
