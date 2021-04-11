@@ -2,6 +2,7 @@ import os, sys
 import pandas as pd
 import jwt, secrets
 import hashlib, random
+from functools import wraps
 from app import app,  db, login_manager, cors, csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission
 # WTF Forms and SQLAlchemy Models
@@ -267,9 +268,9 @@ def register():
         else: 
             # What to do if existing business is not none and email is not None
             if existing_business is not None: 
-                return jsonify('message': 'Business already exists, if you are an employee, request access from the business owner.')
+                return jsonify({'message': 'Business already exists, if you are an employee, request access from the business owner.'})
             if existing_email is not None: 
-                return jsonify('message': 'Email already exists within the system, try again.')
+                return jsonify({'message': 'Email already exists within the system, try again.'})
     else:
         error_list = form_errors(form)
         return jsonify(errors = error_list)

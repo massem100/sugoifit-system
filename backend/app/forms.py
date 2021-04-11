@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import EmailField,IntegerField, DateField, DecimalField
-from wtforms import TextAreaField, StringField, PasswordField, SubmitField 
-from wtforms.validators import InputRequired, Email, Length
+from wtforms.fields.html5 import EmailField,IntegerField, DateField, DecimalField
+from wtforms import TextAreaField, StringField, PasswordField, SubmitField , SelectField
+from wtforms.validators import InputRequired, Email, Length, optional
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 
@@ -48,7 +48,11 @@ dep_types_list = [
             ('Units of Production', "Units of Production")
 ]
 
-timeSpanYears = [('Weeks', 'weeks'),('Months', 'months') ('Years', 'years')]
+timeSpanYears = [
+            ('Weeks', 'weeks'),
+            ('Months', 'months'), 
+            ('Years', 'years')
+            ]
 
 paid_using = [('By Cash', 'Cash'), ('By Cheque', 'Cheque'), ('On Credit', 'Credit')]
 
@@ -71,7 +75,7 @@ class NCAForm(FlaskForm):
     asset_name = StringField('Asset Name', validators = [InputRequired('Please enter the name of the asset, e.g. Motor Vehicle')])
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
     dep_type = SelectField('Depreciation Type', choices = dep_types_list)
-    asset_desc = TextAreaField('Description', [validators.optional(), validators.length(max=200)])
+    asset_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter asset amount.')])
     e_timespan = IntegerField('LifeSpanNumber')
     e_timespan_unit = SelectField('LifeSpanUnit', choices = timeSpanYears)
@@ -80,13 +84,13 @@ class NCAForm(FlaskForm):
 class CAForm(FlaskForm): 
     asset_name = StringField('Asset Name', validators = [InputRequired('Please enter the name of the asset.')])
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
-    asset_desc = TextAreaField('Description', [validators.optional(), validators.length(max=200)])
+    asset_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter asset amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
 
 class LTLiabForm(FlaskForm): 
     liab_name = StringField('Liability Name', validators = [InputRequired('Please enter liability name, e.g Notes Payable.')])
-    person_owed = StringField('Creditor Name')
+    person_owed = StringField('Creditor Name', validators = [optional()])
     loan_rate = DecimalField('Loan Rate', validators= [InputRequired('Please enter the interest rate at which the loan must be repaid, e.g. .10')])
     loan_periods = DecimalField('Loan Period', validators= [InputRequired("Please enter the number of " )])
     borrow_date = DateField('Loan Borrow Date', validators = [InputRequired('Please enter the date the loan was received.')])
@@ -96,13 +100,13 @@ class LTLiabForm(FlaskForm):
 class ExpForm(FlaskForm): 
     expense_name = StringField('Expense  Name', validators = [InputRequired('Please enter the name of the asset.')])
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
-    expence_desc = TextAreaField('Description', [validators.optional(), validators.length(max=200)])
+    expence_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
 
 class RevForm(FlaskForm): 
     revenue_name = StringField('Asset Name', validators = [InputRequired('Please enter the name of the asset.')])
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
-    revenue_desc = TextAreaField('Description', [validators.optional(), validators.length(max=200)])
+    revenue_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
