@@ -61,10 +61,10 @@ class Service(db.Model):
 class ServiceSaleItem(Service):
     __tablename__ = 'service_sale_item'
 
-    ssiID = db.Column(db.ForeignKey('service.serviceID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True)
+    ssiID = db.Column(db.String(11), primary_key=True)
     serv_price = db.Column(db.Integer)
     taxAmt = db.Column(db.Integer)
-    serviceID = db.Column(db.String(11))
+    serviceID = db.Column(db.ForeignKey('service.serviceID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     userID = db.Column(db.ForeignKey('user.userID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
 
     user = db.relationship('User')
@@ -87,9 +87,6 @@ class ConServiceSaleItem(db.Model):
     service = db.relationship('Service')
 
 
-
-
-
 class Invoice(db.Model):
     __tablename__ = 'invoice'
 
@@ -99,8 +96,6 @@ class Invoice(db.Model):
     tax_tot = db.Column(db.DECIMAL(10, 2))
 
     customer = db.relationship('Customer')
-
-
 
 
 class ProductSaleItem(db.Model):
@@ -120,8 +115,6 @@ class ProductSaleItem(db.Model):
 
     customer = db.relationship('Customer')
     product = db.relationship('Product')
-
-
 
 
 class ConService(db.Model):

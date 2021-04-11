@@ -1,28 +1,33 @@
+import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
+import pkg from './package'
+
 export default {
-  ssr: true,
+  ssr: false,
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'sugoifit-app',
+    title: 'SugoiFit Financials',
     meta: [
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},
       {hid: 'description', name: 'description', content: ''},
-      
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
-    link: [{rel: 'preconnect', href: 'https://fonts.gstatic.com'}],
-    link: [{rel:'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap' }]
-    
+    link: [{rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}, {
+      rel: 'preconnect',
+      href: 'https://fonts.gstatic.com'
+    }, {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap'}]
+
   },
+  src: 'static/js/app.js',
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     'static/scss/sidebar.css',
+    'static/scss/website.css',
+    '~assets/style/index.scss',
     'static/scss/style.css',
-    'static/scss/website.css'
 
   ],
   router: {
@@ -33,15 +38,25 @@ export default {
   plugins: [
     {src: '~/plugins/vee-validate', ssr: false},
     {src: '~/plugins/axios'},
+    '~/plugins/vuetify',
+    {src: '~/plugins/chartist', mode: 'client'},
+    {src: '~/plugins/vue-ellipse-progress', ssr: false},
   ],
-
+  vuetify: {
+    treeShake: true,
+    customVariables: ['~/assets/variables.scss'],
+    theme: {
+      light: true,
+  
+    }
+  },
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/eslint,
-    // '@nuxtjs/fontawesome', 
+    '@nuxtjs/fontawesome', 
     
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
@@ -56,7 +71,7 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    // '@nuxtjs/fontawesome', 
+    // '@nuxtjs/fontawesome',
     [
       'nuxt-fontawesome', {
         imports: [
@@ -89,6 +104,15 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: { }
+  build: {
+    transpile: ['vuetify/lib'],
+    plugins: [new VuetifyLoaderPlugin()],
+    loaders: {},
+    /*
+    ** You can extend webpack config here
+    */
+    extend(config, ctx) {
+    }
+   }
 }
 

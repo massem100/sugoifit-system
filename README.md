@@ -146,7 +146,7 @@ Pandas Documentation
     Store a list of sample data and randomly pick a index to cycle through the list when appending. 
 
     service = ["Painting", "Plumbing", "Transporation", "Catering"]
-    
+     
     E.g.
     for _ in range(0,10):
         service["serv_name"].append(service[random.randint(0,2)])
@@ -160,7 +160,7 @@ Pandas Documentation
 
 
 ### Use the sqlalchemy engine to connect to the db. 
-engine = create_engine('mysql://username:password@localhost/db', echo=False)
+    engine = create_engine('mysql://username:password@localhost/db', echo=False)
 
 ### Add the pandas dataframe to the database
     This tells pandas to convert the dataframe to sql and if the table already exists

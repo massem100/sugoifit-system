@@ -22,31 +22,13 @@ ul, ol {
   box-sizing: border-box;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-}
-
-body, input, button, select, textarea {
-  font: 600 1rem "Poppins", sans-serif;
-  color: #222222;
-}
-
-a {
-  text-decoration: none;
-}
-
-ul, ol {
-  margin: 0 0 1rem;
-  padding: 0 0 1rem;
-}
-
 .settings_bar {
   position: absolute;
   top: 16px;
   right: 48px;
 }
 
+<<<<<<< HEAD
 .quick_actions_div {
   display: flex;
   justify-content: flex-start;
@@ -110,3 +92,9 @@ ul, ol {
   font-weight: 200;
   font-family: "Poppins";
 }/*# sourceMappingURL=style.css.map */
+=======
+#top-user-icon {
+  width: 36px;
+  height: 36px;
+}/*# sourceMappingURL=style.css.map */
+>>>>>>> main

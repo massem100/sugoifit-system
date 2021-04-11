@@ -1,0 +1,102 @@
+$primary-1: #DFFBFF;
+$secondary-1: #428B95;
+$secondary-2: #7CC3CD;
+
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+
+html, body {
+  margin: 0;
+  padding: 0;
+  // background-color: aquamarine;
+}
+
+body, input, button, select, textarea {
+  font: 300 1rem 'Poppins', sans-serif;
+  color: #222222;
+}
+
+a {
+  text-decoration: none!important;
+}
+
+ul, ol {
+  margin: 0 0 1rem;
+  padding: 0 0 1rem;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+
+html, body {
+  margin: 0;
+  padding: 0;
+  // background-color: aquamarine;
+}
+
+body, input, button, select, textarea {
+  font: 600 1rem 'Poppins', sans-serif;
+  color: #222222;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul, ol {
+  margin: 0 0 1rem;
+  padding: 0 0 1rem;
+}
+
+.settings_bar {
+  position: absolute;
+  top: 16px;
+  right: 48px;
+}
+
+
+#top-user-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.quick_actions_div {
+  .quick_actions {
+    margin: 10px 15px 10px 0px;
+    background-color: #DFFBFF;
+    width: 15rem;
+    height: 5rem;
+    padding: 20px;
+    border-radius: 15px;
+    text-decoration: none !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .quick_actions span {
+    font-size: 16px;
+  }
+}
+
+.custom-popover {
+  .popover-body {
+    padding: 0;
+
+    .pop-link {
+      text-decoration: none;
+      color: #222222;
+      font-size: 16px;
+      padding: 10px;
+    }
+
+    .pop-link:hover {
+      background: #428B95;
+      color: white;
+    }
+  }
+}

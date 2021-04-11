@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex">
+  <div class="d-flex mx-3">
     <side-bar></side-bar>
     <b-container fluid>
       <top-bar/>
@@ -13,23 +13,23 @@
           <b-row>
             <b-col cols="12" class="text-info mb-3">Add Invoice</b-col>
 
-              <!-- Customer Name -->
-              <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-              <validation-provider
-                v-slot="{ errors }"
-                rules="required"
-                name="cust-name"
-              >
-                <label for="cust-name">Billed to:</label>
-                <b-form-input v-model="form.cust-name"
-                              id="cust-name"
-                              :state="getValidationState(errors)">
-                </b-form-input>
-                <b-form-invalid-feedback>
-                  {{ errors[0] }}
-                </b-form-invalid-feedback>
-              </validation-provider>
-              </b-col>
+            <!-- Customer Name -->
+            <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required"
+              name="cust-name"
+            >
+              <label for="cust-name">Billed to:</label>
+               <b-form-input v-model="form.cust_name"
+                            id="cust-name"
+                            :state="getValidationState(errors)">
+              </b-form-input>
+              <b-form-invalid-feedback>
+                {{ errors[0] }}
+              </b-form-invalid-feedback>
+            </validation-provider>
+            </b-col>
 
               <!-- Customer Email -->
               <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
@@ -158,11 +158,32 @@
               <b-button type="submit" variant="primary">Submit</b-button>
               <b-button type="reset" variant="danger" @click="resetForm()">Reset</b-button>
             </b-col>
-          </b-row>
-        </b-form>
-      </validation-observer>
-      
-    </b-container>
+
+            <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
+            <validation-provider
+              v-slot="{ errors }"
+              rules="required"
+              name="interest"
+            >
+              <label for="interest">Interest</label>
+              <b-form-input v-model="form.interest"
+                            type="number"
+                            id="interest"
+                            :state="getValidationState(errors)">
+              </b-form-input>
+              <b-form-invalid-feedback>
+                {{ errors[0] }}
+              </b-form-invalid-feedback>
+            </validation-provider>
+          </b-col>
+          <b-col cols="12" class="text-right my-2">
+            <b-button type="submit" variant="primary">Submit</b-button>
+            <b-button type="reset" variant="danger" @click="resetForm()">Reset</b-button>
+          </b-col>
+        </b-row>
+      </b-form>
+    </validation-observer>
+  </b-container>
   </div>
 </template>
 
