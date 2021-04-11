@@ -2,7 +2,7 @@
   <div class="d-flex py-2 text-center flex-wrap">
     <button class="btnStyle" id="assetBtn" tabindex="0">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
-      <span>Add Asset</span>
+      <span>Asset</span>
     </button>
     <b-popover target="assetBtn" triggers="hover" placement="bottom" custom-class="custom-popover">
       <div class="d-flex flex-column">
@@ -13,7 +13,7 @@
     </b-popover>
     <button class="btnStyle" id="liabilityBtn" tabindex="0">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
-      <span> Add Liabillity</span>
+      <span> Liabillity</span>
     </button>
     <b-popover target="liabilityBtn" triggers="hover" placement="bottom" custom-class="custom-popover">
       <div class="d-flex flex-column">
@@ -24,23 +24,23 @@
     </b-popover>
     <b-link class="btnStyle pop-link" :to="{name:'transaction-expenses-create'}">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
-      <span> Add Expense</span>
+      <span>  Expense</span>
     </b-link>
     <b-link class="btnStyle pop-link" :to="{name:'transaction-purchases-create'}">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
-      <span>Add Purchases</span>
+      <span> Purchases</span>
     </b-link>
     <b-link class="btnStyle pop-link" :to="{name:'transaction-sales-create'}">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
-      <span> Add Sales</span>
+      <span> Sales</span>
     </b-link>
     <b-link class="btnStyle pop-link" :to="{name:'transaction-equity-create'}">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
-      <span> Add Equity</span>
+      <span>  Equity</span>
     </b-link>
      <b-link class="btnStyle pop-link" :to="{name:'transaction-supplier-create'}">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
-      <span> Add Supplier</span>
+      <span> Supplier</span>
     </b-link>
   </div>
 </template>

@@ -72,7 +72,6 @@ def token():
 """
 --------------------------------------- Financial Statement Routes ----------------------------------------------------------
 """
-# def classifyAccounts():
 
 @app.route('/api/transaction', methods = ["POST", "GET"])
 def manageTransactions():
@@ -92,7 +91,7 @@ def manageTransactions():
             form = CLiabForm(request.form)
         elif request['form_id'] == "ExpForm": 
             form = ExpenseForm(request.form)
-            if 
+            
         elif request['form_id'] == "RevForm": 
             form = RevenueForm(request.form)
         elif request['form_id'] == "EquityForm": 

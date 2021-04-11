@@ -5,7 +5,7 @@
     app
     floating
     mobile-break-point="991"
-    width="260"
+    width="280"
     style="background: #C7ECF2;"
     @input="navChanged"
   >
