@@ -97,9 +97,6 @@ def manageTransactions():
         elif request['form_id'] == "EquityForm": 
             form = EquityForm(request.form)
         
-
-
-
     else:
         return "request == GET"
 
@@ -188,20 +185,30 @@ def login():
 
 
 @app.route('/api/auth/logout', methods = ['GET'])
+@requires_auth
+@login_required
 def logout():
+    # Clears user from session
     logout_user()
 
-    # Flask-Prinicpal send identity_changed to anonymous
-    # Attach requires_auth decorator
+    # Flask-Principal: Remove session keys
+    for key in ('identity.name', 'identity.auth_type'):
+        session.pop(key, None)
+
+    # Flask-Principal: set user to anonymous
+    identity_changed.send(app, identity=AnonymousIdentity())
+    
     return jsonify(message = [{'message': "You have been logged out successfully"}])
 
 
 @app.route('/api/users/register', methods=["POST"])
 def register():
+    # Wrap the request form in the flask wtf form to transfer validation etc
     form = RegisterForm(request.form)
     if request.method == "POST" and form.validate_on_submit():
 
         #  Add form fields
+        # NEED TO SETUP SERIALIZATION LATER WITH MARSHMELLOW. 
         f_name = form.first_name.data
         l_name = form.last_name.data
         user_email = form.email.data
@@ -217,12 +224,52 @@ def register():
 
         # If unique email address and username provided then log new user
         if existing_business is None and existing_email is None:
-            # user = User(username=username
+            # Get the last BusID and UserID from db
+            last_businessID = db.session.query(Busines).order_by(Busines.date_added.desc()).first().busID
+            last_userID = db.session.query(User).order_by(Busines.date_joined.desc()).first().userID
 
+            if last_record is not None and last_user is not None: 
+                # Get the numeric part of the last business ID and increment by 1
+                bus_int = int(last_businessID[3:])
+                bus_int += 1
+
+                # Get the numeric part of the last User ID and increment by 1
+                user_int = int(last_userID[4:])
+                user_int +=1
+                
+            else: 
+                bus_int = 0
+                user_int = 0
+            newBusID = business_name[:3]+str(id_int)
+            newUserID = 'user' + str(user_int)
+            business = Busines(busID = newBusID,
+                               busName = business_name, 
+                               busemail = null, 
+                               telephone = null)
+            user = User(userID = newUserID, 
+                        fname = f_name,
+                        lname = l_name, 
+                        user_address = null, 
+                        phone =null)
+
+            user_cred = UserCredential(userID = newUserID, 
+                                       busID = newBusID, 
+                                       user_email = user_email, 
+                                       user_password = user_password, 
+                                       roles = 'owner', 
+                                       active = True)
+            db.session.add(business)
             db.session.add(user)
+            db.session.add(user_cred)
             db.session.commit()
-
             return jsonify(success =[{'message': 'Successfully registered'}])
+
+        else: 
+            # What to do if existing business is not none and email is not None
+            if existing_business is not None: 
+                return jsonify('message': 'Business already exists, if you are an employee, request access from the business owner.')
+            if existing_email is not None: 
+                return jsonify('message': 'Email already exists within the system, try again.')
     else:
         error_list = form_errors(form)
         return jsonify(errors = error_list)

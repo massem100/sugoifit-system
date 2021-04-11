@@ -52,6 +52,21 @@ timeSpanYears = [('Weeks', 'weeks'),('Months', 'months') ('Years', 'years')]
 
 paid_using = [('By Cash', 'Cash'), ('By Cheque', 'Cheque'), ('On Credit', 'Credit')]
 
+"""
+IT'S JUST LOGIC, you got this!
+NEED TO HANDLE TYPE OF TRANSACTION: BOUGHT/SOLD, INCREASE/DECREASE 
+this will help to determine whether the account is to be debited or credited 
+- what will we use to determine operating versus non operating revenue and expense?
+
+Look over the 7 classifications of general ledger 
+How exactly will the general ledger be used to convert to financial statements 
+General Legder should have the list of all accounts and their final balances that 
+will be used to compute the statement
+
+HOWEVER, the individual accounts will also be used to populate the dropdowns for each category 
+So for each line item it should be account name and their final line balance.. and if it has a credit balance 
+it should be bracketed. 
+"""
 class NCAForm(FlaskForm): 
     asset_name = StringField('Asset Name', validators = [InputRequired('Please enter the name of the asset, e.g. Motor Vehicle')])
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
