@@ -1,21 +1,28 @@
 <template>
+<div class = "d-flex flex-column"> 
+<nav-header></nav-header>
+
     <div class = "fin-page m-0 "> 
-        <side-bar > </side-bar>
+        <side-bar class = ""> </side-bar>
 
         <b-table :items = "stmt"> </b-table>
           <!-- <h6>{{stmt}}</h6> -->
           <!-- <h1>{{msg}}</h1> -->
 
     </div>
+    </div>
 </template>
 
 
+
 <script> 
+import NavHeader from '../../components/nav-header.vue';
 // import axios from 'axios';
 import SideBar from '../../components/SideBar.vue'
 export default {
-  components: { SideBar }, 
+  components: { SideBar, NavHeader }, 
     name: 'IncomeStmt',
+    layout: 'dashboard',
     data(){ 
         return { 
             msg: 'Checking', 

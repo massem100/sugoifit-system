@@ -1,5 +1,10 @@
-/* SugoiFit Database */
+/* SugoiFit Database 
 
+This is not the most recent copy of the database structure 
+Edits have been made directly to the db Models and migrated
+When the project is completed we will create export sql dump to get the updated structure
+Another option is just to migrate the latest version of the database. 
+.*/
 DROP DATABASE IF EXISTS sugoifit;
 
 CREATE DATABASE sugoifit;
@@ -589,6 +594,24 @@ CREATE table product_sale_item(
     ON DELETE CASCADE
     ON UPDATE CASCADE,
     FOREIGN KEY(prodID) REFERENCES Product(prodID)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+CREATE table WebsiteDetails(
+    section_detail VARCHAR(11), 
+    sec_header VARCHAR(11), 
+    sec_message VARCHAR(11),
+
+    PRIMARY KEY(section_detail)
+);
+CREATE table WebsiteDrag(
+    sectionID INT(11) NOT NULL,
+    positionID INT(11) NOT NULL, 
+    sectionName VARCHAR(11),
+    section_detail VARCHAR(11),
+
+    PRIMARY KEY(sectionID),
+    FOREIGN KEY(section_detail) REFERENCES WebsiteDetails(section_detail)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );

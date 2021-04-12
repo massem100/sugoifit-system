@@ -1,14 +1,13 @@
 from app import db 
 from app.model.auth import Busines
 import enum 
+
 class Financialstmt(db.Model):
     __tablename__ = 'financialstmt'
 
     stmtID = db.Column(db.String(10), primary_key=True, unique=True)
     fs_name = db.Column(db.String(50))
-
-    # financialstmt('1', 'commercial income statement') 
-    # financialstmt('1', 'financial income statement') 
+    lines = db.relationship('Financialstmtline', backref= "finacialstmt", lazy=True)
 
     def __init__(self, stmtID, fs_name): 
         self.stmtID = stmtID
@@ -26,11 +25,12 @@ class Financialstmtline(db.Model):
     __tablename__ = 'financialstmtline'
 
     lineID = db.Column(db.Integer, primary_key=True, unique=True, default = 0)
-    line_name = db.Column(db.String(50))
+    line_name = db.Column(db.String(250))
     lineDesc = db.Column(db.String(50))
     tag = db.Column(db.String(50))
-    sequence = db.Column(db.Integer)
-    fact = db.Column(db.Integer)
+    sequences = db.relationship('Financialstmtlineseq', backref='line')
+    desc = db.relationship('Financialstmtdesc', backref='line')
+    
 
 
     def __init__(self,  tag, line_name):
@@ -44,41 +44,44 @@ class Financialstmtline(db.Model):
 
 class Financialstmtdesc(db.Model):
     __tablename__ = 'financialstmtdesc'
-
+    __table_args__ = tuple(
+        [db.UniqueConstraint('busID',
+                          'fsLineID',
+                          'fiscalYear',
+                          'fiscalPeriod')])
     fStmtDescID = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    companyID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False, unique=True)
-    fsLineID = db.Column(db.ForeignKey('financialstmtline.lineID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False, unique=True)
+    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'),nullable=False, unique=True)
+    fsLineID = db.Column(db.ForeignKey('financialstmtline.lineID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, unique=True)
+    fiscalYear = db.Column(db.Integer)
     fiscalPeriod = db.Column(db.Date)
     fillingDATE = db.Column(db.Date)
-    fiscalYear = db.Column(db.Integer)
     startDATE = db.Column(db.Date)
     endDATE = db.Column(db.Date)
-    unit = db.Column(db.String(80))
+    amount = db.Column(db.Float)
+
 
     busines = db.relationship('Busines')
-    financialstmtline = db.relationship('Financialstmtline')
 
-    def __init__(self, fStmtDescID, companyID, fsLineID, fiscalPeriod, fillingDATE, fiscalYear, startDATE, endDATE, unit):
+    def __init__(self, fStmtDescID, busID, fsLineID, fiscalPeriod, fillingDATE, fiscalYear, startDATE, endDATE, amount):
         self.fStmtDescID = fStmtDescID
-        self.companyID = companyID
+        self.busID = busID
         self.fsLineID = fsLineID
         self.fiscalPeriod = fiscalPeriod
         self.fillingDATE = fillingDATE
         self.fiscalYear = fiscalYear
         self.startDATE = startDATE
         self.endDATE = endDATE
-        self.unit = unit
+        self.amount = amount
 
 
 class Financialstmtlinealia(db.Model):
     __tablename__ = 'financialstmtlinealias'
 
-    lineID = db.Column(db.ForeignKey('financialstmtline.lineID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False, unique=True)
-    fsStmtID = db.Column(db.ForeignKey('financialstmt.stmtID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
+    
     aliasID = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
-    lineAlias = db.Column(db.String(50))
+    lineID = db.Column(db.ForeignKey('financialstmtline.lineID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
+    lineAlias = db.Column(db.String(50), nullable= False, unique=True)
 
-    financialstmt = db.relationship('Financialstmt')
     financialstmtline = db.relationship('Financialstmtline')
 
     def __init__(self, lineID, fsStmtID, aliasID, lineAlias):
@@ -92,9 +95,10 @@ class Financialstmtlineseq(db.Model):
     __tablename__ = 'financialstmtlineseq'
 
     lineSeqID = db.Column(db.Integer, primary_key=True, nullable=False)
-    fsStmtID = db.Column(db.ForeignKey('financialstmt.stmtID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False, index=True)
-    fsStmtLineID = db.Column(db.ForeignKey('financialstmtline.lineID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False, index=True)
+    fsStmtID = db.Column(db.ForeignKey('financialstmt.stmtID', ondelete='CASCADE', onupdate='CASCADE'),  nullable=False, index=True)
+    fsStmtLineID = db.Column(db.ForeignKey('financialstmtline.lineID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
     sequence = db.Column(db.Integer)
+    db.UniqueConstraint(fsStmtID,fsStmtLineID)
 
     financialstmt = db.relationship('Financialstmt')
     financialstmtline = db.relationship('Financialstmtline')
