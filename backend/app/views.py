@@ -1,17 +1,18 @@
 import os
-from app import app,  db, login_manager, cors
+from . import app,  db, login_manager, cors
 from flask import render_template, request, jsonify, flash, session, _request_ctx_stack, g
 from flask_cors import cross_origin, CORS
 from flask_wtf import csrf
-from app.forms import RegisterForm, LoginForm, websiteForm
-from app.model import  asset_liability, auth, financial_statement, sales, transactions
-from app.model.financial_statement import Financialstmt, Financialstmtlineseq, Financialstmtlinealia, Financialstmtdesc, Financialstmtline
-import pandas as pd
+from .forms import RegisterForm, LoginForm, websiteForm
+from .model import  asset_liability, auth, financial_statement, sales, transactions
+from .model.financial_statement import Financialstmt, Financialstmtlineseq, Financialstmtlinealia, Financialstmtdesc, Financialstmtline
+from .model.sales import Websitedrag, Websitedetails
 from sqlalchemy.event import listens_for
+from flask_login import logout_user
+import pandas as pd
 import enum
 import secrets
 import jwt
-from flask_login import logout_user
 import hashlib, random
 
 token =''
@@ -211,17 +212,17 @@ def products():
 @app.route('/api/website-settings', methods = ['POST', 'GET'])
 def websiteinfo():
   
-  form = websiteForm()
+  form = websiteForm(request.form)
   settings={}
   if request.method == 'POST':
     
-      wel_head = request.form['wel_head']
-      wel_mess = request.form['wel_mess']
-      prod_mess = request.form['prod_mess']
-      rec_head = request.form['rec_head']
-      rec_mess = request.form['rec_mess']
-      con_head = request.form['con_head']
-      con_mess = request.form['con_mess']
+      wel_head = form.wel_head.data
+      wel_mess = form.wel_mess.data
+      prod_mess = form.prod_mess.data
+      rec_head = form.rec_head.data
+      rec_mess = form.rec_mess.data
+      con_head = form.con_head.data
+      con_mess = form.con_mess.data
 
       settings['welcome_head'] = wel_head
       settings['welcome_mess'] = wel_mess
@@ -249,6 +250,16 @@ def websiteinfo():
     return jsonify(sections.sectionName)
 '''
   return jsonify({'message':"Success"}, settings)
+####################################################
+@app.route('/api/testdrop')
+def testdrop():
+  data = []
+  sections = Websitedrag.query.all()
+  for section in sections: 
+    data.append({ 'position': section.positionID,
+                  'name': section.sectionName,})
+  
+  return jsonify(response = [data])
 
 #########################################################################################################
 @app.route('/api/items', methods = ['GET'])

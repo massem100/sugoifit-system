@@ -206,6 +206,8 @@ class Websitedetails(db.Model):
     sec_header = db.Column(db.String(50)) 
     sec_message = db.Column(db.String(50))
 
+    websitedrag = db.relationship("Websitedrag", uselist=False, backref= db.backref("websitedetails", uselist=False))
+
     def __init__(self, section_detail, sec_header, sec_message): 
         self.section_detail = section_detail
         self.sec_header = sec_header
@@ -214,13 +216,11 @@ class Websitedetails(db.Model):
 class Websitedrag(db.Model):
     __tablename__ = 'websitedrag'
 
-    sectionID = db.Column(db.Integer, primary_key=True, unique=True, default = 0)
+    sectionID = db.Column(db.Integer, primary_key=True, unique=True)
     positionID = db.Column(db.String(50)) 
     sectionName = db.Column(db.String(50)) 
-    section_detail = db.Column(db.ForeignKey('websitedetails.section_detail', ondelete='CASCADE', onupdate='CASCADE'))
+    section_detail = db.Column(db.String(50), db.ForeignKey('websitedetails.section_detail', ondelete='CASCADE', onupdate='CASCADE'))
     
-    websitedetails = db.relationship('websitedetails')
-
     def __init__(self,  sectionID, positionID, sectionName, section_detail):
         self.sectionID = sectionID
         self.positionID = positionID
