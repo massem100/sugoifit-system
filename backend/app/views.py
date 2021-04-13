@@ -2,10 +2,8 @@ import os, sys
 import pandas as pd
 import jwt, secrets
 import hashlib, random
-<<<<<<< HEAD
 from datetime import date
 from app.model.sales import Customer, Invoice, Order
-=======
 from functools import wraps
 from app import app,  db, login_manager, cors, csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission
@@ -26,7 +24,6 @@ from flask_login import logout_user, current_user, login_required, login_user
 from flask_principal import Principal, Permission, Identity, AnonymousIdentity
 from flask_principal import RoleNeed, UserNeed, identity_changed, identity_loaded
 
->>>>>>> 4133256a8028f63f95960dcfd54234430b5eb507
 
 token =''
 
@@ -315,7 +312,6 @@ def sucessful_prods():
 
 
 
-<<<<<<< HEAD
 """
   NEED TO GET PRODUCTS NEEDED TO FULFILL ORDER
 """
@@ -349,12 +345,10 @@ def place_order():
 
 
 #########################################################################################################
-=======
 
 """
 --------------------------------------- Product/Services Routes ----------------------------------------------------------
 """
->>>>>>> 4133256a8028f63f95960dcfd54234430b5eb507
 @app.route('/api/products', methods = ['GET'])
 def products():
     message = {}

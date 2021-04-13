@@ -10,10 +10,7 @@ from flask_principal import RoleNeed, UserNeed
 
 
 username = 'root'
-<<<<<<< HEAD
-=======
 #password = 'SQLpass'
->>>>>>> 4133256a8028f63f95960dcfd54234430b5eb507
 password = ''
 server = 'localhost'
 
