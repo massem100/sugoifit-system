@@ -28,7 +28,6 @@ ul, ol {
   right: 48px;
 }
 
-<<<<<<< HEAD
 .quick_actions_div {
   display: flex;
   justify-content: flex-start;
@@ -92,9 +91,7 @@ ul, ol {
   font-weight: 200;
   font-family: "Poppins";
 }/*# sourceMappingURL=style.css.map */
-=======
 #top-user-icon {
   width: 36px;
   height: 36px;
 }/*# sourceMappingURL=style.css.map */
->>>>>>> main
