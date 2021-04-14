@@ -31,123 +31,225 @@ class GeneraLedgerDetails(db.Model):
 --------------------------------------- General Ledger Accounts Tables------------------------------------------------
               ------------------------------------- Assets ----------------------------------------------
 """
-class Asset(db.Model):
-    __tablename__ = 'asset'
 
-    assetID = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    assetName = db.Column(db.String(100))
-    lifeSpan = db.Column(db.Integer)
-    assetType = db.Column(db.String(100))
-    acquisDATE = db.Column(db.Date)
-    debitBalance = db.Column(db.DECIMAL(10,0))
-    creditBalance = db.Column(db.DECIMAL(10,0))
-    Balance = db.Column(db.DECIMAL(10, 0))
-    BalanceDC = db.Column(db.Enum("Debit", "Credit"))
-    
-    busines = db.relationship('Busines')
+#     @property
+#     def balance(self): 
+#         return self.Balance
 
-    def __init__(self, id, name, acquisDate, lifeSpan, valueAtCost):
-        self.id = id
-        self.name = name
-        self.acquisDate = acquisDate
-        self.lifeSpan = lifeSpan
-        self.assetValue = assetValue
+#     @balance.setter
+#     def balance(self):
+#         debitBal = self.debitBalance
+#         creditBal = self.creditBalance
+#         self.Balance = debitBal - creditBal
+#         if self.Balance < 0: 
+#             self.BalanceDC = "Credit"
+#         else: 
+#             self.BalanceDC = "Debit"
 
-    def __repr__(self):
-        return '<Asset "{}" "{}">'.format(self.id, self.name)
+#     def paid_using(self, methodOfPayment): 
+#         if methodOfPayment == "Cash": 
+#             pass 
+#         elif methodOfPayment == "Cheque": 
+#             pass
+#         else: 
+#             pass 
 
-class Currentasset(db.Model):
+
+
+class CurrentAsset(db.Model):
     __tablename__ = 'currentasset'
 
-    assetID = db.Column(db.ForeignKey('asset.assetID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    caID= db.Column(db.String(10), primary_key=True)
+    caID= db.Column(db.Integer, primary_key=True, autoincrement=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     assetName = db.Column(db.String(100))
-    lifeSpan = db.Column(db.Integer)
-    assetType = db.Column(db.String(100))
     acquisDATE = db.Column(db.Date)   
+    related_entry = db.Column(db.String(50))
     debitBalance = db.Column(db.DECIMAL(10,0))
     creditBalance = db.Column(db.DECIMAL(10,0))
     Balance = db.Column(db.DECIMAL(10, 0))
     BalanceDC = db.Column(db.Enum("Debit", "Credit"))
 
-    asset = db.relationship('Asset')
+   
     busines = db.relationship('Busines')
 
-    def ___init__(self, lifeSpan):
-        super().__init__() 
+    def ___init__(self, caID, busID,  assetName, acquisDATE, related_entry, debitBalance=0, creditBalance =0):
+        self.busID = busID 
+        self.caID = caID
+        self.assetName = assetName 
+        self.lifeSpan = lifeSpan
+        self.acquisDATE = acquisDATE
+        self.related_entry = related_entry
+        self.debitBalance = debitBalance
+        self.creditBalance = creditBalance
+        # self.Balance = 
+        # self.BalanceDC = BalanceDC       
+    
+    def __repr__(self): 
+        return "<Current Asset {}, {}>".format(self.caID, self.assetName)
+    
+    def debit(related_entry, asset_name, lst): 
+
+        debitEntry = creditEntry = CurrentAsset(caID = lst[8], busID = lst[1],  assetName = asset_name, 
+                                        acquisDATE = lst[5], related_entry = related_entry, 
+                                        debitBalance = lst[7])
+        return debitEntry 
+
+    def credit(related_entry, asset_name, lst): 
+
+        creditEntry =  CurrentAsset(caID = lst[8], busID = lst[1],  assetName = asset_name, 
+                                        acquisDATE = lst[5], related_entry = related_entry, 
+                                        creditBalance = lst[7])
+        return creditEntry
+
+    def increase(): 
+        pass 
+
+    def decrease(): 
+        pass
 
 
-class Noncurrentasset(db.Model):
+class NonCurrentAsset(db.Model):
     __tablename__ = 'noncurrentasset'
 
-    assetID = db.Column(db.ForeignKey('asset.assetID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    ncaID = db.Column(db.String(10), primary_key=True)
+    ncaID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)    
     assetName = db.Column(db.String(100))
     lifeSpan = db.Column(db.Integer)
-    assetType = db.Column(db.String(100))
-    AccumDep = db.Column(db.DECIMAL(10, 2))
+    accumDep = db.Column(db.DECIMAL(10, 2))
     disposalAmt = db.Column(db.DECIMAL(10, 2))
     depType = db.Column(db.String(100))
     acquisDATE = db.Column(db.Date)   
+    related_entry = db.Column(db.String(50))
     debitBalance = db.Column(db.DECIMAL(10,0))
     creditBalance = db.Column(db.DECIMAL(10,0))
     Balance = db.Column(db.DECIMAL(10, 0))
     BalanceDC = db.Column(db.Enum("Debit", "Credit"))
    
-    asset = db.relationship('Asset')
     busines = db.relationship('Busines')
 
-    def __init__(self, accumDep, depType, disposalAmt, lifeSpan ):
-        super().__init__()
-    
+    def __init__(self, ncaID, busID, assetName, lifeSpan, depType, acquisDATE, related_entry, accumDep = 0, disposalAmt =0,debitBalance =0, creditBalance=0):
+        self.busID = busID 
+        self.ncaID = ncaID
+        self.assetName = assetName 
+        self.lifeSpan = lifeSpan
+        self.accumDep = accumDep
+        self.disposalAmt = disposalAmt
+        self.depType = depType
+        self.acquisDATE = acquisDATE
+        self.related_entry = related_entry
+        self.debitBalance = debitBalance    
+        self.creditBalance = creditBalance
+        # self.Balance = Balance
+        # self.BalanceDC = BalanceDC       
 
-    def straightLineDep(self, assetCost, salvageVal, lifeSpan):
+    def debit(related_entry, asset_name, lst): 
+
+        debitEntry = NonCurrentAsset(ncaID= lst[0], busID = lst[1], assetName = lst[2], lifeSpan = lst[3],
+                                     depType = lst[4], acquisDATE = lst[5], related_entry = related_entry, 
+                                      debitBalance = lst[7])
+        return debitEntry
+    
+    def credit(related_entry, asset_name, lst): 
+        creditEntry = NonCurrentAsset(ncaID= lst[0], busID = lst[1], assetName = asset_name, lifeSpan = lst[3], 
+                                      depType = lst[4], acquisDATE = lst[5], related_entry = related_entry, 
+                                      creditBalance = lst[7])
+        return creditEntry
+    
+    
+    def increase(paid_using, asset_name, lst):
+        if paid_using == "cash": 
+            # Debit the Asset Class 
+            # Calculate Accum Depreciation
+            related_entry = "Cash" + str(lst[0])
+            debitEntry = NonCurrentAsset.debit(lst, related_entry, asset_name)
+
+            # Credit the Cash Class 
+            #  Retrieve asset id from database and increment by 1
+            # Get Previous Balance and add if new entry is debit and subtract otherwise 
+            creditEntry = CurrentAsset.credit(lst, related_entry, asset_name)
+
+            return debitEntry, creditEntry
+        elif paid_using == "Cheque": 
+            #Debit the Asset Class 
+            related_entry = "Cheque" + str(lst[0])
+            debitEntry = NonCurrentAsset.debit(lst, related_entry, asset_name)
+
+            creditEntry = CurrentAsset.credit(lst, related_entry, asset_name)
+
+            return debitEntry, creditEntry
+        else: 
+            #Debit the Asset Class 
+            related_entry = "CL" + str(lst[0])
+            debitEntry = NonCurrentAsset.debit(lst, related_entry, asset_name)
+
+            #Credit the liability account
+            creditEntry = Currentliability(cliabID = lst[9], busID =lst[1], liabName = "Accounts Payable",
+                                            borwDATE = lst[5], dueDATE = "", related_entry = "NCA" + str(lst[0]),
+                                            debitBalance = 0, creditBalance = lst[7])
+            return debitEntry, creditEntry
+             
+    def decrease(self, paid_using, lst): 
+        # Identifying the second account in double entry 
+        if paid_using == "cash": 
+            # Credit the Asset Class 
+            NCA_related_entry = "Cash" +str(lst[0])
+            creditEntry = NonCurrentAsset.credit(lst,NCA_related_entry, asset_name)
+
+            # Debit the Cash Class 
+            debitEntry = CurrentAsset.debit(lst, related_entry, "Cash")
+
+            return debitEntry, creditEntry
+
+        elif paid_using == "Cheque": 
+            #Credit the Asset Class 
+            NCA_related_entry = "Cash" +str(lst[0])
+            creditEntry = NonCurrentAsset.credit(lst,NCA_related_entry, asset_name)
+
+            #Debit the Asset Class
+            debitEntry = CurrentAsset.debit(lst, related_entry, "Cheque")
+
+
+            return debitEntry,creditEntry
+        else: 
+           #Credit the Asset Class 
+            NCA_related_entry = "Cash" +str(lst[0])
+            creditEntry = NonCurrentAsset.credit(lst,NCA_related_entry, asset_name)
+
+            #Debit the Accounts Receivable Account -Asset
+            debitEntry = CurrentAsset.debit(lst, related_entry, "Accounts Receivable")
+            
+            return debitEntry, creditEntry
+
+
+    def straightLineDep(assetCost, salvageVal, lifeSpan):
         return (assetCost - salvageVal)/lifeSpan
     
-    def DDMethod(self,assetCost,lifeSpan):
+    def DDMethod(assetCost,lifeSpan):
         dep_rate = (1/lifeSpan)*2
         return assetCost*dep_rate
 
-    def UnitsOfProd(self, unitsProduced, lifeSpanInUnits, assetCost, salvageVal):
+    def UnitsOfProd(unitsProduced, lifeSpanInUnits, assetCost, salvageVal):
         dep_expense = (unitsProduced / lifeSpanInUnits) * (assetCost - salvageVal)
         return dep_expense
 
-    def SumYearDigits(self):
+    def SumYearDigits():
         pass
-
+    
+    def __repr__(self): 
+        return "<Non Current Asset {}, {} >".format(self.ncaID, self.assetName)
 """
 --------------------------------------- Liabilities----------------------------------------------------------
 """
-class Liability(db.Model):
-    __tablename__ = 'liability'
-
-    liabID = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
-    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    liabName = db.Column(db.String(100))
-    liabType = db.Column(db.String(100))
-    borwDATE = db.Column(db.Date)
-    dueDATE  = db.Column(db.Date)
-    debitBalance = db.Column(db.DECIMAL(10,0))
-    creditBalance = db.Column(db.DECIMAL(10,0))
-    Balance = db.Column(db.DECIMAL(10, 0))
-    BalanceDC = db.Column(db.Enum("Debit", "Credit"))
-   
-
-    busines = db.relationship('Busines')
 
 class Currentliability(db.Model):
     __tablename__ = 'currentliability'
 
-    liabID = db.Column(db.ForeignKey('liability.liabID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    cliabID = db.Column(db.String(10), primary_key=True, unique=True)
+    cliabID = db.Column(db.String(10), primary_key=True, unique=True, autoincrement=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    liabType = db.Column(db.String(100))
     liabName = db.Column(db.String(100))
     borwDATE = db.Column(db.Date)
     dueDATE  = db.Column(db.Date)
+    related_entry = db.Column(db.String(50))
     debitBalance = db.Column(db.DECIMAL(10,0))
     creditBalance = db.Column(db.DECIMAL(10,0))
     Balance = db.Column(db.DECIMAL(10, 0))
@@ -155,19 +257,50 @@ class Currentliability(db.Model):
    
     
     busines = db.relationship('Busines')
-    liab = db.relationship('Liability')
+    
+    def __init__(self, cliabID, busID, liabName, borwDATE, dueDATE, related_entry, debitBalance = 0, creditBalance =0): 
+        self.cliabID = cliabID 
+        self.busID = busID 
+        self.liabName = liabName
+        self.borwDATE = borwDATE
+        self.dueDATE = dueDATE
+        self.related_entry = related_entry
+        self.debitBalance = debitBalance
+        self.creditBalance = creditBalance
+        # self.Balance = Balance 
+        # self.BalanceDC = BalanceDC
+
+    def __repr__(self): 
+        return "<Current Liability {}, {}>".format(self.cliabID, self.liabName)
+
+    def debit(related_entry, liab_name,lst): 
+        debitEntry= Currentliability(cliabID = lst[9], busID =lst[1], liabName = liab_name,
+                                     borwDATE = lst[5], dueDATE = "", related_entry = related_entry,
+                                     debitBalance = lst[7])
+        return debitEntry
+    
+    def credit(related_entry, liab_name, lst): 
+
+        creditEntry = Currentliability(cliabID = lst[9], busID =lst[1], liabName = liab_name,
+                                       borwDATE = lst[5], dueDATE = "", related_entry = related_entry,
+                                       creditBalance = lst[7])
+        return creditEntry
+    def increase(): 
+        pass 
+
+    def decrease(): 
+        pass
 
 
 class Longtermliability(db.Model):
     __tablename__ = 'longtermliability'
 
-    liabID= db.Column(db.ForeignKey('liability.liabID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    LtliabID = db.Column(db.String(10), primary_key=True, unique=True)
+    LtliabID = db.Column(db.String(10), primary_key=True, unique=True, autoincrement=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    liabType = db.Column(db.String(100))
     liabName = db.Column(db.String(100))
     borwDATE = db.Column(db.Date)
     dueDATE  = db.Column(db.Date)
+    related_entry = db.Column(db.String(50))
     debitBalance = db.Column(db.DECIMAL(10,0))
     creditBalance = db.Column(db.DECIMAL(10,0))
     Balance = db.Column(db.DECIMAL(10, 0))
@@ -175,8 +308,42 @@ class Longtermliability(db.Model):
    
     
     busines = db.relationship('Busines')
-    liab = db.relationship('Liability')
 
+    def __init__(self, LtliabID, busID, liabName, borwDATE, dueDATE, related_entry, debitBalance =0, creditBalance =0): 
+        self.cliabID = cliabID 
+        self.busID = busID 
+        self.liabName = liabName
+        self.borwDATE = borwDATE
+        self.dueDATE = dueDATE
+        self.related_entry = related_entry
+        self.debitBalance = debitBalance
+        self.creditBalance = creditBalance
+        # self.Balance = Balance 
+        # self.BalanceDC = BalanceDC
+
+    def __repr__(self): 
+        return "<Long Term Liability {}, {}>".format(self.LtliabID, self.liabName)
+    
+    def debit(related_entry, liab_name, lst): 
+        debitEntry= Longtermliability(LtliabID = lst[9], busID =lst[1], liabName = liab_name,
+                                     borwDATE = lst[5], dueDATE = "", related_entry = related_entry,
+                                     debitBalance = lst[7])
+        return debitEntry
+    
+    def credit(related_entry, liab_name, lst): 
+
+        creditEntry = Longtermliability(LtliabID = lst[9], busID =lst[1], liabName = liab_name,
+                                       borwDATE = lst[5], dueDATE = "", related_entry = related_entry,
+                                       creditBalance = lst[7])
+        return creditEntry
+    
+    def increase(): 
+        pass
+    
+    def decrease(): 
+        pass  
+
+   
 """
 --------------------------------------- Expenses ----------------------------------------------------------
 """
@@ -188,6 +355,7 @@ class OperatingExpense(db.Model):
     opexName = db.Column(db.String(100))
     dateIncurred = db.Column(db.Date())
     expenseCategory = db.Column(db.String(80))
+    related_entry = db.Column(db.String(50))
     debitBalance = db.Column(db.DECIMAL(10,0))
     creditBalance = db.Column(db.DECIMAL(10,0))
     Balance = db.Column(db.DECIMAL(10, 0))
@@ -195,6 +363,37 @@ class OperatingExpense(db.Model):
 
     
     busines = db.relationship('Busines')
+
+    def __init__(self, opexID, busID, opexName, dateIncurred, expenseCategory, related_entry, debitBalance =0, creditBalance =0): 
+        self.opexID =opexID 
+        self.busID = busID 
+        self.opexName = opexName 
+        self.dateIncurred = dateIncurred
+        self.expenseCategory = expenseCategory
+        self.related_entry =related_entry
+        self.debitBalance = debitBalance 
+        self.creditBalance = creditBalance 
+        # self.Balance = Balance 
+        # self.BalanceDC
+
+    def __repr__(self): 
+        return "<Operating Expense {},{}".format(self.opexID, self.opexName)
+    
+    def debit(related_entry, exp_name, lst): 
+        debitEntry = OperatingExpense(opexID= lst[0], busID =lst[1], opexName = exp_name, dateIncurred = lst[2],
+                                      expenseCategory =lst[3], related_entry =related_entry, debitBalance =lst[4])
+        return debitEntry
+    
+    def credit(related_entry, exp_name, lst): 
+        creditEntry = OperatingExpense(opexID= lst[0], busID =lst[1], opexName = exp_name, dateIncurred = lst[2],
+                                      expenseCategory =lst[3], related_entry =related_entry, creditBalance =lst[4])
+        return debitEntry
+    
+    def increase(): 
+        pass
+    
+    def decrease(): 
+        pass
    
 
 class NonOperatingExpense(db.Model):
@@ -203,7 +402,8 @@ class NonOperatingExpense(db.Model):
     nOpexID = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     nOpexName = db.Column(db.String(100))
-    dateEarned = db.Column(db.Date())
+    dateIncurred = db.Column(db.Date())
+    related_entry = db.Column(db.String(50))
     debitBalance = db.Column(db.DECIMAL(10,0))
     creditBalance = db.Column(db.DECIMAL(10,0))
     Balance = db.Column(db.DECIMAL(10, 0))
@@ -211,6 +411,32 @@ class NonOperatingExpense(db.Model):
 
     busines = db.relationship('Busines')
 
+    def __init__(self, nOpexID, busID, nOpexName, dateIncurred, related_entry, debitBalance, creditBalance): 
+        self.nOpexID = nOpexID 
+        self.busID = busID 
+        self.nOpexName = nOpexName 
+        self.dateIncurred = dateIncurred
+        self.related_entry =related_entry
+        self.debitBalance = debitBalance 
+        self.creditBalance = creditBalance 
+        # self.Balance = Balance 
+        # self.BalanceDC
+
+    def __repr__(self): 
+        return "<Non Operating Expense {},{}".format(self.nOpexID, self.nOpexName)
+    
+    def debit(): 
+        pass
+    
+    def credit(): 
+        pass
+    
+    def increase(): 
+        pass
+    
+    def decrease(): 
+        pass
+   
 """
 --------------------------------------- Revenues ----------------------------------------------------------
 """
@@ -221,6 +447,7 @@ class OperatingRevenue(db.Model):
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     oprevName = db.Column(db.String(100))
     dateEarned = db.Column(db.Date())
+    related_entry = db.Column(db.String(50))
     debitBalance = db.Column(db.DECIMAL(10,0))
     creditBalance = db.Column(db.DECIMAL(10,0))
     Balance = db.Column(db.DECIMAL(10, 0))
@@ -228,6 +455,32 @@ class OperatingRevenue(db.Model):
 
     
     busines = db.relationship('Busines')
+
+    def __init__(self, opRevenueID, busID, oprevName, dateEarned, related_entry, debitBalance, creditBalance): 
+        self.opRevenueID = opRevenueID
+        self.busID = busID 
+        self.oprevName = oprevName
+        self.dateEarned = dateEarned
+        self.related_entry =related_entry
+        self.debitBalance = debitBalance 
+        self.creditBalance = creditBalance 
+        # self.Balance = Balance 
+        # self.BalanceDC
+
+    def __repr__(self): 
+        return "<Operating Revenue{},{}".format(self.opRevenueID, self.oprevName)
+    
+    def debit(): 
+        pass
+    
+    def credit(): 
+        pass
+    
+    def increase(): 
+        pass
+    
+    def decrease(): 
+        pass
    
 class NonOperatingRevenue(db.Model):
     __tablename__ = 'nonoprev'
@@ -236,6 +489,7 @@ class NonOperatingRevenue(db.Model):
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     nOprevName = db.Column(db.String(100))
     dateEarned = db.Column(db.Date())
+    related_entry = db.Column(db.String(50))
     debitBalance = db.Column(db.DECIMAL(10,0))
     creditBalance = db.Column(db.DECIMAL(10,0))
     Balance = db.Column(db.DECIMAL(10, 0))
@@ -243,6 +497,33 @@ class NonOperatingRevenue(db.Model):
 
     
     busines = db.relationship('Busines')
+
+    def __init__(self, nopRevenueID, busID, nOprevName, dateEarned, related_entry, debitBalance, creditBalance): 
+        self.nopRevenueID = nopRevenueID
+        self.busID = busID 
+        self.nOprevName = nOprevName
+        self.dateEarned = dateEarned
+        self.related_entry =related_entry
+        self.debitBalance = debitBalance 
+        self.creditBalance = creditBalance 
+        # self.Balance = Balance 
+        # self.BalanceDC
+
+    def __repr__(self): 
+        return "<Non Operating Revenue{},{}".format(self.nopRevenueID, self.nOprevName)
+    
+    def debit(): 
+        pass
+    
+    def credit(): 
+        pass
+    
+    def increase(): 
+        pass
+    
+    def decrease(): 
+        pass
+   
 
 """
 --------------------------------------- Equity ----------------------------------------------------------
@@ -254,6 +535,7 @@ class ShareholdersEquity(db.Model):
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     equityName = db.Column(db.String(100))
     date = db.Column(db.Date())
+    related_entry = db.Column(db.String(50))
     debitBalance = db.Column(db.DECIMAL(10,0))
     creditBalance = db.Column(db.DECIMAL(10,0))
     Balance = db.Column(db.DECIMAL(10, 0))
@@ -261,27 +543,32 @@ class ShareholdersEquity(db.Model):
 
     busines = db.relationship('Busines')
 
+    def ___init__(self, equityID, busID, equityName, date, related_entry, debitBalance, creditBalance): 
+        self.equityID = equityID
+        self.busID =busID 
+        self.equityName =equityName
+        self.date =date 
+        self.related_entry =related_entry
+        self.debitBalance =debitBalance
+        self.creditBalance =creditBalance
+    
+    def __repr__(self): 
+        return "<Equity {}, {}>".format(self.equityID, self.equityName)
+    
+    def debit(): 
+        pass
+    
+    def credit(): 
+        pass
+    
+    def increase(): 
+        pass
+    
+    def decrease(): 
+        pass
+
 
    
 
 
 
-
-"""
-DepType - straight line method, double declining, units of production, sum of years digits
-assetCost- the current value of the asset - Depreciation is applied on a continual basis so
-each year it is subtracted from the previous year value. 
-
-Prob do this decision in the route and not class 
-def depreciationCalc(self, depType, assetName,assetCost):
-if depType == "Straight-Line Method": 
-dep_expense = straightLineDep(assetCost, salvageVal, lifeSpan)
-elif depType == "Double Decline Method":
-dep_expense = DDMethod(db.Model)
-elif depType == "Units of Production":
-dep_expense = UnitsOfProd(db.Model)
-elif depType = "Sum of Years Digits": 
-dep_expense = SumYearDigits(db.Model)
-
-assetCost -= dep_expense
-"""
