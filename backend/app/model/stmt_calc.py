@@ -1,3 +1,4 @@
+from collections import defaultdict
 """ 
 # Income Statement main items
 Revenue
@@ -9,7 +10,37 @@ Non-Operating Expenses
 Other revenue
 Taxation
 Net Profit
+
+Introduction of capital 
+Purchase of asset by cheque
+Purchase of an asset and the incurring of a liability 
+Sale of an asset on credit 
+Sale of an asset immediate payment 
+Payment of a liability 
+Collection of an asset 
+
  """
+
+Asset  = defaultdict(list)
+Liability = defaultdict(list)
+Expense  = defaultdict(list)
+Revenue = defaultdict(list)
+Equity = defaultdict(list)
+
+
+for _ in range (1):
+   Asset['asset_id'].append('1')
+   Asset['a_name'].append('1')
+   Asset['lifeSpan'].append('4')
+   Asset['a_type'].append('NCA')
+   Asset['acquisDate'].append('19/01/2019')
+   Asset['debitVal'].append('')
+   Asset['creditVal'].append('1000')
+   Asset['accBal'].append('1000')
+   Asset['busID'].append('78483868')
+
+
+def generalLedger(Asset, Liability, Revenue, Expense, Equity): 
 
 
 """
@@ -44,3 +75,6 @@ Elseif tag ==expense and expense_type =direct:
 Line items, operating expense, maybe even the specific heading. Cash
 
 """
+
+if __name__ == '__main__': 
+   print(Asset)

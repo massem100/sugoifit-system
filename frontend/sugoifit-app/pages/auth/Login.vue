@@ -18,7 +18,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-center m-3">
-                        <form id = "LoginForm" class ="d-flex flex-column" @submit.prevent = "LoginUser " method ="POST">
+                        <form id = "LoginForm" class ="d-flex flex-column" @submit.prevent = "LoginUser" method ="POST">
                             <input type="hidden" name="_token" :value="token">
                            
                             <label class =" form-label text-left" for ="email">Email:</label>
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import sfNavBar from '../components/sf-nav-bar.vue'
+import sfNavBar from '../../components/sf-nav-bar.vue'
 
 export default {
   components: { sfNavBar },
@@ -75,30 +75,29 @@ export default {
             // this.$router.push({name: 'index'});
         },
         LoginUser: function () {
-      let self = this;
-      let loginForm = document.getElementById("LoginForm");
-      let form_data = new FormData(loginForm);
-      let PATH_API = 'auth/login'
-      fetch(`/api/${PATH_API}`, {
-        method: "POST",
-        body: form_data,
-        headers: {
-          "contentType":'application/json',
-          "Access-Control-Allow-Origin": '*',
-        },
-        
-       })
-        .then(function (response) {
-          return response.json();
-      })
-      .then(function (jsonResponse){
-            console.log("working");
-             this.$router.push({name: 'index'});
-      }).catch(function (error) {
-          console.log(error);
-        });
-
-    }
+            let self = this;
+            let loginForm = document.getElementById("LoginForm");
+            let form_data = new FormData(loginForm);
+            form_data.append('form id', loginForm.getAttribute("id"));
+            let PATH_API = 'auth/login';
+                this.$axios({
+                    method: "POST",
+                    headers:{
+                        'Content-Type': 'application/json',
+                    },
+                    url: `/api/${PATH_API}`,
+                    data: form_data,
+                    }).then (res => {
+                        if (res){
+                            console.log(res);
+                        }else{
+                            this.$router.push({name: 'index'});
+                        }
+                        
+                    }), error =>{
+                        console.log(error);
+                    }
+                    }
     }
     }
 
