@@ -21,7 +21,8 @@
     "nuxt": "^2.14.12",
     "nuxt-fontawesome": "^0.4.0",
     "vee-validate": "^3.4.5",
-    "vue-router": "^3.5.1"
+    "vue-router": "^3.5.1",
+    "vuetify-loader": "^1.7.2"
   },
   "devDependencies": {
     "@fortawesome/free-brands-svg-icons": "^5.15.2",
