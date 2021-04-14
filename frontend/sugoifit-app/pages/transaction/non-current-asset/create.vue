@@ -211,7 +211,7 @@
             },
             AddNCA: function(){
               let self = this;
-              let PATH_API = 'test';
+              let PATH_API = 'transaction/asset';
               let NCAForm = document.getElementById('AddNCAForm');
               // let form_data = new FormData(NCAForm);
               this.$axios.post(`/api/${PATH_API}`, new FormData(NCAForm), {
@@ -226,28 +226,7 @@
                 console.log(jsonResponse);
               })
             },
-            AddAsset: function(){
-              let PATH_API = 'test';
-              let NCAForm = document.getElementById("AddNCAForm");
-              let form_data =  new FormData(NCAForm);
-              fetch(`/api/${PATH_API}`,{
-                  method: "POST",
-                  body: form_data,
-                  headers:{
-                    "contentType": "application/json"
-                  },
-                  credentials: "same-origin",
-              })
-              .then(function (response){
-                  return response.json();
-              })
-                .then(function(jsonResponse){
-                  console.log(jsonResponse);
-                })
-                .catch( function(error){
-                 // console.log(error);
-              });
-            }
+            
         }
     }
 </script>

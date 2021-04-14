@@ -14,6 +14,7 @@ class Busines(db.Model):
     telephone = db.Column(db.String(100))
     employees = db.relationship('UserCredential', backref='business')
     date_added = db.Column(db.DateTime())
+    
 
     def ___init__(self, busID, busName, busemail, telephone):
         self.busID = busID
@@ -87,6 +88,6 @@ class RoleType(enum.Enum):
 class Role(db.Model):
     __tablename__ = 'role'
 
-    rolename = db.Column(db.String(30), primary_key=True)
+    role_name = db.Column(db.String(30), primary_key=True)
 
  

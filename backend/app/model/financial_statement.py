@@ -7,11 +7,12 @@ class Financialstmt(db.Model):
 
     stmtID = db.Column(db.String(10), primary_key=True, unique=True)
     fs_name = db.Column(db.String(50))
-    lines = db.relationship('Financialstmtline', backref= "finacialstmt", lazy=True)
+    lines = db.relationship('Financialstmtline', backref= "Finacialstmt", lazy=True)
 
     def __init__(self, stmtID, fs_name): 
         self.stmtID = stmtID
         self.fs_name = fs_name
+
     def __repr__(self):
         return 'Financial Statement {} {} '.format(self.stmtID, self.fs_name)
     
@@ -25,11 +26,13 @@ class Financialstmtline(db.Model):
     __tablename__ = 'financialstmtline'
 
     lineID = db.Column(db.Integer, primary_key=True, unique=True, default = 0)
+    fstmtID = db.Column(db.ForeignKey('financialstmt.stmtID', ondelete='CASCADE', onupdate='CASCADE'),nullable=False, unique=True)
     line_name = db.Column(db.String(250))
     lineDesc = db.Column(db.String(50))
     tag = db.Column(db.String(50))
-    sequences = db.relationship('Financialstmtlineseq', backref='line')
-    desc = db.relationship('Financialstmtdesc', backref='line')
+    sequences = db.relationship('Financialstmtlineseq')
+    desc = db.relationship('Financialstmtdesc')
+    
     
 
 
@@ -60,7 +63,8 @@ class Financialstmtdesc(db.Model):
     amount = db.Column(db.Float)
 
 
-    busines = db.relationship('Busines')
+    # busines = db.relationship('Busines')
+    financialstmtline = db.relationship('Financialstmtline')
 
     def __init__(self, fStmtDescID, busID, fsLineID, fiscalPeriod, fillingDATE, fiscalYear, startDATE, endDATE, amount):
         self.fStmtDescID = fStmtDescID

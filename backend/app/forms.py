@@ -78,7 +78,6 @@ class NCAForm(FlaskForm):
     asset_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter asset amount.')])
     e_timespan = IntegerField('LifeSpanNumber')
-    e_timespan_unit = SelectField('LifeSpanUnit', choices = timeSpanYears)
     paid_using = SelectField('Paid Using', choices = paid_using)
 
 class CAForm(FlaskForm): 

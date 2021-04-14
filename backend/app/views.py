@@ -8,8 +8,8 @@ from app import app,  db, login_manager, cors, csrf_, principal, admin_permissio
 # WTF Forms and SQLAlchemy Models
 from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm
 from app.model import  accounts, auth, sales, transactions
-from app.model.financial_statement import Financialstmt, Financialstmtlineseq, Financialstmtlinealia,\
-                                                                                Financialstmtdesc, Financialstmtline
+from app.model.financial_statement import Financialstmt, Financialstmtline
+# Financialstmtlineseq, Financialstmtlinealia,\# Financialstmtdesc 
 from sqlalchemy.event import listens_for
 
 from flask import render_template, request, jsonify, flash, session, \
@@ -67,6 +67,10 @@ def requires_auth(f):
 def token():
     token = csrf_.generate_csrf(app.config['SECRET_KEY'])
     # print(token)
+    form_data = ["83332", "name", 2, "Straight Line",  "1/12/2009", 2000]
+    result =accounts.NonCurrentAsset.increase("cash", form_data )
+    print(result)
+
     return jsonify(token)
 
 
@@ -74,13 +78,27 @@ def token():
 --------------------------------------- Financial Statement Routes ----------------------------------------------------------
 """
 
-@app.route('/api/transaction', methods = ["POST", "GET"])
+@app.route('/api/transaction/asset', methods = ["POST", "GET"])
 def manageTransactions():
     if request.method == "POST":
         if request['form_id'] == "AddNCAForm":
             form = NCAForm(request.form)
 
             # assign NCA form fields
+            name = form.asset_name.data 
+            transaction_date = form.transaction_date.data 
+            dep_type = form.dep_type.data
+            asset_desc = form.asset_desc.data 
+            amount = form.amount.data
+            paid_using = form.amount.data
+            lifeSpan = form.e_timespan.data
+
+            form_data = [current_user.busID, name, lifeSpan, dep_type,  transaction_date, amount]
+            result =accounts.NonCurrentAsset.increase(paid_using, form_data )
+            print(result)
+
+
+                    
             
         elif request['form_id'] == "AddCAForm":
             form = CAForm(request.form)
@@ -90,11 +108,13 @@ def manageTransactions():
 
         elif request['form_id'] == "CLiabForm": 
             form = CLiabForm(request.form)
+
         elif request['form_id'] == "ExpForm": 
             form = ExpenseForm(request.form)
             
         elif request['form_id'] == "RevForm": 
             form = RevenueForm(request.form)
+            
         elif request['form_id'] == "EquityForm": 
             form = EquityForm(request.form)
         
@@ -241,24 +261,18 @@ def register():
             else: 
                 bus_int = 0
                 user_int = 0
+
             newBusID = business_name[:3]+str(id_int)
             newUserID = 'user' + str(user_int)
-            business = Busines(busID = newBusID,
-                               busName = business_name, 
-                               busemail = null, 
-                               telephone = null)
-            user = User(userID = newUserID, 
-                        fname = f_name,
-                        lname = l_name, 
-                        user_address = null, 
-                        phone =null)
+            business = Busines(busID = newBusID, busName = business_name, 
+                               busemail = null, telephone = null)
 
-            user_cred = UserCredential(userID = newUserID, 
-                                       busID = newBusID, 
-                                       user_email = user_email, 
-                                       user_password = user_password, 
-                                       roles = 'owner', 
-                                       active = True)
+            user = User(userID = newUserID, fname = f_name, lname = l_name, 
+                        user_address = null, phone =null)
+
+            user_cred = UserCredential(userID = newUserID, busID = newBusID, 
+                                       user_email = user_email, user_password = user_password, 
+                                       roles = 'owner', active = True)
             db.session.add(business)
             db.session.add(user)
             db.session.add(user_cred)
@@ -307,8 +321,6 @@ def sucessful_prods():
     prod_numbers.sort(key= lambda x: x[1], reverse=True)
 
     return prod_numbers
-
-
 
 
 """
@@ -515,6 +527,7 @@ def page_not_found(error):
 
 
 if __name__ == '__main__':
+    
     app.run(debug=True, host="0.0.0.0", port="8080")
-
+    
 
