@@ -2,7 +2,9 @@ import os, sys
 import pandas as pd
 import jwt, secrets
 import hashlib, random
-from datetime import date
+import datetime
+from datetime import timedelta
+from datetime import datetime
 from app.model.sales import Customer, Invoice, Order
 from functools import wraps
 from app import app,  db, login_manager, cors, csrf_, principal, admin_permission, \
@@ -306,15 +308,11 @@ def sucessful_prods():
         prod_numbers.append([product.prodName, product.amtSold])
 
     #Item with highest number of sales would be at the top
-    prod_numbers.sort(key= lambda x: x[1], reverse=True)
+    prod_numbers.sort(key= lambda x: x[1], reverse = True)
 
     return prod_numbers
 
 
-
-"""
-  NEED TO GET PRODUCTS NEEDED TO FULFILL ORDER
-"""
 @app.route('/website/placeorder', methods = ['POST'])
 def place_order():
   #Display order based on rank
@@ -328,21 +326,70 @@ def place_order():
     customer = Customer.query.filter_by(trn = trn)
 
     if customer.trn == None:
-      # Add new customer
-      new_customer = Customer(fname, lname, trn, email, phone)
-      db.session.add(new_customer)
-      db.session.commit()
+        # Add new customer
+        new_customer = Customer(fname, lname, trn, email, phone)
+        db.session.add(new_customer)
+        db.session.commit()
 
-    else:
-      today = date.today()
-      today = today.strftime("%d-%m-%Y")
-      new_order = Order(2800, today, customer.custID, 'test_invoiceID','test_businessID')
-      db.session.add(new_order)
-      db.session.commit()
+    date_format = "%Y-%m-%d"
+    status = "Pending"
+    today = datetime.datetime.now()
+    todayString = today.strftime(date_format)
+    dateDue = (today + timedelta(days=7)).strftime(date_format)
+    new_order = Order(2800, todayString, customer.custID, 'test_invoiceID','test_businessID', status, dateDue)
+    db.session.add(new_order)
+    db.session.commit()
 
-      
+    
+""" 
+Rank based on date order should be fulfilled
+ 
+Click manage orders
+1) Pull all orders which are pending
+2) compare date due, with current date. Subtract and use the value to rank
+3) Sort in ascending order based on that value.
 
+from datetime import datetime
 
+date_format = "%Y-%m-%d"
+a = datetime.strptime('2021-04-14',date_format)
+b = datetime.strptime('2021-04-22',date_format)
+delta = b - a
+print (delta.days)
+
+"""
+@app.route('/manage-orders')
+def manageOrders():
+    #Get all orders that are pending
+    date_format = "%Y-%m-%d"
+    allOrders = []
+    ordersQuery = Order.query.filter_by(status="Pending").all()
+
+    #Calculate days left for each record
+    #Put record in tuple form and append to list
+    for record in ordersQuery:
+        orderID = record.orderID
+        orderTotal = record.order_tot
+        date = record.order_DATE
+        custID = record.custID
+        invoiceID = record.invoiceID
+        busID = record.busIDo
+        status = record.status
+        dueDate = record.dueDate
+
+        startDate = datetime.strptime(date, date_format)
+        endDate = datetime.strptime(dueDate, date_format)
+
+        daysLeft = endDate - startDate
+        daysLeft = daysLeft.days()
+
+        allOrders.append((orderID, orderTotal, date, custID, invoiceID,
+        busID, status, dueDate, daysLeft))
+
+    allOrders.sort(lambda x: x[8], reverse = False)
+
+    #Need to print this list on the front end.
+    return allOrders
 
 #########################################################################################################
 
