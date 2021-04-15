@@ -77,7 +77,7 @@
 
 <script>
     import commonChartDetails from "@/mixins/commonChartDetails";
-    import {tableItems} from "../../../assets/data/tableData";
+    import {tableItems} from "../../assets/data/tableData";
 
 
     export default {

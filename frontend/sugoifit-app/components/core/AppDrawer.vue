@@ -123,6 +123,16 @@
                         text: 'Manage Products',
                         subItems: [
                             {
+                                to: '/manageProducts/list',
+                                icon: 'mdi-view-dashboard',
+                                text: 'All Products'
+                            },
+                            {
+                                to: '/manageProducts/add',
+                                icon: 'mdi-plus',
+                                text: 'Add Product'
+                            },
+                            {
                                 to: '/manageProducts/analytics',
                                 icon: 'mdi-view-dashboard',
                                 text: 'Analytics'
@@ -130,9 +140,21 @@
                         ]
                     },
                     {
-                        to: '/table-list',
+                        to: '',
                         icon: 'mdi-clipboard-outline',
-                        text: 'Manage Sales'
+                        text: 'Manage Sales',
+                         subItems: [
+                            {
+                                to: '/transaction/sales/create',
+                                icon: 'mdi-view-dashboard',
+                                text: 'Create Sales'
+                            },
+                            {
+                                to: '/transaction/sales/list',
+                                icon: 'mdi-view-dashboard',
+                                text: 'All sales'
+                            }
+                        ]
                     },
                     {
                         to: '/typography',
