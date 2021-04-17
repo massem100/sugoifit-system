@@ -89,8 +89,6 @@ export default {
                     data: form_data,
                     }).then (res => {
                         if (res){
-                            console.log(res);
-                        }else{
                             this.$router.push({name: 'index'});
                         }
                         

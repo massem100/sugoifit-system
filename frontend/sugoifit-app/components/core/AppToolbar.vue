@@ -144,10 +144,22 @@
           this.responsiveInput = true
         }
       },
-      async logout() {
-        await this.setUsername(null);
-        this.$router.push({ path: '/' });
-      }
+        logout: function() {
+        let PATH_API = 'auth/logout';
+        this.$axios.get(`/api/${PATH_API}`, {
+          headers: {
+          'contentType': 'application/json',
+          }
+        })
+        .then(function (jsonResponse) {
+          return jsonResponse.json();
+        })
+        .then(function (jsonResponse) {
+          // this.setUsername(null);
+          this.$router.push({ name:'Login'});
+        }), error =>{
+            console.log(error);
+          }},        
     },
     mounted () {
       this.onResponsiveInverted()

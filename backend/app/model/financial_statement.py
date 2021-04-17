@@ -30,12 +30,9 @@ class Financialstmtline(db.Model):
     line_name = db.Column(db.String(250))
     lineDesc = db.Column(db.String(50))
     tag = db.Column(db.String(50))
-    sequences = db.relationship('Financialstmtlineseq')
-    desc = db.relationship('Financialstmtdesc')
+    sequences = db.relationship('Financialstmtlineseq', backref = "financialstmtline")
+    desc = db.relationship('Financialstmtdesc', backref = 'financialstmtline')
     
-    
-
-
     def __init__(self,  tag, line_name):
         # self.lineID = lineID
         self.line_name = line_name
@@ -62,9 +59,7 @@ class Financialstmtdesc(db.Model):
     endDATE = db.Column(db.Date)
     amount = db.Column(db.Float)
 
-
     # busines = db.relationship('Busines')
-    financialstmtline = db.relationship('Financialstmtline')
 
     def __init__(self, fStmtDescID, busID, fsLineID, fiscalPeriod, fillingDATE, fiscalYear, startDATE, endDATE, amount):
         self.fStmtDescID = fStmtDescID
@@ -105,7 +100,6 @@ class Financialstmtlineseq(db.Model):
     db.UniqueConstraint(fsStmtID,fsStmtLineID)
 
     financialstmt = db.relationship('Financialstmt')
-    financialstmtline = db.relationship('Financialstmtline')
 
     def __init__(self, sequence, fsStmtID, fsStmtLineID): 
         # self.lineSeqID = lineSeqID

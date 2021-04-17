@@ -16,9 +16,7 @@
     >
       <v-list dense>
         <v-list-tile avatar to="/">
-          <v-list-tile-avatar
-            color="white"
-          >
+          <v-list-tile-avatar>
             <v-img
               :src="logo"
               height="34"

@@ -73,7 +73,8 @@ def token():
     # form_data = ["83332", "name", 2, "Straight Line",  "1/12/2009", 2000]
     # result =accounts.NonCurrentAsset.increase("cash", form_data[1], form_data )
     # print(result)
-
+    # print(current_user.roles)
+    # role = auth.Role()
     return jsonify(token)
 
 
@@ -186,17 +187,16 @@ def on_identity_loaded(sender, identity):
     # Update identity with a list of role for the user
     if hasattr(current_user, 'roles'):
         for role in current_user.roles:
-            identity.provides.add(RoleNeed(role.name))
+            identity.provides.add(RoleNeed(role.role_name))
 
 
-@app.route('/api/auth/login', methods=["POST"])
+@app.route('/api/auth/login', methods=["POST", "GET"])
 def login():
     form = LoginForm(request.form)
     if request.method == "POST" and form.validate_on_submit() and form.email.data:
         # Get the username and password values from the form.
         email = form.email.data
         passwordGiven = form.password.data
-        print({email, passwordGiven})
 
         #Check if email exists
         user = db.session.query(auth.UserCredential).filter_by(user_email=email).first()
@@ -206,19 +206,19 @@ def login():
                 # get user id, load into session
                 login_user(user)
                 # Flask-Principal, register user identity into the system
-                identity_changed.send(app, identity = Identity(user.userID))
-                role = ''
-
-                #Redirect to employee dashboard
-                with employee_permission.require():
-                    return jsonify({'access': 'employee', 'message': 'Login Successful, Entering Employee Dashboard'})
-                #Redirect to owner dashboard
+                identity_changed.send(app, identity = Identity(user.cid))
+                
+                # #Redirect to employee dashboard
+                # with employee_permission.require():
+                #     return jsonify({'access': 'employee', 'message': 'Login Successful, Entering Employee Dashboard'})
+                # #Redirect to owner dashboard
                 with owner_permission.require():
                     return jsonify({'access': 'owner','message': 'Login Successful' })
 
-                #Redirect to Fmanager dashboard
-                with fin_manager_permission.require():
-                    return jsonify({'access': 'financialmanager', 'message': 'Login Successful, Entering Financial Dashboard'})
+                # #Redirect to Fmanager dashboard
+                # with fin_manager_permission.require():
+                #     return jsonify({'access': 'financialmanager', 'message': 'Login Successful, Entering Financial Dashboard'})
+                return jsonify({'message': 'Login Successful'})
             else:
                 return jsonify({'error msg': 'Login credentials failed: Please check email or password.'})
                 
@@ -230,8 +230,7 @@ def login():
 
 
 
-@app.route('/api/auth/logout', methods = ['GET'])
-@requires_auth
+@app.route('/api/auth/logout', methods = ["GET"])
 @login_required
 def logout():
     # Clears user from session
@@ -244,7 +243,7 @@ def logout():
     # Flask-Principal: set user to anonymous
     identity_changed.send(app, identity=AnonymousIdentity())
     
-    return jsonify(message = [{'message': "You have been logged out successfully"}])
+    return jsonify({'message': "You have been logged out successfully"})
 
 
 @app.route('/api/users/register', methods=["POST"])
@@ -272,7 +271,6 @@ def register():
         if existing_business is None and existing_email is None:
             # Get the last BusID and UserID from db
             last_businessID = db.session.query(auth.Busines).order_by(auth.Busines.date_joined.desc()).first()
-            print(last_businessID)
             last_userID = db.session.query(auth.User).order_by(auth.User.date_joined.desc()).first()
 
             if last_businessID is None:
@@ -281,7 +279,6 @@ def register():
                 # Get the numeric part of the last business ID and increment by 1
                 last_busID =last_businessID.busID                
                 bus_int = int(last_busID[3:])
-                print(bus_int)
                 bus_int += 1
 
             if last_userID is None: 
@@ -291,7 +288,6 @@ def register():
                 # Get the numeric part of the last User ID and increment by 1
                 last_uID = last_userID.userID
                 user_int = int(last_uID[4:])
-                print(user_int)
                 user_int +=1
                 
             newBusID = str(business_name[:3])+str(bus_int)
@@ -305,10 +301,14 @@ def register():
             user_cred = auth.UserCredential(userID = newUserID, busID = newBusID, 
                                        user_email = user_email, user_password = user_password, 
                                        active = True)
-            # roles = auth.Role(role_name = "owner")
+            user_roles = auth.Role(role_name = "owner", userID = newUserID)
+            user_cred.roles.append(user_roles)
+            # print(user_cred.roles)
+           
             db.session.add(business)
             db.session.add(user)
             db.session.add(user_cred)
+            db.session.add(user_roles)
             db.session.commit()
             return jsonify(success =[{'message': 'Successfully registered'}])
 
@@ -324,7 +324,7 @@ def register():
 
 @login_manager.user_loader
 def load_user(id):
-    user = User.query.get(userID)
+    user = auth.UserCredential.query.get(id)
     return user
 
 """
