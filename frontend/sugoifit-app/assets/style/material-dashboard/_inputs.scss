@@ -3,13 +3,14 @@
 }
 
 .input--is-focused .v-input__control .v-input__slot:after{
-  border-color: red !important;
+  border-color: rgb(11, 133, 155) !important;
 }
 
 .v-text-field__slot {
   input {
     @include material-placeholder{
       color: $input-color;
+      // background-color: aqua;
     };
   }
 

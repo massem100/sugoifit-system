@@ -3,6 +3,7 @@ import pandas as pd
 import jwt, secrets
 import hashlib, random
 from functools import wraps
+from datetime import datetime
 from app import app,  db, login_manager, cors, csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission
 # WTF Forms and SQLAlchemy Models
@@ -25,6 +26,8 @@ from flask_principal import RoleNeed, UserNeed, identity_changed, identity_loade
 
 token =''
 
+# def add_twoN(a,b): 
+#     return a+b
 
 """
 --------------------------------------- JWT Authorization Function and CSRF Handler----------------------------------------------------------
@@ -67,9 +70,9 @@ def requires_auth(f):
 def token():
     token = csrf_.generate_csrf(app.config['SECRET_KEY'])
     # print(token)
-    form_data = ["83332", "name", 2, "Straight Line",  "1/12/2009", 2000]
-    result =accounts.NonCurrentAsset.increase("cash", form_data )
-    print(result)
+    # form_data = ["83332", "name", 2, "Straight Line",  "1/12/2009", 2000]
+    # result =accounts.NonCurrentAsset.increase("cash", form_data[1], form_data )
+    # print(result)
 
     return jsonify(token)
 
@@ -78,27 +81,52 @@ def token():
 --------------------------------------- Financial Statement Routes ----------------------------------------------------------
 """
 
-@app.route('/api/transaction/asset', methods = ["POST", "GET"])
+@app.route('/api/transaction/', methods = ["POST", "GET"])
 def manageTransactions():
     if request.method == "POST":
-        if request['form_id'] == "AddNCAForm":
+        if request.form['form_id'] == "AddNCAForm":
             form = NCAForm(request.form)
-
+ 
             # assign NCA form fields
             name = form.asset_name.data 
             transaction_date = form.transaction_date.data 
             dep_type = form.dep_type.data
+            dep_rate = form.dep_rate.data
             asset_desc = form.asset_desc.data 
             amount = form.amount.data
-            paid_using = form.amount.data
-            lifeSpan = form.e_timespan.data
+            paid_using = form.paid_using.data
+            lifeSpan = form.asset_lifespan.data
+            bought_sold = form.bought_sold.data
 
-            form_data = [current_user.busID, name, lifeSpan, dep_type,  transaction_date, amount]
-            result =accounts.NonCurrentAsset.increase(paid_using, form_data )
-            print(result)
+            if "Bought" in  bought_sold: 
+                print(paid_using)
+                form_data = [1, "busID", lifeSpan, dep_type,  transaction_date, amount]
+                entries =accounts.NonCurrentAsset.increase(paid_using, name, form_data )
+                entry_debit = entries[0]
+                entry_credit = entries[1]
+                print( entry_debit, entry_credit)
+                business = auth.Busines(busID = "busID")
 
+                try:
+                    db.session.add(business)
+                    db.session.add(entry_debit)
+                    db.session.add(entry_credit)
+                    db.session.commit()
+                except Exception as e:
+                     error = str(e)
+                
+                return jsonify({'message': 'Success - Asset Bought', 'errors': error})   
 
-                    
+            else: 
+                form_data = ["ncaid", "busID", lifeSpan, dep_type,  transaction_date, amount]
+                Entry1 =accounts.NonCurrentAsset.decrease(paid_using, name, form_data )[0]
+                Entry2 =accounts.NonCurrentAsset.decrease(paid_using, name, form_data )[1]
+
+                db.session.add()
+                db.session.add(Entry2)
+
+            
+                return jsonify({'message': 'Success - Asset Sold'})                   
             
         elif request['form_id'] == "AddCAForm":
             form = CAForm(request.form)
@@ -151,7 +179,7 @@ def home():
 """
 
 @identity_loaded.connect_via(app)
-def on_identity_loaded (sender, identity):
+def on_identity_loaded(sender, identity):
     # Set th identity user object
     identity.user = current_user
 
@@ -171,18 +199,15 @@ def login():
         print({email, passwordGiven})
 
         #Check if email exists
-        user_email = auth.Credential.user_email
-        user_credential = User.query.filter_by(user_email=email).first()
-        # user = db.session.query(auth.Credential).filter(auth.Credential.user_email = email).first()
+        user = db.session.query(auth.UserCredential).filter_by(user_email=email).first()
 
         if user is not None:
-            user_password = user_credential.user_password
-            if check_password_hash(user_password, passwordGiven):
+            if check_password_hash(user.user_password, passwordGiven):
                 # get user id, load into session
-                login_user(user_credential)
+                login_user(user)
                 # Flask-Principal, register user identity into the system
-                identity_changed.send(app, identity = Identity(auth.Credential.userID))
-                role = user.role
+                identity_changed.send(app, identity = Identity(user.userID))
+                role = ''
 
                 #Redirect to employee dashboard
                 with employee_permission.require():
@@ -235,44 +260,52 @@ def register():
         user_email = form.email.data
         user_password= form.password.data
         business_name = form.business_name.data
-
+        # print(business_name)
 
         # Checks if another user has this email address
-        existing_email = db.session.query(UserCredential).filter_by(user_email=user_email).first()
+        existing_email = db.session.query(auth.UserCredential).filter_by(user_email=user_email).first()
 
         # Checks if business already exists
-        existing_business = db.session.query(Busines).filter_by(busName=business_name).first()
+        existing_business = db.session.query(auth.Busines).filter_by(busName=business_name).first()
 
         # If unique email address and username provided then log new user
         if existing_business is None and existing_email is None:
             # Get the last BusID and UserID from db
-            last_businessID = db.session.query(Busines).order_by(Busines.date_added.desc()).first().busID
-            last_userID = db.session.query(User).order_by(Busines.date_joined.desc()).first().userID
+            last_businessID = db.session.query(auth.Busines).order_by(auth.Busines.date_joined.desc()).first()
+            print(last_businessID)
+            last_userID = db.session.query(auth.User).order_by(auth.User.date_joined.desc()).first()
 
-            if last_record is not None and last_user is not None: 
+            if last_businessID is None:
+                bus_int = 1
+            else: 
                 # Get the numeric part of the last business ID and increment by 1
-                bus_int = int(last_businessID[3:])
+                last_busID =last_businessID.busID                
+                bus_int = int(last_busID[3:])
+                print(bus_int)
                 bus_int += 1
 
+            if last_userID is None: 
+                user_int = 1
+            else:
+                
                 # Get the numeric part of the last User ID and increment by 1
-                user_int = int(last_userID[4:])
+                last_uID = last_userID.userID
+                user_int = int(last_uID[4:])
+                print(user_int)
                 user_int +=1
                 
-            else: 
-                bus_int = 0
-                user_int = 0
-
-            newBusID = business_name[:3]+str(id_int)
+            newBusID = str(business_name[:3])+str(bus_int)
             newUserID = 'user' + str(user_int)
-            business = Busines(busID = newBusID, busName = business_name, 
-                               busemail = null, telephone = null)
+            bus_date = datetime.now()
+            business = auth.Busines(busID = newBusID, busName = business_name, date_joined = bus_date)
 
-            user = User(userID = newUserID, fname = f_name, lname = l_name, 
-                        user_address = null, phone =null)
+            user = auth.User(userID = newUserID, fname = f_name, lname = l_name, 
+                        user_address = None, phone = None)
 
-            user_cred = UserCredential(userID = newUserID, busID = newBusID, 
+            user_cred = auth.UserCredential(userID = newUserID, busID = newBusID, 
                                        user_email = user_email, user_password = user_password, 
-                                       roles = 'owner', active = True)
+                                       active = True)
+            # roles = auth.Role(role_name = "owner")
             db.session.add(business)
             db.session.add(user)
             db.session.add(user_cred)

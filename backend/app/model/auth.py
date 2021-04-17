@@ -2,7 +2,7 @@ from app import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash
 import enum 
-
+from datetime import datetime
 
 class Busines(db.Model):
     __tablename__ = 'business'
@@ -12,16 +12,19 @@ class Busines(db.Model):
     busemail = db.Column(db.String(255))
     busaddress = db.Column(db.String(100))
     telephone = db.Column(db.String(100))
+    date_joined = db.Column(db.DateTime(), nullable= False)
     employees = db.relationship('UserCredential', backref='business')
-    date_added = db.Column(db.DateTime())
+    
     
 
-    def ___init__(self, busID, busName, busemail, telephone):
+    def ___init__(self, busID, busName, date_joined, busemail = None, busaddress= None, telephone= None):
         self.busID = busID
-        self.busName = busName 
+        self.busName = busName
+        self.date_joined = date_joined 
         self.busemail = busemail
+        self.busaddress = busaddress
         self.telephone = telephone
-        self.date_added = datetime.now()
+  
   
 
 
@@ -52,10 +55,11 @@ class User(db.Model, UserMixin):
     def __repr__(self): 
       return '<User %r>' % (self.userID)
 
-roles = db.Table('roles',
-    db.Column('role_name', db.Integer, db.ForeignKey('role.role_name'), primary_key=True),
-    db.Column('userID', db.Integer, db.ForeignKey('usercredentials.userID'), primary_key=True)
-)
+
+# roles = db.Table('roles',db.Model.metadata,
+#     db.Column('role_name', db.String(30), db.ForeignKey('role.role_name'), primary_key=True),
+#     db.Column('userID', db.String(100), db.ForeignKey('usercredentials.userID'), primary_key=True)
+# )
 
 class UserCredential(db.Model):
     __tablename__ = 'usercredentials'
@@ -66,28 +70,28 @@ class UserCredential(db.Model):
     user_email = db.Column(db.String(50), unique=True)
     user_password = db.Column(db.String(255))
     busID = db.Column(db.String(200), db.ForeignKey('business.busID'))
-    roles = db.relationship('Role', secondary=roles, lazy='subquery', backref=db.backref('usercredentials', lazy='dynamic'))
+    roles = db.relationship('Role', backref='usercredentials', lazy='dynamic')
     
-    def __init__(self, userID, busID, user_email, user_password, roles, active):  
+    def __init__(self, userID, busID, user_email, user_password, active = False):  
       self.userID = userID
       self.busID = busID
-      self.roles = roles
       self.user_email = user_email
       self.user_password = generate_password_hash(user_password,method = 'pbkdf2:sha256')
-      self.active = active; 
+      self.active = active
 
+  
     def is_active(self):
       """Flask-Login: return True if the user is active."""
       return self.active
 
-class RoleType(enum.Enum): 
-  owner = 'Business Owner'
-  employee = 'Employee'
-  manager = 'Financial Manager'
+# class RoleType(enum.Enum): 
+#   owner = 'Business Owner'
+#   employee = 'Employee'
+#   manager = 'Financial Manager'
   
 class Role(db.Model):
     __tablename__ = 'role'
 
     role_name = db.Column(db.String(30), primary_key=True)
-
- 
+    userID = db.Column(db.ForeignKey('usercredentials.userID'), primary_key=True)
+   

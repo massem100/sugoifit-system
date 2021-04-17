@@ -1,41 +1,51 @@
 <template>
     
-    <div class=" login-page">
-        <!-- Add nav component here -->
-        <!-- <sf-nav-bar class="w-100"/> -->
-
-        <div class="w-100 d-flex flex-row ">
+    <div class=" w-100 h-100 ">
+    
+        <div class="d-flex flex-row ">
             <div  class="login-div">
-                
-                <img class = "login-image" src="~assets/uploads/login.svg" alt="">
+                <img class = "login-image " src="~assets/uploads/login.svg" alt="">
             </div>
             
-            <div class="form-container">
-                    <div class = "d-flex flex-column justify-content-start">
-                        <h2 class ="text-center"> Login </h2>   
+            <div class="container  w-50 d-flex flex-column">
+                    <div class = "d-flex flex-column ">
+                        <h2 class ="text-center"> Register </h2>   
                         <div id="d-flex justify-content-center">               
-                            <p class ="login-text tcext-center"> Welcome back, enter your username and password</p>
+                            <p class ="login-text text-center"> Welcome back, enter your username and password</p>
+                        </div>
+                        <div class = "d-flex flex-row justify-content-center">
+                            <form id = "RegisterForm" class ="d-flex ml-3 flex-column " @submit.prevent = "LoginUser" method ="POST">
+                                <input type="hidden" name="_token" :value="token">
+                            
+                                <label class ="form-label mt-4" for="first_name"> First Name</label> 
+                                <input class ="form-control mt-2" type="text" name="first_name" id="first_name">
+
+                                <label class ="form-label mt-4" for="last_name"> Last Name</label> 
+                                <input class ="form-control mt-2" type="text" name="last_name" id="last_name">
+
+                                <label class =" form-label text-left" for ="email">Email:</label>
+                                <input class ="form-control mt-2" type="text" name="email" id="email">
+                            
+                                <label class ="form-label mt-4" for="password"> Password:</label> 
+                                <input class ="form-control mt-2" type="password" name="password" id="password">
+
+                                <label class ="form-label mt-4" for="business_name">Business Name</label> 
+                                <input class ="form-control mt-2" type="text" name="business_name" id="business_name">
+                            
+                                <div class ="d-flex flex-column align-items-center">
+                                    <div  id="msgBox">
+                                        <p> {Display error messages here} </p>
+                                    </div>
+                                    <button  class="btn submit" id="submit"> Submit </button>
+                                    <p class ="login-text m-3">Dont have an account? <a href="">Sign up your business! </a></p>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-center m-3">
-                        <form id = "LoginForm" class ="d-flex flex-column" @submit.prevent = "LoginUser" method ="POST">
-                            <input type="hidden" name="_token" :value="token">
-                           
-                            <label class =" form-label text-left" for ="email">Email:</label>
-                            <input class ="form-control mt-2" type="text" name="email" id="email">
-                        
-                            <label class ="form-label mt-4" for="password"> Password:</label> 
-                            <input class ="form-control mt-2" type="password" name="password" id="password">
-                           
-                            <div class ="d-flex flex-column align-items-center">
-                                <div  id="msgBox">
-                                    <p> {Display error messages here} </p>
-                                </div>
-                                <button  class="btn submit" id="submit"> Submit </button>
-                                <p class ="login-text m-3">Dont have an account? <a href="">Sign up your business! </a></p>
-                            </div>
-                        </form>
-                    </div>
+
+                    
+                       
+                    
                     
             </div> 
         </div>  
@@ -76,28 +86,23 @@ export default {
         },
         LoginUser: function () {
             let self = this;
-            let loginForm = document.getElementById("LoginForm");
-            let form_data = new FormData(loginForm);
-            form_data.append('form id', loginForm.getAttribute("id"));
-            let PATH_API = 'auth/login';
-                this.$axios({
-                    method: "POST",
-                    headers:{
-                        'Content-Type': 'application/json',
-                    },
-                    url: `/api/${PATH_API}`,
-                    data: form_data,
-                    }).then (res => {
-                        if (res){
-                            console.log(res);
-                        }else{
-                            this.$router.push({name: 'index'});
-                        }
-                        
-                    }), error =>{
-                        console.log(error);
-                    }
-                    }
+            let regForm = document.getElementById("RegisterForm");
+            let form_data = new FormData(regForm);
+            form_data.append('form id', regForm.getAttribute("id"));
+            let PATH_API = 'users/register';
+                this.$axios.post(`/api/${PATH_API}`, form_data, {
+                  headers: {
+                  'contentType': 'application/json',
+                }
+              })
+              .then( jsonResponse =>{
+                return jsonResponse.json();
+              })
+              .then( jsonResponse =>{
+                console.log(jsonResponse);
+              })
+            }, 
+                    
     }
     }
 
@@ -106,7 +111,7 @@ export default {
 <style scoped>
     .login-page{
         width: 100%; 
-        height: 100vh;
+        min-height: 100%;
         display:flex;
         justify-content: center;
         align-items: center;
@@ -140,7 +145,7 @@ export default {
         font:400 1rem "Poppins";
     }
    
-    #LoginForm input{
+    #RegisterForm input{
         width: 24rem;
         height: 2.7rem;
         border-radius: 20px;
@@ -149,7 +154,7 @@ export default {
     }
 
     .form-container{
-          width:50rem;
+        width:50vw;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -216,10 +221,10 @@ export default {
         align-items: center;
         justify-content: center;
         margin: 10px;
-        width: 40vw;
+        width:50vw;
 
     }
-      #LoginForm input{
+      #RegisterForm input{
         width: 18rem;
         height: 2.4rem;
         border-radius: 20px;
@@ -240,7 +245,7 @@ export default {
         /* background-color: red; */
     }
 
-    #LoginForm input{
+    #RegisterForm input{
         width: 24rem;
     }
     .login-image{
@@ -275,10 +280,19 @@ export default {
     .login-div{
         width: 50vw;
         height:100vh;
+
         /* background-color: gold; */
     }
-    #loginForm input{
+    #RegisterForm{
+        width:50%;
+    }
+
+  
+    #RegisterForm input{
         width: 32rem;
+        display: flex; 
+        /* justify-content: center; */
+        align-items: center;
     }
 
     .login-image{

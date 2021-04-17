@@ -7,12 +7,12 @@
   >
     <div class="v-toolbar-title">
       <v-toolbar-title
-        class="white--text font-weight-light"
+        class="white--text ml-4 font-weight-light"
       >
         <v-btn
           v-if="responsive"
           class="default v-btn--simple"
-          dark
+          light
           icon
           @click.stop="onClickBtn"
         >
@@ -31,7 +31,7 @@
       >
         <v-text-field
           v-if="responsiveInput"
-          class="mr-4 mt-2 white--text"
+          class="mr-4 mt-2 "
           label="Search..."
           hide-details
         />

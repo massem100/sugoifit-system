@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: a5d578a85242
+Revision ID: 83e719e3ccc4
 Revises: 
-Create Date: 2021-04-12 13:28:18.584528
+Create Date: 2021-04-15 09:37:36.655482
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a5d578a85242'
+revision = '83e719e3ccc4'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -41,14 +41,6 @@ def upgrade():
     sa.Column('fs_name', sa.String(length=50), nullable=True),
     sa.PrimaryKeyConstraint('stmtID'),
     sa.UniqueConstraint('stmtID')
-    )
-    op.create_table('financialstmtline',
-    sa.Column('lineID', sa.Integer(), nullable=False),
-    sa.Column('line_name', sa.String(length=250), nullable=True),
-    sa.Column('lineDesc', sa.String(length=50), nullable=True),
-    sa.Column('tag', sa.String(length=50), nullable=True),
-    sa.PrimaryKeyConstraint('lineID'),
-    sa.UniqueConstraint('lineID')
     )
     op.create_table('product',
     sa.Column('prodID', sa.String(length=10), nullable=False),
@@ -89,22 +81,6 @@ def upgrade():
     sa.PrimaryKeyConstraint('section_detail'),
     sa.UniqueConstraint('section_detail')
     )
-    op.create_table('asset',
-    sa.Column('assetID', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('busID', sa.String(length=100), nullable=True),
-    sa.Column('assetName', sa.String(length=100), nullable=True),
-    sa.Column('lifeSpan', sa.Integer(), nullable=True),
-    sa.Column('assetType', sa.String(length=100), nullable=True),
-    sa.Column('acquisDATE', sa.Date(), nullable=True),
-    sa.Column('related_entry', sa.String(), nullable=True),
-    sa.Column('debitBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('creditBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('Balance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('BalanceDC', sa.Enum('Debit', 'Credit'), nullable=True),
-    sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('assetID')
-    )
-    op.create_index(op.f('ix_asset_busID'), 'asset', ['busID'], unique=False)
     op.create_table('con_service_sale_item',
     sa.Column('cssiID', sa.String(length=11), nullable=False),
     sa.Column('quantitySold', sa.Integer(), nullable=True),
@@ -119,12 +95,42 @@ def upgrade():
     sa.PrimaryKeyConstraint('cssiID')
     )
     op.create_index(op.f('ix_con_service_sale_item_serviceID'), 'con_service_sale_item', ['serviceID'], unique=False)
+    op.create_table('currentasset',
+    sa.Column('caID', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('busID', sa.String(length=100), nullable=True),
+    sa.Column('assetName', sa.String(length=100), nullable=True),
+    sa.Column('acquisDATE', sa.Date(), nullable=True),
+    sa.Column('related_entry', sa.String(length=50), nullable=True),
+    sa.Column('debitBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
+    sa.Column('creditBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
+    sa.Column('Balance', sa.DECIMAL(precision=10, scale=0), nullable=True),
+    sa.Column('BalanceDC', sa.Enum('Debit', 'Credit'), nullable=True),
+    sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('caID')
+    )
+    op.create_index(op.f('ix_currentasset_busID'), 'currentasset', ['busID'], unique=False)
+    op.create_table('currentliability',
+    sa.Column('cliabID', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('busID', sa.String(length=100), nullable=True),
+    sa.Column('liabName', sa.String(length=100), nullable=True),
+    sa.Column('borwDATE', sa.Date(), nullable=True),
+    sa.Column('dueDATE', sa.Date(), nullable=True),
+    sa.Column('related_entry', sa.String(length=50), nullable=True),
+    sa.Column('debitBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
+    sa.Column('creditBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
+    sa.Column('Balance', sa.DECIMAL(precision=10, scale=0), nullable=True),
+    sa.Column('BalanceDC', sa.Enum('Debit', 'Credit'), nullable=True),
+    sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('cliabID'),
+    sa.UniqueConstraint('cliabID')
+    )
+    op.create_index(op.f('ix_currentliability_busID'), 'currentliability', ['busID'], unique=False)
     op.create_table('equity',
     sa.Column('equityID', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('busID', sa.String(length=100), nullable=True),
     sa.Column('equityName', sa.String(length=100), nullable=True),
     sa.Column('date', sa.Date(), nullable=True),
-    sa.Column('related_entry', sa.String(), nullable=True),
+    sa.Column('related_entry', sa.String(length=50), nullable=True),
     sa.Column('debitBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
     sa.Column('creditBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
     sa.Column('Balance', sa.DECIMAL(precision=10, scale=0), nullable=True),
@@ -134,45 +140,17 @@ def upgrade():
     sa.UniqueConstraint('equityID')
     )
     op.create_index(op.f('ix_equity_busID'), 'equity', ['busID'], unique=False)
-    op.create_table('financialstmtdesc',
-    sa.Column('fStmtDescID', sa.Integer(), nullable=False),
-    sa.Column('busID', sa.String(length=100), nullable=False),
-    sa.Column('fsLineID', sa.Integer(), nullable=False),
-    sa.Column('fiscalYear', sa.Integer(), nullable=True),
-    sa.Column('fiscalPeriod', sa.Date(), nullable=True),
-    sa.Column('fillingDATE', sa.Date(), nullable=True),
-    sa.Column('startDATE', sa.Date(), nullable=True),
-    sa.Column('endDATE', sa.Date(), nullable=True),
-    sa.Column('amount', sa.Float(), nullable=True),
-    sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['fsLineID'], ['financialstmtline.lineID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('fStmtDescID'),
-    sa.UniqueConstraint('busID'),
-    sa.UniqueConstraint('busID', 'fsLineID', 'fiscalYear', 'fiscalPeriod'),
-    sa.UniqueConstraint('fStmtDescID'),
-    sa.UniqueConstraint('fsLineID')
-    )
-    op.create_table('financialstmtlinealias',
-    sa.Column('aliasID', sa.Integer(), nullable=False),
+    op.create_table('financialstmtline',
     sa.Column('lineID', sa.Integer(), nullable=False),
-    sa.Column('lineAlias', sa.String(length=50), nullable=False),
-    sa.ForeignKeyConstraint(['lineID'], ['financialstmtline.lineID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('aliasID'),
-    sa.UniqueConstraint('aliasID'),
-    sa.UniqueConstraint('lineAlias')
+    sa.Column('fstmtID', sa.String(length=10), nullable=False),
+    sa.Column('line_name', sa.String(length=250), nullable=True),
+    sa.Column('lineDesc', sa.String(length=50), nullable=True),
+    sa.Column('tag', sa.String(length=50), nullable=True),
+    sa.ForeignKeyConstraint(['fstmtID'], ['financialstmt.stmtID'], onupdate='CASCADE', ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('lineID'),
+    sa.UniqueConstraint('fstmtID'),
+    sa.UniqueConstraint('lineID')
     )
-    op.create_table('financialstmtlineseq',
-    sa.Column('lineSeqID', sa.Integer(), nullable=False),
-    sa.Column('fsStmtID', sa.String(length=10), nullable=False),
-    sa.Column('fsStmtLineID', sa.Integer(), nullable=False),
-    sa.Column('sequence', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['fsStmtID'], ['financialstmt.stmtID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['fsStmtLineID'], ['financialstmtline.lineID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('lineSeqID'),
-    sa.UniqueConstraint('fsStmtID', 'fsStmtLineID')
-    )
-    op.create_index(op.f('ix_financialstmtlineseq_fsStmtID'), 'financialstmtlineseq', ['fsStmtID'], unique=False)
-    op.create_index(op.f('ix_financialstmtlineseq_fsStmtLineID'), 'financialstmtlineseq', ['fsStmtLineID'], unique=False)
     op.create_table('genledger',
     sa.Column('ledgerID', sa.String(length=80), nullable=False),
     sa.Column('busID', sa.String(length=100), nullable=True),
@@ -190,30 +168,47 @@ def upgrade():
     sa.PrimaryKeyConstraint('invoiceID')
     )
     op.create_index(op.f('ix_invoice_custID'), 'invoice', ['custID'], unique=False)
-    op.create_table('liability',
-    sa.Column('liabID', sa.Integer(), autoincrement=True, nullable=False),
+    op.create_table('longtermliability',
+    sa.Column('LtliabID', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('busID', sa.String(length=100), nullable=True),
     sa.Column('liabName', sa.String(length=100), nullable=True),
-    sa.Column('liabType', sa.String(length=100), nullable=True),
     sa.Column('borwDATE', sa.Date(), nullable=True),
     sa.Column('dueDATE', sa.Date(), nullable=True),
-    sa.Column('related_entry', sa.String(), nullable=True),
+    sa.Column('related_entry', sa.String(length=50), nullable=True),
     sa.Column('debitBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
     sa.Column('creditBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
     sa.Column('Balance', sa.DECIMAL(precision=10, scale=0), nullable=True),
     sa.Column('BalanceDC', sa.Enum('Debit', 'Credit'), nullable=True),
     sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('liabID'),
-    sa.UniqueConstraint('liabID')
+    sa.PrimaryKeyConstraint('LtliabID'),
+    sa.UniqueConstraint('LtliabID')
     )
-    op.create_index(op.f('ix_liability_busID'), 'liability', ['busID'], unique=False)
+    op.create_index(op.f('ix_longtermliability_busID'), 'longtermliability', ['busID'], unique=False)
+    op.create_table('noncurrentasset',
+    sa.Column('ncaID', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('busID', sa.String(length=100), nullable=True),
+    sa.Column('assetName', sa.String(length=100), nullable=True),
+    sa.Column('lifeSpan', sa.Integer(), nullable=True),
+    sa.Column('accumDep', sa.DECIMAL(precision=10, scale=2), nullable=True),
+    sa.Column('disposalAmt', sa.DECIMAL(precision=10, scale=2), nullable=True),
+    sa.Column('depType', sa.String(length=100), nullable=True),
+    sa.Column('acquisDATE', sa.Date(), nullable=True),
+    sa.Column('related_entry', sa.String(length=50), nullable=True),
+    sa.Column('debitBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
+    sa.Column('creditBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
+    sa.Column('Balance', sa.DECIMAL(precision=10, scale=0), nullable=True),
+    sa.Column('BalanceDC', sa.Enum('Debit', 'Credit'), nullable=True),
+    sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('ncaID')
+    )
+    op.create_index(op.f('ix_noncurrentasset_busID'), 'noncurrentasset', ['busID'], unique=False)
     op.create_table('nonopex',
     sa.Column('nOpexID', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('busID', sa.String(length=100), nullable=True),
     sa.Column('nOpexName', sa.String(length=100), nullable=True),
-    sa.Column('dateEarned', sa.Date(), nullable=True),
+    sa.Column('dateIncurred', sa.Date(), nullable=True),
+    sa.Column('related_entry', sa.String(length=50), nullable=True),
     sa.Column('debitBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('related_entry', sa.String(), nullable=True),
     sa.Column('creditBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
     sa.Column('Balance', sa.DECIMAL(precision=10, scale=0), nullable=True),
     sa.Column('BalanceDC', sa.Enum('Debit', 'Credit'), nullable=True),
@@ -227,7 +222,7 @@ def upgrade():
     sa.Column('busID', sa.String(length=100), nullable=True),
     sa.Column('nOprevName', sa.String(length=100), nullable=True),
     sa.Column('dateEarned', sa.Date(), nullable=True),
-    sa.Column('related_entry', sa.String(), nullable=True),
+    sa.Column('related_entry', sa.String(length=50), nullable=True),
     sa.Column('debitBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
     sa.Column('creditBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
     sa.Column('Balance', sa.DECIMAL(precision=10, scale=0), nullable=True),
@@ -243,7 +238,7 @@ def upgrade():
     sa.Column('opexName', sa.String(length=100), nullable=True),
     sa.Column('dateIncurred', sa.Date(), nullable=True),
     sa.Column('expenseCategory', sa.String(length=80), nullable=True),
-    sa.Column('related_entry', sa.String(), nullable=True),
+    sa.Column('related_entry', sa.String(length=50), nullable=True),
     sa.Column('debitBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
     sa.Column('creditBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
     sa.Column('Balance', sa.DECIMAL(precision=10, scale=0), nullable=True),
@@ -258,7 +253,7 @@ def upgrade():
     sa.Column('busID', sa.String(length=100), nullable=True),
     sa.Column('oprevName', sa.String(length=100), nullable=True),
     sa.Column('dateEarned', sa.Date(), nullable=True),
-    sa.Column('related_entry', sa.String(), nullable=True),
+    sa.Column('related_entry', sa.String(length=50), nullable=True),
     sa.Column('debitBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
     sa.Column('creditBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
     sa.Column('Balance', sa.DECIMAL(precision=10, scale=0), nullable=True),
@@ -323,7 +318,7 @@ def upgrade():
     sa.Column('sectionID', sa.Integer(), nullable=False),
     sa.Column('positionID', sa.String(length=50), nullable=True),
     sa.Column('sectionName', sa.String(length=50), nullable=True),
-    sa.Column('section_detail', sa.String(length=10), nullable=True),
+    sa.Column('section_detail', sa.String(length=50), nullable=True),
     sa.ForeignKeyConstraint(['section_detail'], ['websitedetails.section_detail'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('sectionID'),
     sa.UniqueConstraint('sectionID')
@@ -341,45 +336,45 @@ def upgrade():
     sa.PrimaryKeyConstraint('serviceID')
     )
     op.create_index(op.f('ix_con_service_cssiID'), 'con_service', ['cssiID'], unique=False)
-    op.create_table('currentasset',
-    sa.Column('assetID', sa.Integer(), nullable=True),
-    sa.Column('caID', sa.String(length=10), nullable=False),
-    sa.Column('busID', sa.String(length=100), nullable=True),
-    sa.Column('assetName', sa.String(length=100), nullable=True),
-    sa.Column('lifeSpan', sa.Integer(), nullable=True),
-    sa.Column('assetType', sa.String(length=100), nullable=True),
-    sa.Column('acquisDATE', sa.Date(), nullable=True),
-    sa.Column('related_entry', sa.String(), nullable=True),
-    sa.Column('debitBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('creditBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('Balance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('BalanceDC', sa.Enum('Debit', 'Credit'), nullable=True),
-    sa.ForeignKeyConstraint(['assetID'], ['asset.assetID'], onupdate='CASCADE', ondelete='CASCADE'),
+    op.create_table('financialstmtdesc',
+    sa.Column('fStmtDescID', sa.Integer(), nullable=False),
+    sa.Column('busID', sa.String(length=100), nullable=False),
+    sa.Column('fsLineID', sa.Integer(), nullable=False),
+    sa.Column('fiscalYear', sa.Integer(), nullable=True),
+    sa.Column('fiscalPeriod', sa.Date(), nullable=True),
+    sa.Column('fillingDATE', sa.Date(), nullable=True),
+    sa.Column('startDATE', sa.Date(), nullable=True),
+    sa.Column('endDATE', sa.Date(), nullable=True),
+    sa.Column('amount', sa.Float(), nullable=True),
     sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('caID')
+    sa.ForeignKeyConstraint(['fsLineID'], ['financialstmtline.lineID'], onupdate='CASCADE', ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('fStmtDescID'),
+    sa.UniqueConstraint('busID'),
+    sa.UniqueConstraint('busID', 'fsLineID', 'fiscalYear', 'fiscalPeriod'),
+    sa.UniqueConstraint('fStmtDescID'),
+    sa.UniqueConstraint('fsLineID')
     )
-    op.create_index(op.f('ix_currentasset_assetID'), 'currentasset', ['assetID'], unique=False)
-    op.create_index(op.f('ix_currentasset_busID'), 'currentasset', ['busID'], unique=False)
-    op.create_table('currentliability',
-    sa.Column('liabID', sa.Integer(), nullable=True),
-    sa.Column('cliabID', sa.String(length=10), nullable=False),
-    sa.Column('busID', sa.String(length=100), nullable=True),
-    sa.Column('liabType', sa.String(length=100), nullable=True),
-    sa.Column('liabName', sa.String(length=100), nullable=True),
-    sa.Column('borwDATE', sa.Date(), nullable=True),
-    sa.Column('dueDATE', sa.Date(), nullable=True),
-    sa.Column('related_entry', sa.String(), nullable=True),
-    sa.Column('debitBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('creditBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('Balance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('BalanceDC', sa.Enum('Debit', 'Credit'), nullable=True),
-    sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['liabID'], ['liability.liabID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('cliabID'),
-    sa.UniqueConstraint('cliabID')
+    op.create_table('financialstmtlinealias',
+    sa.Column('aliasID', sa.Integer(), nullable=False),
+    sa.Column('lineID', sa.Integer(), nullable=False),
+    sa.Column('lineAlias', sa.String(length=50), nullable=False),
+    sa.ForeignKeyConstraint(['lineID'], ['financialstmtline.lineID'], onupdate='CASCADE', ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('aliasID'),
+    sa.UniqueConstraint('aliasID'),
+    sa.UniqueConstraint('lineAlias')
     )
-    op.create_index(op.f('ix_currentliability_busID'), 'currentliability', ['busID'], unique=False)
-    op.create_index(op.f('ix_currentliability_liabID'), 'currentliability', ['liabID'], unique=False)
+    op.create_table('financialstmtlineseq',
+    sa.Column('lineSeqID', sa.Integer(), nullable=False),
+    sa.Column('fsStmtID', sa.String(length=10), nullable=False),
+    sa.Column('fsStmtLineID', sa.Integer(), nullable=False),
+    sa.Column('sequence', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['fsStmtID'], ['financialstmt.stmtID'], onupdate='CASCADE', ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['fsStmtLineID'], ['financialstmtline.lineID'], onupdate='CASCADE', ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('lineSeqID'),
+    sa.UniqueConstraint('fsStmtID', 'fsStmtLineID')
+    )
+    op.create_index(op.f('ix_financialstmtlineseq_fsStmtID'), 'financialstmtlineseq', ['fsStmtID'], unique=False)
+    op.create_index(op.f('ix_financialstmtlineseq_fsStmtLineID'), 'financialstmtlineseq', ['fsStmtLineID'], unique=False)
     op.create_table('ledgerdetails',
     sa.Column('ledgerDetailsID', sa.Integer(), nullable=False),
     sa.Column('ledgerID', sa.String(length=80), nullable=True),
@@ -392,48 +387,6 @@ def upgrade():
     )
     op.create_index(op.f('ix_ledgerdetails_busID'), 'ledgerdetails', ['busID'], unique=False)
     op.create_index(op.f('ix_ledgerdetails_ledgerID'), 'ledgerdetails', ['ledgerID'], unique=False)
-    op.create_table('longtermliability',
-    sa.Column('liabID', sa.Integer(), nullable=True),
-    sa.Column('LtliabID', sa.String(length=10), nullable=False),
-    sa.Column('busID', sa.String(length=100), nullable=True),
-    sa.Column('liabType', sa.String(length=100), nullable=True),
-    sa.Column('liabName', sa.String(length=100), nullable=True),
-    sa.Column('borwDATE', sa.Date(), nullable=True),
-    sa.Column('dueDATE', sa.Date(), nullable=True),
-    sa.Column('related_entry', sa.String(), nullable=True),
-    sa.Column('debitBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('creditBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('Balance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('BalanceDC', sa.Enum('Debit', 'Credit'), nullable=True),
-    sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['liabID'], ['liability.liabID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('LtliabID'),
-    sa.UniqueConstraint('LtliabID')
-    )
-    op.create_index(op.f('ix_longtermliability_busID'), 'longtermliability', ['busID'], unique=False)
-    op.create_index(op.f('ix_longtermliability_liabID'), 'longtermliability', ['liabID'], unique=False)
-    op.create_table('noncurrentasset',
-    sa.Column('assetID', sa.Integer(), nullable=True),
-    sa.Column('busID', sa.String(length=100), nullable=True),
-    sa.Column('ncaID', sa.String(length=10), nullable=False),
-    sa.Column('assetName', sa.String(length=100), nullable=True),
-    sa.Column('lifeSpan', sa.Integer(), nullable=True),
-    sa.Column('assetType', sa.String(length=100), nullable=True),
-    sa.Column('AccumDep', sa.DECIMAL(precision=10, scale=2), nullable=True),
-    sa.Column('disposalAmt', sa.DECIMAL(precision=10, scale=2), nullable=True),
-    sa.Column('depType', sa.String(length=100), nullable=True),
-    sa.Column('acquisDATE', sa.Date(), nullable=True),
-    sa.Column('related_entry', sa.String(), nullable=True),
-    sa.Column('debitBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('creditBalance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('Balance', sa.DECIMAL(precision=10, scale=0), nullable=True),
-    sa.Column('BalanceDC', sa.Enum('Debit', 'Credit'), nullable=True),
-    sa.ForeignKeyConstraint(['assetID'], ['asset.assetID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('ncaID')
-    )
-    op.create_index(op.f('ix_noncurrentasset_assetID'), 'noncurrentasset', ['assetID'], unique=False)
-    op.create_index(op.f('ix_noncurrentasset_busID'), 'noncurrentasset', ['busID'], unique=False)
     op.create_table('order',
     sa.Column('orderID', sa.String(length=10), nullable=False),
     sa.Column('order_tot', sa.DECIMAL(precision=10, scale=2), nullable=True),
@@ -451,8 +404,8 @@ def upgrade():
     op.create_index(op.f('ix_order_custID'), 'order', ['custID'], unique=False)
     op.create_index(op.f('ix_order_invoiceID'), 'order', ['invoiceID'], unique=False)
     op.create_table('roles',
-    sa.Column('role_name', sa.Integer(), nullable=False),
-    sa.Column('userID', sa.Integer(), nullable=False),
+    sa.Column('role_name', sa.String(length=30), nullable=False),
+    sa.Column('userID', sa.String(length=100), nullable=False),
     sa.ForeignKeyConstraint(['role_name'], ['role.role_name'], ),
     sa.ForeignKeyConstraint(['userID'], ['usercredentials.userID'], ),
     sa.PrimaryKeyConstraint('role_name', 'userID')
@@ -532,21 +485,14 @@ def downgrade():
     op.drop_index(op.f('ix_order_custID'), table_name='order')
     op.drop_index(op.f('ix_order_busID'), table_name='order')
     op.drop_table('order')
-    op.drop_index(op.f('ix_noncurrentasset_busID'), table_name='noncurrentasset')
-    op.drop_index(op.f('ix_noncurrentasset_assetID'), table_name='noncurrentasset')
-    op.drop_table('noncurrentasset')
-    op.drop_index(op.f('ix_longtermliability_liabID'), table_name='longtermliability')
-    op.drop_index(op.f('ix_longtermliability_busID'), table_name='longtermliability')
-    op.drop_table('longtermliability')
     op.drop_index(op.f('ix_ledgerdetails_ledgerID'), table_name='ledgerdetails')
     op.drop_index(op.f('ix_ledgerdetails_busID'), table_name='ledgerdetails')
     op.drop_table('ledgerdetails')
-    op.drop_index(op.f('ix_currentliability_liabID'), table_name='currentliability')
-    op.drop_index(op.f('ix_currentliability_busID'), table_name='currentliability')
-    op.drop_table('currentliability')
-    op.drop_index(op.f('ix_currentasset_busID'), table_name='currentasset')
-    op.drop_index(op.f('ix_currentasset_assetID'), table_name='currentasset')
-    op.drop_table('currentasset')
+    op.drop_index(op.f('ix_financialstmtlineseq_fsStmtLineID'), table_name='financialstmtlineseq')
+    op.drop_index(op.f('ix_financialstmtlineseq_fsStmtID'), table_name='financialstmtlineseq')
+    op.drop_table('financialstmtlineseq')
+    op.drop_table('financialstmtlinealias')
+    op.drop_table('financialstmtdesc')
     op.drop_index(op.f('ix_con_service_cssiID'), table_name='con_service')
     op.drop_table('con_service')
     op.drop_table('websitedrag')
@@ -566,29 +512,28 @@ def downgrade():
     op.drop_table('nonoprev')
     op.drop_index(op.f('ix_nonopex_busID'), table_name='nonopex')
     op.drop_table('nonopex')
-    op.drop_index(op.f('ix_liability_busID'), table_name='liability')
-    op.drop_table('liability')
+    op.drop_index(op.f('ix_noncurrentasset_busID'), table_name='noncurrentasset')
+    op.drop_table('noncurrentasset')
+    op.drop_index(op.f('ix_longtermliability_busID'), table_name='longtermliability')
+    op.drop_table('longtermliability')
     op.drop_index(op.f('ix_invoice_custID'), table_name='invoice')
     op.drop_table('invoice')
     op.drop_index(op.f('ix_genledger_busID'), table_name='genledger')
     op.drop_table('genledger')
-    op.drop_index(op.f('ix_financialstmtlineseq_fsStmtLineID'), table_name='financialstmtlineseq')
-    op.drop_index(op.f('ix_financialstmtlineseq_fsStmtID'), table_name='financialstmtlineseq')
-    op.drop_table('financialstmtlineseq')
-    op.drop_table('financialstmtlinealias')
-    op.drop_table('financialstmtdesc')
+    op.drop_table('financialstmtline')
     op.drop_index(op.f('ix_equity_busID'), table_name='equity')
     op.drop_table('equity')
+    op.drop_index(op.f('ix_currentliability_busID'), table_name='currentliability')
+    op.drop_table('currentliability')
+    op.drop_index(op.f('ix_currentasset_busID'), table_name='currentasset')
+    op.drop_table('currentasset')
     op.drop_index(op.f('ix_con_service_sale_item_serviceID'), table_name='con_service_sale_item')
     op.drop_table('con_service_sale_item')
-    op.drop_index(op.f('ix_asset_busID'), table_name='asset')
-    op.drop_table('asset')
     op.drop_table('websitedetails')
     op.drop_table('user')
     op.drop_table('service')
     op.drop_table('role')
     op.drop_table('product')
-    op.drop_table('financialstmtline')
     op.drop_table('financialstmt')
     op.drop_table('customer')
     op.drop_table('business')
