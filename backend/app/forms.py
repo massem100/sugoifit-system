@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms.fields.html5 import EmailField,IntegerField, DateField, DecimalField
-from wtforms import TextAreaField, StringField, PasswordField, SubmitField , SelectField
+from wtforms import TextAreaField, StringField, PasswordField, SubmitField , SelectField, RadioField
 from wtforms.validators import InputRequired, Email, Length, optional
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
@@ -9,8 +9,8 @@ class RegisterForm(FlaskForm):
     first_name = StringField('first Name', validators=[InputRequired('Please enter your first name, e.g. John.')])
     last_name = StringField('last Name', validators=[InputRequired('Please enter your last name, e.g. Doe.')])
     email = EmailField('Email', validators = [InputRequired('Please enter your email address, e.g. johndoe@XXXX.XXX'), Email()])
-    password = PasswordField('password', validators=[InputRequired('Please enter a password.')])
-    business_name = StringField('business name', validators=[InputRequired('Please enter your business name.')])
+    password = PasswordField('Password', validators=[InputRequired('Please enter a password.')])
+    business_name = StringField('Business Name', validators=[InputRequired('Please enter your business name.')])
     
 class LoginForm(FlaskForm):
     email = EmailField('Email', validators = [InputRequired('Please enter your email address e.g. johndoe@XXXX.XXX.'), Email()])
@@ -55,6 +55,8 @@ timeSpanYears = [
             ]
 
 paid_using = [('By Cash', 'Cash'), ('By Cheque', 'Cheque'), ('On Credit', 'Credit')]
+bought_sold= [('Bought Asset', 'Bought Asset'), ('Sold Asset', 'Sold Asset')]
+tan_in= [('Tangible Asset', 'Tangible Asset'), ('Intangible Asset', 'Intangible Asset')]
 
 """
 IT'S JUST LOGIC, you got this!
@@ -75,10 +77,13 @@ class NCAForm(FlaskForm):
     asset_name = StringField('Asset Name', validators = [InputRequired('Please enter the name of the asset, e.g. Motor Vehicle')])
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
     dep_type = SelectField('Depreciation Type', choices = dep_types_list)
+    dep_rate = DecimalField('Depreciation Rate', places=2, rounding=None, validators = [InputRequired('Please enter depreciation rate')])
     asset_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter asset amount.')])
-    e_timespan = IntegerField('LifeSpanNumber')
-    paid_using = SelectField('Paid Using', choices = paid_using)
+    asset_lifespan = IntegerField('LifeSpanNumber')
+    tan_in = RadioField("Tangible or Intangible", choices = tan_in)
+    bought_sold = RadioField('Bought or Sold', choices = bought_sold)
+    paid_using = RadioField('Paid Using', choices = paid_using)
 
 class CAForm(FlaskForm): 
     asset_name = StringField('Asset Name', validators = [InputRequired('Please enter the name of the asset.')])

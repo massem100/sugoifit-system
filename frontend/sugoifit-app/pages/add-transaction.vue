@@ -2,7 +2,9 @@
   <div>
     <!-- Quick Actions -->
     <div class="mx-3">
-      <h3 class="m-2">Add Transaction</h3>
+      <h3 class="m-2">Transactions </h3>
+      <p class = "m-2 "> Transactions are used to automatically generate your financials. Keep track of your daily transactions.</p>
+      <p class = "m-2">  </p>
       <transaction-top/>
     </div>
   </div>

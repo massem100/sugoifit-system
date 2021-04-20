@@ -43,7 +43,7 @@ h5, .h5 {
 h6, .h6 {
   font-size: 0.75rem !important;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 p {
@@ -122,6 +122,12 @@ h2.title {
 .v-navigation-drawer .v-list .v-list-item .v-list__tile.v-list__tile--active {
   box-shadow: 0 12px 20px -10px rgba(76, 175, 80, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(76, 175, 80, 0.2) !important;
 }
+.v-navigation-drawer .v-list .v-list__group__header {
+  border-radius: 4px;
+}
+.v-navigation-drawer .v-list .v-list__group__header:hover, .v-navigation-drawer .v-list .v-list__group__header:focus, .v-navigation-drawer .v-list .v-list__group__header:active {
+  background-color: #4DC4D4 !important;
+}
 .v-navigation-drawer .v-list .v-list__tile--avatar {
   height: unset;
   padding: 15px 0;
@@ -135,8 +141,8 @@ h2.title {
   line-height: 30px;
   padding: 5px 0;
   height: unset;
-  font-size: 18px !important;
-  font-weight: 600;
+  font-size: 14px !important;
+  font-weight: 500;
   letter-spacing: unset !important;
 }
 .v-navigation-drawer .v-list .v-divider {
@@ -216,7 +222,7 @@ h2.title {
   right: -7px;
   top: -12px;
   width: 20px;
-  font-weight: 600;
+  font-weight: 500;
 }
 .v-toolbar .v-toolbar__content .v-toolbar__items .toolbar-items .v-icon {
   font-size: 20px;
@@ -232,7 +238,7 @@ h2.title {
   }
 }
 .theme--light.application {
-  background: #eee;
+  background: #e6dcdc;
 }
 
 a {
@@ -266,7 +272,7 @@ blockquote {
 blockquote p {
   font-style: italic;
   color: rgba(0, 0, 0, 0.87);
-  font-weight: 500;
+  font-weight: 600;
 }
 blockquote small {
   font-size: 70%;
@@ -275,7 +281,7 @@ blockquote small {
 b,
 strong {
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .v-list--three-line .v-list__tile {
@@ -308,26 +314,26 @@ strong {
 }
 
 .theme--light.v-text-field .v-input__slot:before {
-  border-color: #d2d2d2 !important;
+  border-color: #df5b5b !important;
 }
 
 .input--is-focused .v-input__control .v-input__slot:after {
-  border-color: red !important;
+  border-color: #0b859b !important;
 }
 
 .v-text-field__slot input::-moz-placeholder {
-  color: #d2d2d2;
+  color: #df5b5b;
 }
 .v-text-field__slot input:-ms-input-placeholder {
-  color: #d2d2d2;
+  color: #df5b5b;
 }
 .v-text-field__slot input::-webkit-input-placeholder {
-  color: #d2d2d2;
+  color: #df5b5b;
 }
 .v-text-field__slot .v-label {
-  color: #aaa !important;
+  color: #dfdfdf !important;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .theme--light.v-input:not(.v-input--is-disabled) input,
@@ -367,7 +373,7 @@ strong {
 }
 
 .v-footer .footer-links {
-  font-weight: 500;
+  font-weight: 600;
   text-decoration: none;
   text-transform: uppercase;
   font-size: 12px;
@@ -530,7 +536,7 @@ strong {
   color: #999;
   font-size: 65%;
   line-height: 1;
-  font-weight: 600;
+  font-weight: 500;
 }
 .v-card--material-stats.v-card .v-card__actions i {
   position: relative;
@@ -640,7 +646,7 @@ table thead tr th span {
   max-width: 200px;
   color: #555555 !important;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
@@ -690,7 +696,7 @@ table thead tr th span {
   margin: 10px 1px;
   padding: 12px 30px;
   font-size: 12px;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
   height: auto;
   line-height: 1.5em;
   color: #ffffff !important;
@@ -954,7 +960,7 @@ table thead tr th span {
   height: 30px;
   line-height: 25px;
   font-size: 12px !important;
-  font-weight: 600;
+  font-weight: 700;
   color: #495057;
 }
 .v-menu__content .v-responsive {
@@ -1004,7 +1010,7 @@ table thead tr th span {
   color: #333 !important;
   display: flex;
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: 500;
   margin: 0 5px;
   padding: 10px 1.5rem;
   text-transform: none;
@@ -1023,4 +1029,89 @@ table thead tr th span {
 .dropdown-menu .v-list__tile:focus .v-list__tile__title, .dropdown-menu .v-list__tile:active,
 .dropdown-menu .v-list__tile:active .v-list__tile__title {
   color: #ffffff !important;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body, input, button, select, textarea {
+  font: 300 1rem "Poppins", sans-serif;
+  color: #222222;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+ul, ol {
+  margin: 0 0 1rem;
+  padding: 0 0 1rem;
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body, input, button, select, textarea {
+  font: 600 1rem "Poppins", sans-serif;
+  color: #222222;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul, ol {
+  margin: 0 0 1rem;
+  padding: 0 0 1rem;
+}
+
+.settings_bar {
+  position: absolute;
+  top: 16px;
+  right: 48px;
+}
+
+#top-user-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.quick_actions_div .quick_actions {
+  margin: 10px 15px 10px 0px;
+  background-color: #DFFBFF;
+  width: 15rem;
+  height: 5rem;
+  padding: 20px;
+  border-radius: 15px;
+  text-decoration: none !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.quick_actions_div .quick_actions span {
+  font-size: 16px;
+}
+
+.custom-popover .popover-body {
+  padding: 0;
+}
+.custom-popover .popover-body .pop-link {
+  text-decoration: none;
+  color: #222222;
+  font-size: 16px;
+  padding: 10px;
+}
+.custom-popover .popover-body .pop-link:hover {
+  background: #428B95;
+  color: white;
 }/*# sourceMappingURL=index.css.map */

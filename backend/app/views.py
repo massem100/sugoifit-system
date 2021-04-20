@@ -2,7 +2,12 @@ import os, sys
 import pandas as pd
 import jwt, secrets
 import hashlib, random
+import datetime
+from datetime import timedelta
+from datetime import datetime
+from app.model.sales import Customer, Invoice, Order
 from functools import wraps
+from datetime import datetime
 from app import app,  db, login_manager, cors, csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission
 # WTF Forms and SQLAlchemy Models
@@ -25,6 +30,8 @@ from flask_principal import RoleNeed, UserNeed, identity_changed, identity_loade
 
 token =''
 
+# def add_twoN(a,b): 
+#     return a+b
 
 """
 --------------------------------------- JWT Authorization Function and CSRF Handler----------------------------------------------------------
@@ -67,10 +74,11 @@ def requires_auth(f):
 def token():
     token = csrf_.generate_csrf(app.config['SECRET_KEY'])
     # print(token)
-    form_data = ["83332", "name", 2, "Straight Line",  "1/12/2009", 2000]
-    result =accounts.NonCurrentAsset.increase("cash", form_data )
-    print(result)
-
+    # form_data = ["83332", "name", 2, "Straight Line",  "1/12/2009", 2000]
+    # result =accounts.NonCurrentAsset.increase("cash", form_data[1], form_data )
+    # print(result)
+    # print(current_user.roles)
+    # role = auth.Role()
     return jsonify(token)
 
 
@@ -78,27 +86,52 @@ def token():
 --------------------------------------- Financial Statement Routes ----------------------------------------------------------
 """
 
-@app.route('/api/transaction/asset', methods = ["POST", "GET"])
+@app.route('/api/transaction/', methods = ["POST", "GET"])
 def manageTransactions():
     if request.method == "POST":
-        if request['form_id'] == "AddNCAForm":
+        if request.form['form_id'] == "AddNCAForm":
             form = NCAForm(request.form)
-
+ 
             # assign NCA form fields
             name = form.asset_name.data 
             transaction_date = form.transaction_date.data 
             dep_type = form.dep_type.data
+            dep_rate = form.dep_rate.data
             asset_desc = form.asset_desc.data 
             amount = form.amount.data
-            paid_using = form.amount.data
-            lifeSpan = form.e_timespan.data
+            paid_using = form.paid_using.data
+            lifeSpan = form.asset_lifespan.data
+            bought_sold = form.bought_sold.data
 
-            form_data = [current_user.busID, name, lifeSpan, dep_type,  transaction_date, amount]
-            result =accounts.NonCurrentAsset.increase(paid_using, form_data )
-            print(result)
+            if "Bought" in  bought_sold: 
+                print(paid_using)
+                form_data = [1, "busID", lifeSpan, dep_type,  transaction_date, amount]
+                entries =accounts.NonCurrentAsset.increase(paid_using, name, form_data )
+                entry_debit = entries[0]
+                entry_credit = entries[1]
+                print( entry_debit, entry_credit)
+                business = auth.Busines(busID = "busID")
 
+                try:
+                    db.session.add(business)
+                    db.session.add(entry_debit)
+                    db.session.add(entry_credit)
+                    db.session.commit()
+                except Exception as e:
+                     error = str(e)
+                
+                return jsonify({'message': 'Success - Asset Bought', 'errors': error})   
 
-                    
+            else: 
+                form_data = ["ncaid", "busID", lifeSpan, dep_type,  transaction_date, amount]
+                Entry1 =accounts.NonCurrentAsset.decrease(paid_using, name, form_data )[0]
+                Entry2 =accounts.NonCurrentAsset.decrease(paid_using, name, form_data )[1]
+
+                db.session.add()
+                db.session.add(Entry2)
+
+            
+                return jsonify({'message': 'Success - Asset Sold'})                   
             
         elif request['form_id'] == "AddCAForm":
             form = CAForm(request.form)
@@ -151,49 +184,45 @@ def home():
 """
 
 @identity_loaded.connect_via(app)
-def on_identity_loaded (sender, identity):
+def on_identity_loaded(sender, identity):
     # Set th identity user object
     identity.user = current_user
 
     # Update identity with a list of role for the user
     if hasattr(current_user, 'roles'):
         for role in current_user.roles:
-            identity.provides.add(RoleNeed(role.name))
+            identity.provides.add(RoleNeed(role.role_name))
 
 
-@app.route('/api/auth/login', methods=["POST"])
+@app.route('/api/auth/login', methods=["POST", "GET"])
 def login():
     form = LoginForm(request.form)
     if request.method == "POST" and form.validate_on_submit() and form.email.data:
         # Get the username and password values from the form.
         email = form.email.data
         passwordGiven = form.password.data
-        print({email, passwordGiven})
 
         #Check if email exists
-        user_email = auth.Credential.user_email
-        user_credential = User.query.filter_by(user_email=email).first()
-        # user = db.session.query(auth.Credential).filter(auth.Credential.user_email = email).first()
+        user = db.session.query(auth.UserCredential).filter_by(user_email=email).first()
 
         if user is not None:
-            user_password = user_credential.user_password
-            if check_password_hash(user_password, passwordGiven):
+            if check_password_hash(user.user_password, passwordGiven):
                 # get user id, load into session
-                login_user(user_credential)
+                login_user(user)
                 # Flask-Principal, register user identity into the system
-                identity_changed.send(app, identity = Identity(auth.Credential.userID))
-                role = user.role
-
-                #Redirect to employee dashboard
-                with employee_permission.require():
-                    return jsonify({'access': 'employee', 'message': 'Login Successful, Entering Employee Dashboard'})
-                #Redirect to owner dashboard
+                identity_changed.send(app, identity = Identity(user.cid))
+                
+                # #Redirect to employee dashboard
+                # with employee_permission.require():
+                #     return jsonify({'access': 'employee', 'message': 'Login Successful, Entering Employee Dashboard'})
+                # #Redirect to owner dashboard
                 with owner_permission.require():
                     return jsonify({'access': 'owner','message': 'Login Successful' })
 
-                #Redirect to Fmanager dashboard
-                with fin_manager_permission.require():
-                    return jsonify({'access': 'financialmanager', 'message': 'Login Successful, Entering Financial Dashboard'})
+                # #Redirect to Fmanager dashboard
+                # with fin_manager_permission.require():
+                #     return jsonify({'access': 'financialmanager', 'message': 'Login Successful, Entering Financial Dashboard'})
+                return jsonify({'message': 'Login Successful'})
             else:
                 return jsonify({'error msg': 'Login credentials failed: Please check email or password.'})
                 
@@ -205,8 +234,7 @@ def login():
 
 
 
-@app.route('/api/auth/logout', methods = ['GET'])
-@requires_auth
+@app.route('/api/auth/logout', methods = ["GET"])
 @login_required
 def logout():
     # Clears user from session
@@ -219,7 +247,7 @@ def logout():
     # Flask-Principal: set user to anonymous
     identity_changed.send(app, identity=AnonymousIdentity())
     
-    return jsonify(message = [{'message': "You have been logged out successfully"}])
+    return jsonify({'message': "You have been logged out successfully"})
 
 
 @app.route('/api/users/register', methods=["POST"])
@@ -235,47 +263,56 @@ def register():
         user_email = form.email.data
         user_password= form.password.data
         business_name = form.business_name.data
-
+        # print(business_name)
 
         # Checks if another user has this email address
-        existing_email = db.session.query(UserCredential).filter_by(user_email=user_email).first()
+        existing_email = db.session.query(auth.UserCredential).filter_by(user_email=user_email).first()
 
         # Checks if business already exists
-        existing_business = db.session.query(Busines).filter_by(busName=business_name).first()
+        existing_business = db.session.query(auth.Busines).filter_by(busName=business_name).first()
 
         # If unique email address and username provided then log new user
         if existing_business is None and existing_email is None:
             # Get the last BusID and UserID from db
-            last_businessID = db.session.query(Busines).order_by(Busines.date_added.desc()).first().busID
-            last_userID = db.session.query(User).order_by(Busines.date_joined.desc()).first().userID
+            last_businessID = db.session.query(auth.Busines).order_by(auth.Busines.date_joined.desc()).first()
+            last_userID = db.session.query(auth.User).order_by(auth.User.date_joined.desc()).first()
 
-            if last_record is not None and last_user is not None: 
+            if last_businessID is None:
+                bus_int = 1
+            else: 
                 # Get the numeric part of the last business ID and increment by 1
-                bus_int = int(last_businessID[3:])
+                last_busID =last_businessID.busID                
+                bus_int = int(last_busID[3:])
                 bus_int += 1
 
+            if last_userID is None: 
+                user_int = 1
+            else:
+                
                 # Get the numeric part of the last User ID and increment by 1
-                user_int = int(last_userID[4:])
+                last_uID = last_userID.userID
+                user_int = int(last_uID[4:])
                 user_int +=1
                 
-            else: 
-                bus_int = 0
-                user_int = 0
-
-            newBusID = business_name[:3]+str(id_int)
+            newBusID = str(business_name[:3])+str(bus_int)
             newUserID = 'user' + str(user_int)
-            business = Busines(busID = newBusID, busName = business_name, 
-                               busemail = null, telephone = null)
+            bus_date = datetime.now()
+            business = auth.Busines(busID = newBusID, busName = business_name, date_joined = bus_date)
 
-            user = User(userID = newUserID, fname = f_name, lname = l_name, 
-                        user_address = null, phone =null)
+            user = auth.User(userID = newUserID, fname = f_name, lname = l_name, 
+                        user_address = None, phone = None)
 
-            user_cred = UserCredential(userID = newUserID, busID = newBusID, 
+            user_cred = auth.UserCredential(userID = newUserID, busID = newBusID, 
                                        user_email = user_email, user_password = user_password, 
-                                       roles = 'owner', active = True)
+                                       active = True)
+            user_roles = auth.Role(role_name = "owner", userID = newUserID)
+            user_cred.roles.append(user_roles)
+            # print(user_cred.roles)
+           
             db.session.add(business)
             db.session.add(user)
             db.session.add(user_cred)
+            db.session.add(user_roles)
             db.session.commit()
             return jsonify(success =[{'message': 'Successfully registered'}])
 
@@ -291,7 +328,7 @@ def register():
 
 @login_manager.user_loader
 def load_user(id):
-    user = User.query.get(userID)
+    user = auth.UserCredential.query.get(id)
     return user
 
 """
@@ -318,10 +355,90 @@ def sucessful_prods():
         prod_numbers.append([product.prodName, product.amtSold])
 
     #Item with highest number of sales would be at the top
-    prod_numbers.sort(key= lambda x: x[1], reverse=True)
+    prod_numbers.sort(key= lambda x: x[1], reverse = True)
 
     return prod_numbers
 
+
+@app.route('/website/placeorder', methods = ['POST'])
+def place_order():
+  #Display order based on rank
+  if request.method == "POST":
+    fname = request.form['fname']
+    lname = request.form['lname']
+    trn = request.form['trn']
+    phone = request.form['phone']
+    email = request.form['email']
+
+    customer = Customer.query.filter_by(trn = trn)
+
+    if customer.trn == None:
+        # Add new customer
+        new_customer = Customer(fname, lname, trn, email, phone)
+        db.session.add(new_customer)
+        db.session.commit()
+
+    date_format = "%Y-%m-%d"
+    status = "Pending"
+    today = datetime.datetime.now()
+    todayString = today.strftime(date_format)
+    dateDue = (today + timedelta(days=7)).strftime(date_format)
+    new_order = Order(2800, todayString, customer.custID, 'test_invoiceID','test_businessID', status, dateDue)
+    db.session.add(new_order)
+    db.session.commit()
+
+    
+""" 
+Rank based on date order should be fulfilled
+ 
+Click manage orders
+1) Pull all orders which are pending
+2) compare date due, with current date. Subtract and use the value to rank
+3) Sort in ascending order based on that value.
+
+from datetime import datetime
+
+date_format = "%Y-%m-%d"
+a = datetime.strptime('2021-04-14',date_format)
+b = datetime.strptime('2021-04-22',date_format)
+delta = b - a
+print (delta.days)
+
+"""
+@app.route('/manage-orders')
+def manageOrders():
+    #Get all orders that are pending
+    date_format = "%Y-%m-%d"
+    allOrders = []
+    ordersQuery = Order.query.filter_by(status="Pending").all()
+
+    #Calculate days left for each record
+    #Put record in tuple form and append to list
+    for record in ordersQuery:
+        orderID = record.orderID
+        orderTotal = record.order_tot
+        date = record.order_DATE
+        custID = record.custID
+        invoiceID = record.invoiceID
+        busID = record.busIDo
+        status = record.status
+        dueDate = record.dueDate
+
+        startDate = datetime.strptime(date, date_format)
+        endDate = datetime.strptime(dueDate, date_format)
+
+        daysLeft = endDate - startDate
+        daysLeft = daysLeft.days()
+
+        allOrders.append((orderID, orderTotal, date, custID, invoiceID,
+        busID, status, dueDate, daysLeft))
+
+    allOrders.sort(lambda x: x[8], reverse = False)
+
+    #Need to print this list on the front end.
+    return allOrders
+
+#########################################################################################################
 
 """
 --------------------------------------- Product/Services Routes ----------------------------------------------------------

@@ -28,6 +28,10 @@ ul, ol {
   right: 48px;
 }
 
+#top-user-icon {
+  width: 36px;
+  height: 36px;
+}/*# sourceMappingURL=style.css.map */
 .quick_actions_div {
   display: flex;
   justify-content: flex-start;
@@ -90,4 +94,8 @@ ul, ol {
 .welcome-heading p {
   font-weight: 200;
   font-family: "Poppins";
+}/*# sourceMappingURL=style.css.map */
+#top-user-icon {
+  width: 36px;
+  height: 36px;
 }/*# sourceMappingURL=style.css.map */

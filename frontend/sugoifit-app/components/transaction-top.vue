@@ -26,22 +26,22 @@
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
       <span>  Expense</span>
     </b-link>
-    <b-link class="btnStyle pop-link" :to="{name:'transaction-purchases-create'}">
+    <!-- <b-link class="btnStyle pop-link" :to="{name:'transaction-purchases-create'}">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
       <span> Purchases</span>
     </b-link>
     <b-link class="btnStyle pop-link" :to="{name:'transaction-sales-create'}">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
       <span> Sales</span>
-    </b-link>
+    </b-link> -->
     <b-link class="btnStyle pop-link" :to="{name:'transaction-equity-create'}">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
       <span>  Equity</span>
     </b-link>
-     <b-link class="btnStyle pop-link" :to="{name:'transaction-supplier-create'}">
+     <!-- <b-link class="btnStyle pop-link" :to="{name:'transaction-supplier-create'}">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
       <span> Supplier</span>
-    </b-link>
+    </b-link> -->
   </div>
 </template>
 

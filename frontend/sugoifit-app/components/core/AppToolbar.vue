@@ -7,12 +7,12 @@
   >
     <div class="v-toolbar-title">
       <v-toolbar-title
-        class="white--text font-weight-light"
+        class="white--text ml-4 font-weight-light"
       >
         <v-btn
           v-if="responsive"
           class="default v-btn--simple"
-          dark
+          light
           icon
           @click.stop="onClickBtn"
         >
@@ -31,7 +31,7 @@
       >
         <v-text-field
           v-if="responsiveInput"
-          class="mr-4 mt-2 white--text"
+          class="mr-4 mt-2 "
           label="Search..."
           hide-details
         />
@@ -144,10 +144,22 @@
           this.responsiveInput = true
         }
       },
-      async logout() {
-        await this.setUsername(null);
-        this.$router.push({ path: '/' });
-      }
+        logout: function() {
+        let PATH_API = 'auth/logout';
+        this.$axios.get(`/api/${PATH_API}`, {
+          headers: {
+          'contentType': 'application/json',
+          }
+        })
+        .then(function (jsonResponse) {
+          return jsonResponse.json();
+        })
+        .then(function (jsonResponse) {
+          // this.setUsername(null);
+          this.$router.push({ name:'Login'});
+        }), error =>{
+            console.log(error);
+          }},        
     },
     mounted () {
       this.onResponsiveInverted()
