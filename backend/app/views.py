@@ -359,16 +359,21 @@ def sucessful_prods():
 
     return prod_numbers
 
-
+"""
+--------------------------------------- Website Routes ----------------------------------------------------------
+"""
 @app.route('/website/placeorder', methods = ['POST'])
 def place_order():
   #Display order based on rank
+  form = websiteForm(request.form)
+
   if request.method == "POST":
-    fname = request.form['fname']
-    lname = request.form['lname']
-    trn = request.form['trn']
-    phone = request.form['phone']
-    email = request.form['email']
+    total_price = request.tprice
+    fname = form.fname.data
+    lname = form.lname.data
+    trn = form.trn.data
+    phone = form.phone.data
+    email = form.email.data
 
     customer = Customer.query.filter_by(trn = trn)
 
@@ -383,6 +388,7 @@ def place_order():
     today = datetime.datetime.now()
     todayString = today.strftime(date_format)
     dateDue = (today + timedelta(days=7)).strftime(date_format)
+
     new_order = Order(2800, todayString, customer.custID, 'test_invoiceID','test_businessID', status, dateDue)
     db.session.add(new_order)
     db.session.commit()
@@ -443,8 +449,8 @@ def manageOrders():
 """
 --------------------------------------- Product/Services Routes ----------------------------------------------------------
 """
-@app.route('/api/products', methods = ['GET'])
-def products():
+@app.route('/api/checkout-products', methods = ['GET'])
+def checkoutproducts():
     message = {}
     data = {}
     tprice = 0
@@ -484,7 +490,12 @@ def products():
         tprice = tprice + int(card['price'])
 
     tcost = tprice + deliver
+    data["lst"] = lst
+    data["total_price"] = tprice
+    data["delivery_price"] = deliver
+    data["total_cost"] = tcost
 
+    return jsonify(data)
 """
 ------------------------------------------------------------------------------------------------------------
 """

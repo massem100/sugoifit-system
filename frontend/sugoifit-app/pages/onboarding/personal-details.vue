@@ -63,7 +63,7 @@
 import onboardingSide from '../../components/onboarding-side.vue'
 export default{
   components: { onboardingSide },
-    name: 'about-businessDetails', 
+    name: 'about-personalDetails', 
     data () { 
         return { 
             corp_types: [
