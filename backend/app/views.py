@@ -2,9 +2,7 @@ import os, sys
 import pandas as pd
 import jwt, secrets
 import hashlib, random
-import datetime
-from datetime import timedelta
-from datetime import datetime
+from datetime import timedelta, datetime
 from app.model.sales import Customer, Invoice, Order
 from functools import wraps
 from datetime import datetime
@@ -13,8 +11,9 @@ from app import app,  db, login_manager, cors, csrf_, principal, admin_permissio
 # WTF Forms and SQLAlchemy Models
 from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm
 from app.model import  accounts, auth, sales, transactions
-from app.model.financial_statement import Financialstmt, Financialstmtline
-# Financialstmtlineseq, Financialstmtlinealia,\# Financialstmtdesc 
+from app.model.sales import Product, ProductSaleItem
+
+from app.model.financial_statement import Financialstmt, Financialstmtline, Financialstmtlineseq, Financialstmtlinealia,Financialstmtdesc 
 from sqlalchemy.event import listens_for
 
 from flask import render_template, request, jsonify, flash, session, \
@@ -73,12 +72,6 @@ def requires_auth(f):
 @app.route('/api/csrf', methods = ["GET"])
 def token():
     token = csrf_.generate_csrf(app.config['SECRET_KEY'])
-    # print(token)
-    # form_data = ["83332", "name", 2, "Straight Line",  "1/12/2009", 2000]
-    # result =accounts.NonCurrentAsset.increase("cash", form_data[1], form_data )
-    # print(result)
-    # print(current_user.roles)
-    # role = auth.Role()
     return jsonify(token)
 
 
@@ -209,15 +202,16 @@ def login():
             if check_password_hash(user.user_password, passwordGiven):
                 # get user id, load into session
                 login_user(user)
+                print(user)
                 # Flask-Principal, register user identity into the system
                 identity_changed.send(app, identity = Identity(user.cid))
                 
                 # #Redirect to employee dashboard
-                # with employee_permission.require():
-                #     return jsonify({'access': 'employee', 'message': 'Login Successful, Entering Employee Dashboard'})
-                # #Redirect to owner dashboard
-                with owner_permission.require():
-                    return jsonify({'access': 'owner','message': 'Login Successful' })
+                # # with employee_permission.require():
+                # #     return jsonify({'access': 'employee', 'message': 'Login Successful, Entering Employee Dashboard'})
+                # # #Redirect to owner dashboard
+                # with owner_permission.require():
+                #     return jsonify({'access': 'owner','message': 'Login Successful' })
 
                 # #Redirect to Fmanager dashboard
                 # with fin_manager_permission.require():
@@ -484,6 +478,36 @@ def products():
         tprice = tprice + int(card['price'])
 
     tcost = tprice + deliver
+
+@app.route('/api/product/classify', methods = ['GET', 'POST'])
+def product_classify():
+    product_list = defaultdict(list)
+    annual_consum_val = []
+    total_consum_val = 0
+    total_units_sold = 0
+    product_sales = db.session.query(ProductSaleItem).all()
+
+    for product in product_sales: 
+        consum_val = product.quantitySold * product.unit_price
+        annual_consum_val.append([product.psiID, consum_val])
+        total_consum_val += consum_val
+        total_units_sold += product.quantitySold
+
+    # Find Percentage of Annual Units Sold 
+    for product in product_sales: 
+        desc_consum_val = sorted(annual_consum_val, reverse=True) # List of Annual Consumption Values (Descending Order)
+        percent_units_sold = (product.quantitySold/total_units_sold)*100.0  # % of Annual Units Sold
+        for val in desc_con_val: 
+            percent_consum_val = (val/total_consum_val)*100.0  # % of Total Annual Consumption Value
+
+            # Split Data ito 80/15/5
+            # get length of product_list then divide by percentage
+            # Assign Grades to products based on products in each percentile
+
+
+    # Find Percentage of Annual Consumption Value
+
+    return jsonify({'products': products})
 
 """
 ------------------------------------------------------------------------------------------------------------

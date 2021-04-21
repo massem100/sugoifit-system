@@ -209,11 +209,15 @@ df_purchase_table = pd.DataFrame(Purchase)
 
 Product = defaultdict(list)
 
-products = ["Shoes", "Slipper", "Dress", "Skirt", "Pants"]
+products = ["Shoes", "Slipper", "Dress", "Skirt", "Pants", "Computers",
+"Mobile phones", "Cameras", "Household furniture", "Washing machine", "Dishwasher",
+"Clothing", "Sports Equipment",  "Kitchen Utensils", "Perfumes", "Luggage", "Plant"]
 
-for _ in range(1,6):
+
+
+for _ in range(1,61):
     Product["prodID"].append("Prod" + str(_))
-    Product["prodName"].append(products[( _ - 1)])
+    Product["prodName"].append(products[random.randint(0,16)])
     Product["unit_price"].append(67.36 * 1.5 * _ )
     Product["baseUnit"].append("None")
     Product["limitedTime"].append("05-10-202" + str( _ - 1))
@@ -222,6 +226,8 @@ for _ in range(1,6):
 
 
 df_product_table = pd.DataFrame(Product)
+print(df_product_table)
+print(Product)
 
 #Data for stock
 
@@ -322,8 +328,8 @@ df_service_table = defaultdict(list)
 # df_user_table.to_sql('test', con=engine,index=False)
 # df_user_table.to_sql('user', con=engine, index=False, if_exists = "append")
 
-read_file = pd.read_csv(r"C:\Users\Masse\Desktop\Files\sugoifit-system\backend\app\financial_statements_lines.csv")
-read_file.to_excel (r'C:\Users\Masse\Desktop\Files\sugoifit-system\backend\app\finstmt.xlsx', index = None, header=True)
+# read_file = pd.read_csv(r"C:\Users\Masse\Desktop\Files\sugoifit-system\backend\app\financial_statements_lines.csv")
+# read_file.to_excel (r'C:\Users\Masse\Desktop\Files\sugoifit-system\backend\app\finstmt.xlsx', index = None, header=True)
 
 # sqlacodegen 
 # sqlacodegen mysql://root:SQLpass@localhost/sugoifit > generatedModels.py
@@ -332,7 +338,8 @@ read_file.to_excel (r'C:\Users\Masse\Desktop\Files\sugoifit-system\backend\app\f
 
 
 if __name__ == '__main__':
-    print (user)
+    # print (user)
+    print(1)
     # print (credentials)
     # print(FinancialStmt)
     # print (FinancialStmtDesc)
