@@ -11,7 +11,7 @@ from datetime import datetime
 from app import app,  db, login_manager, cors, csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission
 # WTF Forms and SQLAlchemy Models
-from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm
+from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm, orderForm
 from app.model import  accounts, auth, sales, transactions
 from app.model.financial_statement import Financialstmt, Financialstmtline
 # Financialstmtlineseq, Financialstmtlinealia,\# Financialstmtdesc 
@@ -362,24 +362,25 @@ def sucessful_prods():
 """
 --------------------------------------- Website Routes ----------------------------------------------------------
 """
-@app.route('/website/placeorder', methods = ['POST'])
+@app.route('/api/placeorder', methods = ['POST', 'GET'])
 def place_order():
   #Display order based on rank
-  form = websiteForm(request.form)
+  form = orderForm(request.form)
 
   if request.method == "POST":
-    total_price = request.tprice
+    total_price = request.form['tcost']
     fname = form.fname.data
     lname = form.lname.data
     trn = form.trn.data
-    phone = form.phone.data
+    address = form.address.data
+    phone = form.phone_num.data
     email = form.email.data
 
-    customer = Customer.query.filter_by(trn = trn)
+    customer = Customer.query.filter_by(trn = trn).first()
 
-    if customer.trn == None:
+    if customer == None:
         # Add new customer
-        new_customer = Customer(fname, lname, trn, email, phone)
+        new_customer = Customer(fname=fname, lname=lname, trn=trn, email=email)
         db.session.add(new_customer)
         db.session.commit()
 
@@ -389,10 +390,11 @@ def place_order():
     todayString = today.strftime(date_format)
     dateDue = (today + timedelta(days=7)).strftime(date_format)
 
-    new_order = Order(2800, todayString, customer.custID, 'test_invoiceID','test_businessID', status, dateDue)
-    db.session.add(new_order)
-    db.session.commit()
-
+    #new_order = Order(2800, todayString, customer.custID, 'test_invoiceID','test_businessID', status, dateDue)
+    #db.session.add(new_order)
+    #db.session.commit()
+    data = {"order_tot":total_price, "order_DATE":todayString, "customer.custID":7, "invoiceID":7, "status":status}
+    return jsonify(data)
     
 """ 
 Rank based on date order should be fulfilled
@@ -444,87 +446,6 @@ def manageOrders():
     #Need to print this list on the front end.
     return allOrders
 
-#########################################################################################################
-
-@app.route('/website/placeorder', methods = ['POST'])
-def place_order():
-  #Display order based on rank
-  if request.method == "POST":
-    fname = request.form['fname']
-    lname = request.form['lname']
-    trn = request.form['trn']
-    phone = request.form['phone']
-    email = request.form['email']
-
-    customer = Customer.query.filter_by(trn = trn)
-
-    if customer.trn == None:
-        # Add new customer
-        new_customer = Customer(fname, lname, trn, email, phone)
-        db.session.add(new_customer)
-        db.session.commit()
-
-    date_format = "%Y-%m-%d"
-    status = "Pending"
-    today = datetime.datetime.now()
-    todayString = today.strftime(date_format)
-    dateDue = (today + timedelta(days=7)).strftime(date_format)
-    new_order = Order(2800, todayString, customer.custID, 'test_invoiceID','test_businessID', status, dateDue)
-    db.session.add(new_order)
-    db.session.commit()
-
-    
-""" 
-Rank based on date order should be fulfilled
- 
-Click manage orders
-1) Pull all orders which are pending
-2) compare date due, with current date. Subtract and use the value to rank
-3) Sort in ascending order based on that value.
-
-from datetime import datetime
-
-date_format = "%Y-%m-%d"
-a = datetime.strptime('2021-04-14',date_format)
-b = datetime.strptime('2021-04-22',date_format)
-delta = b - a
-print (delta.days)
-
-"""
-@app.route('/manage-orders')
-def manageOrders():
-    #Get all orders that are pending
-    date_format = "%Y-%m-%d"
-    allOrders = []
-    ordersQuery = Order.query.filter_by(status="Pending").all()
-
-    #Calculate days left for each record
-    #Put record in tuple form and append to list
-    for record in ordersQuery:
-        orderID = record.orderID
-        orderTotal = record.order_tot
-        date = record.order_DATE
-        custID = record.custID
-        invoiceID = record.invoiceID
-        busID = record.busIDo
-        status = record.status
-        dueDate = record.dueDate
-
-        startDate = datetime.strptime(date, date_format)
-        endDate = datetime.strptime(dueDate, date_format)
-
-        daysLeft = endDate - startDate
-        daysLeft = daysLeft.days()
-
-        allOrders.append((orderID, orderTotal, date, custID, invoiceID,
-        busID, status, dueDate, daysLeft))
-
-    allOrders.sort(lambda x: x[8], reverse = False)
-
-    #Need to print this list on the front end.
-    return allOrders
-
-#########################################################################################################
 
 """
 --------------------------------------- Product/Services Routes ----------------------------------------------------------
