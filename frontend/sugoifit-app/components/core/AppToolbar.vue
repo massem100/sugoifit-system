@@ -156,7 +156,7 @@
         })
         .then(function (jsonResponse) {
           // this.setUsername(null);
-          this.$router.push({ name:'Login'});
+          this.$router.push({ path: '/auth/login'});
         }), error =>{
             console.log(error);
           }},        
