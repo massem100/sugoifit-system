@@ -446,6 +446,14 @@ def manageOrders():
     #Need to print this list on the front end.
     return allOrders
 
+@app.route('/save-money')
+def saveMoney():
+    """ 
+        1. Find out what they business spends the most money on
+        2. Make suggestions based on the items most spent on
+        3. Find percentage of revenue contributed by each product
+    """
+
 #########################################################################################################
 
 """
