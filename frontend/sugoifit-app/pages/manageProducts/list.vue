@@ -42,7 +42,7 @@
         },
         data() {
             return {
-                perPage: 2,
+                perPage: 8,
                 currPage: 1,
                 search: '',
                 fields: ["name","price","tax","status","image","actions"],

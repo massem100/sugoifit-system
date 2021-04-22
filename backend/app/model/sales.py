@@ -67,7 +67,7 @@ class Sale(db.Model):
 class Product(db.Model):
     __tablename__ = 'product'
 
-    prodID = db.Column(db.String(10), primary_key=True)
+    prodID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     prodName = db.Column(db.String(100))
     unit_price = db.Column(db.DECIMAL(10, 2))

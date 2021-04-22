@@ -439,7 +439,7 @@ def new_product():
             filename = secure_filename(image_file.filename)
             image_file.save(os.path.join(basedir, app.config['UPLOAD_FOLDER'], filename))
 
-        last_product = db.session.query(sales.Product).order_by(sales.Product.prodID).first()
+        last_product = db.session.query(sales.Product).order_by(sales.Product.prodID.desc()).first()
         if last_product is None: 
             prod_int = 1
         else:
@@ -453,7 +453,7 @@ def new_product():
         newProdID = 'P' + str(prod_int)
         newProduct = Product(prodID=newProdID, busID="Mon2", prodName=product_name, unit_price=unit_price, 
                             Unit="", limitedTime="", taxPercent=tax, prodStatus=status, image=filename)
-        
+        print(last_pID)
         try:
             db.session.add(newProduct)
             db.session.commit()
@@ -461,7 +461,7 @@ def new_product():
             error = str(e)
 
         flash('New product added successfully')
-    return jsonify({"message":"order added successfully"})
+    return jsonify({"message":"New product added successfully"})
 
 @app.route('/api/products', methods = ['GET', 'POST'])
 def products():
