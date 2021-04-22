@@ -137,7 +137,7 @@
             </b-row>
         </b-form>
         </validation-observer>
-
+        <!--
         <table class="table">
             <thead class="thead-dark">
                 <tr>
@@ -164,6 +164,10 @@
                 </tr>
             </tbody>
         </table>
+        --> 
+        <b-table :items = "section"> </b-table>
+          <h6>{{section}}</h6>
+          <!-- <h1>{{msg}}</h1> -->
     </b-container>
   </div>
 </template>
@@ -179,7 +183,7 @@
         },
         data() {
             return {
-                
+                section: []
             }
         },
         methods: {
@@ -233,7 +237,27 @@
                     this.$refs.observer.reset();
                 });
 
-            }
+            },
+            ViewSections: function (){
+              let self = this;
+              fetch("http://localhost:8080/api/testdrop",{
+                  method: "GET", 
+                  headers:{
+                    "Accept": "application/json"
+                  }, 
+                  credentials: "same-origin",
+              })
+              .then(function (response){
+                  return response.json();
+              })
+                .then(function(jsonResponse){
+                  console.log(jsonResponse);
+                  self.stmt = jsonResponse;
+                })
+                .catch( function(error){
+                 // console.log(error);
+              });
+        }
         }
     }
 </script>

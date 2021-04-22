@@ -67,6 +67,7 @@ class Product(db.Model):
     __tablename__ = 'product'
 
     prodID = db.Column(db.String(10), primary_key=True)
+    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     prodName = db.Column(db.String(100))
     unit_price = db.Column(db.DECIMAL(10, 2))
     Unit = db.Column(db.DECIMAL(10, 2))
@@ -74,6 +75,7 @@ class Product(db.Model):
     taxPercent = db.Column(db.DECIMAL(3, 2))
     grade = db.Column(db.String(5))
     prodStatus = db.Column(db.String(25))
+    image = db.Column(db.String(50))
 
     def ___init__(self, prodID, prodName, unit_price, Unit, limitedTime, taxPercent, prodStatus): 
         self.prodID = prodID 
@@ -125,10 +127,12 @@ class Service(db.Model):
     __tablename__ = 'service'
 
     serviceID = db.Column(db.String(11), primary_key=True)
+    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     serv_name = db.Column(db.String(11))
     serv_cost = db.Column(db.Integer)
     taxPercent = db.Column(db.DECIMAL(3, 2))
     in_season = db.Column(db.String(11))
+    image = db.Column(db.String(50))
 
     def __init__(self, serviceID, serv_name, serv_cost, taxPercent, in_season): 
         self.serviceID = serviceID 
@@ -215,6 +219,7 @@ class Invoice(db.Model):
     __tablename__ = 'invoice'
 
     invoiceID = db.Column(db.String(10), primary_key=True)
+    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     custID = db.Column(db.ForeignKey('customer.custID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     invoice_DATE = db.Column(db.Date)
     tax_tot = db.Column(db.DECIMAL(10, 2))
@@ -280,12 +285,14 @@ class ConService(db.Model):
     __tablename__ = 'con_service'
 
     serviceID = db.Column(db.String(11), primary_key=True)
+    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     serv_name = db.Column(db.String(11))
     serv_uprice = db.Column(db.Integer)
     basic_unit = db.Column(db.DECIMAL(10, 2))
     d_prolongperiod = db.Column(db.DateTime)
     taxPercent = db.Column(db.DECIMAL(3, 2))
     in_season = db.Column(db.String(11))
+    image = db.Column(db.String(50))
     cssiID = db.Column(db.ForeignKey('con_service_sale_item.cssiID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
 
     con_service_sale_item = db.relationship('ConServiceSaleItem')
