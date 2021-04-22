@@ -4,18 +4,18 @@ import jwt
 import secrets
 import hashlib, random
 from datetime import timedelta, datetime
-from app.model.sales import Customer, Invoice, Order
 from functools import wraps
 from datetime import datetime
 from app import app,  db, login_manager, cors, csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission, jwt_token
 # WTF Forms and SQLAlchemy Models
-from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm,
+from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm,orderForm, LTLiabForm, CAForm,ExpForm, RevForm
 from app.model import  accounts, auth, sales, transactions
-from app.model.sales import Product, ProductSaleItem
+from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order
 
 from app.model.financial_statement import Financialstmt, Financialstmtline, Financialstmtlineseq, Financialstmtlinealia,Financialstmtdesc 
 from sqlalchemy.event import listens_for
+from sqlalchemy import func
 
 from flask import render_template, request, jsonify, flash, session, \
                                 _request_ctx_stack, g
@@ -79,52 +79,113 @@ def token():
 """
 --------------------------------------- Financial Statement Routes ----------------------------------------------------------
 """
-
-@app.route('/api/transaction', methods = ["POST", "GET"])
+@app.route('/api/transaction/currentasset', methods = ["POST", "GET"])
 @login_required
 @requires_auth
-def manageTransactions():
+def ca_transaction():
+    if request.method == "POST": 
+        if request['form_id'] == "AddCAForm":
+            form = CAForm(request.form)
+            # Add form data
+            asset_name = form.asset_name.data 
+            transaction_date = form.transaction_date.data 
+            asset_desc = form.asset_desc.data 
+            amount = form.amount.data 
+            account_affected = form.paid_using.data
+            return "data"
+
+@app.route('/api/transaction/noncurrentasset', methods = ["POST", "GET"])
+@login_required
+@requires_auth
+def nca_transaction():
     if request.method == "POST":
         if request.form['form_id'] == "AddNCAForm":
             form = NCAForm(request.form)
- 
-            # assign NCA form fields
+
             name = form.asset_name.data 
             transaction_date = form.transaction_date.data 
             dep_type = form.dep_type.data
             dep_rate = form.dep_rate.data
             asset_desc = form.asset_desc.data 
-            amount = form.amount.data
-            paid_using = form.paid_using.data
+            amount = float(form.amount.data)
+            account_affected = form.paid_using.data
             lifeSpan = form.asset_lifespan.data
             bought_sold = form.bought_sold.data
 
+            # Get ID of Non Current Asset to increment 
             last_ncaID = db.session.query(accounts.NonCurrentAsset).order_by(accounts.NonCurrentAsset.ncaID.desc()).first()
-            if last_ncaID is not None:
-                last_id = int(last_ncaID.ncaID)
-                last_id +=1
-            else: 
-                last_id= 1
-            
-            last_balance = db.session.query(accounts.NonCurrentAsset).order_by(accounts.NonCurrentAsset.ncaID.desc()).first()
-            if last_balance is not None: 
-                Balance = int(last_balance.Balance)
-                Balance += amount 
-                # Add Balance to form data 
+            last_id = (int(last_ncaID.ncaID)+1 if last_ncaID is not None else 1)
 
-            
+            # Get Balance of Non Current Asset 
+            NCA_balance = db.session.query(accounts.NonCurrentAsset).order_by(accounts.NonCurrentAsset.ncaID.desc()).first()
+            NCA_balance = (NCA_balance.Balance if NCA_balance is not None else 0) 
+                          
+            # Get Balance of Current Asset 
+            CA_balance = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
+            CA_Balance = (CA_balance.Balance if CA_balance is not None else 0)           
+                            
+            # Get Balance of Current Liability
+            CL_Balance = db.session.query(accounts.Currentliability).order_by(accounts.Currentliability.cliabID.desc()).first()
+            CL_Balance  = (CL_balance.Balance if CL_Balance is not None else 0)
+                                
+            transaction_inputs = [last_id, current_user.busID, lifeSpan, dep_type, transaction_date, amount]
             if "Bought" in  bought_sold: 
-                form_data = [None, current_user.busID, lifeSpan, dep_type,  transaction_date, amount, ]
-                entries =accounts.NonCurrentAsset.increase(paid_using, name, form_data )
-                entry_debit = entries[0]
-                entry_credit = entries[1]
-                print( entry_debit, entry_credit)
-                # business = auth.Busines(busID = current_user.busID)
+                if account_affected == "cash": 
+                    
+                    related_entry = "Cash" + str(transaction_inputs[0]) 
+
+                    # Sum Debit and Credit Columns if Debit > Credit : BalanceDC = Debit else: BalanceDC = "Credit"
+                    NCA_sumDebit = accounts.NonCurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.NonCurrentAsset.debitBalance, '0')).label("sumDebit")).first()
+                    NCA_sumCredit = accounts.NonCurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.NonCurrentAsset.creditBalance, '0')).label("sumCredit")).first()
+                    NCA_BalanceDC = ("Debit" if float(NCA_sumDebit.sumDebit) + amount > float(NCA_sumCredit.sumCredit) else "Credit")
+                    print(NCA_BalanceDC)
+                      
+                    # Sum values for Current Asset 
+                    CA_sumDebit = accounts.CurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.CurrentAsset.debitBalance,'0')).label("sumDebit")).first()
+                    CA_sumCredit = accounts.CurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.CurrentAsset.creditBalance, '0')).label("sumCredit")).first()
+                    CA_BalanceDC = ("Debit" if float(CA_sumDebit.sumDebit) + amount > float(CA_sumCredit.sumCredit) else  "Credit")
+                    
+                    debitEntry = NonCurrentAsset.debit(related_entry, asset_name, NCA_Balance, NCA_BalanceDC, transaction_inputs)
+                    creditEntry = CurrentAsset.credit(related_entry, "Cash", CA_Balance,CA_BalanceDC, transaction_inputs)
+
+                elif account_affected == "Cheque": 
+                    
+                    related_entry = "Cheque" + str(transaction_inputs[0])
+
+                     # Sum Debit and Credit Columns if Debit > Credit : BalanceDC = Debit else: BalanceDC = "Credit"
+                    #  Add current amount to the sum because it should include the latest bal to select debit or credit of the account.
+                    NCA_sumDebit = accounts.NonCurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.NonCurrentAsset.debitBalance, '0')).label("sumDebit")).first()
+                    NCA_sumCredit = accounts.NonCurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.NonCurrentAsset.creditBalance, '0')).label("sumCredit")).first()
+                    NCA_BalanceDC = ("Debit" if float(NCA_sumDebit.sumDebit) + amount > float(NCA_sumCredit.sumCredit)  else "Credit")
+                      
+                    # Sum values for Current Asset 
+                    CA_sumDebit = accounts.CurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.CurrentAsset.debitBalance, '0')).label("sumDebit")).first()
+                    CA_sumCredit = accounts.CurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.CurrentAsset.creditBalance, '0')).label("sumCredit")).first()
+                    CA_BalanceDC = ("Debit" if float(CA_sumDebit.sumDebit) + amount > float(CA_sumCredit.sumCredit) else "Credit")
+                    
+                    debitEntry = NonCurrentAsset.debit(related_entry, asset_name, CA_Balance, NCA_BalanceDC, transaction_inputs)
+                    creditEntry = CurrentAsset.credit(related_entry, "Bank", CA_Balance, CA_BalanceDC, transaction_inputs)
+
+                else: 
+                    related_entry = "CL" + str(transaction_inputs[0])
+
+                     # Sum Debit and Credit Columns if Debit > Credit : BalanceDC = Debit else: BalanceDC = "Credit"
+                    NCA_sumDebit = accounts.NonCurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.NonCurrentAsset.debitBalance, '0')).label("sumDebit")).first()
+                    NCA_sumCredit = accounts.NonCurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.NonCurrentAsset.creditBalance, '0')).label("sumCredit")).first()
+                    NCA_BalanceDC = ("Debit" if float(NCA_sumDebit.sumDebit) + amount > float(NCA_sumCredit.sumCredit)  else "Credit")
+                    
+                    # Sum values for Current Asset 
+                    CL_sumDebit = accounts.Currentliability.query.with_entities(func.sum(func.coalesce(accounts.Currentliability.debitBalance, '0')).label("sumDebit")).first()
+                    CL_sumCredit = accounts.Currentliability.query.with_entities(func.sum(func.coalesce(accounts.Currentliability.creditBalance, '0')).label("sumCredit")).first()
+                    CL_BalanceDC =("Debit" if float(CL_sumDebit.sumDebit) > float(CA_sumCredit.sumCredit) + amount else  "Credit")
+
+                    debitEntry = NonCurrentAsset.debit(related_entry, asset_name, NCA_Balance,NCA_BalanceDC, transaction_inputs)
+                    creditEntry = Currentliability.credit(related_entry, "Accounts Payable", CL_Balance, CL_BalanceDC, transaction_inputs)
 
                 try:
-                    # db.session.add(business)
-                    db.session.add(entry_debit)
-                    db.session.add(entry_credit)
+                    
+                    db.session.add(debitEntry)
+                    db.session.add(creditEntry)
                     db.session.commit()
                 except Exception as e:
                      error = str(e)
@@ -133,43 +194,125 @@ def manageTransactions():
                 return jsonify({'message': 'Success - Asset Bought'})   
 
             else: 
-                form_data = ["ncaid", "busID", lifeSpan, dep_type,  transaction_date, amount]
-                Entry1 =accounts.NonCurrentAsset.decrease(paid_using, name, form_data )[0]
-                Entry2 =accounts.NonCurrentAsset.decrease(paid_using, name, form_data )[1]
+                if account_affected == "cash": 
+                    NCA_related_entry = "Cash" +str(transaction_inputs[0])
+                    debitEntry = CurrentAsset.debit(transaction_inputs, related_entry, "Cash")
+                    creditEntry = CurrentAsset.credit(transaction_inputs,NCA_related_entry, asset_name)
 
-                db.session.add()
-                db.session.add(Entry2)
+                    return ['CA', debitEntry], ['CA', creditEntry]
+
+                elif account_affected == "Cheque": 
+                    
+                    NCA_related_entry = "Cash" +str(transaction_inputs[0])
+                    debitEntry = CurrentAsset.debit(transaction_inputs, related_entry, "Bank")
+                    creditEntry = CurrentAsset.credit(transaction_inputs,NCA_related_entry, asset_name)
+
+                    return ['CA', debitEntry], ['CA', creditEntry]
+
+                else: 
+                    NCA_related_entry = "Cash" +str(transaction_inputs[0])
+                    debitEntry = CurrentAsset.debit(transaction_inputs, related_entry, "Accounts Receivable")
+                    creditEntry = CurrentAsset.credit(transaction_inputs, NCA_related_entry, asset_name)
+                    
+                    return ['CA', debitEntry], ['CA', creditEntry]
+
+
+
+                form_data = ["ncaid", "busID", lifeSpan, dep_type,  transaction_date, amount]
+                Entry1 =accounts.NonCurrentAsset.decrease(paid_using, name, form_data)[0]
+                Entry2 =accounts.NonCurrentAsset.decrease(paid_using, name, form_data)[1]
+
+                try:
+                    
+                    db.session.add(entry_debit)
+                    db.session.add(entry_credit)
+                    db.session.commit()
+                except Exception as e:
+                     error = str(e)
+                     print(error)
 
             
                 return jsonify({'message': 'Success - Asset Sold'})                   
             
-        elif request['form_id'] == "AddCAForm":
-            form = CAForm(request.form)
-            
-        elif request['form_id'] == "LTLiabForm":
-            form = LTLiabForm(request.form)
-
-        elif request['form_id'] == "CLiabForm": 
-            form = CLiabForm(request.form)
-
-        elif request['form_id'] == "ExpForm": 
-            form = ExpenseForm(request.form)
-            
-        elif request['form_id'] == "RevForm": 
-            form = RevenueForm(request.form)
-            
-        elif request['form_id'] == "EquityForm": 
-            form = EquityForm(request.form)
         
-    else:
-        return "request == GET"
 
+@app.route('/api/transaction/currentliability', methods = ["POST", "GET"])
+@login_required
+@requires_auth
+def cl_transaction():
+    if request.method == "POST": 
+        if request['form_id'] == "CLiabForm": 
+            form = CLiabForm(request.form)
+            liab_name = form.liab_name.data
+            person_owed = form.person_owed.data 
+            loan_rate = form.loan_rate.data 
+            loan_periods = form.loan_periods.data 
+            borrow_date = form.borrow_date.data 
+            payment_start_date = form.payment_start_date.data 
+            amount_borrowed = form.amount_borrowed.data 
+            return 1
+            
 
+@app.route('/api/transaction/ltliability', methods = ["POST", "GET"])
+@login_required
+@requires_auth
+def lt_transaction():
+    if request.method == "POST": 
+        if request['form_id'] == "LTLiabForm":
+            form = LTLiabForm(request.form)
+            liab_name = form.liab_name.data
+            person_owed = form.person_owed.data 
+            loan_rate = form.loan_rate.data 
+            loan_periods = form.loan_periods.data 
+            borrow_date = form.borrow_date.data 
+            payment_start_date = form.payment_start_date.data 
+            amount_borrowed = form.amount_borrowed.data 
+            return 1
+        
+
+@app.route('/api/transaction/expense', methods = ["POST", "GET"])
+@login_required
+@requires_auth
+def exp_transaction():
+    if request.method == "POST": 
+       if request['form_id'] == "ExpForm": 
+            form = ExpenseForm(request.form)
+            expense_name = form.expense_name.data
+            transaction_date = form.transaction_date.data 
+            expense_desc = form.expense_desc.data 
+            amount = form.amount.data
+            account_affected = form.paid_using.data
+            return 1
+        
+@app.route('/api/transaction/revenue', methods = ["POST", "GET"])
+@login_required
+@requires_auth
+def rev_transaction():
+    if request.method == "POST": 
+        if request['form_id'] == "RevForm": 
+            form = RevenueForm(request.form)
+            revenue_name = form.revenue_name.data 
+            transaction_date = form.transaction_date.data
+            revenue_desc = form.revenue_desc.data
+            amount = form.amount.data 
+            paid_using = form.amount.data       
+            return 1
+        
+@app.route('/api/transaction/equity', methods = ["POST", "GET"])
+@login_required
+@requires_auth
+def equity_transaction():
+    if request.method == "POST":             
+        if request['form_id'] == "EquityForm": 
+            form = EquityForm(request.form)
+            return 1
+
+    
 @app.route('/api/printstmtdata', methods= ["GET"])
 def stmt():
     resultstmt = []
-    financialstmt = Financialstmt.query.all()
-    for stmt in financialstmt:
+    financiatransaction_inputsmt = Financiatransaction_inputsmt.query.all()
+    for stmt in financiatransaction_inputsmt:
         resultstmt.append({ 'id' :stmt.stmtID,'Statement Name': stmt.fs_name})
 
 
@@ -220,6 +363,7 @@ def login():
                 # get user id, load into session
                 login_user(user)
                 print(user)
+
                 # Flask-Principal, register user identity into the system
                 identity_changed.send(app, identity = Identity(user.cid))
 
@@ -337,6 +481,7 @@ def register():
 def load_user(id):
     user = auth.UserCredential.query.get(id)
     return user
+
 
 """
 --------------------------------------- Onboarding Routes (To be added)----------------------------------------------------------
@@ -458,7 +603,7 @@ def products():
     tprice = 0
     deliver = 500
 
-    lst = [
+    transaction_inputs = [
             {
                 'id': 1,
                 'img': "https://5.imimg.com/data5/RU/WI/MY-46283651/school-skirts-500x500.jpg",
@@ -488,13 +633,12 @@ def products():
             }
         ]
 
-    for card in lst:
+    for card in transaction_inputs:
         tprice = tprice + int(card['price'])
 
     tcost = tprice + deliver
 
 @app.route('/api/product/classify', methods = ['GET', 'POST'])
-
 def product_classify():
     product_list = defaultdict(list)
     annual_consum_val = []

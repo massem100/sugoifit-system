@@ -11,8 +11,8 @@ from flask_principal import RoleNeed, UserNeed
 
 
 username = 'root'
-#password = 'SQLpass'
-password = ''
+password = 'SQLpass'
+# password = ''
 server = 'localhost'
 
 app = Flask(__name__, template_folder = None)
