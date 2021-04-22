@@ -1,50 +1,48 @@
 <template>
-<div class = "company-type-page"> 
-                <onboarding-side class="side-bar m-0 h-100" ></onboarding-side>
-      <!--  COMPANY TYPE-->
-                <div  class="company-type-section  " >
-                    <div class = "company-heading">
-                        <h4 class=" m-4">Choose the type of business</h4>
-                        <p class="m-4">Choose the option that best describes your business.</p>
-                    </div>
-                    <div class="type-categories">
-                        
-                        <div class="type-item">
-                            <img class = "type-icon" src="~assets/uploads/checked.svg" alt="">
-                            <h6> Sole Trader </h6>
-                            <p> A business owned and operated by one individual.</p>
-                        </div>
-                        <div class="type-item">
-                            <img class = "type-icon" src="~assets/uploads/checked.svg" alt="">
-                            <h6>Partnership</h6>
-                            <p>An unincorporated business owned by two or more persons.</p>
-                        </div>
-                        <div class="type-item">
-                            <img class = "type-icon" src="~assets/uploads/checked.svg" alt="">
-                            <h6>Company</h6>
-                            <p>A business that is incorporated. Please select type of incorporation, private or public.</p>
-                        </div>
-                        <div class ="d-flex flex-row justify-content-center ">
-                        <div @click = "BusDetail" class="type-btn-n btn btn-lg">
+<div class = "company-type-page">
+    <div  class="company-type-section" >
+        <div class = "company-heading">
+            <h4 class=" m-4">Choose the type of business</h4>
+            <p class="m-4">Choose the option that best describes your business.</p>
+        </div>
+        <div class="type-categories">
+            
+            <div class="type-item">
+                <img class = "type-icon" src="~assets/uploads/checked.svg" alt="">
+                <h6> Sole Trader </h6>
+                <p> A business owned and operated by one individual.</p>
+            </div>
+            <div class="type-item">
+                <img class = "type-icon" src="~assets/uploads/checked.svg" alt="">
+                <h6>Partnership</h6>
+                <p>An unincorporated business owned by two or more persons.</p>
+            </div>
+            <div class="type-item">
+                <img class = "type-icon" src="~assets/uploads/checked.svg" alt="">
+                <h6>Company</h6>
+                <p>A business that is incorporated. Please select type of incorporation, private or public.</p>
+            </div>
+            <div class ="d-flex flex-row justify-content-center ">
+            <div @click = "BusDetail" class="type-btn-n btn btn-lg">
 
-                                <h6> Next</h6>
-                        </div>
-                    </div>
+                    <h6> Next</h6>
+            </div>
+        </div>
                          
-                    </div>
-                    
+    </div>
+    
 
-                    
-                </div>
+    
+</div>
 </div>
 </template>
 
 
 <script>
-import onboardingSide from '../../components/onboarding-side.vue'
+
 
 export default {
-  components: { onboardingSide },
+  name: 'company-type',
   data (){
       return {}
   }, 

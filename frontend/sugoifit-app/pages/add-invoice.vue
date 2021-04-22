@@ -1,6 +1,5 @@
 <template>
   <div class="d-flex flex-row">
-    <side-bar></side-bar>
     <!-- Quick Actions -->
     <div class="ml-5">
       <top-bar class="top-bar"/>
@@ -15,6 +14,7 @@
 <script>
     export default {
         name: "add-invoice",
+        layout:'dashboard',
         methods: {
             addInvoice: () => {
                 console.log('working');

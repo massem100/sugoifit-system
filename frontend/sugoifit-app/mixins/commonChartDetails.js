@@ -1,4 +1,3 @@
-import SideBar from '@/components/SideBar.vue';
 import BarChart from '@/components/charts/BarChart'
 import LineChart from '@/components/charts/LineChart'
 import PieChart from '@/components/charts/PieChart'
@@ -36,6 +35,6 @@ export default {
     BarChart,
     LineChart,
     PieChart,
-    SideBar
+
   },
 }

@@ -221,6 +221,8 @@ def login():
                 return jsonify({'error msg': 'Login credentials failed: Please check email or password.'})
                 
             return jsonify({'error msg': 'Account not found, try again or Sign up.',  })
+        else: 
+            return jsonify({'error msg': "No account exists with that email"})
     else:
         error_list = form_errors(form)
         form_e = form.errors
@@ -233,6 +235,7 @@ def login():
 def logout():
     # Clears user from session
     logout_user()
+    print(current_user)
 
     # Flask-Principal: Remove session keys
     for key in ('identity.name', 'identity.auth_type'):
@@ -328,6 +331,7 @@ def load_user(id):
 """
 --------------------------------------- Onboarding Routes (To be added)----------------------------------------------------------
 """
+
 
 
 """

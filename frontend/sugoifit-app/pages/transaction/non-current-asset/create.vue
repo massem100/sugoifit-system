@@ -359,7 +359,7 @@
               let PATH_API = 'transaction/asset';
               let NCAForm = document.getElementById('AddNCAForm');
               let form_data = new FormData(NCAForm);
-              form_data.append('form_id','AddNCAForm'  );
+              form_data.append('form_id','AddNCAForm' );
               this.$axios.post(`/api/${PATH_API}`, form_data, {
                   headers: {
                   'contentType': 'application/json',

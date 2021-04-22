@@ -1,11 +1,11 @@
 <template>
-  <v-app>
+  <v-app >
     <!-- <core-filter /> -->
-
-    <core-toolbar />
-
+    <v-app-bar clipped-left>
+        <core-toolbar />
+    </v-app-bar>
+    
     <core-drawer />
-
     <core-view />
   </v-app>
 </template>

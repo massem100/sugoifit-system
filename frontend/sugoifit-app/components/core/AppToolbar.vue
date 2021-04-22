@@ -2,12 +2,12 @@
   <v-toolbar
     id="core-toolbar"
     flat
-    prominent
     style="background: #7CC3CD;"
   >
-    <div class="v-toolbar-title">
-      <v-toolbar-title
-        class="white--text ml-4 font-weight-light"
+    <div class="v-toolbar-title m-0">
+      <v-toolbar-title 
+      
+        class="white--text  font-weight-light"
       >
         <v-btn
           v-if="responsive"
@@ -26,12 +26,11 @@
     <v-toolbar-items>
       <v-flex
         align-center
-        layout
-        py-2
+        layout       
       >
         <v-text-field
           v-if="responsiveInput"
-          class="mr-4 mt-2 "
+          class="mr-4 "
           label="Search..."
           hide-details
         />
@@ -156,7 +155,7 @@
         })
         .then(function (jsonResponse) {
           // this.setUsername(null);
-          this.$router.push({ path: '/auth/login'});
+          this.$router.push({ name:'auth-Login'});
         }), error =>{
             console.log(error);
           }},        

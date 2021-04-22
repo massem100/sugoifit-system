@@ -3,6 +3,7 @@
     <b-row class="justify-content-between mx-0 flex-nowrap">
       <div class="welcome-heading">
         <h5 class="font-weight-bold"> Welcome Back, <span> Jane</span></h5>
+   
         <p class="">Lorem ipsum dolor sit amet consectetur adi</p>
       </div>
       <div class="d-flex font-weight-bold">

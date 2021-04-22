@@ -1,6 +1,5 @@
 <template>
   <div class="d-flex">
-    <side-bar></side-bar>
     <b-container fluid>
         <top-bar/>
         <settings-top/>

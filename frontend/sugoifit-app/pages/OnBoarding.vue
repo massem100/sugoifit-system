@@ -1,7 +1,6 @@
 <template>
     <div class="m-0 d-flex flex-row w-100 ">
-        <onboarding-side  class = "side-bar h-100 m-0"></onboarding-side>
-        <div class="main-area d-flex flex-column">
+        <div v-if= "form_toggle" class="main-area d-flex flex-column">
             <img src="~assets/uploads/onboard-img.svg" alt="" class="onboard-img ">
             <div class = "onboard-container d-flex flex-column align-items-center ">
                 <p class="onboard-p">Click to begin setting up your business.</p>
@@ -10,33 +9,44 @@
                 </button>
             </div>
         </div>
+        
+        <b-form> 
+            
+            <email-section></email-section>
+            <corporation></corporation>
+
+        </b-form>
+     
     </div>
    
 </template>
 
 
 <script>
+import EmailSection from './onboarding/firstStep';
+import Corporation from './onboarding/business-details/corporation.vue';
 
-import OnboardingSide from '/components/onboarding-side.vue'
 export default {
-  components: { 
-      OnboardingSide
+  components: {
+    EmailSection,
+    Corporation
+ 
     },
     name: 'on-boarding',
+    layout: 'onboarding',
     data(){
         return{
             secfocus: true,
-            secfocusN: true
+            secfocusN: true, 
+            form_toggle: true,
 
         }
 }, 
 methods: {
     GetStarted: function(){
-         this.$router.push('onboarding/email-section');
-
-
+        this.form_toggle = false;
     }
-}
+    }
 }
 
 </script>
@@ -71,7 +81,7 @@ methods: {
         flex-direction: column;
         /* justify-content:flex-start; */
         /* align-items: center; */
-        margin-left: 15rem;
+        margin-left: 10rem;
         width: 100vw;
         height:100vh;
     }

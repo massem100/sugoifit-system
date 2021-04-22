@@ -1,8 +1,5 @@
 <template>
   <div class="d-flex flex-row">
-    <side-bar></side-bar>
-
-    <!-- Quick Actions -->
     <div class="ml-5">
       <top-bar class="top-bar"/>
       <h3 class="m-2">Settings</h3>
@@ -15,7 +12,7 @@
 <script>
 export default {
     name: "Settings",
-    
+    layout: 'dashboard'
 };
 </script>
 

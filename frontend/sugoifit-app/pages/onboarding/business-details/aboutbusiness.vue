@@ -1,7 +1,5 @@
 <template>
     <div class="about-business-page "> 
-        <onboarding-side class = "side-bar m-0 h-100 "> </onboarding-side>
-
         <div class="about-business-main">
             <div class="about-business-heading">
                 <h5> About your business </h5>
@@ -10,60 +8,90 @@
 
             <div class="about-business-form-div">
                 <b-form action="" class="about-business-form">
-                    <!-- about-business Name 
-                    about-business Address
-                    Telephone 
-                    Type of about-business , Nature of about-business
-                    about-business Description
-                    about-business Industry -->
                     <div class="about-business-form-item">
                        
                         <label for = "comp-name">Company Name</label>
                          <div class="name-container d-flex flex-row">
-                        <!-- <b-form-select id = corp_type :options="corp_types"> </b-form-select> -->
-                            <b-form-input placeholder="E.g. Monique's Boutique" class = "mr-2 w-80" id = "comp-name"> </b-form-input>
-                            <b-form-input placeholder = "eg. Ltd." class = "w-25" id="name-end"></b-form-input>
+                        
+                            <b-form-input 
+                                placeholder="E.g. Monique's Boutique" 
+                                class = "mr-2 w-80" 
+                                id = "comp_name" 
+                                name="comp_name"
+                                >
+                            </b-form-input>
+                            <b-form-input 
+                                placeholder = "eg. Ltd." 
+                                class = "w-25" 
+                                id="name_end" 
+                                name = "name_end"
+                                >
+                            </b-form-input>
                         </div>
-                        <!-- <div class="alert alert-info mt-4" role="alert">
-                            This is a info alert—check it out!
-                        </div> -->
                     </div>
                     
                     <div class="shares-div "> 
                         <div class = "about-business-form-item"> 
                             <label for = ""> Product or Service </label>
-                             <b-form-select id = corp_type :options="busNature"> </b-form-select>
+                             <b-form-select 
+                                id = corp_type 
+                                name= "corp_type" 
+                                :options="busNature"
+                             > 
+                             </b-form-select>
                         </div>
                         <div class="about-business-form-item">
                             <label for = ""> Telephone </label>
-                            <b-form-input placeholder="(555)-XXX-XXXX" id = ""></b-form-input>
+                            <b-form-input 
+                                placeholder="(555)-XXX-XXXX" 
+                                id = "bus_tel"
+                                name = "bus_tel"
+
+                                >
+                            </b-form-input>
                         </div>
                         
                     </div>
                     <div class="about-business-form-item">
                             <label for = ""> Business Address</label>
-                            <b-form-input placeholder="1234 Plaza Square, Place, Jamaica, JMDCN10" class = "bus-address" id = ""></b-form-input>
+                            <b-form-input 
+                                placeholder="1234 Plaza Square, Place, Jamaica, JMDCN10" 
+                                class = "bus-address" 
+                                id = "bus_address"
+                                name = "bus_address"
+                                >
+                            </b-form-input>
                         </div>
                         <div class="about-business-form-item">
                             <label for="industry"> Business Description</label>
-                            <b-form-input placeholder = "Write 2 or 3 sentences" class = "bus-desc" id = "industry"></b-form-input>
+                            <b-form-input 
+                                placeholder = "Write 2 or 3 sentences" 
+                                class = "bus-desc" 
+                                id = "industry"
+                                name= "industry"
+                                >
+                            </b-form-input>
                         </div>
-                        <button @click="TeamAdd" type="button" class="btn bus-btn ">Next</button>
+                        <button 
+                            @click="TeamAdd" 
+                            type="button" 
+                            class="btn bus-btn "
+                            >
+                            Next
+                        </button>
                 </b-form>
             </div>
-
-
         </div>
     </div>
-    
 </template>
 
 
 <script > 
-import onboardingSide from '../../../components/onboarding-side.vue'
+
 export default{
-  components: { onboardingSide },
+  components: {  },
     name: 'about-businessDetails', 
+    layout: 'onboarding',
     data () { 
         return { 
             corp_types: [
