@@ -22,7 +22,7 @@
 
 <style scoped>
   .btnStyle {
-    margin: 5px;
+    margin: 5px; 
     background-color: #DFFBFF;
     width: 10rem;
     padding: 10px;

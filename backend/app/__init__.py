@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf import csrf
@@ -10,8 +11,8 @@ from flask_principal import RoleNeed, UserNeed
 
 
 username = 'root'
-password = 'SQLpass'
-# password = ''
+#password = 'SQLpass'
+password = ''
 server = 'localhost'
 
 app = Flask(__name__, template_folder = None)
@@ -20,6 +21,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqlconnector://{}:{}@{}/sugoifi
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
+# Flask migrate
+migrate = Migrate(app, db)
 
 # CSRF Attack Protection
 csrf_ = csrf

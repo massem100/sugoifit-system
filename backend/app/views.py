@@ -10,7 +10,7 @@ from datetime import datetime
 from app import app,  db, login_manager, cors, csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission, jwt_token
 # WTF Forms and SQLAlchemy Models
-from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm
+from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm,
 from app.model import  accounts, auth, sales, transactions
 from app.model.sales import Product, ProductSaleItem
 
@@ -111,10 +111,10 @@ def manageTransactions():
                 Balance = int(last_balance.Balance)
                 Balance += amount 
                 # Add Balance to form data 
-                
+
             
             if "Bought" in  bought_sold: 
-                form_data = [int(last_id), current_user.busID, lifeSpan, dep_type,  transaction_date, amount, ]
+                form_data = [None, current_user.busID, lifeSpan, dep_type,  transaction_date, amount, ]
                 entries =accounts.NonCurrentAsset.increase(paid_using, name, form_data )
                 entry_debit = entries[0]
                 entry_credit = entries[1]
