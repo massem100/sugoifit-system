@@ -306,8 +306,10 @@
                 },
                 asset_options: [
                     {value: null, text: 'Please select an option'},
-                    {value: 'a', text: 'This is First option'},
-                    {value: 'b', text: 'Selected Option'},
+                    {value: 'Straight-Line Method', text: 'Straight-Line'},
+                    {value: 'Declining Balance', text: 'Declining Balance '},
+                    {value: 'Units of Production', text: 'Units of Production'},
+                    {value: 'Sum of Year\'s Digits', text: 'Sum of Year\'s Digits'},
                 ], 
                 tangible_intan: [
                   {value: 'Tangible Asset', text: 'Tangible Asset'},
@@ -356,13 +358,14 @@
             },
             AddNCA: function(){
               let self = this;
-              let PATH_API = 'transaction/asset';
+              let PATH_API = 'transaction/';
               let NCAForm = document.getElementById('AddNCAForm');
               let form_data = new FormData(NCAForm);
               form_data.append('form_id','AddNCAForm' );
               this.$axios.post(`/api/${PATH_API}`, form_data, {
                   headers: {
                   'contentType': 'application/json',
+                  "Authorization": "Bearer " + localStorage.getItem("token"),
                 }
               })
               .then( jsonResponse =>{

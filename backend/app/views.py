@@ -1,13 +1,14 @@
 import os, sys
 import pandas as pd
-import jwt, secrets
+import jwt
+import secrets
 import hashlib, random
 from datetime import timedelta, datetime
 from app.model.sales import Customer, Invoice, Order
 from functools import wraps
 from datetime import datetime
 from app import app,  db, login_manager, cors, csrf_, principal, admin_permission, \
-                            owner_permission, employee_permission, fin_manger_permission
+                            owner_permission, employee_permission, fin_manger_permission, jwt_token
 # WTF Forms and SQLAlchemy Models
 from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm
 from app.model import  accounts, auth, sales, transactions
@@ -79,7 +80,9 @@ def token():
 --------------------------------------- Financial Statement Routes ----------------------------------------------------------
 """
 
-@app.route('/api/transaction/', methods = ["POST", "GET"])
+@app.route('/api/transaction', methods = ["POST", "GET"])
+@login_required
+@requires_auth
 def manageTransactions():
     if request.method == "POST":
         if request.form['form_id'] == "AddNCAForm":
@@ -96,24 +99,38 @@ def manageTransactions():
             lifeSpan = form.asset_lifespan.data
             bought_sold = form.bought_sold.data
 
+            last_ncaID = db.session.query(accounts.NonCurrentAsset).order_by(accounts.NonCurrentAsset.ncaID.desc()).first()
+            if last_ncaID is not None:
+                last_id = int(last_ncaID.ncaID)
+                last_id +=1
+            else: 
+                last_id= 1
+            
+            last_balance = db.session.query(accounts.NonCurrentAsset).order_by(accounts.NonCurrentAsset.ncaID.desc()).first()
+            if last_balance is not None: 
+                Balance = int(last_balance.Balance)
+                Balance += amount 
+                # Add Balance to form data 
+                
+            
             if "Bought" in  bought_sold: 
-                print(paid_using)
-                form_data = [1, "busID", lifeSpan, dep_type,  transaction_date, amount]
+                form_data = [int(last_id), current_user.busID, lifeSpan, dep_type,  transaction_date, amount, ]
                 entries =accounts.NonCurrentAsset.increase(paid_using, name, form_data )
                 entry_debit = entries[0]
                 entry_credit = entries[1]
                 print( entry_debit, entry_credit)
-                business = auth.Busines(busID = "busID")
+                # business = auth.Busines(busID = current_user.busID)
 
                 try:
-                    db.session.add(business)
+                    # db.session.add(business)
                     db.session.add(entry_debit)
                     db.session.add(entry_credit)
                     db.session.commit()
                 except Exception as e:
                      error = str(e)
+                     print(error)
                 
-                return jsonify({'message': 'Success - Asset Bought', 'errors': error})   
+                return jsonify({'message': 'Success - Asset Bought'})   
 
             else: 
                 form_data = ["ncaid", "busID", lifeSpan, dep_type,  transaction_date, amount]
@@ -205,18 +222,11 @@ def login():
                 print(user)
                 # Flask-Principal, register user identity into the system
                 identity_changed.send(app, identity = Identity(user.cid))
-                
-                # #Redirect to employee dashboard
-                # # with employee_permission.require():
-                # #     return jsonify({'access': 'employee', 'message': 'Login Successful, Entering Employee Dashboard'})
-                # # #Redirect to owner dashboard
-                # with owner_permission.require():
-                #     return jsonify({'access': 'owner','message': 'Login Successful' })
 
-                # #Redirect to Fmanager dashboard
-                # with fin_manager_permission.require():
-                #     return jsonify({'access': 'financialmanager', 'message': 'Login Successful, Entering Financial Dashboard'})
-                return jsonify({'message': 'Login Successful'})
+                payload = {'userid': user.userID}
+                token = jwt.encode(payload, jwt_token, algorithm='HS256').decode('utf-8')
+                return jsonify(success = [{"token": token,"userid": user.userID, "message": "User successfully logged in."}])
+                
             else:
                 return jsonify({'error msg': 'Login credentials failed: Please check email or password.'})
                 
@@ -484,6 +494,7 @@ def products():
     tcost = tprice + deliver
 
 @app.route('/api/product/classify', methods = ['GET', 'POST'])
+
 def product_classify():
     product_list = defaultdict(list)
     annual_consum_val = []

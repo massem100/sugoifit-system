@@ -102,6 +102,8 @@ class UserCredential(db.Model, UserMixin):
     def is_active(self):
         """Flask-Login: return True if the user is active."""
         return self.active
+    def __repr__(self): 
+        return "<User Credentials {} UserID:{}".format(self.cid, self.userID)
 
 # class RoleType(enum.Enum): 
 #   owner = 'Business Owner'

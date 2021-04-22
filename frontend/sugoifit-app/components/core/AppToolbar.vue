@@ -151,11 +151,11 @@
           }
         })
         .then(function (jsonResponse) {
-          return jsonResponse.json();
+          return jsonResponse.data;
         })
         .then(function (jsonResponse) {
           // this.setUsername(null);
-          this.$router.push({ name:'auth-Login'});
+          $nuxt.$router.push({ name:'auth-Login'});
         }), error =>{
             console.log(error);
           }},        

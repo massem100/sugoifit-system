@@ -173,9 +173,12 @@ class NonCurrentAsset(db.Model):
         self.related_entry = related_entry
         self.debitBalance = debitBalance    
         self.creditBalance = creditBalance
-        # self.Balance = Balance
+        self.Balance = balance()
         # self.BalanceDC = BalanceDC       
-
+    def balance():
+        balance = db.session.query(NonCurrentAsset).all()
+        print(balance)
+        return 0
     def debit(lst, related_entry, asset_name): 
 
         debitEntry = NonCurrentAsset(ncaID= lst[0], busID = lst[1], assetName = asset_name, lifeSpan = lst[2],
@@ -335,13 +338,13 @@ class Currentliability(db.Model):
         
         if account_affected == "Cash": 
             debitEntry = CurrentAsset.debit(lst,related_entry, "Cash")
-            creditEntry = Currentliability.credit(lst,related, liab_name)
+            creditEntry = Currentliability.credit(lst,related_entry, liab_name)
 
             return debitEntry, creditEntry
             
         else:
             debitEntry = CurrentAsset.debit(lst,related_entry, "Bank")
-            creditEntry = Currentliability.credit(lst,related, liab_name)
+            creditEntry = Currentliability.credit(lst,related_entry, liab_name)
         
             return debitEntry, creditEntry 
 

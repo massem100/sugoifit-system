@@ -1,7 +1,7 @@
 <template>
     
     <div class="d-flex flex-column justify-content-center bg-white w-100 h-100">
-        <b-alert class = "alert-comp mt-5 p-4 text-primary" v-if = "alert_message" variant="success" dismissible show>
+        <b-alert class = "alert-comp mt-5 p-4 text-primary" v-if = "alert_message" variant="success" show>
                     <p class = "d-flex flex-row justify-content-center text-white">{{alert_message}}</p>
         </b-alert>
         <div class="d-flex flex-column align-items-center justify-content-center h-100 ">
@@ -77,11 +77,16 @@ export default {
                     url: `/api/${PATH_API}`,
                     data: form_data,
                     }).then (res => {
-                        console.log(res.data);
-                        if (res.data.message){
-                            this.alert_message = res.data.message;
+                        if (res.data.success["0"].message){
+                            this.alert_message = res.data.success["0"].message;
+                            var userid = res.data.success["0"].userid;
+                            let jwt_token = res.data.success["0"].token;
+                            localStorage.setItem("token", jwt_token);
+                            localStorage.setItem("userid", userid);
+                            console.info("Token generated and added to localStorage.");
+                            self.token = jwt_token;
                             setTimeout(function(){
-                                router.push({name: 'dashboard'});
+                                $nuxt.$router.push({name: 'index'});
                             }, 1000);
 
                         }else{
