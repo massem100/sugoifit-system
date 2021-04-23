@@ -1,10 +1,15 @@
 from app import db 
 from app.model.auth import Busines
+from xlrd.timemachine import unicode
 
 class Customer(db.Model):
     __tablename__ = 'customer'
 
+<<<<<<< HEAD
     custID = db.Column(db.Integer, primary_key=True)
+=======
+    custID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+>>>>>>> f51cb1424b254961752575c984d2bef64f3ee288
     fname = db.Column(db.String(100))
     lname = db.Column(db.String(100))
     trn = db.Column(db.Integer)
@@ -66,14 +71,18 @@ class Sale(db.Model):
 class Product(db.Model):
     __tablename__ = 'product'
 
+<<<<<<< HEAD
     prodID = db.Column(db.Integer, primary_key=True)
+=======
+    prodID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+>>>>>>> f51cb1424b254961752575c984d2bef64f3ee288
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     prodName = db.Column(db.String(100))
     unit_price = db.Column(db.DECIMAL(10, 2))
     Unit = db.Column(db.DECIMAL(10, 2))
     limitedTime = db.Column(db.DateTime())
     taxPercent = db.Column(db.DECIMAL(3, 2))
-    grade = db.Column(db.String(5))
+    #grade = db.Column(db.String(5))
     prodStatus = db.Column(db.String(25))
     image = db.Column(db.String(50))
 
@@ -321,7 +330,7 @@ class ConService(db.Model):
 
 
 class Order(db.Model):
-    __tablename__ = 'order'
+    __tablename__ = 'custorder'
 
     orderID = db.Column(db.Integer, primary_key=True)
     order_tot = db.Column(db.DECIMAL(10, 2))
@@ -359,8 +368,13 @@ class Order(db.Model):
 class Orderdetail(db.Model):
     __tablename__ = 'orderdetails'
 
+<<<<<<< HEAD
     orderID = db.Column(db.ForeignKey('order.orderID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False)
     detailsID = db.Column(db.Integer, primary_key=True, nullable=False)
+=======
+    orderID = db.Column(db.ForeignKey('custorder.orderID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False)
+    detailsID = db.Column(db.String(10), primary_key=True, nullable=False)
+>>>>>>> f51cb1424b254961752575c984d2bef64f3ee288
     prodID = db.Column(db.String(10))
     serviceID = db.Column(db.String(10))
     quantity = db.Column(db.Integer)
@@ -388,8 +402,13 @@ class Orderdetail(db.Model):
 class Receipt(db.Model):
     __tablename__ = 'receipt'
 
+<<<<<<< HEAD
     receiptID = db.Column(db.Integer, primary_key=True)
     orderID = db.Column(db.ForeignKey('order.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+=======
+    receiptID = db.Column(db.String(10), primary_key=True)
+    orderID = db.Column(db.ForeignKey('custorder.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+>>>>>>> f51cb1424b254961752575c984d2bef64f3ee288
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     DATE_issued = db.Column(db.Date)
 
@@ -416,8 +435,13 @@ class Receiptdetail(db.Model):
     __tablename__ = 'receiptdetails'
 
     receiptID = db.Column(db.ForeignKey('receipt.receiptID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, unique=True)
+<<<<<<< HEAD
     rdetailsID = db.Column(db.Integer, primary_key=True)
     orderID = db.Column(db.ForeignKey('order.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+=======
+    rdetailsID = db.Column(db.String(10), primary_key=True)
+    orderID = db.Column(db.ForeignKey('custorder.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+>>>>>>> f51cb1424b254961752575c984d2bef64f3ee288
     prodID = db.Column(db.ForeignKey('product.prodID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     serviceID = db.Column(db.ForeignKey('service.serviceID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     quantity = db.Column(db.Integer)

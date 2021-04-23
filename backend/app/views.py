@@ -9,9 +9,16 @@ from datetime import datetime
 from app import app,  db, login_manager, cors, csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission, jwt_token
 # WTF Forms and SQLAlchemy Models
+<<<<<<< HEAD
 from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm,orderForm, LTLiabForm, CAForm,ExpForm, RevForm
 from app.model import  accounts, auth, sales, transactions
 from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order
+=======
+from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm, orderForm, newProductForm
+from app.model import  accounts, auth, sales, transactions
+from app.model.sales import Product, ProductSaleItem
+from app.schema.sales import products_schema
+>>>>>>> f51cb1424b254961752575c984d2bef64f3ee288
 
 from app.model.financial_statement import Financialstmt, Financialstmtline, Financialstmtlineseq, Financialstmtlinealia,Financialstmtdesc 
 from sqlalchemy.event import listens_for
@@ -26,6 +33,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import logout_user, current_user, login_required, login_user
 from flask_principal import Principal, Permission, Identity, AnonymousIdentity
 from flask_principal import RoleNeed, UserNeed, identity_changed, identity_loaded
+import json
 
 
 token =''
@@ -332,6 +340,16 @@ def home():
         #  print(request.form['description'])
         return jsonify(data)
 
+@app.route('/api/testdrop')
+def testdrop():
+  data = []
+  sections = Websitedrag.query.all()
+  for section in sections: 
+    data.append({ 'position': section.positionID,
+                  'name': section.sectionName,})
+  
+  return jsonify(response = [data])
+
 """
 --------------------------------------- User Authentication Routes ----------------------------------------------------------
 """
@@ -512,6 +530,7 @@ def sucessful_prods():
 
     return prod_numbers
 
+<<<<<<< HEAD
 
 @app.route('/website/placeorder', methods = ['POST'])
 def place_order():
@@ -606,6 +625,13 @@ def saveMoney():
 """
 @app.route('/api/products', methods = ['GET'])
 def products():
+=======
+"""
+--------------------------------------- Website Routes ----------------------------------------------------------
+"""
+@app.route('/api/checkout-products', methods = ['GET'])
+def checkoutproducts():
+>>>>>>> f51cb1424b254961752575c984d2bef64f3ee288
     message = {}
     data = {}
     tprice = 0
@@ -646,6 +672,115 @@ def products():
 
     tcost = tprice + deliver
 
+<<<<<<< HEAD
+=======
+    return jsonify(data)
+
+
+
+"""
+--------------------------------------- Product/Services Routes ----------------------------------------------------------
+"""
+@app.route('/api/newproduct', methods = ['GET', 'POST'])
+def new_product():
+    form = newProductForm(request.form)
+
+    if request.method == "POST":
+        product_name = form.product_name.data
+        quantity = form.quantity.data
+        uom = form.uom.data
+        unit_price = form.unit_price.data
+        status = form.status.data
+        tax = form.tax.data
+
+        image_file = request.files['image']
+        if image_file:
+            basedir = os.path.abspath(os.path.dirname(__file__))
+            filename = secure_filename(image_file.filename)
+            image_file.save(os.path.join(basedir, app.config['UPLOAD_FOLDER'], filename))
+
+        last_product = db.session.query(sales.Product).order_by(sales.Product.prodID.desc()).first()
+        if last_product is None: 
+            prod_int = 1
+        else:
+                
+            # Get the numeric part of the last User ID and increment by 1
+            last_pID = last_product.prodID
+            prod_int = int(last_pID[1:])
+            prod_int +=1
+
+        # ADD QUANTITY TO DATABASE
+        newProdID = 'P' + str(prod_int)
+        newProduct = Product(prodID=newProdID, busID="Mon2", prodName=product_name, unit_price=unit_price, 
+                            Unit="", limitedTime="", taxPercent=tax, prodStatus=status, image=filename)
+        print(last_pID)
+        try:
+            db.session.add(newProduct)
+            db.session.commit()
+        except Exception as e:
+            error = str(e)
+
+        flash('New product added successfully')
+    return jsonify({"message":"New product added successfully"})
+
+@app.route('/api/products', methods = ['GET', 'POST'])
+def products():
+    data_list = []
+    busID = "Mon2"
+    products = Product.query.filter_by(busID=busID).all()
+    output = products_schema.dump(products)
+    
+    
+    for item in output:
+        
+        
+        case = {
+            "id":item['prodID'],
+            "name":item['prodName'],
+            "price":item['unit_price'],
+            "tax":item['taxPercent'],
+            "status":item['prodStatus'],
+            "image":item['image']
+        }
+        data_list.append(case)
+        #data.update(item=item.index)
+
+
+    '''
+    data = {}
+    products = [
+        {
+            "id":1,
+            "name":"Black Dress",
+            "price":6000,
+            "tax":15,
+            "status":"active",
+            "image":"dress1.jpg"
+        },
+        {
+            "id":2,
+            "name":"White Skirt",
+            "price":1000,
+            "tax":15,
+            "status":"active",
+            "image":"skirt1.jpg"
+        },
+        {
+            "id":3,
+            "name":"Plaid top",
+            "price":500,
+            "tax":15,
+            "status":"active",
+            "image":"top1.jpg"
+        },
+    ]
+    data['products'] = products
+    '''
+    #return jsonify(output)
+    return jsonify(data_list)
+
+
+>>>>>>> f51cb1424b254961752575c984d2bef64f3ee288
 @app.route('/api/product/classify', methods = ['GET', 'POST'])
 
 
@@ -684,7 +819,7 @@ def product_classify():
     return jsonify({'products': products})
 
 """
-------------------------------------------------------------------------------------------------------------
+----------------------------------------SETTINGS------------------------------------------------------
 """
 @app.route('/api/website-settings', methods = ['POST', 'GET'])
 def websiteinfo():
@@ -727,53 +862,103 @@ def websiteinfo():
     return jsonify(sections.sectionName)
 '''
   return jsonify({'message':"Success"}, settings)
+<<<<<<< HEAD
+=======
 
-"""
-------------------------------------------------------------------------------------------------------------
-"""
-@app.route('/api/items', methods = ['GET'])
-def items():
-    data = {}
+  
 
-    file_cont = open("/Users/User/Desktop/test_data_capstone.txt", "r")
-    content = file_cont.readlines()
-
-    data['content'] = content
-    return jsonify(data)
-    # return render_template("Products.vue", content=content)
+>>>>>>> f51cb1424b254961752575c984d2bef64f3ee288
 
 """
 --------------------------------------- Orders ----------------------------------------------------------
 """
-@app.route('/api/order', methods = ['POST', 'GET'])
-def custOrder():
-    customer = {}
-    '''
-    form = orderForm()
-    if form.validate_on_submit():
-        if request.method == 'POST':
 
-            # Get info.
-            fname = request.form['fname']
-            lname = request.form['lname']
-            trn = request.form['trn']
-            address = request.form['address']
-            phone_num = request.form['phone_num']
-            email = request.form['email']
+@app.route('/api/placeorder', methods = ['POST', 'GET'])
+def place_order():
+  #Display order based on rank
+  form = orderForm(request.form)
 
-            customer['first_name'] = fname
-            customer['last_name'] = lname
-            customer['TRN'] = trn
-            customer['address'] = address
-            customer['telephone'] = phone_num
-            customer['emaile'] = email
-                        '''
-    return jsonify(
-            [
-                {'message': "Data saved successfully"},
-                {'token': csrf }
-            ])
+  if request.method == "POST":
+    total_price = request.form['tcost']
+    fname = form.fname.data
+    lname = form.lname.data
+    trn = form.trn.data
+    address = form.address.data
+    phone = form.phone_num.data
+    email = form.email.data
 
+    customer = Customer.query.filter_by(trn = trn).first()
+
+    if customer == None:
+        # Add new customer
+        new_customer = Customer(custID="c01",fname=fname, lname=lname, trn=trn, email=email)
+        db.session.add(new_customer)
+
+    date_format = "%Y-%m-%d"
+    status = "Pending"
+    today = datetime.now()
+    todayString = today.strftime(date_format)
+    dateDue = (today + timedelta(days=7)).strftime(date_format)
+
+    new_order = Order(orderID="O1", order_tot=total_price, order_DATE=todayString, custID=customer.custID, invoiceID="", busID="", status=status)
+    try:
+        db.session.add(new_order)
+        db.session.commit()
+    except Exception as e:
+        error = str(e)
+
+    #data = {"order_tot":total_price, "order_DATE":todayString, "customer.custID":customer.custID, "invoiceID":7, "status":status}
+    return jsonify({"message":"order added successfully", 'errors': error})
+    
+""" 
+Rank based on date order should be fulfilled
+ 
+Click manage orders
+1) Pull all orders which are pending
+2) compare date due, with current date. Subtract and use the value to rank
+3) Sort in ascending order based on that value.
+
+from datetime import datetime
+
+date_format = "%Y-%m-%d"
+a = datetime.strptime('2021-04-14',date_format)
+b = datetime.strptime('2021-04-22',date_format)
+delta = b - a
+print (delta.days)
+
+"""
+@app.route('/manage-orders')
+def manageOrders():
+    #Get all orders that are pending
+    date_format = "%Y-%m-%d"
+    allOrders = []
+    ordersQuery = Order.query.filter_by(status="Pending").all()
+
+    #Calculate days left for each record
+    #Put record in tuple form and append to list
+    for record in ordersQuery:
+        orderID = record.orderID
+        orderTotal = record.order_tot
+        date = record.order_DATE
+        custID = record.custID
+        invoiceID = record.invoiceID
+        busID = record.busIDo
+        status = record.status
+        dueDate = record.dueDate
+
+        startDate = datetime.strptime(date, date_format)
+        endDate = datetime.strptime(dueDate, date_format)
+
+        daysLeft = endDate - startDate
+        daysLeft = daysLeft.days()
+
+        allOrders.append((orderID, orderTotal, date, custID, invoiceID,
+        busID, status, dueDate, daysLeft))
+
+    allOrders.sort(lambda x: x[8], reverse = False)
+
+    #Need to print this list on the front end.
+    return allOrders
 
 
 
