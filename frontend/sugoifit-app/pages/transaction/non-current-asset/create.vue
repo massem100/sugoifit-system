@@ -358,7 +358,7 @@
             },
             AddNCA: function(){
               let self = this;
-              let PATH_API = 'transaction/';
+              let PATH_API = 'transaction/noncurrentasset';
               let NCAForm = document.getElementById('AddNCAForm');
               let form_data = new FormData(NCAForm);
               form_data.append('form_id','AddNCAForm' );

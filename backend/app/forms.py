@@ -92,7 +92,17 @@ class CAForm(FlaskForm):
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter asset amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
 
+
 class LTLiabForm(FlaskForm): 
+    liab_name = StringField('Liability Name', validators = [InputRequired('Please enter liability name, e.g Notes Payable.')])
+    person_owed = StringField('Creditor Name', validators = [optional()])
+    loan_rate = DecimalField('Loan Rate', validators= [InputRequired('Please enter the interest rate at which the loan must be repaid, e.g. .10')])
+    loan_periods = DecimalField('Loan Period', validators= [InputRequired("Please enter the number of " )])
+    borrow_date = DateField('Loan Borrow Date', validators = [InputRequired('Please enter the date the loan was received.')])
+    payment_start_date = DateField('Loan Payment Start Date', validators = [InputRequired('Please enter the date that repayment is expected to start.')])
+    amount_borrowed = DecimalField('Amount Received', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
+
+class CLLiabForm(FlaskForm): 
     liab_name = StringField('Liability Name', validators = [InputRequired('Please enter liability name, e.g Notes Payable.')])
     person_owed = StringField('Creditor Name', validators = [optional()])
     loan_rate = DecimalField('Loan Rate', validators= [InputRequired('Please enter the interest rate at which the loan must be repaid, e.g. .10')])
@@ -104,7 +114,7 @@ class LTLiabForm(FlaskForm):
 class ExpForm(FlaskForm): 
     expense_name = StringField('Expense  Name', validators = [InputRequired('Please enter the name of the asset.')])
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
-    expence_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
+    expense_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
 
