@@ -3,7 +3,9 @@
     <div class="d-flex align-items-center mr-3">
       <h6 class="m-2">Jane S.</h6>
       <img class="m-2" id="top-user-icon" src="~assets/uploads/Profile_icon.svg" alt="">
-      <img class="m-2" src="~assets/uploads/settings.svg" alt="">
+      <nuxt-link  :to="{name:'Settings'}">
+        <img class="m-2" src="~assets/uploads/settings.svg" alt="">
+      </nuxt-link>
     </div>
   </div>
 </template>

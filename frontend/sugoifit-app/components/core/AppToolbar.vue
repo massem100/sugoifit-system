@@ -7,12 +7,12 @@
   >
     <div class="v-toolbar-title">
       <v-toolbar-title
-        class="tertiary--text font-weight-light"
+        class="white--text ml-4 font-weight-light"
       >
         <v-btn
           v-if="responsive"
           class="default v-btn--simple"
-          dark
+          light
           icon
           @click.stop="onClickBtn"
         >
@@ -31,10 +31,9 @@
       >
         <v-text-field
           v-if="responsiveInput"
-          class="mr-4 mt-2 purple-input"
+          class="mr-4 mt-2 "
           label="Search..."
           hide-details
-          color="purple"
         />
         <nuxt-link
           v-ripple
@@ -42,7 +41,7 @@
           to="/"
           title="Dashboard"
         >
-          <v-icon color="tertiary">mdi-view-dashboard</v-icon>
+          <v-icon color="white">mdi-view-dashboard</v-icon>
         </nuxt-link>
         <v-menu
           bottom
@@ -63,7 +62,7 @@
               <template slot="badge">
                 {{ notifications.length }}
               </template>
-              <v-icon color="tertiary">mdi-bell</v-icon>
+              <v-icon color="white">mdi-bell</v-icon>
             </v-badge>
           </router-link>
           <v-card>
@@ -83,10 +82,10 @@
         <nuxt-link
           v-ripple
           class="toolbar-items"
-          to="/user-profile"
+          to="/settings"
           title="User profile"
         >
-          <v-icon color="tertiary">mdi-account</v-icon>
+          <v-icon color="white">mdi-account</v-icon>
         </nuxt-link>
         <nuxt-link
           v-ripple
@@ -95,7 +94,7 @@
           title="Logout"
           @click.native="logout"
         >
-          <v-icon color="tertiary">mdi-logout</v-icon>
+          <v-icon color="white">mdi-logout</v-icon>
         </nuxt-link>
       </v-flex>
     </v-toolbar-items>
@@ -108,11 +107,7 @@
   export default {
     data: () => ({
       notifications: [
-        'Mike, John responded to your email',
-        'You have 5 new tasks',
-        'You\'re now a friend with Andrew',
-        'Another Notification',
-        'Another One'
+
       ],
       title: 'Dashboard',
       responsive: true,
@@ -149,10 +144,22 @@
           this.responsiveInput = true
         }
       },
-      async logout() {
-        await this.setUsername(null);
-        this.$router.push({ path: '/' });
-      }
+        logout: function() {
+        let PATH_API = 'auth/logout';
+        this.$axios.get(`/api/${PATH_API}`, {
+          headers: {
+          'contentType': 'application/json',
+          }
+        })
+        .then(function (jsonResponse) {
+          return jsonResponse.json();
+        })
+        .then(function (jsonResponse) {
+          // this.setUsername(null);
+          this.$router.push({ path: '/auth/login'});
+        }), error =>{
+            console.log(error);
+          }},
     },
     mounted () {
       this.onResponsiveInverted()

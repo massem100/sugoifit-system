@@ -22,6 +22,7 @@ import SideBar from '../../components/SideBar.vue'
 export default {
   components: { SideBar, NavHeader }, 
     name: 'IncomeStmt',
+    layout: 'dashboard',
     data(){ 
         return { 
             msg: 'Checking', 

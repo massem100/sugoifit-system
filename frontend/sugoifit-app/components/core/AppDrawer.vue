@@ -5,7 +5,7 @@
     app
     floating
     mobile-break-point="991"
-    width="260"
+    width="280"
     style="background: #C7ECF2;"
     @input="navChanged"
   >
@@ -16,9 +16,7 @@
     >
       <v-list dense>
         <v-list-tile avatar to="/">
-          <v-list-tile-avatar
-            color="white"
-          >
+          <v-list-tile-avatar>
             <v-img
               :src="logo"
               height="34"
@@ -157,9 +155,21 @@
                         ]
                     },
                     {
-                        to: '/typography',
+                        to: '',
                         icon: 'mdi-format-font',
-                        text: 'Financial Statements'
+                        text: 'Financial Statements',
+                        subItems: [
+                            {
+                                to: '/invoice/balance-sheet/1',
+                                icon: 'mdi-view-dashboard',
+                                text: 'Balance Sheet'
+                            },
+                            {
+                                to: '/invoice/profit-loss/1',
+                                icon: 'mdi-view-dashboard',
+                                text: 'Profit-Loss'
+                            }
+                        ]
                     },
                     {
                         to: null,

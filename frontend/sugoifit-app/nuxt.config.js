@@ -13,7 +13,6 @@ export default {
       {charset: 'utf-8'},
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},
       {hid: 'description', name: 'description', content: ''},
-
     ],
     link: [{rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}, {
       rel: 'preconnect',
@@ -26,15 +25,15 @@ export default {
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     'static/scss/sidebar.css',
-    'static/scss/style.css',
     'static/scss/website.css',
-    '~assets/style/index.scss'
+    '~assets/style/index.scss',
+    'static/scss/style.css',
 
   ],
   router: {
     middleware: ['csrf'],
   },
-
+  
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     {src: '~/plugins/vee-validate', ssr: false},
@@ -43,15 +42,22 @@ export default {
     {src: '~/plugins/chartist', mode: 'client'},
     {src: '~/plugins/vue-ellipse-progress', ssr: false},
   ],
-
+  vuetify: {
+    treeShake: true,
+    customVariables: ['~/assets/variables.scss'],
+    theme: {
+      light: true,
+  
+    }
+  },
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/eslint,
-    '@nuxtjs/fontawesome',
-
+    '@nuxtjs/fontawesome', 
+    
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
 
@@ -68,22 +74,22 @@ export default {
     // '@nuxtjs/fontawesome',
     [
       'nuxt-fontawesome', {
-      imports: [
-        {
-          set: '@fortawesome/free-solid-svg-icons',
-          icons: ['fas']
-        },
-        {
-          set: '@fortawesome/free-brands-svg-icons',
-          icons: ['fab']
-        }
-      ]
-    }
-    ],
-    ['@nuxtjs/proxy']
+        imports: [
+         {
+           set: '@fortawesome/free-solid-svg-icons',
+           icons: ['fas']
+         },
+         {
+           set:'@fortawesome/free-brands-svg-icons',
+           icons: ['fab']
+         }
+       ]
+      }
+], 
+        ['@nuxtjs/proxy']
   ],
-  proxy: {
-    '/api': {target: 'http://localhost:8080/api', pathRewrite: {'^/api': ''}}
+  proxy:{
+    '/api': { target: 'http://localhost:8080/api', pathRewrite: {'^/api': ''} }
   },
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
@@ -107,6 +113,6 @@ export default {
     */
     extend(config, ctx) {
     }
-  }
+   }
 }
 

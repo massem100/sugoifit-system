@@ -1,6 +1,5 @@
 <template>
            <div class="products-page m-2 ">
-
             <b-tabs content-class="mt-3" fill>
                 <b-tab title="Add New Product" active>
                     <div class="sys-head w-100  ">
@@ -52,7 +51,6 @@
                     </div>
                 </b-tab>
                 <b-tab title="Second"><p>I'm the second tab</p></b-tab>
-
                 <b-tab title="Very, very long title">
                     <p>I'm the tab with the very, very long title</p>
                     <div class = "bg-primary"> Click </div>

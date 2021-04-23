@@ -1,28 +1,28 @@
 <template>
-  <v-container fluid>
-    <v-card>
-      <v-card-text>
-        <v-row v-if="invoice">
-          <v-col cols="12" class="text-center">
-            <h3 class="info--text text-capitalize">{{invoice.name}}</h3>
-            <h5 class="info--text text-capitalize" v-html="invoice.address"></h5>
-          </v-col>
-          <v-col cols="12" class="sky text-center py-5">
-            <h2 class="text-capitalize info--text">Thank you for your Buisness</h2>
-          </v-col>
-          <v-col cols="12" class="d-flex py-3 justify-space-between">
-            <div class="subtitle-2">
+  <div class="d-flex mx-3">
+    <b-container fluid>
+      <b-card>
+        <b-row v-if="invoice">
+          <b-col cols="12" class="text-center">
+            <h4 class="text-info text-capitalize">{{invoice.name}}</h4>
+            <h6 class="text-info text-capitalize" v-html="invoice.address"></h6>
+          </b-col>
+          <b-col cols="12" class="bg-secondary-3 text-center py-4">
+            <h3 class="text-capitalize text-info">Thank you for your Buisness</h3>
+          </b-col>
+          <b-col cols="12" class="d-flex py-3 justify-content-between">
+            <div>
               <div>Employee: Beth</div>
               <div>Customer Name: {{invoice.billed_to.user}}</div>
               <div>Receipt Number: R0001</div>
             </div>
-            <div class="text-right subtitle-2">
+            <div class="text-right">
               Date: {{new Date().toISOString().substr(0,10)}}
             </div>
-          </v-col>
+          </b-col>
 
-          <v-col cols="12" class="my-4 table-responsive">
-            <v-simple-table class="custom-table">
+          <b-col cols="12" class="my-4 table-responsive">
+            <table class="w-100 custom-table">
               <thead>
               <tr class="br-top br-bottom">
                 <th>Description</th>
@@ -44,14 +44,13 @@
                 <td class="text-center font-weight-bold">${{total}}</td>
               </tr>
               </tbody>
-            </v-simple-table>
-          </v-col>
-        </v-row>
-      </v-card-text>
+            </table>
+          </b-col>
+        </b-row>
+      </b-card>
 
-    </v-card>
-
-  </v-container>
+    </b-container>
+  </div>
 </template>
 
 <script>

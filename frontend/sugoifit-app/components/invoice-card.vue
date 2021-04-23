@@ -1,85 +1,76 @@
 <template>
   <div v-if="invoice">
-    <v-card class="sky">
-      <v-card-text>
-        <v-row>
-          <v-col sm="3" lg="2" cols="12">
-            <v-avatar
-              class="ma-3"
-              size="125"
-              tile
-            >
-              <v-img :src="invoice.img" thumbnail></v-img>
-            </v-avatar>
-          </v-col>
-          <v-col sm="9" lg="10" cols="12">
-            <v-row>
-              <v-col sm="6" cols="12">
-                <div class="info--text text-capitalize text-h5 mb-3">{{invoice.name}}</div>
-                <v-row class="mx-0">
-                  <div class="info--text pa-1 col subtitle-1">Invoice ID:</div>
-                  <div class="col pa-1 subtitle-1">{{invoice.invoice_id}}</div>
-                </v-row>
-              </v-col>
-              <v-col sm="6" cols="12">
-                <v-row class="mx-0">
-                  <div class="info--text col pa-1 subtitle-1">Balance Due:</div>
-                  <div class="col text-h6 pa-1 font-weight-bold">${{invoice.balance}}</div>
-                </v-row>
-              </v-col>
-              <v-col sm="6" cols="12">
-                <v-row class="mx-0">
-                  <div class="info--text col pa-1 subtitle-1">Billed to:</div>
-                  <div class="col pa-1 subtitle-2">{{invoice.billed_to.user}}<br>
-                    {{invoice.billed_to.user_mail}}<br>
-                    {{invoice.billed_to.user_phone}}
-                  </div>
-                </v-row>
-              </v-col>
-              <v-col sm="6" cols="12">
-                <v-row class="mx-0">
-                  <div class="info--text col pa-1">Date Issued:</div>
-                  <div class="col pa-1">{{invoice.issue_Date}}</div>
-                </v-row>
-                <v-row class="mx-0">
-                  <div class="info--text col pa-1">Due Date:</div>
-                  <div class="col pa-1">{{invoice.due_date}}</div>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-card-text>
+    <b-card class="bg-secondary-3">
+      <b-row>
+        <b-col sm="3">
+          <b-img-lazy :src="invoice.img" thumbnail></b-img-lazy>
+        </b-col>
+        <b-col sm="9">
+          <b-row>
+            <b-col sm="6">
+              <h3 class="text-info text-capitalize my-0">{{invoice.name}}</h3>
+              <b-row class="mb-2">
+                <h5 class="my-0 text-info col-12 col-md-6">Invoice ID:</h5>
+                <h5 class="my-0 col-12 col-md-6">{{invoice.invoice_id}}</h5>
+              </b-row>
+            </b-col>
+            <b-col sm="6" class="mb-2">
+              <b-row>
+                <h5 class="my-0 text-info col-12 col-md-6">Balance Due:</h5>
+                <h4 class="my-0 font-weight-bold col-12 col-md-6">${{invoice.balance}}</h4>
+              </b-row>
+            </b-col>
+            <b-col sm="6" class="mb-2">
+              <b-row>
+                <h5 class="my-0 text-info col-12 col-md-6">Billed to:</h5>
+                <h5 class="my-0 col-12 col-md-6">
+                  {{invoice.billed_to.user}}<br>
+                  {{invoice.billed_to.user_mail}}<br>
+                  {{invoice.billed_to.user_phone}}
+                </h5>
+              </b-row>
 
-      <v-btn class="right-arrow"
-             color="info"
-             icon
-             large
-             :to="{name:'invoice-slug',params:{slug:invoice.invoice_id}}">
-        <v-icon>mdi-chevron-right</v-icon>
-      </v-btn>
+            </b-col>
+            <b-col sm="6">
+              <b-row class="mb-2">
+                <h5 class="my-0 text-info col-12 col-md-6">Date Issued:</h5>
+                <h5 class="my-0 col-12 col-md-6">{{invoice.issue_Date}}</h5>
+              </b-row>
+              <b-row class="mb-2">
+                <h5 class="my-0 text-info col-12 col-md-6">Due Date:</h5>
+                <h5 class="my-0 col-12 col-md-6">{{invoice.due_date}}</h5>
+              </b-row>
+            </b-col>
+          </b-row>
+        </b-col>
+      </b-row>
+      <b-button class="right-arrow text-info"
+                variant="white"
+                size="lg"
+                :to="{name:'invoice-slug',params:{slug:invoice.invoice_id}}">
+        <font-awesome-icon :icon="['fas','chevron-right']" ></font-awesome-icon>
+      </b-button>
 
-    </v-card>
+    </b-card>
   </div>
 </template>
 
 <script>
     export default {
         name: "invoice-card",
-        props: {
-            invoice: {
-                type: Object,
-                default: () => {
-                }
+        props:{
+            invoice:{
+                type:Object,
+                default:()=>{}
             }
         }
     }
 </script>
 
 <style scoped>
-  .right-arrow {
+  .right-arrow{
     position: absolute;
-    right: 10px;
-    top: calc(50% - 20px);
+    right:10px;
+    top:calc(50% - 20px);
   }
 </style>

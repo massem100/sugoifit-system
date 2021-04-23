@@ -1,17 +1,17 @@
 <template>
-<v-container fluid>
-      <v-card>
-        <v-card-text>
-          <v-row>
-          <v-col cols="12" class="text-left">
-            <h3 class="font-weight-bold text-capitalize my-0">Marqui bottique</h3>
-            <h2 class="info--text font-weight-bold text-capitalize my-0">Balance Sheet</h2>
-            <h4 class="my-0">Date: March 25,2323</h4>
-            <h4 class="my-0">Currency: JMD</h4>
-          </v-col>
+  <div class="d-flex mx-3">
+    <b-container fluid>
+      <b-card>
+        <b-row>
+          <b-col cols="12" class="text-left">
+            <h4 class="font-weight-bold text-capitalize my-0">Marqui bottique</h4>
+            <h3 class="text-info font-weight-bold text-capitalize my-0">Balance Sheet</h3>
+            <h5 class="my-0">Date: March 25,2323</h5>
+            <h5 class="my-0">Currency: JMD</h5>
+          </b-col>
 
-          <v-col cols="12" class="my-4 table-responsive">
-            <v-simple-table class="custom-table">
+          <b-col cols="12" class="my-4 table-responsive">
+            <table class="w-100 custom-table">
               <thead>
               <tr style="border-bottom: 4px solid #7cc3cd">
                 <th></th>
@@ -54,16 +54,15 @@
                 <td class="text-right font-weight-bold">$40</td>
               </tr>
               </tbody>
-            </v-simple-table>
+            </table>
             <hr>
             <hr>
-          </v-col>
-        </v-row>
-        </v-card-text>
+          </b-col>
+        </b-row>
+      </b-card>
 
-      </v-card>
-
-    </v-container>
+    </b-container>
+  </div>
 </template>
 
 <script>

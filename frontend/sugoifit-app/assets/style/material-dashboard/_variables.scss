@@ -70,9 +70,9 @@ $font-paragraph:                    $font-size-default !default;
 $font-size-chart-label:             .730rem !default;
 
 // Font Weight
-$font-weight-lighter:               300 !default;
-$font-weight-base:                  400 !default;
-$font-weight-bolder:                500 !default;
+$font-weight-lighter:               400 !default;
+$font-weight-base:                  500 !default;
+$font-weight-bolder:                600 !default;
 
 // Opacity Colors
 $black-opacity-3:                   rgba(180, 180, 180, .3) !default;
@@ -92,7 +92,7 @@ $toolbar-min-height:                70px !default;
 $toolbar-margin-left:               260px !default;
 
 //  Body Background Color
-$body-color:                        #eee !default;
+$body-color:                        rgb(230, 220, 220) !default;
 
 // Black Color
 $black-color:                       #495057 !default;
@@ -103,8 +103,8 @@ $gray-light:                        #999 !default;
 $gray:                              lighten(#000, 33.5%) !default;
 
 // Inputs Color
-$input-color:                       #d2d2d2 !default;
-$label-color:                       #aaa !default;
+$input-color:                       #df5b5b !default;
+$label-color:                       rgb(223, 223, 223) !default;
 
 //  Footer Border
 $footer-border-color:               #e7e7e7 !default;

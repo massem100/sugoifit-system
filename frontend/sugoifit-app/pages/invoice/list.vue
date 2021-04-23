@@ -1,18 +1,23 @@
 <template>
-  <v-container>
-      <v-row>
-        <v-col cols="12" class="info--text mb-3 font-weight-bold">View Invoices</v-col>
-        <v-col cols="12" lg="4" xl="3" class="d-flex">
-          <v-text-field v-model="search"
-                        label="Search"
+  <div class="d-flex mx-3">
+    <b-container fluid>
+      <b-row>
+        <b-col cols="12" class="text-info mb-3 font-weight-bold">View Invoices</b-col>
+        <b-col cols="12" lg="6" xl="4" class="d-flex">
+          <b-form-input v-model="search"
+                        type="text"
+                        id="product_name"
+                        class="br-20"
           >
-          </v-text-field>
-        </v-col>
-        <v-col cols="12" class="my-3" v-for="(invoice,idx) in invoices" :key="idx">
+          </b-form-input>
+          <b-button class="mx-3 br-20" variant="light">Search</b-button>
+        </b-col>
+        <b-col cols="12" class="my-3" v-for="(invoice,idx) in invoices" :key="idx">
           <invoice-card :invoice="invoice"></invoice-card>
-        </v-col>
-      </v-row>
-    </v-container>
+        </b-col>
+      </b-row>
+    </b-container>
+  </div>
 </template>
 
 <script>
