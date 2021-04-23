@@ -503,6 +503,12 @@ def products():
 
 @app.route('/api/product/classify', methods = ['GET', 'POST'])
 
+
+""" 
+    
+    safety stock = (max daily sales x max lead time in days) - (average daily sales x average lead time in days)
+"""
+
 def product_classify():
     product_list = defaultdict(list)
     annual_consum_val = []
