@@ -3,6 +3,7 @@
     <b-container fluid>
       <h3 class="m-2">Add Transaction</h3>
       <transaction-top/>
+      
       <validation-observer
         ref="observer"
         v-slot="{handleSubmit}"

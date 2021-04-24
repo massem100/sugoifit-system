@@ -1,38 +1,28 @@
 <template>
-    <div class="wrapper">
-        <b-col>
-            <div class="header">
-                <WebsiteHeader />
-            </div>
-            <b-container fluid>
-                
-                <validation-observer ref="observer" v-slot="{handleSubmit}">
+    <div>
+        <b-container fluid>
+            <validation-observer ref="observer" v-slot="{handleSubmit}">
                 <form id="contactForm" method="POST" @submit.stop.prevent="handleSubmit(onSubmit)" enctype="multipart/form-data">
                     <input type="hidden" name="_token" :value="token">
                     <b-row >
                         
-                        <b-col cols="12" >
-                            <h2 class="text-center"> Contact Us</h2>
-                            <h4 class="text-center"> Contact us today, and get reply within 24 hours!</h4>
-                            <b-row>
-                                <b-col cols="12" class="text-center">{{items.address}}</b-col>
-                                <b-col cols="12" class="text-center">{{items.email}}</b-col>
-                                <b-col cols="12" class="text-center">{{items.phone}}</b-col>
-                            </b-row>
+                        <b-col cols="8" >
+                            <h2 class="text-center"> Receipt</h2>
+                            <h4 class="text-center"> Please upload proof of payment to start the processing of your order.</h4>
                         </b-col>
                     </b-row>
                     <b-row>
-                        <b-col class="mb-2 c-box" xl="6" md="6" sm="12">
+                        <b-col class="mb-2 c-box" xl="6" md="8" sm="10">
                             <validation-provider
                             v-slot="{ errors }"
                             rules="required"
-                            name="Customer first name"
+                            name="Customer name"
                             >
-                            <label for="fname">First Name</label>
-                            <b-form-input v-model="form.fname"
+                            <label for="name">Full Name</label>
+                            <b-form-input v-model="form.name"
                                             type="text"
-                                            id="fname"
-                                            name="fname"
+                                            id="name"
+                                            name="name"
                                             :state="getValidationState(errors)">
                             </b-form-input>
                             <b-form-invalid-feedback>
@@ -41,28 +31,9 @@
                             </validation-provider>
                         </b-col>
                     </b-row>
+                    
                     <b-row>
-                        <b-col class="mb-2 c-box" xl="6" md="6" sm="12">
-                            <validation-provider
-                            v-slot="{ errors }"
-                            rules="required"
-                            name="Customer last name"
-                            >
-                            <label for="lname">Last Name</label>
-                            <b-form-input v-model="form.lname"
-                                            type="text"
-                                            id="lname"
-                                            name="lname"
-                                            :state="getValidationState(errors)">
-                            </b-form-input>
-                            <b-form-invalid-feedback>
-                                {{ errors[0] }}
-                            </b-form-invalid-feedback>
-                            </validation-provider>
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col class="mb-2 c-box" xl="6" md="6" sm="12">
+                        <b-col class="mb-2 c-box" xl="6" md="8" sm="10">
                             <validation-provider
                             v-slot="{ errors }"
                             rules="required"
@@ -82,17 +53,17 @@
                         </b-col>
                     </b-row>
                     <b-row>
-                        <b-col class="mb-2 c-box" xl="6" md="6" sm="12">
+                        <b-col class="mb-2 c-box" xl="6" md="8" sm="10">
                             <validation-provider
                             v-slot="{ errors }"
                             rules="required"
-                            name="customer phone number"
+                            name="order invoice number"
                             >
-                            <label for="phone">Phone Number</label>
+                            <label for="invoice_num">Invoice Number</label>
                             <b-form-input v-model="form.phone"
                                             type="number"
-                                            id="phone"
-                                            name="phone"
+                                            id="invoice_num"
+                                            name="invoice_num"
                                             :state="getValidationState(errors)">
                             </b-form-input>
                             <b-form-invalid-feedback>
@@ -102,28 +73,28 @@
                         </b-col>
                     </b-row>
                     <b-row>
-                        <b-col class="mb-2 c-box" xl="6" md="6" sm="12">
+                        <b-col class="mb-2 c-box" xl="6" md="8" sm="10">
                             <validation-provider
                                 v-slot="{ errors }"
                                 rules="required"
-                                name="customer message"
+                                name="product image"
                             >
-                            <label for="message">Message</label>
-                            <b-form-textarea v-model="form.message"
-                                            type="text"
-                                            id="message"
-                                            name="message"
-                                            rows="3"
-                                            max-rows="10"
-                                            :state="getValidationState(errors)">
-                            </b-form-textarea>
-                            <b-form-invalid-feedback>
-                                {{ errors[0] }}
-                            </b-form-invalid-feedback>
+                                <label for="image">Product Image</label>
+                                <b-form-file  v-model="form.image_file"
+                                                class="w-100"
+                                                id="image"
+                                                name="image"
+                                                placeholder="Choose a file or drop it here..."
+                                                drop-placeholder="Drop file here..."
+                                                :state="getValidationState(errors)">
+                                </b-form-file>
+                                <b-form-invalid-feedback>
+                                    {{ errors[0] }}
+                                </b-form-invalid-feedback>
                             </validation-provider>
                         </b-col>
                     </b-row>
-                    
+                
                     <b-row>
                         <b-col cols="12" class="text-right my-2">
                             <b-button type="submit" variant="primary">Submit</b-button>
@@ -131,31 +102,22 @@
                         </b-col>
                     </b-row>
                 </form>
-                </validation-observer>
-            </b-container>
-        </b-col>
+            </validation-observer>
+        </b-container>
     </div>
 </template>
 
 <script>
 import {ValidationObserver, ValidationProvider} from "vee-validate";
-import WebsiteHeader from '../../components/WebsiteHeader';
 export default {
-    name: 'Contact',
+    name: "PaymentReceipt",
     components: {
-        WebsiteHeader,
         ValidationProvider,
         ValidationObserver,
     },
     data() {
         return {
             token: '',
-            image: "boutique",
-            items: {
-                address:"Montego Bay, Jamaica",
-                phone: "(876)971-1234",
-                email: "monique.boutique@gmail.com"
-            },
             form: {
                 date: new Date().toISOString()
             },
@@ -176,8 +138,7 @@ export default {
             let self = this;
             let contactForm = document.getElementById("contactForm");
             let form_data = new FormData(contactForm);
-            /* ADD busID - form_data.append() */
-
+            
             let PATH_API = 'contact';
                 this.$axios.post(`/api/${PATH_API}`, form_data, {
                 headers: {
@@ -193,15 +154,9 @@ export default {
             }, 
     }
 }
-</script>
 
+</script>
 <style scoped>
-.wrapper{
-    margin: 2em;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
 label{
   display:block;
   margin:1em 0 .2em;

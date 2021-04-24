@@ -5,12 +5,12 @@
       hide-delimiter-background
       show-arrows-on-hover
     >
-      <v-carousel-item v-for="(item, i) in products" :key="i" >
+      <v-carousel-item v-for="item in products" :key="item" >
         <v-sheet :color="colors[i]"  height="100%" >
           <v-row class="fill-height" align="center" justify="center">
            
             <div class="display-3">
-              <img :src="'./sugoifit-system/backend/app/static/uploads/'+ item.image" alt="">
+              <img :src='require("~/assets/uploads/boutique.jpg")' alt="">
             </div>
 
           </v-row>

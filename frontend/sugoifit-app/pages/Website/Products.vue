@@ -1,17 +1,38 @@
 <template>
     <div class="wrapper">
-        
-        <div class="header">
-            <WebsiteHeader />
-        </div>
-        <div class="items">
-            {{ content }}
-        </div>
+        <v-col>
+            <div class="header">
+                <WebsiteHeader />
+            </div>
+            
+            <v-container fluid >
+                <v-row>
+                    <h2 class="text-center">Our Products</h2>
+                    <v-col>
+                        
+                        <b-card-group deck>
+                            <b-card  v-for="item in products" :key="item.id">
+                                <b-list-group>
+                                    <b-list-group-item href="#">
+                                        <v-img :src='require("~/assets/uploads/boutique.jpg")'></v-img>
+                                    </b-list-group-item>
+                                    <b-list-group-item href="#">Name: {{ item.name }}</b-list-group-item>
+                                    <b-list-group-item href="#">Price: {{ item.price }}</b-list-group-item>
+                                </b-list-group>
 
-        <div class="container">
+                                <p class="card-text mt-2">
+                                Description: Quis magna Lorem anim amet ipsum do mollit sit cillum voluptate ex nulla tempor. Laborum
+                                consequat non elit enim exercitation cillum aliqua consequat id aliqua. Esse ex consectetur
+                                mollit voluptate est in duis laboris ad sit ipsum anim Lorem.
+                                </p>
+                            </b-card>
+                        </b-card-group>
+                    </v-col>
+                </v-row>
+            </v-container>
+            
 
-        </div>
-        
+        </v-col>
     </div>
 </template>
 
@@ -24,14 +45,14 @@ export default {
     },
     data() {
         return {
-            content: null
+            products: []
         }
     },
     async created() {
-        const response = await fetch('http://localhost:8080/api/items');
+        const response = await fetch('http://localhost:8080/api/products');
         const data = await response.json();
-        this.content = data.content;
-        console.log(this.content);
+        this.products = data;
+        console.log(this.products);
     },
 }
 </script>

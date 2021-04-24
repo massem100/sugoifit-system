@@ -10,8 +10,9 @@
             <div class="welcome">
                 <div class="welcome-left">
                     <div class="text">
-                        <h3> Welcome to my Boutique </h3>
-                        <p> Young aspiring entrepreneur, spreading love and peace through style</p>
+                        
+                        <h2> Welcome to my Boutique </h2>
+                        <h4> Young aspiring entrepreneur, spreading love and peace through style</h4>
                     </div>
                     <div class="btn">
                         <button type="submit" class="submitbtn"> Place an Order</button>
@@ -29,31 +30,13 @@
             
 
             <!-- receipt section -->
+            
             <div class="receipt">
                 <div class="receipt-left">
                     <img class=" receipt-img" src="~/assets/uploads/boutique2.jpg" alt="Picture">
                 </div>
                 <div class="receipt-right">
-                    <div class="receipt-text">
-                        <h3> Welcome to my Boutique </h3>
-                        <p> Young aspiring entrepreneur, spreading love and peace through style</p>
-                    </div>
-                    <div class="form">
-                        <form id="receipt-upload" action="" method="post">
-                            <fieldset>
-                                <input placeholder="Order No." type="text" tabindex="1" required autofocus>
-                            </fieldset>
-                            <fieldset>
-                                <input placeholder="Customer Name" type="email" tabindex="2" required>
-                            </fieldset>
-                            <fieldset>
-                                <input placeholder="Upload File" type="tel" tabindex="3" required>
-                            </fieldset>
-                            <fieldset>
-                                <button name="submit" type="submit" id="receipt-submit" data-submit="...Sending">Submit</button>
-                            </fieldset>
-                        </form>
-                    </div>
+                    <PaymentReceipt />
                 </div>
                 
             </div>
@@ -90,13 +73,15 @@
 </template>
 
 <script>
+import PaymentReceipt from '../../components/receiptForm';
 import Slider from '../../components/ImageSlider';
 import WebsiteHeader from '../../components/WebsiteHeader';
 export default {
     name: 'Website',
     components: {
         WebsiteHeader,
-        Slider
+        Slider,
+        PaymentReceipt
     }
     
 }
@@ -141,28 +126,6 @@ export default {
     box-shadow: 3rem -20px rgb(46, 158, 102);
 }
 
-/*
-.products{
-    margin: 3em;
-    display: grid;
-    grid-template-columns: auto auto auto auto;
-    grid-gap: 10px 20px;
-}
-.box{
-    width: 40%;
-    min-height: 120px;
-    max-height: auto;
-    float: left;
-    margin: 3px;
-    padding: 3px;
-    font-size: 10px;
-    text-align: center;
-}
-.box > img{
-    max-width: 100%;
-    height: auto;
-}*/
-
 .receipt{
     display: flex;
     flex-direction: row;
@@ -176,14 +139,6 @@ export default {
     width: 400px;
     height: 400px;
     box-shadow: -3em -20px rgb(46, 158, 102);
-}
-#receipt-submit{
-    height: 3em;
-    width: 170px;
-    border-radius: 15px;
-    color: white;
-    font-size: 15px;
-    background-color: rgb(46, 158, 102);
 }
 .contact{
     margin: 3em;
