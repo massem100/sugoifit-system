@@ -115,7 +115,7 @@
     import {ValidationObserver, ValidationProvider} from "vee-validate";
 
     export default {
-        layout:'dashboard',
+        layout: 'DashboardLayout',
         name: "expense-create",
         components: {
             ValidationProvider,

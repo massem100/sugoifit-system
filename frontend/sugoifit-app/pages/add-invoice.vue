@@ -14,7 +14,7 @@
 <script>
     export default {
         name: "add-invoice",
-        layout:'dashboard',
+        layout:'DashboardLayout',
         methods: {
             addInvoice: () => {
                 console.log('working');

@@ -292,7 +292,7 @@
 
     export default {
         name: "non-current-asset-create",
-        layout:"dashboard",
+        layout:"DashboardLayout",
         components: {
             ValidationProvider,
             ValidationObserver,

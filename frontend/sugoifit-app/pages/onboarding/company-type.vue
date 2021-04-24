@@ -43,6 +43,7 @@
 
 export default {
   name: 'company-type',
+  layout:'onboarding',
   data (){
       return {}
   }, 

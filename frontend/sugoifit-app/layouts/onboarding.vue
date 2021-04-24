@@ -1,10 +1,10 @@
 <template>
-  <v-app v-show="!isLoading">
+  <div>
       <b-row class="d-flex flex-row"> 
         <onboarding-side  class = "side-bar h-100 m-0"></onboarding-side>
       <nuxt />
       </b-row>
-  </v-app>
+  </div>
 </template>
 
 <script>

@@ -23,7 +23,7 @@
 
 
 <script>
-import EmailSection from './onboarding/firstStep';
+// import EmailSection from './onboarding/firstStep';
 import Corporation from './onboarding/business-details/corporation.vue';
 
 export default {

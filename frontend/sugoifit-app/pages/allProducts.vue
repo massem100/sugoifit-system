@@ -13,8 +13,8 @@
 
 <script>
 export default {
-    name: 'ManageProducts',
-    layout: 'dashboard',
+    name: 'allProducts',
+    layout: 'DashboardLayout',
     data(){
         return{
 

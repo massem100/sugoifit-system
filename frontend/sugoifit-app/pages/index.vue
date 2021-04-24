@@ -41,7 +41,7 @@
 
 <script>
     export default {
-        layout: 'dashboard',
+        layout: 'DashboardLayout',
         name:'dashboard',
         head() {
             return {

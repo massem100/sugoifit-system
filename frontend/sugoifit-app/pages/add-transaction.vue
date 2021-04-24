@@ -13,7 +13,7 @@
 <script>
     export default {
         name: "add-transaction",
-        layout: 'dashboard',
+        layout: 'DashboardLayout',
         methods: {
             addTransaction: () => {
                 console.log('working');

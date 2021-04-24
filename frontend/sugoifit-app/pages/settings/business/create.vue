@@ -91,6 +91,7 @@
 
     export default {
         name: "business-create",
+        layout: 'dashboard',
         components: {
             ValidationProvider,
             ValidationObserver,

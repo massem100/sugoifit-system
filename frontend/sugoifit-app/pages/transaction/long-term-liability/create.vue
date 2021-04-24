@@ -107,7 +107,7 @@
     import {ValidationObserver, ValidationProvider} from "vee-validate";
 
     export default {
-        layout:'dashboard',
+        layout: 'DashboardLayout',
         name: "long-term-liability-create",
         components: {
             ValidationProvider,
