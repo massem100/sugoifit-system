@@ -427,6 +427,10 @@ def new_product(userid):
 ####### ROUTE FOR ADDING NEW PRODUCTS
 @app.route('/api/newproduct', methods = ['GET', 'POST'])
 def new_product():
+    '''
+    NEEDS TO BE UPDATED TO RECEIVE AN userID AND DISPLAY PRODUCTS BASED ON busID
+        user = db.session.query(auth.UserCredential).filter_by(userID=userid).first()
+    '''
     form = newProductForm(request.form)
 
     if request.method == "POST":
@@ -442,32 +446,18 @@ def new_product():
             basedir = os.path.abspath(os.path.dirname(__file__))
             filename = secure_filename(image_file.filename)
             image_file.save(os.path.join(basedir, app.config['UPLOAD_FOLDER'], filename))
-        '''
-        
-        last_product = db.session.query(sales.Product).order_by(sales.Product.prodID.desc()).first()
-        if last_product is None: 
-            prod_int = 1
-        else:
-                
-            # Get the numeric part of the last User ID and increment by 1
-            last_pID = last_product.prodID
-            prod_int = int(last_pID[1:])
-            prod_int +=1
-
-        NEEDS TO BE UPDATED TO RECEIVE AN userID AND DISPLAY PRODUCTS BASED ON busID
-            user = db.session.query(auth.UserCredential).filter_by(userID=userid).first()
-        '''
-    newProduct = Product(busID="Mon1", prodName=product_name, unit_price=unit_price, 
+            
+        newProduct = Product(busID="Mon1", prodName=product_name, unit_price=unit_price, 
                         Unit="", limitedTime="", taxPercent=tax, prodStatus=status, image=filename)
     
-    try:
-        db.session.add(newProduct)
-        db.session.commit()
-    except Exception as e:
-        error = str(e)
+        try:
+            db.session.add(newProduct)
+            db.session.commit()
+        except Exception as e:
+            error = str(e)
 
-    flash('New product added successfully')
-    return jsonify({"message":"New product added successfully"})
+    message = 'New product added successfully'
+    return jsonify(message)
 
 
 ####### ROUTE FOR VIEWING PRODUCTS
@@ -482,14 +472,13 @@ def products():
     
     
     for item in output:
-        image = os.path.join(app.config['UPLOAD_FOLDER'],item['image'])
         case = {
             "id":item['prodID'],
             "name":item['prodName'],
             "price":item['unit_price'],
             "tax":item['taxPercent'],
             "status":item['prodStatus'],
-            "image":image
+            "image":item['image']
         }
         data_list.append(case)
 

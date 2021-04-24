@@ -176,7 +176,7 @@
         },
         data() {
             return {
-                
+                message:'',
                 token: '',
                 form: {
                   date: new Date().toISOString()
@@ -232,8 +232,15 @@
                 })
                 .then( jsonResponse =>{
                   console.log(jsonResponse);
+                  /* alert(this.message); */
                 })
               }, 
+        },
+        async created() {
+            const response = await fetch('http://localhost:8080/api/newproduct');
+            const data = await response.json();
+            this.message = data;
+            console.log(this.message)
         }
     }
 </script>
