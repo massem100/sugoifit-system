@@ -219,6 +219,7 @@
               let self = this;
               let newProductForm = document.getElementById("newProductForm");
               let form_data = new FormData(newProductForm);
+              /* ADD userID - form_data.append() */
 
               let PATH_API = 'newproduct';
                   this.$axios.post(`/api/${PATH_API}`, form_data, {

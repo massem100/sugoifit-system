@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 <div class="welcome-right">
-                    <img src="~/assets/uploads/products/boutique.jpg" alt="Picture">
+                    <img src="~/assets/uploads/boutique.jpg" alt="Picture">
                 </div>
             </div>
 
@@ -31,7 +31,7 @@
             <!-- receipt section -->
             <div class="receipt">
                 <div class="receipt-left">
-                    <img class=" receipt-img" src="~/assets/uploads/products/boutique2.jpg" alt="Picture">
+                    <img class=" receipt-img" src="~/assets/uploads/boutique2.jpg" alt="Picture">
                 </div>
                 <div class="receipt-right">
                     <div class="receipt-text">
