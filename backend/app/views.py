@@ -15,7 +15,8 @@ from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order
 
 from app.model.financial_statement import Financialstmt, Financialstmtline, Financialstmtlineseq, Financialstmtlinealia,Financialstmtdesc 
 from sqlalchemy.event import listens_for
-from sqlalchemy import func
+from sqlalchemy import func, inspection
+# from sqlalchemy.inspection import inspect  
 
 from flask import render_template, request, jsonify, flash, session, \
                                 _request_ctx_stack, g
@@ -79,6 +80,7 @@ def token():
 """
 --------------------------------------- Financial Statement Routes ----------------------------------------------------------
 """
+# WHats left: Depreciation Amortization Intangible Tangible 
 @app.route('/api/transaction/currentasset', methods = ["POST", "GET"])
 @login_required
 @requires_auth
@@ -92,7 +94,24 @@ def ca_transaction():
             asset_desc = form.asset_desc.data 
             amount = form.amount.data 
             account_affected = form.paid_using.data
-            return "data"
+            return 1
+
+def account_balances(*args,**accounts): 
+    account_bal = []
+    for key, value in accounts.items(): 
+        balance = db.session.query(value[0]).order_by(value[1].desc()).first()
+        balance = (float(balance.Balance) if balance is not None else 0)
+        account_bal.append(balance)
+    return account_bal
+
+def bal_debit_cred(amount, *args, **balances): 
+    debit_cred = []
+    for key, value in balances.items(): 
+        debitSum =  value[0].query.with_entities(func.coalesce(func.sum(value[1]), 0).label("totalDebit")).first()
+        creditSum = value[0].query.with_entities(func.coalesce(func.sum(value[2]), 0).label("totalCredit")).first()
+        BalanceDC = ("Debit" if float(debitSum.totalDebit) > float(creditSum.totalCredit) else "Credit")
+        debit_cred.append(BalanceDC)
+    return debit_cred        
 
 @app.route('/api/transaction/noncurrentasset', methods = ["POST", "GET"])
 @login_required
@@ -101,8 +120,8 @@ def nca_transaction():
     if request.method == "POST":
         if request.form['form_id'] == "AddNCAForm":
             form = NCAForm(request.form)
-
-            name = form.asset_name.data 
+                # rEMEMEMEBER TO VALIDATE THE FORM 
+            asset_name = form.asset_name.data 
             transaction_date = form.transaction_date.data 
             dep_type = form.dep_type.data
             dep_rate = form.dep_rate.data
@@ -111,79 +130,60 @@ def nca_transaction():
             account_affected = form.paid_using.data
             lifeSpan = form.asset_lifespan.data
             bought_sold = form.bought_sold.data
-
+            # CHANGE TRANSACTION DATE TO DUE DATE
+            transaction_inputs = [current_user.busID, lifeSpan, dep_type, transaction_date, amount]
+            liability_inputs = [current_user.busID, transaction_date, transaction_date, amount]
+            
             # Get ID of Non Current Asset to increment 
             last_ncaID = db.session.query(accounts.NonCurrentAsset).order_by(accounts.NonCurrentAsset.ncaID.desc()).first()
-            last_id = (int(last_ncaID.ncaID)+1 if last_ncaID is not None else 1)
+            last_nca = (int(last_ncaID.ncaID)+1 if last_ncaID is not None else 1)
 
-            # Get Balance of Non Current Asset 
-            NCA_balance = db.session.query(accounts.NonCurrentAsset).order_by(accounts.NonCurrentAsset.ncaID.desc()).first()
-            NCA_balance = (NCA_balance.Balance if NCA_balance is not None else 0) 
-                          
-            # Get Balance of Current Asset 
-            CA_balance = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-            CA_Balance = (CA_balance.Balance if CA_balance is not None else 0)           
-                            
-            # Get Balance of Current Liability
-            CL_Balance = db.session.query(accounts.Currentliability).order_by(accounts.Currentliability.cliabID.desc()).first()
-            CL_Balance  = (CL_balance.Balance if CL_Balance is not None else 0)
+            # Get ID of Non Current Asset to increment 
+            last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
+            last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
+
+            # last_cl
+            # Get ID of Non Current Asset to increment 
+            last_clID = db.session.query(accounts.Currentliability).order_by(accounts.Currentliability.cliabID.desc()).first()
+            last_cl = (int(last_clID.cliabID)+1 if last_clID is not None else 1)
+
+            # Get the balances of Accounts 
+            balances = account_balances(NonCurrentAsset =  [accounts.NonCurrentAsset, accounts.NonCurrentAsset.ncaID], 
+                                        CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
+                                        Currentliability =[accounts.Currentliability, accounts.Currentliability.cliabID])
+            NCA_Balance, CA_Balance, CL_Balance = balances[0], balances[1], balances[2]
                                 
-            transaction_inputs = [last_id, current_user.busID, lifeSpan, dep_type, transaction_date, amount]
+            
             if "Bought" in  bought_sold: 
-                if account_affected == "cash": 
+                if account_affected == "Cash": 
+                    BalanceDC = bal_debit_cred(amount, NonCurrentAsset = [accounts.NonCurrentAsset,accounts.NonCurrentAsset.debitBalance,
+                                                                          accounts.NonCurrentAsset.creditBalance], 
+                                                       CurrentAsset = [accounts.CurrentAsset,accounts.CurrentAsset.debitBalance,accounts.CurrentAsset.creditBalance])
+                    NCA_BalanceDC, CA_BalanceDC = BalanceDC[0], BalanceDC[1]
                     
-                    related_entry = "Cash" + str(transaction_inputs[0]) 
-
-                    # Sum Debit and Credit Columns if Debit > Credit : BalanceDC = Debit else: BalanceDC = "Credit"
-                    NCA_sumDebit = accounts.NonCurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.NonCurrentAsset.debitBalance, '0')).label("sumDebit")).first()
-                    NCA_sumCredit = accounts.NonCurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.NonCurrentAsset.creditBalance, '0')).label("sumCredit")).first()
-                    NCA_BalanceDC = ("Debit" if float(NCA_sumDebit.sumDebit) + amount > float(NCA_sumCredit.sumCredit) else "Credit")
-                    print(NCA_BalanceDC)
-                      
-                    # Sum values for Current Asset 
-                    CA_sumDebit = accounts.CurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.CurrentAsset.debitBalance,'0')).label("sumDebit")).first()
-                    CA_sumCredit = accounts.CurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.CurrentAsset.creditBalance, '0')).label("sumCredit")).first()
-                    CA_BalanceDC = ("Debit" if float(CA_sumDebit.sumDebit) + amount > float(CA_sumCredit.sumCredit) else  "Credit")
-                    
-                    debitEntry = NonCurrentAsset.debit(related_entry, asset_name, NCA_Balance, NCA_BalanceDC, transaction_inputs)
-                    creditEntry = CurrentAsset.credit(related_entry, "Cash", CA_Balance,CA_BalanceDC, transaction_inputs)
+                    debitEntry = accounts.NonCurrentAsset.debit(last_nca,"Cash" + str(last_ca), asset_name, NCA_Balance, NCA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.CurrentAsset.credit(last_ca,"NCA" + str(last_nca), "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
 
                 elif account_affected == "Cheque": 
-                    
-                    related_entry = "Cheque" + str(transaction_inputs[0])
+                    BalanceDC = bal_debit_cred(amount, NonCurrentAsset = [accounts.NonCurrentAsset,accounts.NonCurrentAsset.debitBalance,
+                                                                          accounts.NonCurrentAsset.creditBalance], 
+                                                       CurrentAsset = [accounts.CurrentAsset,accounts.CurrentAsset.debitBalance,accounts.CurrentAsset.creditBalance])
+                    NCA_BalanceDC, CA_BalanceDC = BalanceDC[0], BalanceDC[1]
 
-                     # Sum Debit and Credit Columns if Debit > Credit : BalanceDC = Debit else: BalanceDC = "Credit"
-                    #  Add current amount to the sum because it should include the latest bal to select debit or credit of the account.
-                    NCA_sumDebit = accounts.NonCurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.NonCurrentAsset.debitBalance, '0')).label("sumDebit")).first()
-                    NCA_sumCredit = accounts.NonCurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.NonCurrentAsset.creditBalance, '0')).label("sumCredit")).first()
-                    NCA_BalanceDC = ("Debit" if float(NCA_sumDebit.sumDebit) + amount > float(NCA_sumCredit.sumCredit)  else "Credit")
-                      
-                    # Sum values for Current Asset 
-                    CA_sumDebit = accounts.CurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.CurrentAsset.debitBalance, '0')).label("sumDebit")).first()
-                    CA_sumCredit = accounts.CurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.CurrentAsset.creditBalance, '0')).label("sumCredit")).first()
-                    CA_BalanceDC = ("Debit" if float(CA_sumDebit.sumDebit) + amount > float(CA_sumCredit.sumCredit) else "Credit")
-                    
-                    debitEntry = NonCurrentAsset.debit(related_entry, asset_name, CA_Balance, NCA_BalanceDC, transaction_inputs)
-                    creditEntry = CurrentAsset.credit(related_entry, "Bank", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    debitEntry = accounts.NonCurrentAsset.debit(last_nca,"Cheque" + str(transaction_inputs[0]), asset_name, CA_Balance, NCA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.CurrentAsset.credit(last_ca,"NCA" + str(transaction_inputs[0]), "Cash in Bank", CA_Balance, CA_BalanceDC, transaction_inputs)
 
                 else: 
-                    related_entry = "CL" + str(transaction_inputs[0])
+                    BalanceDC = bal_debit_cred(amount, NonCurrentAsset = [accounts.NonCurrentAsset,accounts.NonCurrentAsset.debitBalance,
+                                                                          accounts.NonCurrentAsset.creditBalance], 
+                                                       Currentliability = [accounts.Currentliability, accounts.Currentliability.debitBalance,
+                                                                           accounts.Currentliability.creditBalance])
+                    NCA_BalanceDC, CL_BalanceDC = BalanceDC[0], BalanceDC[1]
 
-                     # Sum Debit and Credit Columns if Debit > Credit : BalanceDC = Debit else: BalanceDC = "Credit"
-                    NCA_sumDebit = accounts.NonCurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.NonCurrentAsset.debitBalance, '0')).label("sumDebit")).first()
-                    NCA_sumCredit = accounts.NonCurrentAsset.query.with_entities(func.sum(func.coalesce(accounts.NonCurrentAsset.creditBalance, '0')).label("sumCredit")).first()
-                    NCA_BalanceDC = ("Debit" if float(NCA_sumDebit.sumDebit) + amount > float(NCA_sumCredit.sumCredit)  else "Credit")
-                    
-                    # Sum values for Current Asset 
-                    CL_sumDebit = accounts.Currentliability.query.with_entities(func.sum(func.coalesce(accounts.Currentliability.debitBalance, '0')).label("sumDebit")).first()
-                    CL_sumCredit = accounts.Currentliability.query.with_entities(func.sum(func.coalesce(accounts.Currentliability.creditBalance, '0')).label("sumCredit")).first()
-                    CL_BalanceDC =("Debit" if float(CL_sumDebit.sumDebit) > float(CA_sumCredit.sumCredit) + amount else  "Credit")
-
-                    debitEntry = NonCurrentAsset.debit(related_entry, asset_name, NCA_Balance,NCA_BalanceDC, transaction_inputs)
-                    creditEntry = Currentliability.credit(related_entry, "Accounts Payable", CL_Balance, CL_BalanceDC, transaction_inputs)
+                    debitEntry = accounts.NonCurrentAsset.debit(last_nca, "CLiab" + str(last_cl), asset_name, NCA_Balance, NCA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.Currentliability.credit(last_cl, "NCA" + str(last_nca), "Accounts Payable", CL_Balance, CL_BalanceDC, liability_inputs)
 
                 try:
-                    
                     db.session.add(debitEntry)
                     db.session.add(creditEntry)
                     db.session.commit()
@@ -194,48 +194,52 @@ def nca_transaction():
                 return jsonify({'message': 'Success - Asset Bought'})   
 
             else: 
-                if account_affected == "cash": 
-                    NCA_related_entry = "Cash" +str(transaction_inputs[0])
-                    debitEntry = CurrentAsset.debit(transaction_inputs, related_entry, "Cash")
-                    creditEntry = CurrentAsset.credit(transaction_inputs,NCA_related_entry, asset_name)
+                if account_affected == "Cash": 
 
-                    return ['CA', debitEntry], ['CA', creditEntry]
+                    BalanceDC = bal_debit_cred(amount, NonCurrentAsset = [accounts.NonCurrentAsset,accounts.NonCurrentAsset.debitBalance,
+                                                                          accounts.NonCurrentAsset.creditBalance], 
+                                                       CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.debitBalance,
+                                                                       accounts.CurrentAsset.creditBalance])
+                    NCA_BalanceDC, CA_BalanceDC = BalanceDC[0], BalanceDC[1]
+
+                    debitEntry = accounts.CurrentAsset.debit(last_ca, "NCA" + str(last_nca), "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.NonCurrentAsset.credit(last_nca,"Cash" +str(transaction_inputs[0]), asset_name, NCA_Balance, NCA_BalanceDC, transaction_inputs)
 
                 elif account_affected == "Cheque": 
-                    
                     NCA_related_entry = "Cash" +str(transaction_inputs[0])
-                    debitEntry = CurrentAsset.debit(transaction_inputs, related_entry, "Bank")
-                    creditEntry = CurrentAsset.credit(transaction_inputs,NCA_related_entry, asset_name)
-
-                    return ['CA', debitEntry], ['CA', creditEntry]
+                    BalanceDC = bal_debit_cred(amount, NonCurrentAsset = [accounts.NonCurrentAsset,accounts.NonCurrentAsset.debitBalance,
+                                                                          accounts.NonCurrentAsset.creditBalance], 
+                                                       CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.debitBalance,
+                                                                       accounts.CurrentAsset.creditBalance])
+                    NCA_BalanceDC, CA_BalanceDC = BalanceDC[0], BalanceDC[1]
+                    debitEntry = accounts.CurrentAsset.debit(last_ca, "NCA" + str(last_nca), "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.NonCurrentAsset.credit(last_nca,"NCA" +str(transaction_inputs[0]), asset_name, NCA_Balance, NCA_BalanceDC, transaction_inputs)
 
                 else: 
-                    NCA_related_entry = "Cash" +str(transaction_inputs[0])
-                    debitEntry = CurrentAsset.debit(transaction_inputs, related_entry, "Accounts Receivable")
-                    creditEntry = CurrentAsset.credit(transaction_inputs, NCA_related_entry, asset_name)
+                    BalanceDC = bal_debit_cred(amount, NonCurrentAsset = [accounts.NonCurrentAsset,accounts.NonCurrentAsset.debitBalance,
+                                                                          accounts.NonCurrentAsset.creditBalance], 
+                                                       CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.debitBalance,
+                                                                       accounts.CurrentAsset.creditBalance])
+                    NCA_BalanceDC, CA_BalanceDC = BalanceDC[0], BalanceDC[1]
+                    debitEntry = accounts.CurrentAsset.debit(last_ca, "NCA" + str(last_nca), "Accounts Receivable", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.NonCurrentAsset.credit(last_nca, "NCA" + str(last_nca), "Cash", NCA_Balance, NCA_BalanceDC, transaction_inputs)
                     
-                    return ['CA', debitEntry], ['CA', creditEntry]
-
-
-
-                form_data = ["ncaid", "busID", lifeSpan, dep_type,  transaction_date, amount]
-                Entry1 =accounts.NonCurrentAsset.decrease(paid_using, name, form_data)[0]
-                Entry2 =accounts.NonCurrentAsset.decrease(paid_using, name, form_data)[1]
-
                 try:
-                    
-                    db.session.add(entry_debit)
-                    db.session.add(entry_credit)
+                    db.session.add(debitEntry)
+                    db.session.add(creditEntry)
                     db.session.commit()
                 except Exception as e:
                      error = str(e)
                      print(error)
 
-            
                 return jsonify({'message': 'Success - Asset Sold'})                   
-            
-        
+        else: 
+            jsonify({'message': 'Form does not match - Select Non Current Asset Form'})    
+    else: 
+        error_list = form_errors(form)
+        return jsonify(errors= error_list)
 
+        
 @app.route('/api/transaction/currentliability', methods = ["POST", "GET"])
 @login_required
 @requires_auth
@@ -251,7 +255,9 @@ def cl_transaction():
             payment_start_date = form.payment_start_date.data 
             amount_borrowed = form.amount_borrowed.data 
             return 1
-            
+    else:  
+        error_list = form_errors(form)
+        return jsonify(errors= error_list)   
 
 @app.route('/api/transaction/ltliability', methods = ["POST", "GET"])
 @login_required

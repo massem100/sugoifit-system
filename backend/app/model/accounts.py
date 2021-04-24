@@ -63,18 +63,18 @@ class CurrentAsset(db.Model):
     def __repr__(self): 
         return "<Current Asset {}, {}>".format(self.caID, self.assetName)
     
-    def debit(related_entry, asset_name, balance, balanceDC, lst): 
-        balance += lst[5]
-        debitEntry = CurrentAsset(caID = lst[0], busID = lst[1],  assetName = asset_name, 
-                                            acquisDATE = lst[4], related_entry = related_entry, 
-                                            Balance = balance, BalanceDC = balanceDC, debitBalance = lst[5])
+    def debit(caID, related_entry, asset_name, balance, balanceDC, lst): 
+        balance += float(lst[4])
+        debitEntry = CurrentAsset(caID = caID, busID = lst[0],  assetName = asset_name, 
+                                            acquisDATE = lst[3], related_entry = related_entry, 
+                                            Balance = balance, BalanceDC = balanceDC, debitBalance = lst[4])
         return debitEntry 
 
-    def credit(related_entry, asset_name, balance, balanceDC, lst): 
-        balance -= lst[5]
-        creditEntry =  CurrentAsset(caID = lst[0], busID = lst[1],  assetName = asset_name, 
-                                    acquisDATE = lst[4], related_entry = related_entry, 
-                                    Balance = balance, BalanceDC = balanceDC, creditBalance = lst[5])
+    def credit(caID, related_entry, asset_name, balance, balanceDC, lst): 
+        balance -= float(lst[4])
+        creditEntry =  CurrentAsset(caID = caID, busID = lst[0],  assetName = asset_name, 
+                                    acquisDATE = lst[3], related_entry = related_entry, 
+                                    Balance = balance, BalanceDC = balanceDC, creditBalance = lst[4])
         return creditEntry
     
 
@@ -113,84 +113,21 @@ class NonCurrentAsset(db.Model):
         self.Balance = Balance
         self.BalanceDC = BalanceDC       
     
-    def debit(related_entry, asset_name, balance, balanceDC, lst): 
-        balance += lst[5]
-        debitEntry = NonCurrentAsset(ncaID= lst[0], busID = lst[1], assetName = asset_name, lifeSpan = lst[2],
-                                     depType = lst[3], acquisDATE = lst[4], related_entry = related_entry, 
-                                     Balance = balance, BalanceDC = balanceDC, debitBalance = lst[5])
+    def debit(ncaID, related_entry, asset_name, balance, balanceDC, lst): 
+        balance += float(lst[4])
+        debitEntry = NonCurrentAsset(ncaID= ncaID, busID = lst[0], assetName = asset_name, lifeSpan = lst[1],
+                                     depType = lst[2], acquisDATE = lst[3], related_entry = related_entry, 
+                                     Balance = balance, BalanceDC = balanceDC, debitBalance = lst[4])
         return debitEntry
     
-    def credit(related_entry, asset_name, balance, balanceDC, lst): 
-        balance -= lst[5]
-        creditEntry = NonCurrentAsset(ncaID= lst[0], busID = lst[1], assetName = asset_name, lifeSpan = lst[2], 
-                                      depType = lst[3], acquisDATE = lst[4], related_entry = related_entry,  
-                                      Balance = balance, BalanceDC = balanceDC, creditBalance = lst[5])
+    def credit(ncaID, related_entry, asset_name, balance, balanceDC, lst): 
+        balance -= float(lst[4])
+        creditEntry = NonCurrentAsset(ncaID= ncaID, busID = lst[0], assetName = asset_name, lifeSpan = lst[1], 
+                                      depType = lst[2], acquisDATE = lst[3], related_entry = related_entry,  
+                                      Balance = balance, BalanceDC = balanceDC, creditBalance = lst[4])
         return creditEntry
     
-    
-    def increase(account_affected, asset_name, lst):
-        if account_affected == "Cash": 
-            # Debit the Asset Class 
-            # Calculate Accum Depreciation
-            related_entry = "Cash" + str(lst[0])
-            debitEntry = NonCurrentAsset.debit(lst, related_entry, asset_name)
-
-            # Credit the Cash Class 
-            #  Retrieve asset id from database and increment by 1
-            # Get Previous Balance and add if new entry is debit and subtract otherwise 
-            creditEntry = CurrentAsset.credit(lst, related_entry, asset_name)
-
-            return ['NCA', debitEntry], ['CA', creditEntry]
-        elif account_affected == "Cheque": 
-            #Debit the Asset Class 
-            related_entry = "Cheque" + str(lst[0])
-            debitEntry = NonCurrentAsset.debit(lst, related_entry, asset_name)
-
-            creditEntry = CurrentAsset.credit(lst, related_entry, asset_name)
-
-            return ['NCA', debitEntry], ['CA', creditEntry]
-        else: 
-            #Debit the Asset Class 
-            related_entry = "CL" + str(lst[0])
-            debitEntry = NonCurrentAsset.debit(lst, related_entry, asset_name)
-
-            #Credit the liability account
-            creditEntry = Currentliability.credit(lst, related_entry, "Accounts Payable")
-            return ['NCA', debitEntry], ['CL', creditEntry]
-             
-    def decrease(account_affected, asset_name, lst): 
-        # Identifying the second account in double entry 
-        if account_affected == "cash": 
-            # Credit the Asset Class 
-            NCA_related_entry = "Cash" +str(lst[0])
-            creditEntry = NonCurrentAsset.credit(lst,NCA_related_entry, asset_name)
-
-            # Debit the Cash Class 
-            debitEntry = CurrentAsset.debit(lst, related_entry, "Cash")
-
-            return ['CA', debitEntry], ['NCA', creditEntry]
-
-        elif account_affected == "Cheque": 
-            #Debit the Asset Class
-            debitEntry = CurrentAsset.debit(lst, related_entry, "Cheque")
-
-            #Credit the Asset Class 
-            NCA_related_entry = "Cash" +str(lst[0])
-            creditEntry = NonCurrentAsset.credit(lst,NCA_related_entry, asset_name)
-
-
-            return ['CA', debitEntry], ['NCA', creditEntry]
-
-        else: 
-            #Debit the Accounts Receivable Account -Asset
-            debitEntry = CurrentAsset.debit(lst, related_entry, "Accounts Receivable")
-
-            #Credit the Asset Class 
-            NCA_related_entry = "Cash" +str(lst[0])
-            creditEntry = NonCurrentAsset.credit(lst,NCA_related_entry, asset_name)
-            
-            return ['CA', debitEntry], ['NCA', creditEntry]
-
+     
     def straightLineDep(assetCost, salvageVal, lifeSpan):
         return (assetCost - salvageVal)/lifeSpan
     
@@ -228,7 +165,7 @@ class Currentliability(db.Model):
     
     busines = db.relationship('Busines')
     
-    def __init__(self, cliabID, busID, liabName, borwDATE, dueDATE, related_entry, balance, balanceDC, debitBalance = 0, creditBalance =0): 
+    def __init__(self, cliabID, busID, liabName, borwDATE, dueDATE, related_entry, Balance, BalanceDC, debitBalance = 0, creditBalance =0): 
         self.cliabID = cliabID 
         self.busID = busID 
         self.liabName = liabName
@@ -243,47 +180,19 @@ class Currentliability(db.Model):
     def __repr__(self): 
         return "<Current Liability {}, {}>".format(self.cliabID, self.liabName)
 
-    def debit(related_entry, asset_name, balance, balanceDC, lst): 
-        balance -= lst[7]
-        debitEntry= Currentliability(cliabID = lst[9], busID =lst[1], liabName = liab_name,
-                                     borwDATE = lst[5], dueDATE = "", related_entry = related_entry,
-                                     Balance = balance, BalanceDC = balanceDC, debitBalance = lst[7])
+    def debit(cliabID, related_entry, liab_name, balance, balanceDC, lst): 
+        balance -= float(lst[3])
+        debitEntry= Currentliability(cliabID = cliabID, busID =lst[0], liabName = liab_name,
+                                     borwDATE = lst[1], dueDATE = lst[2], related_entry = related_entry,
+                                     Balance = balance, BalanceDC = balanceDC, debitBalance = lst[3])
         return debitEntry
     
-    def credit(related_entry, asset_name, balance, balanceDC, lst): 
-        balance += lst[7]
-        creditEntry = Currentliability(cliabID = lst[0], busID =lst[1], liabName = liab_name,
-                                       borwDATE = lst[4], dueDATE = "", related_entry = related_entry,
+    def credit(cliabID, related_entry, liab_name, balance, balanceDC, lst): 
+        balance += float(lst[3])
+        creditEntry = Currentliability(cliabID = cliabID, busID =lst[0], liabName = liab_name,
+                                       borwDATE = lst[1], dueDATE =lst[2], related_entry = related_entry,
                                        Balance = balance, BalanceDC = balanceDC, creditBalance = lst[3])
         return creditEntry
-
-    def increase(account_affected, liab_name, lst): 
-        
-        if account_affected == "Cash": 
-            debitEntry = CurrentAsset.debit(lst,related_entry, "Cash")
-            creditEntry = Currentliability.credit(lst, related, liab_name)
-
-            return debitEntry, creditEntry
-            
-        else:
-            debitEntry = CurrentAsset.debit(lst,related_entry, "Bank")
-            creditEntry = Currentliability.credit(lst,related, liab_name)
-        
-            return debitEntry, creditEntry 
-
-    def decrease(account_affected, liab_name, lst): 
-        
-        if account_affected == "Cash": 
-            debitEntry = CurrentAsset.debit(lst,related_entry, "Cash")
-            creditEntry = Currentliability.credit(lst,related_entry, liab_name)
-
-            return debitEntry, creditEntry
-            
-        else:
-            debitEntry = CurrentAsset.debit(lst,related_entry, "Bank")
-            creditEntry = Currentliability.credit(lst,related_entry, liab_name)
-        
-            return debitEntry, creditEntry 
 
 
 class Longtermliability(db.Model):
@@ -304,7 +213,7 @@ class Longtermliability(db.Model):
     busines = db.relationship('Busines')
 
     def __init__(self, LtliabID, busID, liabName, borwDATE, dueDATE, related_entry, Balance, BalanceDC, debitBalance =0, creditBalance =0): 
-        self.cliabID = cliabID 
+        self.LtliabID = LtiabID 
         self.busID = busID 
         self.liabName = liabName
         self.borwDATE = borwDATE
@@ -318,48 +227,20 @@ class Longtermliability(db.Model):
     def __repr__(self): 
         return "<Long Term Liability {}, {}>".format(self.LtliabID, self.liabName)
     
-    def debit(related_entry, asset_name, balance, balanceDC, lst): 
-        balance -= lst[7]
-        debitEntry= Longtermliability(LtliabID = lst[9], busID =lst[1], liabName = liab_name,
-                                     borwDATE = lst[5], dueDATE = "", related_entry = related_entry,
-                                     Balance = balance, BalanceDC = balanceDC, debitBalance = lst[7])
+    def debit(LtliabID, related_entry, liab_name, balance, balanceDC, lst): 
+        balance -= float(lst[3])
+        debitEntry= Longtermliability(LtliabID = LtliabID, busID =lst[0], liabName = liab_name,
+                                     borwDATE = lst[1], dueDATE = lst[2], related_entry = related_entry,
+                                     Balance = balance, BalanceDC = balanceDC, debitBalance = lst[3])
         return debitEntry
-    
-    def credit(related_entry, asset_name, balance, balanceDC, lst): 
-        balance += lst[7]
-        creditEntry = Longtermliability(LtliabID = lst[9], busID =lst[1], liabName = liab_name,
-                                       borwDATE = lst[5], dueDATE = "", related_entry = related_entry,
-                                       Balance = balance, BalanceDC = balanceDC, creditBalance = lst[7])
+        # lst= [busID,  borrow_date, dueDate, amount]
+    def credit(LtliabID, related_entry, liab_name, balance, balanceDC, lst): 
+        balance += float(lst[3])
+        creditEntry = Longtermliability(LtliabID = LtliabID, busID =lst[0], liabName = liab_name,
+                                       borwDATE = lst[1], dueDATE = lst[2], related_entry = related_entry,
+                                       Balance = balance, BalanceDC = balanceDC, creditBalance = lst[3])
         return creditEntry
     
-    def increase(account_affected, liab_name, lst): 
-        
-        if account_affected == "Cash": 
-            debitEntry = CurrentAsset.debit(lst,related_entry, "Cash")
-            creditEntry = Longtermliability.credit(lst,related, liab_name)
-
-            return debitEntry, creditEntry
-            
-        else:
-            debitEntry = CurrentAsset.debit(lst,related_entry, "Bank")
-            creditEntry = Longtermliability.credit(lst,related, liab_name)
-        
-            return debitEntry, creditEntry 
-
-    def decrease(account_affected, liab_name, lst): 
-        
-        if account_affected == "Cash": 
-            debitEntry = CurrentAsset.debit(lst, related_entry, "Cash")
-            creditEntry = Longtermliability.credit(lst,related, liab_name)
-
-            return debitEntry, creditEntry
-            
-        else:
-            debitEntry = CurrentAsset.debit(lst,related_entry, "Bank")
-            creditEntry = Longtermliability.credit(lst,related, liab_name)
-        
-            return debitEntry, creditEntry 
-
 
    
 """
@@ -382,7 +263,8 @@ class OperatingExpense(db.Model):
     
     busines = db.relationship('Busines')
 
-    def __init__(self, opexID, busID, opexName, dateIncurred, expenseCategory, related_entry, debitBalance =0, creditBalance =0): 
+    def __init__(self, opexID, busID, opexName, dateIncurred, expenseCategory, related_entry,
+                 Balance, balanceDC, debitBalance =0, creditBalance =0): 
         self.opexID =opexID 
         self.busID = busID 
         self.opexName = opexName 
@@ -391,27 +273,27 @@ class OperatingExpense(db.Model):
         self.related_entry =related_entry
         self.debitBalance = debitBalance 
         self.creditBalance = creditBalance 
-        # self.Balance = Balance 
-        # self.BalanceDC
+        self.Balance = Balance  
+        self.BalanceDC = BalanceDC
 
     def __repr__(self): 
         return "<Operating Expense {},{}".format(self.opexID, self.opexName)
     
-    def debit(lst,related_entry, exp_name): 
-        debitEntry = OperatingExpense(opexID= lst[0], busID =lst[1], opexName = exp_name, dateIncurred = lst[4],
-                                      expenseCategory =lst[3], related_entry =related_entry, debitBalance =lst[5])
+    def debit(opexID, related_entry, exp_name, balance, balanceDC, lst): 
+        balance += float(lst[3])
+        debitEntry = OperatingExpense(opexID= opexID, busID =lst[0], opexName = exp_name, dateIncurred = lst[1],
+                                      expenseCategory =lst[2], related_entry=related_entry, 
+                                      balance = balance, balanceDC = balanceDC, debitBalance =lst[3])
         return debitEntry
     
-    def credit(lst,related_entry, exp_name): 
-        creditEntry = OperatingExpense(opexID= lst[0], busID =lst[1], opexName = exp_name, dateIncurred = lst[4],
-                                      expenseCategory =lst[3], related_entry =related_entry, creditBalance =lst[5])
-        return debitEntry
+    def credit(opexID, related_entry, exp_name, balance, balanceDC, lst): 
+        balance -= float([3])
+        creditEntry = OperatingExpense(opexID= opexID, busID =lst[0], opexName = exp_name, dateIncurred = lst[1],
+                                      expenseCategory =lst[2], related_entry =related_entry, 
+                                      balance = balance, balanceDC = balanceDC, creditBalance =lst[3])
+        return creditEntry
     
-    def increase(): 
-        pass
-    
-    def decrease(): 
-        pass
+ 
    
 
 class NonOperatingExpense(db.Model):
@@ -429,7 +311,7 @@ class NonOperatingExpense(db.Model):
 
     busines = db.relationship('Busines')
 
-    def __init__(self, nOpexID, busID, nOpexName, dateIncurred, related_entry, debitBalance, creditBalance): 
+    def __init__(self, nOpexID, busID, nOpexName, dateIncurred, related_entry, Balance, BalanceDC, debitBalance =0, creditBalance=0): 
         self.nOpexID = nOpexID 
         self.busID = busID 
         self.nOpexName = nOpexName 
@@ -437,23 +319,25 @@ class NonOperatingExpense(db.Model):
         self.related_entry =related_entry
         self.debitBalance = debitBalance 
         self.creditBalance = creditBalance 
-        # self.Balance = Balance 
-        # self.BalanceDC
+        self.Balance = Balance 
+        self.BalanceDC = BalanceDC
 
     def __repr__(self): 
         return "<Non Operating Expense {},{}".format(self.nOpexID, self.nOpexName)
     
-    def debit(): 
-        pass
+     
+    def debit(nOpexID, related_entry, exp_name, balance, balanceDC, lst): 
+        balance += float(lst[2])
+        debitEntry = OperatingExpense(opexID= nOpexID, busID =lst[0], nOpexName = exp_name, dateIncurred = lst[1],
+                                      related_entry=related_entry, Balance = balance, BalanceDC = balanceDC, debitBalance =lst[2])
+        return debitEntry
     
-    def credit(): 
-        pass
-    
-    def increase(): 
-        pass
-    
-    def decrease(): 
-        pass
+    def credit(nOpexID, related_entry, exp_name, balance, balanceDC, lst): 
+        balance -= float([2])
+        creditEntry = OperatingExpense(opexID= opexID, busID =lst[0], opexName = exp_name, dateIncurred = lst[1],
+                                      related_entry =related_entry, Balance = balance, BalanceDC = balanceDC, creditBalance =lst[2])
+        return creditEntry
+   
    
 """
 --------------------------------------- Revenues ----------------------------------------------------------
@@ -474,7 +358,7 @@ class OperatingRevenue(db.Model):
     
     busines = db.relationship('Busines')
 
-    def __init__(self, opRevenueID, busID, oprevName, dateEarned, related_entry, debitBalance, creditBalance): 
+    def __init__(self, opRevenueID, busID, oprevName, dateEarned, related_entry, Balance, BalanceDC, debitBalance = 0, creditBalance =0): 
         self.opRevenueID = opRevenueID
         self.busID = busID 
         self.oprevName = oprevName
@@ -482,23 +366,24 @@ class OperatingRevenue(db.Model):
         self.related_entry =related_entry
         self.debitBalance = debitBalance 
         self.creditBalance = creditBalance 
-        # self.Balance = Balance 
-        # self.BalanceDC
+        self.Balance = Balance 
+        self.BalanceDC = BalanceDC
 
     def __repr__(self): 
         return "<Operating Revenue{},{}".format(self.opRevenueID, self.oprevName)
     
-    def debit(): 
-        pass
+    def debit(opRevenueID, related_entry, rev_name, balance, balanceDC, lst): 
+        balance -= float(lst[2])
+        debitEntry = OperatingRevenue(opRevenueID = opRevenueID, busID = lst[0], oprevName = rev_name, dateEarned = lst[1], 
+                                      related_entry = related_entry, Balance = balance, BalanceDC = balanceDC, debitBalance = lst[2])
+        return debitEntry
     
-    def credit(): 
-        pass
-    
-    def increase(): 
-        pass
-    
-    def decrease(): 
-        pass
+    def credit(opRevenueID, related_entry, rev_name, balance, balanceDC, lst):
+        balance += float(lst[2])
+        creditEntry = OperatingRevenue(opRevenueID = opRevenueID, busID = lst[0], oprevName = rev_name, dateEarned = lst[1], 
+                                      related_entry = related_entry, Balance = balance, BalanceDC = balanceDC, creditBalance = lst[2])
+        return creditEntry
+   
    
 class NonOperatingRevenue(db.Model):
     __tablename__ = 'nonoprev'
@@ -516,7 +401,7 @@ class NonOperatingRevenue(db.Model):
     
     busines = db.relationship('Busines')
 
-    def __init__(self, nopRevenueID, busID, nOprevName, dateEarned, related_entry, debitBalance, creditBalance): 
+    def __init__(self, nopRevenueID, busID, nOprevName, dateEarned, related_entry, Balance, BalanceDC, debitBalance =0, creditBalance=0): 
         self.nopRevenueID = nopRevenueID
         self.busID = busID 
         self.nOprevName = nOprevName
@@ -524,23 +409,25 @@ class NonOperatingRevenue(db.Model):
         self.related_entry =related_entry
         self.debitBalance = debitBalance 
         self.creditBalance = creditBalance 
-        # self.Balance = Balance 
-        # self.BalanceDC
+        self.Balance = Balance 
+        self.BalanceDC = Balance
 
     def __repr__(self): 
         return "<Non Operating Revenue{},{}".format(self.nopRevenueID, self.nOprevName)
     
-    def debit(): 
-        pass
+    def debit(nopRevenueID, related_entry, rev_name, balance, balanceDC, lst): 
+        balance -= float(lst[2])
+        debitEntry = NonOperatingRevenue(nopRevenueID = nopRevenueID, busID = lst[0], nOprevName = rev_name, dateEarned = lst[1], 
+                                      related_entry = related_entry, Balance = balance, BalanceDC = balanceDC, debitBalance = lst[2])
+        return debitEntry
     
-    def credit(): 
-        pass
+    def credit(nopRevenueID, related_entry, rev_name, balance, balanceDC, lst):
+        balance += float(lst[2])
+        creditEntry = NonOperatingRevenue(nopRevenueID = nopRevenueID, busID = lst[0], nOprevName = rev_name, dateEarned = lst[1], 
+                                      related_entry = related_entry, Balance = balance, BalanceDC = balanceDC, creditBalance = lst[2])
+        return creditEntry
     
-    def increase(): 
-        pass
-    
-    def decrease(): 
-        pass
+   
    
 
 """
@@ -561,7 +448,7 @@ class ShareholdersEquity(db.Model):
 
     busines = db.relationship('Busines')
 
-    def ___init__(self, equityID, busID, equityName, date, related_entry, debitBalance, creditBalance): 
+    def ___init__(self, equityID, busID, equityName, date, related_entry, Balance, BalanceDC, debitBalance =0, creditBalance= 0): 
         self.equityID = equityID
         self.busID =busID 
         self.equityName =equityName
@@ -569,22 +456,25 @@ class ShareholdersEquity(db.Model):
         self.related_entry =related_entry
         self.debitBalance =debitBalance
         self.creditBalance =creditBalance
+        self.Balance = Balance
+        self.BalanceDC = BalanceDC
     
     def __repr__(self): 
         return "<Equity {}, {}>".format(self.equityID, self.equityName)
     
-    def debit(): 
-        pass
+    def debit(equityID, related_entry, equity_name, balance, balanceDC, lst): 
+        balance -= float(lst[2])
+        debitEntry = ShareholdersEquity(equityID = equityID, busID = lst[0], equityName = equity_name, date = lst[1], 
+                                        related_entry = related_entry, Balance = balance, BalanceDC = balanceDC, debitBalance =lst[2])
+        return debitEntry
     
-    def credit(): 
-        pass
+    def credit(equityID, related_entry, equity_name, balance, balanceDC, lst): 
+        balance += float(lst[2])
+        creditEntry = ShareholdersEquity(equityID = equityID, busID = lst[0], equityName = equity_name, date = lst[1], 
+                                        related_entry = related_entry, Balance = balance, BalanceDC = balanceDC, creditBalance =lst[2])
+        return creditEntry
     
-    def increase(): 
-        pass
-    
-    def decrease(): 
-        pass
-
+ 
 
 
 
