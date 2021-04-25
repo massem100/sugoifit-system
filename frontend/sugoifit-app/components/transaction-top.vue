@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex py-2 text-center flex-wrap">
+  <div class="d-flex py-2 w-100 text-center flex-wrap">
     <button class="btnStyle" id="assetBtn" tabindex="0">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
       <span>Asset</span>
@@ -53,17 +53,20 @@
 
 <style scoped>
   .btnStyle {
-    margin: 5px;
-    background-color: #DFFBFF;
+    margin: 0.5rem;
+    background-color: #A7E4EC;
+    width: 14rem;
     padding: 10px;
     display: flex;
     flex-direction: column;
     text-decoration: none !important;
-    color: #222222;
+    color: #065863;
     align-items: center;
     justify-content: center;
     border-radius: 10px;
     border: none;
+    box-shadow: 3px 4px 8px 6px #eeeef0;
+
   }
 </style>
 

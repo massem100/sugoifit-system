@@ -5,7 +5,7 @@ const SidebarStore = {
   showSidebar: true,
   sidebarLinks: [],
   isMinimized: false,
-  breakpoint: 1200,
+  breakpoint: 1440,
   hovered: true,
   displaySidebar(value) {
     if (window.innerWidth > this.breakpoint) {
@@ -23,7 +23,7 @@ const SidebarStore = {
       docClasses.add('g-sidenav-hidden')
       docClasses.remove('g-sidenav-pinned')
       docClasses.remove('g-sidenav-show')
-      sideText.add('sidebar-item-hide')
+      // sideText.add('sidebar-item-hide')
 
     }
   },

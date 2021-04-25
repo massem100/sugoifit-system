@@ -4,7 +4,7 @@
     <side-bar>
       <template :slot-scope="props" slot="links">
            
-          <div v-if = "$sidebar.displaySidebar(true)" class="d-flex flex-row"> 
+          <div  class="d-flex flex-row"> 
             <div  class="profile mt-3 mb-2 ">
                 <h6 id="profile_name" class="my-1 font-weight-bold"> Jane S.</h6>
                 <h6 id="profile_ID" class="my-1"> ID 1234567</h6>
@@ -99,7 +99,8 @@
         :type="$route.name === 'alternative' ? 'light' : 'default'"
       ></dashboard-navbar>
 
-      <div @click="$sidebar.displaySidebar(true)">
+      <div class = "" @click="$sidebar.displaySidebar(true)"
+      >
         <nuxt></nuxt>
       </div>
       <content-footer v-if="!$route.meta.hideFooter"></content-footer>
