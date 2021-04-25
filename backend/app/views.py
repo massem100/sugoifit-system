@@ -27,6 +27,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import logout_user, current_user, login_required, login_user
 from flask_principal import Principal, Permission, Identity, AnonymousIdentity
 from flask_principal import RoleNeed, UserNeed, identity_changed, identity_loaded
+import json
 
 
 token =''
@@ -338,6 +339,16 @@ def home():
         #  print(request.form['description'])
         return jsonify(data)
 
+@app.route('/api/testdrop')
+def testdrop():
+  data = []
+  sections = Websitedrag.query.all()
+  for section in sections: 
+    data.append({ 'position': section.positionID,
+                  'name': section.sectionName,})
+  
+  return jsonify(response = [data])
+
 """
 --------------------------------------- User Authentication Routes ----------------------------------------------------------
 """
@@ -381,8 +392,6 @@ def login():
                 return jsonify({'error msg': 'Login credentials failed: Please check email or password.'})
                 
             return jsonify({'error msg': 'Account not found, try again or Sign up.',  })
-        else: 
-            return jsonify({'error msg': "No account exists with that email"})
     else:
         error_list = form_errors(form)
         form_e = form.errors
@@ -395,7 +404,6 @@ def login():
 def logout():
     # Clears user from session
     logout_user()
-    print(current_user)
 
     # Flask-Principal: Remove session keys
     for key in ('identity.name', 'identity.auth_type'):
@@ -494,7 +502,6 @@ def load_user(id):
 """
 
 
-
 """
 --------------------------------------- Report Generation Routes ----------------------------------------------------------
 """
@@ -518,34 +525,279 @@ def sucessful_prods():
 
     return prod_numbers
 
+"""
+--------------------------------------- Website Routes ----------------------------------------------------------
+"""
+@app.route('/api/checkout-products', methods = ['GET'])
+def checkoutproducts():
+    message = {}
+    data = {}
+    tprice = 0
+    deliver = 500
 
-@app.route('/website/placeorder', methods = ['POST'])
+    transaction_inputs = [
+            {
+                'id': 1,
+                'img': "https://5.imimg.com/data5/RU/WI/MY-46283651/school-skirts-500x500.jpg",
+                'name': 'skirt',
+                'quantity': '1',
+                'size': 'L',
+                'colour': 'black',
+                'price': "500"
+            },
+            {
+                'id': 2,
+                'img': "https://slimages.macysassets.com/is/image/MCY/products/2/optimized/17864922_fpx.tif?$browse$&wid=170&fmt=jpeg",
+                'name': 'pants',
+                'quantity': '1',
+                'size': 'medium',
+                'colour': 'white',
+                'price': '1000'
+            },
+            {
+                'id': 3,
+                'img': "https://di2ponv0v5otw.cloudfront.net/posts/2018/03/24/5ab6a736077b9758675a91e5/m_5ab6c769c9fcdfbadf53cd14.jpeg",
+                'name': 'top',
+                'quantity': '1',
+                'size': 'medium',
+                'colour': 'white',
+                'price': '800'
+            }
+        ]
+
+    for card in transaction_inputs:
+        tprice = tprice + int(card['price'])
+
+    tcost = tprice + deliver
+    data["lst"] = lst
+    data["total_price"] = tprice
+    data["delivery_price"] = deliver
+    data["total_cost"] = tcost
+
+    return jsonify(data)
+
+
+
+"""
+--------------------------------------- Product/Services Routes ----------------------------------------------------------
+"""
+@app.route('/api/newproduct', methods = ['GET', 'POST'])
+def new_product():
+    form = newProductForm(request.form)
+
+    if request.method == "POST":
+        product_name = form.product_name.data
+        quantity = form.quantity.data
+        uom = form.uom.data
+        unit_price = form.unit_price.data
+        status = form.status.data
+        tax = form.tax.data
+
+        image_file = request.files['image']
+        if image_file:
+            basedir = os.path.abspath(os.path.dirname(__file__))
+            filename = secure_filename(image_file.filename)
+            image_file.save(os.path.join(basedir, app.config['UPLOAD_FOLDER'], filename))
+
+        last_product = db.session.query(sales.Product).order_by(sales.Product.prodID.desc()).first()
+        if last_product is None: 
+            prod_int = 1
+        else:
+                
+            # Get the numeric part of the last User ID and increment by 1
+            last_pID = last_product.prodID
+            prod_int = int(last_pID[1:])
+            prod_int +=1
+
+        # ADD QUANTITY TO DATABASE
+        newProdID = 'P' + str(prod_int)
+        newProduct = Product(prodID=newProdID, busID="Mon2", prodName=product_name, unit_price=unit_price, 
+                            Unit="", limitedTime="", taxPercent=tax, prodStatus=status, image=filename)
+        print(last_pID)
+        try:
+            db.session.add(newProduct)
+            db.session.commit()
+        except Exception as e:
+            error = str(e)
+
+        flash('New product added successfully')
+    return jsonify({"message":"New product added successfully"})
+
+@app.route('/api/products', methods = ['GET', 'POST'])
+def products():
+    data_list = []
+    busID = "Mon2"
+    products = Product.query.filter_by(busID=busID).all()
+    output = products_schema.dump(products)
+    
+    
+    for item in output:
+        
+        
+        case = {
+            "id":item['prodID'],
+            "name":item['prodName'],
+            "price":item['unit_price'],
+            "tax":item['taxPercent'],
+            "status":item['prodStatus'],
+            "image":item['image']
+        }
+        data_list.append(case)
+        #data.update(item=item.index)
+
+
+    '''
+    data = {}
+    products = [
+        {
+            "id":1,
+            "name":"Black Dress",
+            "price":6000,
+            "tax":15,
+            "status":"active",
+            "image":"dress1.jpg"
+        },
+        {
+            "id":2,
+            "name":"White Skirt",
+            "price":1000,
+            "tax":15,
+            "status":"active",
+            "image":"skirt1.jpg"
+        },
+        {
+            "id":3,
+            "name":"Plaid top",
+            "price":500,
+            "tax":15,
+            "status":"active",
+            "image":"top1.jpg"
+        },
+    ]
+    data['products'] = products
+    '''
+    #return jsonify(output)
+    return jsonify(data_list)
+
+
+@app.route('/api/product/classify', methods = ['GET', 'POST'])
+def product_classify():
+    product_list = defaultdict(list)
+    annual_consum_val = []
+    total_consum_val = 0
+    total_units_sold = 0
+    product_sales = db.session.query(ProductSaleItem).all()
+
+    for product in product_sales: 
+        consum_val = product.quantitySold * product.unit_price
+        annual_consum_val.append([product.psiID, consum_val])
+        total_consum_val += consum_val
+        total_units_sold += product.quantitySold
+
+    # Find Percentage of Annual Units Sold 
+    for product in product_sales: 
+        desc_consum_val = sorted(annual_consum_val, reverse=True) # List of Annual Consumption Values (Descending Order)
+        percent_units_sold = (product.quantitySold/total_units_sold)*100.0  # % of Annual Units Sold
+        for val in desc_con_val: 
+            percent_consum_val = (val/total_consum_val)*100.0  # % of Total Annual Consumption Value
+
+            # Split Data ito 80/15/5
+            # get length of product_list then divide by percentage
+            # Assign Grades to products based on products in each percentile
+
+
+    # Find Percentage of Annual Consumption Value
+
+    return jsonify({'products': products})
+
+"""
+----------------------------------------SETTINGS------------------------------------------------------
+"""
+@app.route('/api/website-settings', methods = ['POST', 'GET'])
+def websiteinfo():
+  
+  form = websiteForm(request.form)
+  settings={}
+  if request.method == 'POST':
+    
+      wel_head = form.wel_head.data
+      wel_mess = form.wel_mess.data
+      prod_mess = form.prod_mess.data
+      rec_head = form.rec_head.data
+      rec_mess = form.rec_mess.data
+      con_head = form.con_head.data
+      con_mess = form.con_mess.data
+
+      settings['welcome_head'] = wel_head
+      settings['welcome_mess'] = wel_mess
+      settings['product_mess'] = prod_mess
+      settings['receipt_head'] = rec_head
+      settings['receipt_mess'] = rec_mess
+      settings['contact_head'] = con_head
+      settings['contact_mess'] = con_mess
+
+      #welcome = Websitedetails( section_detail='wel' sec_header=wel_head, sec_message=wel_mess)
+      #product = Websitedetails( section_detail='prod' sec_message=prod_mess)
+      #receipt = Websitedetails( section_detail='rec' sec_header=rec_head, sec_message=rec_mess)
+      #contact = Websitedetails( section_detail='con' sec_header=con_head, sec_message=con_mess)
+      #db.session.add(welcome)
+      #db.session.add(product)
+      #db.session.add(receipt)
+      #db.session.add(contact)
+      #db.session.commit()
+      '''
+      return jsonify(settings)
+
+  elif request.method == 'GET':
+    website = sales.Websitedrag
+    sections = website.query.filter_by().all()
+    return jsonify(sections.sectionName)
+'''
+  return jsonify({'message':"Success"}, settings)
+
+  
+
+
+"""
+--------------------------------------- Orders ----------------------------------------------------------
+"""
+
+@app.route('/api/placeorder', methods = ['POST', 'GET'])
 def place_order():
   #Display order based on rank
+  form = orderForm(request.form)
+
   if request.method == "POST":
-    fname = request.form['fname']
-    lname = request.form['lname']
-    trn = request.form['trn']
-    phone = request.form['phone']
-    email = request.form['email']
+    total_price = request.form['tcost']
+    fname = form.fname.data
+    lname = form.lname.data
+    trn = form.trn.data
+    address = form.address.data
+    phone = form.phone_num.data
+    email = form.email.data
 
-    customer = Customer.query.filter_by(trn = trn)
+    customer = Customer.query.filter_by(trn = trn).first()
 
-    if customer.trn == None:
+    if customer == None:
         # Add new customer
-        new_customer = Customer(fname, lname, trn, email, phone)
+        new_customer = Customer(custID="c01",fname=fname, lname=lname, trn=trn, email=email)
         db.session.add(new_customer)
-        db.session.commit()
 
     date_format = "%Y-%m-%d"
     status = "Pending"
-    today = datetime.datetime.now()
+    today = datetime.now()
     todayString = today.strftime(date_format)
     dateDue = (today + timedelta(days=7)).strftime(date_format)
-    new_order = Order(2800, todayString, customer.custID, 'test_invoiceID','test_businessID', status, dateDue)
-    db.session.add(new_order)
-    db.session.commit()
 
+    new_order = Order(orderID="O1", order_tot=total_price, order_DATE=todayString, custID=customer.custID, invoiceID="", busID="", status=status)
+    try:
+        db.session.add(new_order)
+        db.session.commit()
+    except Exception as e:
+        error = str(e)
+
+    #data = {"order_tot":total_price, "order_DATE":todayString, "customer.custID":customer.custID, "invoiceID":7, "status":status}
+    return jsonify({"message":"order added successfully", 'errors': error})
     
 """ 
 Rank based on date order should be fulfilled
@@ -596,175 +848,6 @@ def manageOrders():
 
     #Need to print this list on the front end.
     return allOrders
-
-#########################################################################################################
-
-"""
---------------------------------------- Product/Services Routes ----------------------------------------------------------
-"""
-@app.route('/api/products', methods = ['GET'])
-def products():
-    message = {}
-    data = {}
-    tprice = 0
-    deliver = 500
-
-    transaction_inputs = [
-            {
-                'id': 1,
-                'img': "https://5.imimg.com/data5/RU/WI/MY-46283651/school-skirts-500x500.jpg",
-                'name': 'skirt',
-                'quantity': '1',
-                'size': 'L',
-                'colour': 'black',
-                'price': "500"
-            },
-            {
-                'id': 2,
-                'img': "https://slimages.macysassets.com/is/image/MCY/products/2/optimized/17864922_fpx.tif?$browse$&wid=170&fmt=jpeg",
-                'name': 'pants',
-                'quantity': '1',
-                'size': 'medium',
-                'colour': 'white',
-                'price': '1000'
-            },
-            {
-                'id': 3,
-                'img': "https://di2ponv0v5otw.cloudfront.net/posts/2018/03/24/5ab6a736077b9758675a91e5/m_5ab6c769c9fcdfbadf53cd14.jpeg",
-                'name': 'top',
-                'quantity': '1',
-                'size': 'medium',
-                'colour': 'white',
-                'price': '800'
-            }
-        ]
-
-    for card in transaction_inputs:
-        tprice = tprice + int(card['price'])
-
-    tcost = tprice + deliver
-
-@app.route('/api/product/classify', methods = ['GET', 'POST'])
-def product_classify():
-    product_list = defaultdict(list)
-    annual_consum_val = []
-    total_consum_val = 0
-    total_units_sold = 0
-    product_sales = db.session.query(ProductSaleItem).all()
-
-    for product in product_sales: 
-        consum_val = product.quantitySold * product.unit_price
-        annual_consum_val.append([product.psiID, consum_val])
-        total_consum_val += consum_val
-        total_units_sold += product.quantitySold
-
-    # Find Percentage of Annual Units Sold 
-    for product in product_sales: 
-        desc_consum_val = sorted(annual_consum_val, reverse=True) # List of Annual Consumption Values (Descending Order)
-        percent_units_sold = (product.quantitySold/total_units_sold)*100.0  # % of Annual Units Sold
-        for val in desc_con_val: 
-            percent_consum_val = (val/total_consum_val)*100.0  # % of Total Annual Consumption Value
-
-            # Split Data ito 80/15/5
-            # get length of product_list then divide by percentage
-            # Assign Grades to products based on products in each percentile
-
-
-    # Find Percentage of Annual Consumption Value
-
-    return jsonify({'products': products})
-
-"""
-------------------------------------------------------------------------------------------------------------
-"""
-@app.route('/api/website-settings', methods = ['POST', 'GET'])
-def websiteinfo():
-  
-  form = websiteForm()
-  settings={}
-  if request.method == 'POST':
-    
-      wel_head = request.form['wel_head']
-      wel_mess = request.form['wel_mess']
-      prod_mess = request.form['prod_mess']
-      rec_head = request.form['rec_head']
-      rec_mess = request.form['rec_mess']
-      con_head = request.form['con_head']
-      con_mess = request.form['con_mess']
-
-      settings['welcome_head'] = wel_head
-      settings['welcome_mess'] = wel_mess
-      settings['product_mess'] = prod_mess
-      settings['receipt_head'] = rec_head
-      settings['receipt_mess'] = rec_mess
-      settings['contact_head'] = con_head
-      settings['contact_mess'] = con_mess
-
-      #welcome = Websitedetails( section_detail='wel' sec_header=wel_head, sec_message=wel_mess)
-      #product = Websitedetails( section_detail='prod' sec_message=prod_mess)
-      #receipt = Websitedetails( section_detail='rec' sec_header=rec_head, sec_message=rec_mess)
-      #contact = Websitedetails( section_detail='con' sec_header=con_head, sec_message=con_mess)
-      #db.session.add(welcome)
-      #db.session.add(product)
-      #db.session.add(receipt)
-      #db.session.add(contact)
-      #db.session.commit()
-      '''
-      return jsonify(settings)
-
-  elif request.method == 'GET':
-    website = sales.Websitedrag
-    sections = website.query.filter_by().all()
-    return jsonify(sections.sectionName)
-'''
-  return jsonify({'message':"Success"}, settings)
-
-"""
-------------------------------------------------------------------------------------------------------------
-"""
-@app.route('/api/items', methods = ['GET'])
-def items():
-    data = {}
-
-    file_cont = open("/Users/User/Desktop/test_data_capstone.txt", "r")
-    content = file_cont.readlines()
-
-    data['content'] = content
-    return jsonify(data)
-    # return render_template("Products.vue", content=content)
-
-"""
---------------------------------------- Orders ----------------------------------------------------------
-"""
-@app.route('/api/order', methods = ['POST', 'GET'])
-def custOrder():
-    customer = {}
-    '''
-    form = orderForm()
-    if form.validate_on_submit():
-        if request.method == 'POST':
-
-            # Get info.
-            fname = request.form['fname']
-            lname = request.form['lname']
-            trn = request.form['trn']
-            address = request.form['address']
-            phone_num = request.form['phone_num']
-            email = request.form['email']
-
-            customer['first_name'] = fname
-            customer['last_name'] = lname
-            customer['TRN'] = trn
-            customer['address'] = address
-            customer['telephone'] = phone_num
-            customer['emaile'] = email
-                        '''
-    return jsonify(
-            [
-                {'message': "Data saved successfully"},
-                {'token': csrf }
-            ])
-
 
 
 

@@ -5,7 +5,7 @@
       <h3 class="m-2">Transactions </h3>
       <p class = "m-2 "> Transactions are used to automatically generate your financials. Keep track of your daily transactions.</p>
       <p class = "m-2">  </p>
-      <transaction-top/>
+      <transaction-top />
     </div>
   </div>
 </template>
@@ -13,7 +13,7 @@
 <script>
     export default {
         name: "add-transaction",
-        layout: 'dashboard',
+        layout: 'DashboardLayout',
         methods: {
             addTransaction: () => {
                 console.log('working');

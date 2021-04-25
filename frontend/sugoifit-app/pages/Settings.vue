@@ -12,7 +12,7 @@
 <script>
 export default {
     name: "Settings",
-    layout: 'dashboard'
+    layout: 'DashboardLayout'
 };
 </script>
 

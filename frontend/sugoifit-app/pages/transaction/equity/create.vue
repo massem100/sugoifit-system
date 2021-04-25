@@ -21,7 +21,7 @@
     import {ValidationObserver, ValidationProvider} from "vee-validate";
 
     export default {
-        layout:'dashboard',
+        layout: 'DashboardLayout',
         name: "equity-create",
         components: {
             ValidationProvider,

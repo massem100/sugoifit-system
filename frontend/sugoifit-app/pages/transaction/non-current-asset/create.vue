@@ -1,141 +1,86 @@
 <template>
-  <div class="d-flex mx-3">
+  <div class="d-flex ">
   <b-container fluid>
-    <h3 class="m-2">Add Transaction</h3>
-    <transaction-top/>
+    <h3 class="mt-3 ml-0">Add Transaction</h3>
+    <transaction-top class =   "w-100"/>
     <validation-observer
       ref="observer"
       v-slot="{handleSubmit}"
     >
-      <b-form id= "AddNCAForm" @submit.stop.prevent="handleSubmit(AddNCA)">
-        
-          <b-col class = "pl-0">
-            
-            <!-- Add Non Current Asset heading -->
-            <b-col cols="8" class="text-info mb-3 pl-0">Add Non Current Asset</b-col>
-            <b-row>
-              <!-- Intangible/Tangible Asset Radio Input  -->
-                <b-row class="mb-2 ml-2 c-box pl-0" xl="3" md="6" sm="12">
-                  <validation-provider v-slot="{ errors }" rules="required" name="tan_in" >
-                    <label for="tan_in">Type of Asset</label>
-                    <b-form-radio-group @change="onChange($event)" v-model="selected"
-                                  :options="tangible_intan"
-                                  id="tan_in"
-                                  name="tan_in"
-                                  class = "border border-radius p-3"
-                                  style = "Background: #E5E5E5; "
-                                 
-                                  :state="getValidationState(errors)"
+      <b-form class ="" id= "AddNCAForm" @submit.stop.prevent="handleSubmit(AddNCA)">
+          <b-row cols = "12" class = "m-1 S "> 
+            <b-col  class = "m-1">
+              
+              <!-- Add Non Current Asset heading -->
+              <b-col cols="12" class="text-primary mb-3 pl-0" xl="8" md="8">Add Non Current Asset</b-col>
+              <!-- Major Form Fields -->
+              <b-col cols = "12" class = "ml-1 mt-4 bg-secondary">
+              <!-- Asset Name -->
+                <b-col cols = "8" class="mb-2   pl-0" xl="9" md="6" sm="12">
+                  <validation-provider v-slot="{ errors }" rules="required" name="asset name" >
+                    <label for="asset_name">Asset Name</label>
+                    <b-form-input v-model="form.asset_name" type="text" id="asset_name" name="asset_name"
+                                  :state="getValidationState(errors)">
+                    </b-form-input>
+                    <b-form-invalid-feedback> {{ errors[0] }}</b-form-invalid-feedback>
+                  </validation-provider>
+                </b-col>
+
+                <!-- Transaction Date -->
+                <b-col class="mb-2 pl-0" xl="9" md="6" sm="12">
+                  <validation-provider v-slot="{ errors }" rules="required" name="transaction_date">
+                    <label for="date">Date</label>
+                    <b-form-datepicker id="transaction_date"
+                                      name ="transaction_date"
+                                      v-model="form.date"
+                                      :date-format-options="{ year: 'numeric', month: 'short', day: 'numeric' }"
+                                      locale="en-US"
+                                      required
+                                      calendar-width="180px"
+                                      :state="getValidationState(errors)"
                     >
-                    </b-form-radio-group>
-                    
-      
+                    </b-form-datepicker>
                     <b-form-invalid-feedback>
                       {{ errors[0] }}
                     </b-form-invalid-feedback>
                   </validation-provider>
-                
-                </b-row>
-                
-                <!-- Bought/Sold Radio Input  -->
-              <b-row class="mb-2 ml-2 c-box pl-0" xl="3" md="6" sm="12">
-                <validation-provider v-slot="{ errors }" rules="required" name="bought_sold" >
-                  <label for="bought_sold"> Bought or Sold?</label>
-                  <b-form-radio-group v-model="form.bought_sold"
-                                :options="bought_sold"
-                                id="bought_sold"
-                                name="bought_sold"
-                                class = "border border-radius p-3"
-                                style = "Background: #E5E5E5; "
-                                :state="getValidationState(errors)"
-                  >
-                  </b-form-radio-group>
-                  
-    
-                  <b-form-invalid-feedback>
-                    {{ errors[0] }}
-                  </b-form-invalid-feedback>
-                </validation-provider>
+                </b-col>
               
-              </b-row>
-                <!-- Paid Using Radio Input  -->
-              <b-row class="mb-2 ml-2 c-box pl-0" xl="3" md="6" sm="12">
-                <validation-provider v-slot="{ errors }" rules="required" name="paid_using" >
-                  <label for="paid_using"> Paid Using</label>
-                  <b-form-radio-group v-model="form.paid_using"
-                                :options="paid_using"
-                                id="paid_using"
-                                name="paid_using"
-                                class = "border border-radius p-3"
-                                style = "Background: #E5E5E5; "
-                                :state="getValidationState(errors)"
-                  >
-                  </b-form-radio-group>
+
+                <!-- Amount Input -->
+                <b-col  class="mb-2 pl-0" xl="9" md="6" sm="12">
+                  <validation-provider v-slot="{ errors }" rules="required" name="amount">
                   
-    
-                  <b-form-invalid-feedback>
-                    {{ errors[0] }}
-                  </b-form-invalid-feedback>
-                </validation-provider>
+                    <label for="amount">Amount</label>
+                    <b-form-input v-model="form.amount" type="number" id="amount" name="amount"
+                                  :state="getValidationState(errors)">
+                    </b-form-input>
+                    <b-form-invalid-feedback>
+                      {{ errors[0] }}
+                    </b-form-invalid-feedback>
+                  </validation-provider>
+                </b-col>
+                <!-- Amortization Selected -->
               
-              </b-row>
-            </b-row>
-            
-            <!-- Major Form Fiels -->
-            <b-row class = "ml-1 pl-0 mt-4">
-            <!-- Asset Name -->
-              <b-col class="mb-2 c-box  pl-0" xl="3" md="6" sm="12">
-                <validation-provider v-slot="{ errors }" rules="required" name="asset name" >
-                  <label for="asset_name">Asset Name</label>
-                  <b-form-input v-model="form.asset_name" type="text" id="asset_name" name="asset_name"
-                                :state="getValidationState(errors)">
-                  </b-form-input>
-                  <b-form-invalid-feedback> {{ errors[0] }}</b-form-invalid-feedback>
-                </validation-provider>
+                  <!-- Description Input -->
+                <b-col class="mb-2 pl-0" xl="9" md="6" sm="12">
+                    <label for="description">Description</label>
+                    <b-form-textarea v-model="form.description" type="text" id="description"></b-form-textarea>
+                </b-col>
+              
+                
               </b-col>
 
-              <!-- Transaction Date -->
-              <b-col class="mb-2 c-box pl-0" xl="3" md="6" sm="12">
-                <validation-provider v-slot="{ errors }" rules="required" name="transaction_date">
-                  <label for="date">Date</label>
-                  <b-form-datepicker id="transaction_date"
-                                    name ="transaction_date"
-                                    v-model="form.date"
-                                    :date-format-options="{ year: 'numeric', month: 'short', day: 'numeric' }"
-                                    locale="en-US"
-                                    required
-                                    calendar-width="180px"
-                                    :state="getValidationState(errors)"
-                  >
-                  </b-form-datepicker>
-                  <b-form-invalid-feedback>
-                    {{ errors[0] }}
-                  </b-form-invalid-feedback>
-                </validation-provider>
-              </b-col>
+              
             
-
-              <!-- Amount Input -->
-              <b-col  class="mb-2 c-box pl-0" xl="3" md="6" sm="12">
-                <validation-provider v-slot="{ errors }" rules="required" name="amount">
-                
-                  <label for="amount">Amount</label>
-                  <b-form-input v-model="form.amount" type="number" id="amount" name="amount"
-                                :state="getValidationState(errors)">
-                  </b-form-input>
-                  <b-form-invalid-feedback>
-                    {{ errors[0] }}
-                  </b-form-invalid-feedback>
-                </validation-provider>
-              </b-col>
-              <!-- Amortization Selected -->
-              <div>
+            </b-col>
+             <b-col>
                 <div v-if= "reduct_hide">
                   <b-col cols="8" class="text-info mb-3 pl-0">Amortization</b-col>
-                  <b-row class = "m-2">
+                  <b-col class = "m-2">
                     
                   <!-- Depreciation Type Input  -->
-                  <b-col class="mb-2 c-box pl-0" xl="3" md="6" sm="12">
+                  <b-col cols = "6" class="mb-2 c-box pl-0" xl="4" md="8" sm="12">
                     <validation-provider
                       v-slot="{ errors }"
                       rules="required"
@@ -155,7 +100,7 @@
                     </validation-provider>
                   </b-col>
                   <!-- Depreciation  Rate -->
-                  <b-col class="mb-2 mr-3 c-box pl-0" xl="3" md="6" sm="12">
+                  <b-col class="mb-2 mr-3 c-box pl-0" xl="7" md="6" sm="12">
                     <validation-provider
                       v-slot="{ errors }"
                       rules="required"
@@ -175,7 +120,7 @@
                   </b-col>
 
                   <!-- Asset LifeSpan -->
-                  <b-col class="mb-2 c-box pl-0" xl="3" md="6" sm="12">
+                  <b-col class="mb-2 c-box pl-0" xl="7" md="6" sm="12">
                     <validation-provider
                       v-slot="{ errors }"
                       
@@ -193,15 +138,15 @@
                       </b-form-invalid-feedback>
                     </validation-provider>
                   </b-col>
-                    </b-row>
+                    </b-col>
                 </div>
                 <div v-else>
-                  <b-col cols="8" class="text-info mb-3 pl-0">Depreciation</b-col>
+                  <b-col cols="8" class="text-primar mb-3 pl-0">Depreciation</b-col>
                   <!-- Depreciation Selected -->
                   <b-row class = "ml-2">
                   <!-- Depreciation Type Input  -->
                   
-                  <b-col class="mb-2 c-box pl-0" xl="3" md="6" sm="12">
+                  <b-col class="mb-2 c-box pl-0" xl="7" md="6" sm="12">
                     <validation-provider
                       v-slot="{ errors }"
                       rules="required"
@@ -221,7 +166,7 @@
                     </validation-provider>
                   </b-col>
                   <!-- Depreciation  Rate -->
-                  <b-col class="mb-2 mr-3 c-box pl-0" xl="3" md="6" sm="12">
+                  <b-col class="mb-2 mr-3 c-box pl-0" xl="7" md="6" sm="12">
                     <validation-provider
                       v-slot="{ errors }"
                       rules="required"
@@ -241,7 +186,7 @@
                   </b-col>
 
                   <!-- Asset LifeSpan -->
-                  <b-col class="mb-2 c-box pl-0" xl="3" md="6" sm="12">
+                  <b-col class="mb-2 c-box pl-0" xl="7" md="6" sm="12">
                     <validation-provider
                       v-slot="{ errors }"
                       
@@ -261,25 +206,82 @@
                   </b-col>
                     </b-row>
                   </div>
-              </div>
-                <!-- Description Input -->
-              <b-col class="mb-2 c-box pl-0" xl="3" md="6" sm="12">
-                  <label for="description">Description</label>
-                  <b-form-textarea v-model="form.description" type="text" id="description"></b-form-textarea>
               </b-col>
-             
-              
-            </b-row>
-
-            
-           <!-- Submit and Reset -->
-            <b-col cols="12" class="text-right my-2">
-              <b-button type="submit" variant="primary">Submit</b-button>
-              <b-button type="reset" variant="danger" @click="resetForm()">Reset</b-button>
-            </b-col>
-          </b-col>
-          
+            <b-col class = "ml-auto m-2">
+                <!-- Intangible/Tangible Asset Radio Input  -->
+                  <b-col cols= "8" class="mt-5 mb-2 ml-2 c-box pl-0 " xl="7" md="6" sm="12">
+                    <br/>
+                    <validation-provider v-slot="{ errors }" rules="required" name="tan_in" >
+                      <label for="tan_in">Type of Asset</label>
+                      <b-form-radio-group @change="onChange($event)" v-model="selected"
+                                    :options="tangible_intan"
+                                    id="tan_in"
+                                    name="tan_in"
+                                    class = "border border-radius p-3"
+                                    style = "Background: #E5E5E5; "
+                                  
+                                    :state="getValidationState(errors)"
+                      >
+                      </b-form-radio-group>
+                      
         
+                      <b-form-invalid-feedback>
+                        {{ errors[0] }}
+                      </b-form-invalid-feedback>
+                    </validation-provider>
+                  
+                  </b-col>
+                  
+                  <!-- Bought/Sold Radio Input  -->
+                <b-col class="mb-2 ml-2 c-box pl-0" xl="7" md="6" sm="12">
+                  <validation-provider v-slot="{ errors }" rules="required" name="bought_sold" >
+                    <label for="bought_sold"> Bought or Sold?</label>
+                    <b-form-radio-group v-model="form.bought_sold"
+                                  :options="bought_sold"
+                                  id="bought_sold"
+                                  name="bought_sold"
+                                  class = "border border-radius p-3"
+                                  style = "Background: #E5E5E5; "
+                                  :state="getValidationState(errors)"
+                    >
+                    </b-form-radio-group>
+                    
+      
+                    <b-form-invalid-feedback>
+                      {{ errors[0] }}
+                    </b-form-invalid-feedback>
+                  </validation-provider>
+                
+                </b-col>
+                  <!-- Paid Using Radio Input  -->
+                <b-col cols = "6" class=" mb-2 ml-2 c-box pl-0" xl="7" md="10" sm="12">
+                  <validation-provider v-slot="{ errors }" rules="required" name="paid_using" >
+                    <label for="paid_using"> Paid Using</label>
+                    <b-form-radio-group v-model="form.paid_using"
+                                  :options="paid_using"
+                                  id="paid_using"
+                                  name="paid_using"
+                                  class = "border border-radius p-3"
+                                  style = "Background: #E5E5E5; "
+                                  :state="getValidationState(errors)"
+                    >
+                    </b-form-radio-group>
+                    
+      
+                    <b-form-invalid-feedback>
+                      {{ errors[0] }}
+                    </b-form-invalid-feedback>
+                  </validation-provider>
+                
+                </b-col>
+              </b-col>
+
+          </b-row>
+          <!-- Submit and Reset -->
+              <b-row cols="12" class="text-right my-2">
+                <b-button type="submit" variant="primary">Submit</b-button>
+                <b-button type="reset" variant="danger" @click="resetForm()">Reset</b-button>
+              </b-row>
       </b-form>
     </validation-observer>
   </b-container>
@@ -292,7 +294,7 @@
 
     export default {
         name: "non-current-asset-create",
-        layout:"dashboard",
+        layout:"DashboardLayout",
         components: {
             ValidationProvider,
             ValidationObserver,
@@ -317,9 +319,9 @@
                 ], 
 
                 paid_using: [
-                   {value: 'Cash', text: 'Cash'},
-                  {value: 'Cheque', text:'Cheque'},
-                  {value: 'Credit', text:'Credit'},
+                   {value: 'Cash', text: 'Cash '},
+                  {value: 'Cheque', text:'Cheque '},
+                  {value: 'Credit', text:'Credit '},
                 ], 
 
                 bought_sold: [
