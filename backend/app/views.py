@@ -689,16 +689,41 @@ def product_classify():
 
     for product in product_sales: 
         consum_val = product.quantitySold * product.unit_price
-        annual_consum_val.append([product.psiID, consum_val])
+        annual_consum_val.append([product.psiID, consum_val, 'C']) #Set them as C by default
         total_consum_val += consum_val
         total_units_sold += product.quantitySold
 
+    #Sort consumption list in descending order
+    annual_consum_val.sort(key= lambda x: x[1], reverse = True)
+
+    total_valA = 0
+    total_valB = 0
+    index = None
+    #Check for A products
+    for product in annual_consum_val:
+        total_valA+= product[1]
+        product[2]= 'A'
+        percentage = (total_valA / total_consum_val) * 100
+        if percentage >=80:
+            index = annual_consum_val.index(product)
+            break
+
+    #Check for B products
+    for product in annual_consum_val[index + 1:]:
+        total_valB+= product[1]
+        product[2]= 'B'
+        percentage = (total_valB / total_consum_val) * 100
+        if percentage >=15:
+            break
+    
+    return jsonify({'products': annual_consum_val})
+
     # Find Percentage of Annual Units Sold 
-    for product in product_sales: 
-        desc_consum_val = sorted(annual_consum_val, reverse=True) # List of Annual Consumption Values (Descending Order)
-        percent_units_sold = (product.quantitySold/total_units_sold)*100.0  # % of Annual Units Sold
-        for val in desc_con_val: 
-            percent_consum_val = (val/total_consum_val)*100.0  # % of Total Annual Consumption Value
+    # for product in product_sales: 
+    #     desc_consum_val = sorted(annual_consum_val, reverse=True) # List of Annual Consumption Values (Descending Order)
+    #     percent_units_sold = (product.quantitySold/total_units_sold)*100.0  # % of Annual Units Sold
+    #     for val in desc_con_val: 
+    #         percent_consum_val = (val/total_consum_val)*100.0  # % of Total Annual Consumption Value
 
             # Split Data ito 80/15/5
             # get length of product_list then divide by percentage
@@ -706,8 +731,6 @@ def product_classify():
 
 
     # Find Percentage of Annual Consumption Value
-
-    return jsonify({'products': products})
 
 """
 ----------------------------------------SETTINGS------------------------------------------------------
