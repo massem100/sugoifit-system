@@ -1,9 +1,6 @@
 <template>
     <div class="wrapper">
         <v-col>
-            <div class="header">
-                <WebsiteHeader />
-            </div>
             
             <v-container fluid >
                 <v-row >
@@ -45,12 +42,9 @@
 </template>
 
 <script>
-import WebsiteHeader from '../../components/WebsiteHeader';
 export default {
     name: 'Products',
-    components: {
-        WebsiteHeader
-    },
+    layout: 'website',
     data() {
         return {
             products: []

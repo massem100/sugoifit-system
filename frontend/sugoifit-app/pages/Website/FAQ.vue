@@ -1,9 +1,6 @@
 <template>
     <div class="wrapper" >
         <v-col>
-            <div class="header">
-                <WebsiteHeader />
-            </div>
         
             <v-container>
                 <h2 class=" text-center">About Us</h2>
@@ -44,12 +41,10 @@
 </template>
 
 <script>
-import WebsiteHeader from '../../components/WebsiteHeader';
 export default {
     name: 'FAQ',
-    components: {
-        WebsiteHeader
-    },data() {
+    layout: 'website',
+    data() {
     return {
       items: [
         {

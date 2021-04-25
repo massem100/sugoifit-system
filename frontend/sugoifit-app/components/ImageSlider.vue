@@ -5,12 +5,13 @@
       hide-delimiter-background
       show-arrows-on-hover
     >
-      <v-carousel-item v-for="item in products" :key="item" >
-        <v-sheet :color="colors[i]"  height="100%" >
+      <v-carousel-item v-for="item in products" :key="item.id" >
+        <v-sheet   height="100%" >
           <v-row class="fill-height" align="center" justify="center">
            
             <div class="display-3">
-              <img :src='require("~/assets/uploads/boutique.jpg")' alt="">
+              <img :src='item.id'  alt="">
+              <!--<img :src='require("~/assets/uploads/boutique.jpg")' alt="">-->
             </div>
 
           </v-row>
@@ -21,7 +22,7 @@
 
 <script>
 export default {
-    name: "Slider",
+  name: "Slider",
   data() {
     return {
       products: [],

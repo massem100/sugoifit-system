@@ -25,7 +25,6 @@ export default {
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     'static/scss/sidebar.css',
-    'static/scss/website.css',
     '~assets/style/index.scss',
     'static/scss/style.css',
 

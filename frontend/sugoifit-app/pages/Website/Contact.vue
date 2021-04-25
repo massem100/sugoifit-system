@@ -1,19 +1,17 @@
 <template>
     <div class="wrapper">
         <b-col>
-            <div class="header">
-                <WebsiteHeader />
-            </div>
             <b-container fluid>
                 
                 <validation-observer ref="observer" v-slot="{handleSubmit}">
                 <form id="contactForm" method="POST" @submit.stop.prevent="handleSubmit(onSubmit)" enctype="multipart/form-data">
                     <input type="hidden" name="_token" :value="token">
-                    <b-row >
+                    <b-row class="mb-5">
                         
                         <b-col cols="12" >
                             <h2 class="text-center"> Contact Us</h2>
                             <h4 class="text-center"> Contact us today, and get reply within 24 hours!</h4>
+                            <hr>
                             <b-row>
                                 <b-col cols="12" class="text-center">{{items.address}}</b-col>
                                 <b-col cols="12" class="text-center">{{items.email}}</b-col>
@@ -40,8 +38,7 @@
                             </b-form-invalid-feedback>
                             </validation-provider>
                         </b-col>
-                    </b-row>
-                    <b-row>
+                    
                         <b-col class="mb-2 c-box" xl="6" md="6" sm="12">
                             <validation-provider
                             v-slot="{ errors }"
@@ -80,8 +77,7 @@
                             </b-form-invalid-feedback>
                             </validation-provider>
                         </b-col>
-                    </b-row>
-                    <b-row>
+                    
                         <b-col class="mb-2 c-box" xl="6" md="6" sm="12">
                             <validation-provider
                             v-slot="{ errors }"
@@ -126,8 +122,8 @@
                     
                     <b-row>
                         <b-col cols="12" class="text-right my-2">
-                            <b-button type="submit" variant="primary">Submit</b-button>
-                            <b-button type="reset" variant="danger" @click="resetForm()">Reset</b-button>
+                            <b-button type="submit" class="submitbtn">Submit</b-button>
+                            <button type="button" class="btn btn-outline-danger" @click="resetForm()">Reset</button>
                         </b-col>
                     </b-row>
                 </form>
@@ -139,11 +135,10 @@
 
 <script>
 import {ValidationObserver, ValidationProvider} from "vee-validate";
-import WebsiteHeader from '../../components/WebsiteHeader';
 export default {
     name: 'Contact',
+    layout: 'website',
     components: {
-        WebsiteHeader,
         ValidationProvider,
         ValidationObserver,
     },
@@ -215,5 +210,10 @@ input{
   background-color: rgba(119, 255, 187, 0.705);
   border-radius: 20px;
   resize:vertical;
+}
+.submitbtn{
+    background-color: white;
+    color: rgb(37, 167, 117);
+    border-color: rgb(37, 167, 117);
 }
 </style>
