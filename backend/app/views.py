@@ -9,16 +9,10 @@ from datetime import datetime
 from app import app,  db, login_manager, cors, csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission, jwt_token
 # WTF Forms and SQLAlchemy Models
-<<<<<<< HEAD
-from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm,orderForm, LTLiabForm, CAForm,ExpForm, RevForm
-from app.model import  accounts, auth, sales, transactions
-from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order
-=======
 from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm, orderForm, newProductForm
 from app.model import  accounts, auth, sales, transactions
 from app.model.sales import Product, ProductSaleItem
 from app.schema.sales import products_schema
->>>>>>> f51cb1424b254961752575c984d2bef64f3ee288
 
 from app.model.financial_statement import Financialstmt, Financialstmtline, Financialstmtlineseq, Financialstmtlinealia,Financialstmtdesc 
 from sqlalchemy.event import listens_for
@@ -528,110 +522,13 @@ def sucessful_prods():
     #Item with highest number of sales would be at the top
     prod_numbers.sort(key= lambda x: x[1], reverse = True)
 
-    return prod_numbers
+    return jsonify(prod_numbers)
 
-<<<<<<< HEAD
-
-@app.route('/website/placeorder', methods = ['POST'])
-def place_order():
-  #Display order based on rank
-  if request.method == "POST":
-    fname = request.form['fname']
-    lname = request.form['lname']
-    trn = request.form['trn']
-    phone = request.form['phone']
-    email = request.form['email']
-
-    customer = Customer.query.filter_by(trn = trn)
-
-    if customer.trn == None:
-        # Add new customer
-        new_customer = Customer(fname, lname, trn, email, phone)
-        db.session.add(new_customer)
-        db.session.commit()
-
-    date_format = "%Y-%m-%d"
-    status = "Pending"
-    today = datetime.datetime.now()
-    todayString = today.strftime(date_format)
-    dateDue = (today + timedelta(days=7)).strftime(date_format)
-    new_order = Order(2800, todayString, customer.custID, 'test_invoiceID','test_businessID', status, dateDue)
-    db.session.add(new_order)
-    db.session.commit()
-
-    
-""" 
-Rank based on date order should be fulfilled
- 
-Click manage orders
-1) Pull all orders which are pending
-2) compare date due, with current date. Subtract and use the value to rank
-3) Sort in ascending order based on that value.
-
-from datetime import datetime
-
-date_format = "%Y-%m-%d"
-a = datetime.strptime('2021-04-14',date_format)
-b = datetime.strptime('2021-04-22',date_format)
-delta = b - a
-print (delta.days)
-
-"""
-@app.route('/manage-orders')
-def manageOrders():
-    #Get all orders that are pending
-    date_format = "%Y-%m-%d"
-    allOrders = []
-    ordersQuery = Order.query.filter_by(status="Pending").all()
-
-    #Calculate days left for each record
-    #Put record in tuple form and append to list
-    for record in ordersQuery:
-        orderID = record.orderID
-        orderTotal = record.order_tot
-        date = record.order_DATE
-        custID = record.custID
-        invoiceID = record.invoiceID
-        busID = record.busIDo
-        status = record.status
-        dueDate = record.dueDate
-
-        startDate = datetime.strptime(date, date_format)
-        endDate = datetime.strptime(dueDate, date_format)
-
-        daysLeft = endDate - startDate
-        daysLeft = daysLeft.days()
-
-        allOrders.append((orderID, orderTotal, date, custID, invoiceID,
-        busID, status, dueDate, daysLeft))
-
-    allOrders.sort(lambda x: x[8], reverse = False)
-
-    #Need to print this list on the front end.
-    return allOrders
-
-@app.route('/save-money')
-def saveMoney():
-    """ 
-        1. Find out what they business spends the most money on
-        2. Make suggestions based on the items most spent on
-        3. Find percentage of revenue contributed by each product
-    """
-
-#########################################################################################################
-
-"""
---------------------------------------- Product/Services Routes ----------------------------------------------------------
-"""
-@app.route('/api/products', methods = ['GET'])
-def products():
-=======
 """
 --------------------------------------- Website Routes ----------------------------------------------------------
 """
 @app.route('/api/checkout-products', methods = ['GET'])
 def checkoutproducts():
->>>>>>> f51cb1424b254961752575c984d2bef64f3ee288
     message = {}
     data = {}
     tprice = 0
@@ -672,8 +569,6 @@ def checkoutproducts():
 
     tcost = tprice + deliver
 
-<<<<<<< HEAD
-=======
     return jsonify(data)
 
 
@@ -780,14 +675,10 @@ def products():
     return jsonify(data_list)
 
 
->>>>>>> f51cb1424b254961752575c984d2bef64f3ee288
 @app.route('/api/product/classify', methods = ['GET', 'POST'])
 
 
-""" 
-    
-    safety stock = (max daily sales x max lead time in days) - (average daily sales x average lead time in days)
-"""
+#safety stock = (max daily sales x max lead time in days) - (average daily sales x average lead time in days)
 
 def product_classify():
     product_list = defaultdict(list)
@@ -862,12 +753,9 @@ def websiteinfo():
     return jsonify(sections.sectionName)
 '''
   return jsonify({'message':"Success"}, settings)
-<<<<<<< HEAD
-=======
 
   
 
->>>>>>> f51cb1424b254961752575c984d2bef64f3ee288
 
 """
 --------------------------------------- Orders ----------------------------------------------------------
@@ -958,7 +846,7 @@ def manageOrders():
     allOrders.sort(lambda x: x[8], reverse = False)
 
     #Need to print this list on the front end.
-    return allOrders
+    return jsonify(allOrders)
 
 
 
