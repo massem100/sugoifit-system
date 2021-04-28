@@ -135,7 +135,7 @@
             </b-row>
         </b-form>
         </validation-observer>
-        <!--
+        
         <table class="table">
             <thead class="thead-dark">
                 <tr>
@@ -165,6 +165,7 @@
     </b-container>
   </div>
 </template>
+<!--
 
 <script>
     import {ValidationObserver, ValidationProvider} from "vee-validate";

@@ -90,11 +90,7 @@
 
     export default {
         name: "business-create",
-<<<<<<< HEAD
         layout: 'DashboardLayout',
-=======
-        layout: 'dashboard',
->>>>>>> Krystall
         components: {
             ValidationProvider,
             ValidationObserver,

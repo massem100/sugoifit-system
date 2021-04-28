@@ -1,8 +1,10 @@
+from flask import current_app
 from app import db 
 from app.model.auth import Busines
 from app.model.financial_statement import Financialstmt
 import enum
 
+# db = current_app.db
 """
 --------------------------------------- General Ledger Tables ----------------------------------------------------------
 """

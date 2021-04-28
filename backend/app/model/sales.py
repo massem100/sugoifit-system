@@ -1,5 +1,8 @@
+from flask import current_app
 from app import db 
 from app.model.auth import Busines
+
+# db = current_app.db
 
 class Customer(db.Model):
     __tablename__ = 'customer'

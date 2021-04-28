@@ -54,8 +54,11 @@ timeSpanYears = [
             ('Years', 'years')
             ]
 
-paid_using = [('By Cash', 'Cash'), ('By Cheque', 'Cheque'), ('On Credit', 'Credit')]
+paid_using = [('Cash', 'Cash'), ('Cheque', 'Cheque'), ('Credit', 'Credit')]
 bought_sold= [('Bought Asset', 'Bought Asset'), ('Sold Asset', 'Sold Asset')]
+increase_decrease= [('Increase', 'Increase'), ('Decrease', 'Decrease')]
+expense_type= [('Operating Expense', 'Operating Expense'), ('Non Operating Expense', 'Non Operating Expense')]
+revenue_type= [('Operating Revenue', 'Operating Revenue'), ('Non Operating Revenue', 'Non Operating Revenue')]
 tan_in= [('Tangible Asset', 'Tangible Asset'), ('Intangible Asset', 'Intangible Asset')]
 
 """
@@ -90,6 +93,7 @@ class CAForm(FlaskForm):
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
     asset_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter asset amount.')])
+    increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
     paid_using = SelectField('Paid Using', choices = paid_using)
 
 
@@ -101,6 +105,8 @@ class LTLiabForm(FlaskForm):
     borrow_date = DateField('Loan Borrow Date', validators = [InputRequired('Please enter the date the loan was received.')])
     payment_start_date = DateField('Loan Payment Start Date', validators = [InputRequired('Please enter the date that repayment is expected to start.')])
     amount_borrowed = DecimalField('Amount Received', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
+    account_affected= SelectField('Paid Using', choices = paid_using)
+    increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
 
 class CLLiabForm(FlaskForm): 
     liab_name = StringField('Liability Name', validators = [InputRequired('Please enter liability name, e.g Notes Payable.')])
@@ -114,13 +120,17 @@ class CLLiabForm(FlaskForm):
 class ExpForm(FlaskForm): 
     expense_name = StringField('Expense  Name', validators = [InputRequired('Please enter the name of the asset.')])
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
+    expense_type = RadioField('Increase or Decrease', choices = expense_type)
     expense_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
-
+    increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
+    
 class RevForm(FlaskForm): 
     revenue_name = StringField('Asset Name', validators = [InputRequired('Please enter the name of the asset.')])
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
+    revenue_type = RadioField('Increase or Decrease', choices = revenue_type)
     revenue_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
+    increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
