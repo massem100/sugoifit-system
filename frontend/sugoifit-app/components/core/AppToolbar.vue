@@ -2,7 +2,6 @@
   <v-toolbar
     id="core-toolbar"
     flat
-    prominent
     style="background: #7CC3CD;"
   >
     <div class="v-toolbar-title">
@@ -26,8 +25,7 @@
     <v-toolbar-items>
       <v-flex
         align-center
-        layout
-        py-2
+        layout       
       >
         <v-text-field
           v-if="responsiveInput"
@@ -82,7 +80,7 @@
         <nuxt-link
           v-ripple
           class="toolbar-items"
-          to="/user-profile"
+          to="/settings"
           title="User profile"
         >
           <v-icon color="white">mdi-account</v-icon>
@@ -152,11 +150,11 @@
           }
         })
         .then(function (jsonResponse) {
-          return jsonResponse.json();
+          return jsonResponse.data;
         })
         .then(function (jsonResponse) {
           // this.setUsername(null);
-          this.$router.push({ path: '/auth/login'});
+          $nuxt.$router.push({ name:'auth-Login'});
         }), error =>{
             console.log(error);
           }},        

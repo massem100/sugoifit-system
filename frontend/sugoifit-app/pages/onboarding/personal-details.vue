@@ -1,7 +1,5 @@
 <template>
     <div class="about-business-page "> 
-        <onboarding-side class = "side-bar m-0 h-100 "> </onboarding-side>
-
         <div class="about-business-main">
             <div class="about-business-heading">
                 <h5> Personal Details </h5>
@@ -10,12 +8,7 @@
 
             <div class="about-business-form-div">
                 <b-form action="" class="about-business-form">
-                    <!-- about-business Name 
-                    about-business Address
-                    Telephone 
-                    Type of about-business , Nature of about-business
-                    about-business Description
-                    about-business Industry -->
+                   
                     <div class="about-business-form-item">
                        
                         <label for = "comp-name">Company Name</label>
@@ -60,10 +53,10 @@
 
 
 <script > 
-import onboardingSide from '../../components/onboarding-side.vue'
 export default{
-  components: { onboardingSide },
-    name: 'about-personalDetails', 
+  components: {  },
+    name: 'personal-details', 
+    layout: 'onboarding',
     data () { 
         return { 
             corp_types: [

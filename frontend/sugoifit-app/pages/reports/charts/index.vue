@@ -73,7 +73,7 @@
 
     export default {
         name: "Reports",
-        layout: 'dashboard',
+        layout: 'DashboardLayout',
         mixins: [commonChartDetails],
         mounted() {
             this.selectedTitle = this.titleOptions[0]

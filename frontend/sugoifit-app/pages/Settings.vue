@@ -28,12 +28,7 @@ import EditProfile from '../../sugoifit-app/components/settings/editprofile';
 import EditWebsite from '../../sugoifit-app/components/settings/editwebsite';
 export default {
     name: "Settings",
-    layout: "dashboard",
-    components: {
-      EditCompany,
-      EditProfile,
-      EditWebsite
-    }
+    layout: 'DashboardLayout'
 };
 </script>
 

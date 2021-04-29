@@ -1,6 +1,7 @@
+# from flask import current_app
 # from app import db
 # from app.model.auth import User
-
+# db = current_app.db
 # class Accounttype(db.Model):
 #     __tablename__ = 'accounttype'
 

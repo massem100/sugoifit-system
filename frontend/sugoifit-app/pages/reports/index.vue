@@ -1,9 +1,7 @@
 <template>
   <client-only>
     <div class="d-flex flex-row ">
-      <!-- Side Bar Component -->
-      <side-bar class="side-bar">Check</side-bar>
-
+      
       <div class="dashboard-main">
         <!-- Overview -->
         <b-row class="justify-content-between mx-0 flex-nowrap">
@@ -39,8 +37,7 @@
 </template>
 
 <script>
-    import SideBar from '../../components/SideBar.vue';
-
+  
     import {
         barChartData,
         barChartOptions,
@@ -57,7 +54,6 @@
         },
         components: {
 
-            SideBar
         },
         head() {
             return {

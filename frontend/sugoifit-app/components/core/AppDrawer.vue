@@ -1,12 +1,13 @@
 <template>
-  <v-navigation-drawer
-    id="app-drawer"
-    :value="drawer"
+  <v-navigation-drawer id="app-drawer"
+    v-model= "drawer"
     app
-    floating
+    flat
+    clipped
     mobile-break-point="991"
     width="280"
-    style="background: #C7ECF2;"
+    style="background: #A7E4EC;"
+    
     @input="navChanged"
   >
     <v-layout
@@ -155,9 +156,21 @@
                         ]
                     },
                     {
-                        to: '/typography',
+                        to: '',
                         icon: 'mdi-format-font',
-                        text: 'Financial Statements'
+                        text: 'Financial Statements',
+                        subItems: [
+                            {
+                                to: '/invoice/balance-sheet/1',
+                                icon: 'mdi-view-dashboard',
+                                text: 'Balance Sheet'
+                            },
+                            {
+                                to: '/invoice/profit-loss/1',
+                                icon: 'mdi-view-dashboard',
+                                text: 'Profit-Loss'
+                            }
+                        ]
                     },
                     {
                         to: null,
@@ -204,6 +217,7 @@
             },
             navChanged(e) {
                 this.setDrawer(e)
+                
             }
         }
     }

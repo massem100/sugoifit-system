@@ -1,8 +1,6 @@
 <template>
-  <div class="d-flex">
-    <side-bar></side-bar>
+  <div class="d-flex mx-3">
     <b-container fluid>
-        <top-bar/>
         <settings-top/>
         <validation-observer ref="observer" v-slot="{handleSubmit}">
         <b-form id = "websiteForm" @submit.stop.prevent="handleSubmit(onSubmit)">
@@ -137,7 +135,7 @@
             </b-row>
         </b-form>
         </validation-observer>
-        <!--
+        
         <table class="table">
             <thead class="thead-dark">
                 <tr>
@@ -164,13 +162,10 @@
                 </tr>
             </tbody>
         </table>
-        --> 
-        <b-table :items = "section"> </b-table>
-          <h6>{{section}}</h6>
-          <!-- <h1>{{msg}}</h1> -->
     </b-container>
   </div>
 </template>
+<!--
 
 <script>
     import {ValidationObserver, ValidationProvider} from "vee-validate";

@@ -1,9 +1,11 @@
+from flask import current_app as app
 from app import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash
 import enum 
 from datetime import datetime
-
+# with app.app_context():
+#     db = app.db
 class Busines(db.Model, UserMixin):
     __tablename__ = 'business'
 
@@ -102,6 +104,8 @@ class UserCredential(db.Model, UserMixin):
     def is_active(self):
         """Flask-Login: return True if the user is active."""
         return self.active
+    def __repr__(self): 
+        return "<User Credentials {} UserID:{}".format(self.cid, self.userID)
 
 # class RoleType(enum.Enum): 
 #   owner = 'Business Owner'

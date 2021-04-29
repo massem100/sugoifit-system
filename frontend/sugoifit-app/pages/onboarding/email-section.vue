@@ -1,10 +1,7 @@
 <template>
-<div class="d-flex flex-row w-100 color-bg"> 
-    <onboarding-side class = "side-bar h-100 m-0"></onboarding-side>
 
-     <div class="email-create-section w-100" >
-                
-                <div class="email-form-section  d-flex flex-column">
+     <div class=" email-create-section w-100" >
+                <div class="email-form-section h-25 d-flex flex-column">
                     <div class = "email-heading">
                         <h4 class ="mb-4">Set up your Business Profile.</h4>
                         <p class="email-text mb-5"> Managing your business has never been this easy. <br>
@@ -12,30 +9,31 @@
                         </p>
                     </div>
                     <div class = "email-container  ml-3">
-                        <form action="" class="email-form ">
-                                <label class ="d-flex text-center align-items-center" for="email">Email Address</label>
-                                <input type="text" name ="email" class="form-control" >
-                        </form>
+                    
+                        <label class ="d-flex text-center align-items-center" for="email">Email Address</label>
+                        <input type="text" name ="email" class="form-control" >
+                    
                         <div @click ="ChangeComp" class="get-started btn btn-sm ">Get Started <span></span></div>
                     </div>
 
                 </div>
-                <div class="w-40">
+                <div class="w-40 ">
                     <img class="business-image" src="~assets/uploads/business_board.jpg" alt="">
                     <img class="doodle" src="~assets/uploads/linecurve.svg" alt="">
                 </div>
-            </div>
     </div>
+   
 </template>
 
 
 
 <script>
-import OnboardingSide from '/components/onboarding-side.vue';
+
 
 export default {
-    components: {OnboardingSide},
-    name: 'email-section', 
+    components: {},
+    layout: 'onboarding',
+    name: 'emailsection', 
     data(){
         return{
 
@@ -56,12 +54,13 @@ export default {
 <style scoped>
     
     .email-create-section{
-        margin-top: 8rem;
-        margin-left: 2rem;
+        margin-top: 5rem;
+        margin-left: 4rem;
         display: flex;
         flex-direction: row;
         min-height:100vh;
-           }
+        
+    }
     .business-image{
         margin-left: 2rem;
         width: 28rem;
@@ -69,13 +68,11 @@ export default {
         border-radius: 20px;
     }
     
-    .email-form-section{
-        /* display: flex; */
-    }
-      .email-heading{
+   
+    .email-heading{
         margin: 20px 20px 20px 20px;
 
-        font: 400 1rem "Poppins";
+        font : 400 1rem "Poppins";
     }
 
     .email-heading h4{ 
@@ -164,7 +161,7 @@ export default {
         position: fixed;
     }
     .email-create-section{
-        margin-left: 18rem;
+        margin-left: 4rem;
         /* align-items: center; */
         justify-content: center ;
     }

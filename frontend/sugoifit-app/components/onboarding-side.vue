@@ -14,13 +14,17 @@
                 <li><span>1</span>Email Details</li>
                 <li><span>2</span>Company Type </li>
                 <!-- <li class = ""><span>3</span>Business Details </li> -->
+                <div class = "d-flex flex-row"> 
+
+               
                <li><span>3</span></li>
-                <b-nav-item-dropdown text="Business Details" right>
+                <b-nav-item-dropdown  text="Business Details" right>
                     
                     <b-dropdown-item class = "list-style-none" href="#">Corporation</b-dropdown-item>
                     <b-dropdown-item href="#">About your business</b-dropdown-item>
                    
                 </b-nav-item-dropdown>
+                 </div>
                 <li><span>4</span> Team </li>
                 <li><span>5</span> Personal Details</li>
             </ul>
@@ -125,30 +129,7 @@ export default {
         /* height: 100%;
         /* z-index: 1; */
     }
-    
-    /* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
-    .color-bg{
-        /* background-color: green; */
-    }
-    
-
-}
-
-/* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) {
-    .color-bg{
-        /* background-color: purple; */
-    }
-   
-}
-
-/* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 768px) {
-    .color-bg{
-        /* background-color: yellow; */
-    }
-   }
+ 
 
 /* Large devices (laptops/desktops, 992px and up) */
 @media only screen and (min-width: 992px) {
@@ -161,11 +142,4 @@ export default {
     }
 }
 
-/* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-width: 1200px) {
-    .color-bg{
-        /* background-color: blue; */
-    }
-    
-}
 </style>

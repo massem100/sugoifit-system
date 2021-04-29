@@ -1,12 +1,6 @@
 import pytest
 # from app import add_twoN
-from app import views
-
-
-
-# print(app)
-
-
+from app from views
 
 # def add_twoN(a,b): 
 #     return a+b

@@ -1,9 +1,7 @@
 <template>
 <div class = "d-flex flex-column"> 
-<nav-header></nav-header>
-
     <div class = "fin-page m-0 "> 
-        <side-bar class = ""> </side-bar>
+
 
         <b-table :items = "stmt"> </b-table>
           <!-- <h6>{{stmt}}</h6> -->
@@ -16,11 +14,8 @@
 
 
 <script> 
-import NavHeader from '../../components/nav-header.vue';
-// import axios from 'axios';
-import SideBar from '../../components/SideBar.vue'
 export default {
-  components: { SideBar, NavHeader }, 
+  components: {  }, 
     name: 'IncomeStmt',
     layout: 'dashboard',
     data(){ 

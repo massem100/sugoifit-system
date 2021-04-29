@@ -1,8 +1,6 @@
 <template>
-  <div class="d-flex">
-    <side-bar></side-bar>
+  <div class="d-flex mx-3">
     <b-container fluid>
-        <top-bar/>
         <settings-top/>
         <validation-observer ref="observer" v-slot="{handleSubmit}">
         <b-form @submit.stop.prevent="handleSubmit(onSubmit)">
@@ -92,6 +90,7 @@
 
     export default {
         name: "business-create",
+        layout: 'DashboardLayout',
         components: {
             ValidationProvider,
             ValidationObserver,
