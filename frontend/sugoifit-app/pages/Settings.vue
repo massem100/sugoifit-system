@@ -1,30 +1,42 @@
 <template>
-  <div class="d-flex flex-row">
-    <side-bar></side-bar>
+  <b-container>
+      <div>
 
-    <!-- Quick Actions -->
-    <div class="ml-5">
-      <top-bar class="top-bar"/>
-      <h3 class="m-2">Settings</h3>
-      <settings-top/>
-    </div>
+        <!-- Quick Actions-->
+        <b-tabs content-class="mt-3">
+          <b-tab title="Your Profile" active>
+            <p>I'm the first tab</p>
+            <EditProfile />
+          </b-tab>
+          <b-tab title="Your Company">
+            <p>I'm the second tab</p>
+            <EditCompany />
+          </b-tab>
+          <b-tab title="Your Website">
+            <p>I'm the second tab</p>
+            <EditWebsite />
+          </b-tab>
+        </b-tabs>
+      </div>
 
-  </div>
+    </b-container>
 </template>
 
 <script>
+import EditCompany from '../../sugoifit-app/components/settings/editcompany';
+import EditProfile from '../../sugoifit-app/components/settings/editprofile';
+import EditWebsite from '../../sugoifit-app/components/settings/editwebsite';
 export default {
     name: "Settings",
-    
+    layout: "dashboard",
+    components: {
+      EditCompany,
+      EditProfile,
+      EditWebsite
+    }
 };
 </script>
 
 <style scoped>
 
-.box {
-  width: 130px;
-  height: 120px;
-  text-align: center;
-  font-size: 30px;
-}
 </style>
