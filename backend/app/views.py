@@ -675,13 +675,13 @@ def products():
     return jsonify(data_list)
 
 
-@app.route('/api/product/classify', methods = ['GET', 'POST'])
-
+#@app.route('/api/product/classify', methods = ['GET', 'POST'])
+@app.route('/api/classify', methods = ['GET', 'POST'])
 
 #safety stock = (max daily sales x max lead time in days) - (average daily sales x average lead time in days)
 
 def product_classify():
-    product_list = defaultdict(list)
+    #product_list = defaultdict(list)
     annual_consum_val = []
     total_consum_val = 0
     total_units_sold = 0
@@ -715,8 +715,13 @@ def product_classify():
         percentage = (total_valB / total_consum_val) * 100
         if percentage >=15:
             break
+
+    data = []
+    #Convert to dict
+    for product in annual_consum_val:
+        data.append({'prodID':product[0], 'con_val': str(product[1]), 'grade':product[2]})
     
-    return jsonify({'products': annual_consum_val})
+    return jsonify({'products': data})
 
     # Find Percentage of Annual Units Sold 
     # for product in product_sales: 
