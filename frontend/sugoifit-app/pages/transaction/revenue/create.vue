@@ -9,13 +9,13 @@
       >
         <b-form class="" id="AddNCAForm" @submit.stop.prevent="handleSubmit(AddCA)">
           <b-row class="m-1 w-100">
-            <b-col cols="12" class="text-primary mb-3 pl-0">Add Current Asset</b-col>
+            <b-col cols="12" class="text-primary mb-3 pl-0">Add Revenue</b-col>
 
             <b-col md="6" cols="12" class="bg-secondary px-5 py-3">
               <div class="mb-2">
-                <validation-provider v-slot="{ errors }" rules="required" name="asset name">
-                  <label for="asset_name">Asset Name</label>
-                  <b-form-input v-model="form.asset_name" type="text" id="asset_name" required
+                <validation-provider v-slot="{ errors }" rules="required" name="Revenue name">
+                  <label>Revenue Name</label>
+                  <b-form-input v-model="form.revenue_name" type="text" required
                                 :state="getValidationState(errors)">
                   </b-form-input>
                   <b-form-invalid-feedback> {{ errors[0] }}</b-form-invalid-feedback>
@@ -53,11 +53,27 @@
                 </validation-provider>
               </div>
               <div class="mb-2"><label for="description">Description</label>
-                <b-form-textarea v-model="form.asset_desc" type="text" id="description"
+                <b-form-textarea v-model="form.revenue_desc" type="text" id="description"
                                  maxlength="200"></b-form-textarea>
               </div>
             </b-col>
             <b-col md="6" cols="12" class="px-3">
+               <div class="mb-2">
+                <validation-provider v-slot="{ errors }" rules="required" name="tan_in">
+                  <label>Revenue Type</label>
+                  <b-form-radio-group v-model="form.revenue_type"
+                                      :options="inc_dec"
+                                      class="border border-radius px-4 py-3"
+                                      style="Background: #E5E5E5; "
+                                      stacked
+                                      :state="getValidationState(errors)"
+                  >
+                  </b-form-radio-group>
+                  <b-form-invalid-feedback>
+                    {{ errors[0] }}
+                  </b-form-invalid-feedback>
+                </validation-provider>
+              </div>
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="tan_in">
                   <label>Increase/Decrease</label>
@@ -96,7 +112,7 @@
             </b-col>
           </b-row>
           <!-- Submit and Reset -->
-          <b-row  class="text-right my-4 px-3">
+          <b-row class="text-right my-4 px-3">
             <b-button type="submit" variant="primary">Submit</b-button>
             <b-button type="reset" variant="danger" @click="resetForm()">Reset</b-button>
           </b-row>
@@ -135,13 +151,13 @@
         },
         methods: {
             AddCA() {
-                let PATH_API = 'transaction/currentasset';
+                let PATH_API = 'transaction/revenue';
                 let form_data = new FormData();
                 Object.entries(this.form).forEach(entry => {
                     const [key, value] = entry;
                     form_data.append(key, value);
                 });
-                form_data.append('form_id', 'AddCAForm');
+                form_data.append('form_id', 'ExpForm');
                 this.$axios.post(`/api/${PATH_API}`, form_data, {
                     headers: {
                         'contentType': 'application/json',

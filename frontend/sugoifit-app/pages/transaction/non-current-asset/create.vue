@@ -2,7 +2,10 @@
   <div class="d-flex ">
   <b-container fluid>
     <h3  class="mt-3 ml-0">Add Transaction</h3>
-    <b-modal id = "confirmmodal" type = "primary" class="bg-primary" > <h5>Check</h5></b-modal>
+    <b-modal id = "confirmmodal" type = "primary" class="bg-primary" >
+      Are you sure you want to add this transaction?
+
+       </b-modal>
 
     <transaction-top class =   "w-100"/>
     <validation-observer
@@ -10,7 +13,7 @@
       v-slot="{handleSubmit}"
     >
       
-      <b-form class ="" id= "AddNCAForm" v-b-modal.confirmmodal @submit.stop.prevent="handleSubmit(AddNCA)">
+      <b-form class ="" id= "AddNCAForm"  @submit.stop.prevent="handleSubmit(AddNCA)">
           <b-row cols = "12" class = "m-1 S "> 
             <b-col  class = "m-1">
               
