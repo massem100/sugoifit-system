@@ -82,7 +82,7 @@
 
     export default {
         name: "Reports",
-        layout: 'dashboard',
+        layout: 'DashboardLayout',
         mixins: [commonChartDetails],
         data() {
             return {

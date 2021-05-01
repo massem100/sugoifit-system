@@ -2,7 +2,7 @@
 <div class = "d-flex flex-column"> 
     <div class = "fin-page m-0 "> 
 
-
+        <h5> Financial Statements</h5>
         <b-table :items = "stmt"> </b-table>
           <!-- <h6>{{stmt}}</h6> -->
           <!-- <h1>{{msg}}</h1> -->
@@ -17,7 +17,7 @@
 export default {
   components: {  }, 
     name: 'IncomeStmt',
-    layout: 'dashboard',
+    layout: 'DashboardLayout',
     data(){ 
         return { 
             msg: 'Checking', 

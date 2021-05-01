@@ -3,6 +3,7 @@ import jwt
 import secrets
 import hashlib, random
 from functools import wraps
+from datetime import datetime
 from app import  db, login_manager,  csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission
 from app.forms import RegisterForm, LoginForm
@@ -195,7 +196,7 @@ def register():
             db.session.add(user_cred)
             db.session.add(user_roles)
             db.session.commit()
-            return jsonify(success =[{'message': 'Successfully registered'}])
+            return jsonify({'message': 'Successfully registered'})
 
         else: 
             # What to do if existing business is not none and email is not None

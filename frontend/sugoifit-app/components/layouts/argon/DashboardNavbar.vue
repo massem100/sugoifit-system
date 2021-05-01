@@ -1,6 +1,7 @@
 <template>
   <base-nav container-classes="container-fluid" class="navbar-top border-bottom navbar-expand "
             :class="{ 'bg-primary navbar-light': type === 'default' }">  
+            <i @click = "toggleSidebar" class = "ni ni-lg ni-align-left-2 text-white mt-2 mb-2 mr-4 "></i>
           <h4 class = "font-size-lg font-weight-normal mt-1 mr-3 text-white"> SugoiFit Financials</h4>
          
     <!-- Search form -->

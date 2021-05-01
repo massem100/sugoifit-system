@@ -2,7 +2,7 @@
   <footer class="footer px-4 mx-2">
     <div class="row align-items-center justify-content-lg-between">
       <div class="col-lg-6">
-     <p>enter footer stuff.</p>
+     <p>© 2021 SugoiFit Financials</p>
       </div>
 
     </div>

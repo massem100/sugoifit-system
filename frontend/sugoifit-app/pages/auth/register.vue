@@ -1,7 +1,13 @@
 <template> 
-    <div class=" w-100 h-100 bg-white">
-        <div class="container d-flex flex-column align-items-center">
-            
+    <b-col class=" w-100 h-100 bg-white">
+      <base-alert v-if= "alert_message" 
+                    class = "mt-5 d-flex flex-row justify-content-center" 
+                    style="width: 25rem; 
+                           height: 3rem; " 
+                    dismissible      
+                    type= "primary">{{alert_message}}
+        </base-alert>
+        <b-col class="container d-flex flex-column align-items-center">
             <h2 class ="text-center"> Register </h2>   
             <p class ="login-text text-center"> Welcome back, enter your username and password</p>
             
@@ -21,17 +27,17 @@
                 <label class ="form-label mt-4" for="business_name">Business Name</label> 
                 <b-form-input class ="form-control mt-2" type="text" name="business_name" id="business_name"></b-form-input>
             
-                <div class ="d-flex flex-column align-items-center">
+                <b-col class ="d-flex flex-column align-items-center">
                     <div  id="msgBox">
                         <p> {Display error messages here} </p>
                     </div>
                     <button  class="btn submit" id="submit"> Submit </button>
                     <p class ="login-text m-3">Already have an account? <nuxt-link :to="{name:'auth-Login'}"> Login here. </nuxt-link></p>
-                </div>
+                </b-col>
             </b-form>
                 
-            </div>      
-    </div>
+            </b-col>      
+    </b-col>
 </template>
 
 <script>
@@ -46,7 +52,8 @@ export default {
   },
     data(){
         return{
-           token: ''
+           token: '', 
+           alert_message: ''
         }
     }, 
     methods:{
@@ -62,10 +69,11 @@ export default {
                 }
               })
               .then( jsonResponse =>{
-                return jsonResponse.json();
+                return jsonResponse.data;
               })
               .then( jsonResponse =>{
                 console.log(jsonResponse);
+                self.alert_message = jsonResponse.message;
               })
             }, 
                     

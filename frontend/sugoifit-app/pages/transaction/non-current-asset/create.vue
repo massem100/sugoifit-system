@@ -1,13 +1,16 @@
 <template>
   <div class="d-flex ">
   <b-container fluid>
-    <h3 class="mt-3 ml-0">Add Transaction</h3>
+    <h3  class="mt-3 ml-0">Add Transaction</h3>
+    <b-modal id = "confirmmodal" type = "primary" class="bg-primary" > <h5>Check</h5></b-modal>
+
     <transaction-top class =   "w-100"/>
     <validation-observer
       ref="observer"
       v-slot="{handleSubmit}"
     >
-      <b-form class ="" id= "AddNCAForm" @submit.stop.prevent="handleSubmit(AddNCA)">
+      
+      <b-form class ="" id= "AddNCAForm" v-b-modal.confirmmodal @submit.stop.prevent="handleSubmit(AddNCA)">
           <b-row cols = "12" class = "m-1 S "> 
             <b-col  class = "m-1">
               
@@ -291,6 +294,7 @@
 <script>
     // import axios from '@nuxtjs/axios';
     import {ValidationObserver, ValidationProvider} from "vee-validate";
+import Modal from '../../../components/argon-core/Modal.vue';
 
     export default {
         name: "non-current-asset-create",
@@ -298,7 +302,8 @@
         components: {
             ValidationProvider,
             ValidationObserver,
-        },
+      
+                Modal  },
         data() {
             return {
                 reduct_hide: false,

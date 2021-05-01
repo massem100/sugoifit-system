@@ -23,7 +23,7 @@
 <script>
 
     export default {
-        layout: 'dashboard',
+        layout: 'DashboardLayout',
         name: "Reports",
         data() {
             return {

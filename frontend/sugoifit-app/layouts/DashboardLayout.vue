@@ -2,7 +2,7 @@
   <div class="wrapper">
     <notifications></notifications>
     <side-bar>
-      <template :slot-scope="props" slot="links">
+      <template slot="links">
            
           <div  class="d-flex flex-row"> 
             <div  class="profile mt-3 mb-2 ">
@@ -10,30 +10,57 @@
                 <h6 id="profile_ID" class="my-1"> ID 1234567</h6>
                 <h6 id="role" class="my-1"> Role: Business Owner</h6>
               </div>
-              <img id="profile-icon" class ="mr-2 w-25 h-25" :src="user" alt="" aspect-ratio="0.8" />
+              <!-- <img id="profile-icon" class ="mr-2 w-25 h-25" :src="user" alt="" aspect-ratio="0.8" /> -->
             </div>
         <sidebar-item
           :link="{
             name: 'Dashboard',
             icon: 'ni ni-shop text-primary',
-            path: '/dashboard',
+            path: '/',
           }"
         >
         </sidebar-item>
         <sidebar-item
           
           :link="{
-            name: 'Manage Products',
+            name: 'Products',
             icon: 'ni ni-bag-17 text-primary',
-            path: '/manageproducts',
+            path: '',
           }"
         >
+        <sidebar-item
+            opened
+            :link="{
+              name: 'Manage Products',
+              icon: 'ni ni-bag-17 text-primary',
+              path: '/manageproducts',
+            }"
+          >
+          </sidebar-item>
           <sidebar-item
             opened
             :link="{
               name: 'All Products',
               icon: 'ni ni-bag-17 text-primary',
-              path: '/allproducts',
+              path: '/manageproducts/list',
+            }"
+          >
+          </sidebar-item>
+          <sidebar-item
+            opened
+            :link="{
+              name: 'Add Products',
+              icon: 'ni ni-bag-17 text-primary',
+              path: '/manageproducts/add',
+            }"
+          >
+          </sidebar-item>
+          <sidebar-item
+            opened
+            :link="{
+              name: 'Product Analytics',
+              icon: 'ni ni-bag-17 text-primary',
+              path: '/manageproducts/analytics',
             }"
           >
           </sidebar-item>
@@ -43,7 +70,7 @@
           :link="{
             name: 'Manage Sales',
             icon: 'ni ni-bag-17 text-primary',
-            path: '/manageproducts',
+            path: '/managesales',
           }"
         >
           <sidebar-item
@@ -60,7 +87,7 @@
             :link="{
               name: 'Financials',
               icon: 'ni ni-bag-17 text-primary',
-              path: '/allproducts',
+              path: '/financialstmts/income-stmt',
             }"
           >
           </sidebar-item>
@@ -68,7 +95,7 @@
             :link="{
               name: 'Reports',
               icon: 'ni ni-bag-17 text-primary',
-              path: '/allproducts',
+              path: '/reports/',
             }"
           >
           <sidebar-item
@@ -101,9 +128,9 @@
 
       <div class = "" @click="$sidebar.displaySidebar(true)"
       >
-        <nuxt></nuxt>
+        <nuxt class = "flex-grow-1"></nuxt>
       </div>
-      <content-footer v-if="!$route.meta.hideFooter"></content-footer>
+      <content-footer class = "flex-shrink-0" v-if="!$route.meta.hideFooter"></content-footer>
     </div>
   </div>
 </template>
@@ -155,4 +182,10 @@ export default {
 };
 </script>
 <style lang="scss">
+.wrapper {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    
+}
 </style>

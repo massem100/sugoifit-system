@@ -12,7 +12,30 @@ product = Blueprint('product', __name__)
 """
 --------------------------------------- Product/Services Routes ----------------------------------------------------------
 """
+
+
+# @app.route('/dev/<int:id>/', methods=['PUT'])
+# def update_dev(id):
+#     dev = Developer.query.get(id)
+#     dev.name = request.json.get('name', dev.name)
+#     db.session.commit()
+#     return jsonify({'dev': dev.serialize()})
+
+@product.route('/api/product/<prodID>', methods =['PUT'])
+def update_product(prodID):
+    product = Product.query.get(prodID)
+    # What parts to
+    return 1
+
+@product.route('/api/product/<prodID>', methods = ['DELETE'])
+def delete_product(prodID): 
+    product = Product.query.get(prodID)
+    db.session.delete(product)
+    db.session.commit() 
+    return jsonify({'message': 'Product {} has been deleted.'}.format(prodID))
+
 @product.route('/api/newproduct', methods = ['GET', 'POST'])
+
 def new_product():
     form = newProductForm(request.form)
 
