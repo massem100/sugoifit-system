@@ -12,6 +12,15 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Password', validators=[InputRequired('Please enter a password.')])
     business_name = StringField('Business Name', validators=[InputRequired('Please enter your business name.')])
     
+class newProductForm(FlaskForm):
+    product_name = StringField('Product Name', validators=[InputRequired('Please enter the product name, e.g. x shampoo.')])
+    quantity = StringField('Quantity', validators=[InputRequired('Please enter the quantity')])
+    uom = StringField('Unit of Measurement', validators=[InputRequired('Please enter the unit of measurement')])
+    unit_price = StringField('Unit Price', validators=[InputRequired('Please enter the unit price')])
+    tax = StringField('Tax Percent', validators=[InputRequired('Please enter the tax percent')])
+    status = StringField('Product Status', validators=[InputRequired('Please enter the product status')])
+    image_file = FileField('Image', validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'Images only!')])
+
 class LoginForm(FlaskForm):
     email = EmailField('Email', validators = [InputRequired('Please enter your email address e.g. johndoe@XXXX.XXX.'), Email()])
     password = PasswordField('Password', validators = [InputRequired('Please enter a password.')]) 

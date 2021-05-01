@@ -27,9 +27,9 @@
                     <div class="top">
                         <div class="right-text" >
                             <h3>Cost Breakdown</h3>
-                            <p>Item Cost: ${{ tprice }} </p>
+                            <p id="tprice">Item Cost: ${{ tprice }} </p>
                             <p>Delivery Cost/Pick up: ${{ deliver }}</p>
-                            <p>Total Cost: ${{ tcost }}</p>
+                            <p id="tcost">Total Cost: ${{ tcost }}</p>
                         </div>
                         <!--<div class="right-btn">
                             <button id="checkout-btn" type="submit">Checkout</button>
@@ -42,8 +42,9 @@
                             <h3>You're Almost Done</h3>
                             <p>Please fill out the form below.</p>
                             
-                            <b-form id="orderForm" method="post" @submit.prevent="custOrder" enctype="multipart/form-data">
-                                <b-form-input type="hidden" name="token" :value="token"></b-form-input>
+                            <b-form id="orderForm" method="POST" @submit.prevent="custOrder" enctype="multipart/form-data">
+                                <input type="hidden" name="_token" :value="token">
+
                                 <div class="business-form-item">
                                     <label for="fname"> First Name </label>
                                     <b-form-input placeholder= "" name="fname" id = "fname" required></b-form-input>
@@ -75,7 +76,7 @@
                                 </div>
 
                                 <div class="business-form-item">
-                                    <button @click="custOrder" type="button" class="order-submit">Order</button>
+                                    <button type="submit" class="order-submit"> Order </button>
                                 </div>
                             </b-form>
                            
@@ -114,23 +115,24 @@ export default {
     },
     methods: {
         custOrder: function () {
-            let self = this;
+           let self = this;
             let orderForm = document.getElementById("orderForm");
             let form_data = new FormData(orderForm);
-            let tprice = this.tprice
+            form_data.append("tcost",this.tcost);
 
-            fetch("http://localhost:8080/api/order", {
-                method: "POST",
-                body: {form_data, tprice},
-                headers: {
-                    "Accept": "application/json",
-                },
-                credentials: "same-origin",
-            })
-            .then( response => response.json() );
-            
-            console.log(response);
-        },
+            let PATH_API = 'placeorder';
+                this.$axios.post(`/api/${PATH_API}`, form_data, {
+                  headers: {
+                  'contentType': 'application/json',
+                }
+              })
+              .then( jsonResponse =>{
+                return jsonResponse.json();
+              })
+              .then( jsonResponse =>{
+                console.log(jsonResponse);
+              })
+            }, 
         
             
     }

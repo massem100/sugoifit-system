@@ -6,17 +6,26 @@ from datetime import datetime, timedelta
 # from app import   db, login_manager, cors, csrf_, principal, admin_permission, \
 #                             owner_permission, employee_permission, fin_manger_permission, jwt_token
 # WTF Forms and SQLAlchemy Models
-from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm,orderForm, LTLiabForm, CAForm,ExpForm, RevForm
+from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm, orderForm, newProductForm
 from app.model import  accounts, auth, sales, transactions
-from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order
+from app.model.sales import Product, ProductSaleItem
+from app.schema.sales import products_schema
 
 from app.model.financial_statement import Financialstmt, Financialstmtline, Financialstmtlineseq, Financialstmtlinealia,Financialstmtdesc 
 from sqlalchemy import func, inspection, event
 from flask import  request, jsonify, flash, session, _request_ctx_stack, g
 from werkzeug.utils import secure_filename
 from flask import  current_app as app
+from werkzeug.security import generate_password_hash, check_password_hash
+
+# Flask-Login imports for session management.
+from flask_login import logout_user, current_user, login_required, login_user
+from flask_principal import Principal, Permission, Identity, AnonymousIdentity
+from flask_principal import RoleNeed, UserNeed, identity_changed, identity_loaded
+import json
 
 
+token =''
 
 """
 --------------------------------------- Form Error Catcher ----------------------------------------------------------

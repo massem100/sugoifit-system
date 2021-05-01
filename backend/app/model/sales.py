@@ -1,13 +1,14 @@
 from flask import current_app
 from app import db 
 from app.model.auth import Busines
+from xlrd.timemachine import unicode
 
 # db = current_app.db
 
 class Customer(db.Model):
     __tablename__ = 'customer'
 
-    custID = db.Column(db.Integer, primary_key=True)
+    custID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     fname = db.Column(db.String(100))
     lname = db.Column(db.String(100))
     trn = db.Column(db.Integer)
@@ -69,14 +70,14 @@ class Sale(db.Model):
 class Product(db.Model):
     __tablename__ = 'product'
 
-    prodID = db.Column(db.Integer, primary_key=True)
+    prodID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     prodName = db.Column(db.String(100))
     unit_price = db.Column(db.DECIMAL(10, 2))
     Unit = db.Column(db.DECIMAL(10, 2))
     limitedTime = db.Column(db.DateTime())
     taxPercent = db.Column(db.DECIMAL(3, 2))
-    grade = db.Column(db.String(5))
+    #grade = db.Column(db.String(5))
     prodStatus = db.Column(db.String(25))
     image = db.Column(db.String(50))
 
@@ -324,7 +325,7 @@ class ConService(db.Model):
 
 
 class Order(db.Model):
-    __tablename__ = 'order'
+    __tablename__ = 'custorder'
 
     orderID = db.Column(db.Integer, primary_key=True)
     order_tot = db.Column(db.DECIMAL(10, 2))
@@ -362,8 +363,8 @@ class Order(db.Model):
 class Orderdetail(db.Model):
     __tablename__ = 'orderdetails'
 
-    orderID = db.Column(db.ForeignKey('order.orderID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False)
-    detailsID = db.Column(db.Integer, primary_key=True, nullable=False)
+    orderID = db.Column(db.ForeignKey('custorder.orderID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False)
+    detailsID = db.Column(db.String(10), primary_key=True, nullable=False)
     prodID = db.Column(db.String(10))
     serviceID = db.Column(db.String(10))
     quantity = db.Column(db.Integer)
@@ -391,8 +392,8 @@ class Orderdetail(db.Model):
 class Receipt(db.Model):
     __tablename__ = 'receipt'
 
-    receiptID = db.Column(db.Integer, primary_key=True)
-    orderID = db.Column(db.ForeignKey('order.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    receiptID = db.Column(db.String(10), primary_key=True)
+    orderID = db.Column(db.ForeignKey('custorder.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     DATE_issued = db.Column(db.Date)
 
@@ -419,8 +420,8 @@ class Receiptdetail(db.Model):
     __tablename__ = 'receiptdetails'
 
     receiptID = db.Column(db.ForeignKey('receipt.receiptID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, unique=True)
-    rdetailsID = db.Column(db.Integer, primary_key=True)
-    orderID = db.Column(db.ForeignKey('order.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    rdetailsID = db.Column(db.String(10), primary_key=True)
+    orderID = db.Column(db.ForeignKey('custorder.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     prodID = db.Column(db.ForeignKey('product.prodID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     serviceID = db.Column(db.ForeignKey('service.serviceID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     quantity = db.Column(db.Integer)
