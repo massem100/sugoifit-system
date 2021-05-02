@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.2",
+    "@fortawesome/vue-fontawesome": "^2.0.2",
     "@fullcalendar/core": "^4.0.2",
     "@fullcalendar/daygrid": "^4.0.1",
     "@fullcalendar/interaction": "^4.0.2",
@@ -63,6 +64,7 @@
   },
   "devDependencies": {
     "@fortawesome/free-brands-svg-icons": "^5.15.2",
+    "@fortawesome/free-regular-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@nuxtjs/eslint-config": "^5.0.0",
     "@nuxtjs/eslint-module": "^3.0.2",

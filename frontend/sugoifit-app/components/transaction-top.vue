@@ -13,18 +13,18 @@
     </b-popover>
     <button class="btnStyle" id="liabilityBtn" tabindex="0">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
-      <span> Liabillity</span>
+      <span>Add Liability</span>
     </button>
     <b-popover target="liabilityBtn" triggers="hover" placement="bottom" custom-class="custom-popover">
       <div class="d-flex flex-column">
-        <b-link class="pop-link" :to="{name:'transaction-long-term-liability-create'}">Long Term Liability</b-link>
+        <b-link class="pop-link" :to="{name:'transaction-long-term-liability-create'}"> Long Term Liability</b-link>
         <hr class="my-0"/>
         <b-link class="pop-link" :to="{name:'transaction-current-liability-create'}">Liability</b-link>
       </div>
     </b-popover>
     <b-link class="btnStyle pop-link" :to="{name:'transaction-expenses-create'}">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
-      <span>  Expense</span>
+      <span> Add  Expense</span>
     </b-link>
     <!-- <b-link class="btnStyle pop-link" :to="{name:'transaction-purchases-create'}">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
@@ -36,7 +36,7 @@
     </b-link> -->
     <b-link class="btnStyle pop-link" :to="{name:'transaction-equity-create'}">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
-      <span>  Equity</span>
+      <span> Add Equity</span>
     </b-link>
      <!-- <b-link class="btnStyle pop-link" :to="{name:'transaction-supplier-create'}">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>

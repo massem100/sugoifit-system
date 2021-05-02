@@ -133,7 +133,7 @@ def all_product():
     return jsonify(data_list)
 
 #@app.route('/api/product/classify', methods = ['GET', 'POST'])
-@app.route('/api/classify', methods = ['GET', 'POST'])
+@product.route('/api/classify', methods = ['GET', 'POST'])
 
 #safety stock = (max daily sales x max lead time in days) - (average daily sales x average lead time in days)
 
@@ -196,8 +196,7 @@ def product_classify():
 
 
 
-
-@app.route('/api/checkout-products', methods = ['GET'])
+@product.route('/api/checkout-products', methods = ['GET'])
 def checkoutproducts():
     message = {}
     data = {}

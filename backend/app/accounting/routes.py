@@ -80,7 +80,7 @@ def ca_transaction():
             
             transaction_inputs = [current_user.busID, lifeSpan, dep_type, transaction_date, amount]
 
-            
+            tag="tag"
             # Get ID of Non Current Asset to increment 
             last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
             last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)

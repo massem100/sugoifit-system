@@ -92,7 +92,7 @@
 
     export default {
         name: "profile-create",
-        layout:'dashboard',
+        layout:'DashboardLayout',
         components: {
             ValidationProvider,
             ValidationObserver,

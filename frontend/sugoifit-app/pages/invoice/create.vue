@@ -1,6 +1,5 @@
 <template>
   <div class="d-flex mx-3">
-    <side-bar></side-bar>
     <b-container fluid>
       <top-bar/>
       <h3 class="m-2">Create Invoice</h3>
@@ -192,6 +191,7 @@
 
     export default {
         name: "invoice-create",
+        layout: 'DashboardLayout',
         components: {
             ValidationProvider,
             ValidationObserver,

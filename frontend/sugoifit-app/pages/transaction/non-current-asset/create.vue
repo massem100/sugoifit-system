@@ -1,26 +1,56 @@
 <template>
-  <div class="d-flex ">
+  <div class="d-flex">
   <b-container fluid>
-    <h3  class="mt-3 ml-0">Add Transaction</h3>
-    <b-modal id = "confirmmodal" type = "primary" class="bg-primary" >
-      Are you sure you want to add this transaction?
+      <base-alert v-if= "alert_message" 
+                    class = "mt-5 d-flex flex-row justify-content-center" 
+                    style="width: 25rem; 
+                           height: 3rem; 
+                           z-index:1;" 
+                    dismissible      
+                    type= "primary">{{alert_message}}
+      </base-alert>
+        <b-row>
+          <back-button class="mt-4 "></back-button>
+          
+          <b-col>
+            <h3  class="mt-3 ml-0"> Manage Transactions </h3>
+             <p class = "mb-2 mt-2 "> 
+              Transactions are used to automatically generate your financials. 
+              Keep track of your daily transactions.
+            </p>
+          </b-col>
+        </b-row>
+        
+        <b-modal ref="confirmModal" 
+                 id = "confirmModal" 
+                  >
+            Are you sure you want to submit this transaction?
+            <template 
+                    class = "bg-primary" 
+                    v-slot:modal-title> 
+                    Confirmation Popup
+            </template>
+            <template  v-slot:modal-footer>
+                <b-button @click="modalCancel" id = "modal-cancel" variant = "outline-secondary">Cancel</b-button>
+                <b-button @click="modalSubmit" id = "modal-submit" variant="primary">Submit </b-button>
+            </template>
+              
+        </b-modal>
 
-       </b-modal>
-
-    <transaction-top class =   "w-100"/>
-    <validation-observer
-      ref="observer"
-      v-slot="{handleSubmit}"
-    >
+        <transaction-top class = "d-flex justify-content-center w-100"/>
+        <validation-observer
+        ref="observer"
+        v-slot="{handleSubmit}"
+        >
       
-      <b-form class ="" id= "AddNCAForm"  @submit.stop.prevent="handleSubmit(AddNCA)">
+      <b-form class ="" id= "AddNCAForm"   @submit.stop.prevent="handleSubmit(launchConfirm)">
           <b-row cols = "12" class = "m-1 S "> 
             <b-col  class = "m-1">
               
               <!-- Add Non Current Asset heading -->
               <b-col cols="12" class="text-primary mb-3 pl-0" xl="8" md="8">Add Non Current Asset</b-col>
               <!-- Major Form Fields -->
-              <b-col cols = "12" class = "ml-1 mt-4 bg-secondary">
+              <b-col cols = "12" class = "ml-1 mt-4 ">
               <!-- Asset Name -->
                 <b-col cols = "8" class="mb-2   pl-0" xl="9" md="6" sm="12">
                   <validation-provider v-slot="{ errors }" rules="required" name="asset name" >
@@ -285,7 +315,7 @@
           </b-row>
           <!-- Submit and Reset -->
               <b-row cols="12" class="text-right my-2">
-                <b-button type="submit" variant="primary">Submit</b-button>
+                <b-button type="submit" variant="primary" >Submit</b-button>
                 <b-button type="reset" variant="danger" @click="resetForm()">Reset</b-button>
               </b-row>
       </b-form>
@@ -298,6 +328,9 @@
     // import axios from '@nuxtjs/axios';
     import {ValidationObserver, ValidationProvider} from "vee-validate";
 import Modal from '../../../components/argon-core/Modal.vue';
+import BaseAlert from '../../../components/argon-core/BaseAlert.vue';
+import BackButton from '../../../components/argon-core/BackButton.vue';
+
 
     export default {
         name: "non-current-asset-create",
@@ -306,11 +339,15 @@ import Modal from '../../../components/argon-core/Modal.vue';
             ValidationProvider,
             ValidationObserver,
       
-                Modal  },
+                Modal,
+                BaseAlert,
+                BackButton,
+             },
         data() {
             return {
                 reduct_hide: false,
                 selected: '',
+                alert_message:'',
                 form: {
                     date: new Date().toISOString()
                 },
@@ -366,25 +403,38 @@ import Modal from '../../../components/argon-core/Modal.vue';
                 });
 
             },
-            AddNCA: function(){
-              let self = this;
-              let PATH_API = 'transaction/noncurrentasset';
-              let NCAForm = document.getElementById('AddNCAForm');
-              let form_data = new FormData(NCAForm);
-              form_data.append('form_id','AddNCAForm' );
-              this.$axios.post(`/api/${PATH_API}`, form_data, {
-                  headers: {
-                  'contentType': 'application/json',
-                  "Authorization": "Bearer " + localStorage.getItem("token"),
-                }
-              })
-              .then( jsonResponse =>{
-                return jsonResponse.json();
-              })
-              .then( jsonResponse =>{
-                console.log(jsonResponse);
-              })
+            modalCancel(){
+                this.$refs['confirmModal'].hide();
             },
+            modalSubmit(){
+                let self = this;
+                let PATH_API = 'transaction/noncurrentasset';
+                let NCAForm = document.getElementById('AddNCAForm');
+                let form_data = new FormData(NCAForm);
+                form_data.append('form_id','AddNCAForm' );
+                this.$axios.post(`/api/${PATH_API}`, form_data, {
+                        headers: {
+                        'contentType': 'application/json',
+                        "Authorization": "Bearer " + localStorage.getItem("token"),
+                        }
+                })
+                .then( jsonResponse =>{
+                    return jsonResponse.json();
+                })
+                .then( jsonResponse =>{
+                    this.$refs['confirmModal'].hide();
+                    console.log(jsonResponse);
+                    console.log(form_data);
+                    self.alert_message = jsonResponse.message;
+                }).catch(err => {
+                        console.log(err);
+                })
+        },
+            async launchConfirm(){
+                let self = this;
+                const submit = await this.$refs['confirmModal'].show();
+              
+            }
             
         }
     }

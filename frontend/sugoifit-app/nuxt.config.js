@@ -14,10 +14,14 @@ export default {
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},
       {hid: 'description', name: 'description', content: ''},
     ],
-    link: [{rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}, {
-      rel: 'preconnect',
-      href: 'https://fonts.gstatic.com'
-    }, {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap'}]
+    link: [
+      {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
+      {rel: 'preconnect', href: 'https://fonts.gstatic.com' }, 
+      {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap'},
+      {rel: 'stylesheet', href: '/assets/css/font-awesome/css/font-awesome.min.css'}
+   
+
+    ]
 
   },
 
@@ -25,6 +29,7 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    '@fortawesome/fontawesome-svg-core/styles.css',
     'static/scss/website.css',
     '~assets/style/app.css',
     "assets/css/nucleo/css/nucleo.css",
@@ -44,6 +49,7 @@ export default {
     // {src: '~/plugins/vuetify'},
     {src: '~/plugins/chartist', mode: 'client'},
     {src: '~/plugins/vue-ellipse-progress', ssr: false},
+    {src: '~/plugins/fontawesome.js', ssr: false},
   ],
   // vuetify: {
   //   treeShake: true,
@@ -74,7 +80,6 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    // '@nuxtjs/fontawesome',
     [
       'nuxt-fontawesome', {
         imports: [
@@ -88,7 +93,7 @@ export default {
          }
        ]
       }
-], 
+],
         ['@nuxtjs/proxy']
   ],
   proxy:{

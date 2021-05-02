@@ -4,19 +4,39 @@
     <side-bar>
       <template slot="links">
            
-          <div  class="d-flex flex-row"> 
-            <div  class="profile mt-3 mb-2 ">
-                <h6 id="profile_name" class="my-1 font-weight-bold"> Jane S.</h6>
-                <h6 id="profile_ID" class="my-1"> ID 1234567</h6>
-                <h6 id="role" class="my-1"> Role: Business Owner</h6>
+          <div  class="d-flex flex-row justify-content-center"> 
+            <div  class="profile mt-3 mb-3 ">
+                <h5 id="profile_name" class="my-1 font-weight-bold"> Jane S.</h5>
+                <h5 id="profile_ID" class="my-1"> ID 1234567</h5>
+                <h5 id="role" class="my-1"> Role: Business Owner</h5>
               </div>
-              <!-- <img id="profile-icon" class ="mr-2 w-25 h-25" :src="user" alt="" aspect-ratio="0.8" /> -->
+              <img id="profile-icon" class ="mt-3 ml-2 mr-2 w-25 h-25" :src="user" alt="" aspect-ratio="1" />
+             
             </div>
+            <hr
+              class="my-3"
+              style="
+                border: 0;
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                min-width: 80%;
+                overflow: visible;
+                box-sizing: content-box;
+                height: 0;
+              "
+            />
         <sidebar-item
           :link="{
             name: 'Dashboard',
-            icon: 'ni ni-shop text-primary',
+            icon: ['fas', 'plus'],
             path: '/',
+          }"
+        >
+        </sidebar-item>
+        <sidebar-item
+          :link="{
+            name: 'Manage Transactions',
+            icon: ['fab', 'receipt'],
+            path: '/manage-transaction',
           }"
         >
         </sidebar-item>
@@ -24,24 +44,16 @@
           
           :link="{
             name: 'Products',
-            icon: 'ni ni-bag-17 text-primary',
+            icon: ['fas', 'plus'],
             path: '',
           }"
         >
-        <sidebar-item
-            opened
-            :link="{
-              name: 'Manage Products',
-              icon: 'ni ni-bag-17 text-primary',
-              path: '/manageproducts',
-            }"
-          >
-          </sidebar-item>
+        
           <sidebar-item
             opened
             :link="{
               name: 'All Products',
-              icon: 'ni ni-bag-17 text-primary',
+              icon: ['fas', 'plus'],
               path: '/manageproducts/list',
             }"
           >
@@ -50,7 +62,7 @@
             opened
             :link="{
               name: 'Add Products',
-              icon: 'ni ni-bag-17 text-primary',
+              icon: ['fas', 'plus'],
               path: '/manageproducts/add',
             }"
           >
@@ -59,7 +71,7 @@
             opened
             :link="{
               name: 'Product Analytics',
-              icon: 'ni ni-bag-17 text-primary',
+              icon: ['fas', 'plus'],
               path: '/manageproducts/analytics',
             }"
           >
@@ -69,7 +81,7 @@
           
           :link="{
             name: 'Manage Sales',
-            icon: 'ni ni-bag-17 text-primary',
+            icon: ['fas', 'plus'],
             path: '/managesales',
           }"
         >
@@ -77,31 +89,72 @@
             opened
             :link="{
               name: 'Orders',
-              icon: 'ni ni-bag-17 text-primary',
+              icon: ['fas', 'plus'],
               path: '/allproducts',
             }"
           >
           </sidebar-item>
+         
         </sidebar-item>
+         <sidebar-item
+            :link="{
+              name: 'Invoices',
+              icon: ['fas', 'plus'],
+              path: '/invoice/',
+            }"
+          >
+            <sidebar-item
+              :link="{
+                name: 'Create Invoice',
+                icon: ['fas', 'plus'],
+                path: '/invoice/create',
+              }"
+            >
+            </sidebar-item>
+            <sidebar-item
+              :link="{
+                name: 'All Invoices',
+                icon: ['fas', 'plus'],
+                path: '/invoice/list',
+              }"
+            >
+            </sidebar-item>
+          </sidebar-item>
         <sidebar-item
             :link="{
               name: 'Financials',
-              icon: 'ni ni-bag-17 text-primary',
-              path: '/financialstmts/income-stmt',
+              icon: ['fas', 'plus'],
+              path: '/financialstmts/',
             }"
           >
+          <sidebar-item
+            :link="{
+              name: 'Balance Sheet',
+              icon: ['fas', 'plus'],
+              path: '/financialstmts/balance-sheet/_slug',
+            }"
+          >
+          </sidebar-item>
+          <sidebar-item
+            :link="{
+              name: 'Income Statement',
+              icon: ['fas', 'plus'],
+              path: '/financialstmts/profit-loss/_slug',
+            }"
+          >
+          </sidebar-item>
           </sidebar-item>
         <sidebar-item
             :link="{
               name: 'Reports',
-              icon: 'ni ni-bag-17 text-primary',
+              icon: ['fas', 'chart-bar'],
               path: '/reports/',
             }"
           >
           <sidebar-item
             :link="{
               name: 'Report Generation',
-              icon: 'ni ni-bag-17 text-primary',
+              icon: ['fas', 'plus'],
               path: '/reports/charts',
             }"
           >
@@ -167,6 +220,7 @@ export default {
   },
   data(){
     return{
+      user: require('/assets/uploads/user-icon.svg'),
       
     }
   },

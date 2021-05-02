@@ -12,16 +12,16 @@
 <script>
 export default {
     name: "Settings",
-    layout: 'DashboardLayout'
+    layout: 'DashboardLayout',
 };
 </script>
 
 <style scoped>
 
-.box {
+/* .box {
   width: 130px;
   height: 120px;
   text-align: center;
   font-size: 30px;
-}
+} */
 </style>

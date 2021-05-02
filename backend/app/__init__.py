@@ -11,6 +11,7 @@ from flask_principal import RoleNeed, UserNeed
 from flask import Blueprint
 from flask import current_app
 from werkzeug.utils import import_string
+from flask_marshmallow import Marshmallow
 
 db = SQLAlchemy()
 principal = Principal()
@@ -18,6 +19,7 @@ login_manager = LoginManager()
 csrf_ = csrf
 # JWT Authorization Setup
 jwt = JWTManager()
+ma = Marshmallow
 
 
 

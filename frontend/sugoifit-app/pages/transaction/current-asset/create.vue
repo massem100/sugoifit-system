@@ -1,13 +1,47 @@
 <template>
-  <div class="d-flex mx-3">
+  <div class="d-flex ">
     <b-container fluid>
-      <h3 class="m-2">Add Transaction</h3>
-      <transaction-top/>
+
+       <base-alert v-if= "alert_message" 
+                    class = "mt-5 d-flex flex-row justify-content-center" 
+                    style="width: 25rem; 
+                           height: 3rem; 
+                           z-index:1;" 
+                    dismissible      
+                    type= "primary">{{alert_message}}
+      </base-alert>
+      <b-row>
+        <back-button class="mt-4 "></back-button>
+        <b-col>
+           <h3 class="mt-4 ml-0">Manage transactions</h3>
+            <p class = "mb-2 mt-2 "> 
+                Transactions are used to automatically generate your financials. 
+                Keep track of your daily transactions.
+              </p>
+        </b-col>
+      </b-row>
+     
+      <b-modal ref="confirmModal" 
+                 id = "confirmModal" 
+                  >
+            Are you sure you want to submit this transaction?
+            <template 
+                    class = "bg-primary" 
+                    v-slot:modal-title> 
+                    Confirmation Popup
+            </template>
+            <template  v-slot:modal-footer>
+                <b-button @click="modalCancel" id = "modal-cancel" variant = "outline-secondary">Cancel</b-button>
+                <b-button @click="modalSubmit" id = "modal-submit" variant="primary">Submit </b-button>
+            </template>
+              
+        </b-modal>
+      <transaction-top class="d-flex- justify-content-center"/>
       <validation-observer
         ref="observer"
         v-slot="{handleSubmit}"
       >
-        <b-form class="" id="AddNCAForm" @submit.stop.prevent="handleSubmit(AddCA)">
+        <b-form class="" id="AddNCAForm" @submit.stop.prevent="handleSubmit(launchConfirm)">
           <b-row class="m-1 w-100">
             <b-col cols="12" class="text-primary mb-3 pl-0">Add Current Asset</b-col>
 
@@ -108,6 +142,9 @@
 
 <script>
     import {ValidationObserver, ValidationProvider} from "vee-validate";
+    import Modal from '../../../components/argon-core/Modal.vue';
+    import BaseAlert from '../../../components/argon-core/BaseAlert.vue';
+    import BackButton from '../../../components/argon-core/BackButton.vue';
 
     export default {
         layout: 'DashboardLayout',
@@ -115,10 +152,15 @@
         components: {
             ValidationProvider,
             ValidationObserver,
+            Modal,
+            BaseAlert,
+            BackButton
         },
         data() {
             return {
+                alert_message:'',
                 form: {
+
                     transaction_date: new Date().toISOString().substr(0, 10)
                 },
                 inc_dec: [
@@ -134,7 +176,10 @@
             }
         },
         methods: {
-            AddCA() {
+            modalCancel(){
+                this.$refs['confirmModal'].hide();
+            },
+            modalSubmit() {
                 let PATH_API = 'transaction/currentasset';
                 let form_data = new FormData();
                 Object.entries(this.form).forEach(entry => {
@@ -152,8 +197,19 @@
                         return jsonResponse.json();
                     })
                     .then(jsonResponse => {
+                        this.$refs['confirmModal'].hide();
                         console.log(jsonResponse);
-                    })
+                        console.log(form_data);
+                        self.alert_message = jsonResponse.message;
+                    }).catch(err => {
+                         
+                          console.log(err);
+                      });
+            },
+            async launchConfirm(){
+                let self = this;
+                const submit = await this.$refs['confirmModal'].show();
+              
             },
             getValidationState(errors) {
                 return errors.length > 0 ? false : null;

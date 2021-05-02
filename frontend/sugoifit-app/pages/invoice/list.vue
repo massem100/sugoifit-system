@@ -26,7 +26,7 @@
 
     export default {
         components: {InvoiceCard},
-        layout: 'dashboard',
+        layout: 'DashboardLayout',
         name: "invoice-list",
         data() {
             return {

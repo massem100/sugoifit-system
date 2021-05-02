@@ -17,14 +17,16 @@
       <template v-if="addLink">
         <span class="nav-link-text">
           {{ link.name }} <b class="caret"></b>
+          <font-awesome-icon :icon="['fas', 'chevron-down']"></font-awesome-icon>
         </span>
       </template>
       <template v-else>
-        <i :class="link.icon"></i>
+        <font-awesome-icon class = "text-primary mr-2" :icon="link.icon"></font-awesome-icon>
         <div v-if="link.name == 'Examples (API)'">
           <span class="nav-link-text" style="color: #3cab79"
             >{{ link.name }} <b class="caret"></b
-          ></span>
+          >
+          </span>
         </div>
         <div v-else>
           <span class="nav-link-text"
@@ -59,10 +61,12 @@
           <span class="nav-link-text">{{ link.name }}</span>
         </template>
         <template v-else>
-          <i :class="link.icon"></i>
+          <font-awesome-icon class = "text-primary mr-2 " :icon="link.icon"></font-awesome-icon>
           <span class="nav-link-text">{{ link.name }}</span>
         </template>
       </component>
+
+      
     </slot>
   </component>
 </template>

@@ -1,13 +1,36 @@
 <template>
   <div class="d-flex mx-3">
     <b-container fluid>
+      <base-alert v-if= "alert_message" 
+                    class = "mt-5 d-flex flex-row justify-content-center" 
+                    style="width: 25rem; 
+                           height: 3rem; 
+                           z-index:1;" 
+                    dismissible      
+                    type= "primary">{{alert_message}}
+      </base-alert>
       <h3 class="m-2">Add Transaction</h3>
+      <b-modal ref="confirmModal" 
+                 id = "confirmModal" 
+                  >
+            Are you sure you want to submit this transaction?
+            <template 
+                    class = "bg-primary" 
+                    v-slot:modal-title> 
+                    Confirmation Popup
+            </template>
+            <template  v-slot:modal-footer>
+                <b-button @click="modalCancel" id = "modal-cancel" variant = "outline-secondary">Cancel</b-button>
+                <b-button @click="modalSubmit" id = "modal-submit" variant="primary">Submit </b-button>
+            </template>
+              
+        </b-modal>
       <transaction-top/>
       <validation-observer
         ref="observer"
         v-slot="{handleSubmit}"
       >
-        <b-form id="LTLiabForm" @submit.stop.prevent="handleSubmit(onSubmit)">
+        <b-form id="LTLiabForm" @submit.stop.prevent="handleSubmit(launchConfirm)">
           <b-row>
             <b-col cols="12" class="text-primary mb-3 pl-0">Add Long Term Liability</b-col>
 
@@ -180,6 +203,9 @@
 
 <script>
     import {ValidationObserver, ValidationProvider} from "vee-validate";
+    import Modal from '../../../components/argon-core/Modal.vue';
+    import BaseAlert from '../../../components/argon-core/BaseAlert.vue';
+
 
     export default {
         layout: 'DashboardLayout',
@@ -187,9 +213,12 @@
         components: {
             ValidationProvider,
             ValidationObserver,
+            Modal,
+            BaseAlert,
         },
         data() {
             return {
+                alert_message: '',
                 form: {
                     borrow_date: new Date().toISOString().substr(0, 10),
                     payment_start_date: new Date().toISOString().substr(0, 10),
@@ -210,8 +239,10 @@
             getValidationState(errors) {
                 return errors.length > 0 ? false : null;
             },
-
-            onSubmit() {
+            modalCancel(){
+                this.$refs['confirmModal'].hide();
+            },
+            modalSubmit() {
                 let PATH_API = 'transaction/ltliabform';
                 let form_data = new FormData();
                 Object.entries(this.form).forEach(entry => {
@@ -229,8 +260,18 @@
                         return jsonResponse.json();
                     })
                     .then(jsonResponse => {
+                        this.$refs['confirmModal'].hide();
                         console.log(jsonResponse);
-                    })
+                        console.log(form_data);
+                        self.alert_message = jsonResponse.message;
+                    }).catch(err => {
+                          console.log(err);
+                      });
+            },
+            async launchConfirm(){
+                let self = this;
+                const submit = await this.$refs['confirmModal'].show();
+              
             },
             resetForm() {
                 this.form = {};

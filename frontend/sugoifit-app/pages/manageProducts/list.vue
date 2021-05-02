@@ -2,7 +2,7 @@
   <div class="d-flex mx-3">
     <b-container fluid>
       <b-row>
-        <b-col cols="12" class="text-info mb-3 font-weight-bold">View All Products</b-col>
+        <b-col cols="12" class="text-info mt-4 mb-3 font-weight-bold">View All Products</b-col>
         <b-col cols="12" md="6" lg="4" class="d-flex">
           <b-form-input v-model="search"
                         placeholder="enter product name or ID"
@@ -58,10 +58,10 @@
           }
         },
         async created() {
-            const response = await fetch('http://localhost:8080/api/products');
-            const data = await response.json();
-            this.products = data;
-            console.log(this.products);
+            // const response = await axios.get('http://localhost:8080/api/products');
+            // const data = await response.json();
+            // this.products = data;
+            // console.log(this.products);
         },
         methods: {
           /* ADD AN ALERT OPTION BEFORE DELETING */
