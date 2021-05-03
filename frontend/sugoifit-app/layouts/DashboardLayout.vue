@@ -174,16 +174,26 @@
         />
       </template>
     </side-bar>
+    
     <div class="main-content">
       <dashboard-navbar
         :type="$route.name === 'alternative' ? 'light' : 'default'"
       ></dashboard-navbar>
 
-      <div class = "" @click="$sidebar.displaySidebar(true)"
+      <div class = "" 
       >
-        <nuxt class = "flex-grow-1"></nuxt>
+      <base-alert   v-if="alert.message"
+                    :class="`alert ${alert.type}`"
+                    style="
+                           height: 3.5rem; 
+                           width:100%;
+                           z-index:1;" 
+                    dismissible      
+                    type= "secondary">Success: {{alert.message}}
+      </base-alert>
+        <nuxt class = ""></nuxt>
       </div>
-      <content-footer class = "flex-shrink-0" v-if="!$route.meta.hideFooter"></content-footer>
+      <content-footer class = "" v-if="!$route.meta.hideFooter"></content-footer>
     </div>
   </div>
 </template>
@@ -211,18 +221,31 @@ import DashboardNavbar from "~/components/layouts/argon/DashboardNavbar.vue";
 import ContentFooter from "~/components/layouts/argon/ContentFooter.vue";
 import DashboardContent from "~/components/layouts/argon/Content.vue";
 import Vuex from "vuex";
+import BaseAlert from '../components/argon-core/BaseAlert.vue';
 
 export default {
   components: {
     DashboardNavbar,
     ContentFooter,
     DashboardContent,
+    BaseAlert,
   },
   data(){
     return{
       user: require('/assets/uploads/user-icon.svg'),
       
     }
+  },
+  computed: {
+        alert () {
+            return this.$store.state.alert
+        }
+    },
+  watch:{
+        $route (to, from){
+            // clear alert on location change
+            this.$store.dispatch('alert/clear');
+        }
   },
   methods: {
     initScrollbar() {

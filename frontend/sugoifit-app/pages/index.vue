@@ -74,14 +74,15 @@
                     </ul>
                 </b-col>
                 </div>
-                <line-chart
+                <!-- <line-chart
                 :height="200"
                 ref="bigChart"
+               :chart-data="bigLineChart.chartData"
                 
                 >
-                <!-- :chart-data="bigLineChart.chartData"
-                :extra-options="bigLineChart.extraOptions" -->
-                </line-chart>
+                
+                 :extra-options="bigLineChart.extraOptions" 
+                </line-chart> -->
             </card>
             </b-col>
         <b-col class="col-lg-5 p-2 ">
@@ -112,14 +113,15 @@
                     </ul>
                 </div>
                 </div>
-                <bar-chart
+                <!-- <bar-chart
                 :height="200"
                     ref="bigChart"
+                :chart-data="bigLineChart.chartData"
                 >
                 </bar-chart>
-            
-                <!-- :chart-data="bigLineChart.chartData"
-                :extra-options="bigLineChart.extraOptions" -->
+             -->
+             
+                <!-- :extra-options="bigLineChart.extraOptions" -->
     
             </card>
             </b-col>
@@ -182,7 +184,8 @@ export default {
                       { age: 21, first_name: 'Larsen', last_name: 'Shaw' },
                       { age: 89, first_name: 'Geneva', last_name: 'Wilson' },
                       { age: 38, first_name: 'Jami', last_name: 'Carney' }
-                    ]
+                    ], 
+           
             }
         }, 
 

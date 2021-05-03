@@ -11,7 +11,7 @@
             <h2 class ="text-center"> Register </h2>   
             <p class ="login-text text-center"> Welcome back, enter your username and password</p>
             
-            <b-form id = "RegisterForm" class ="d-flex flex-column  " @submit.prevent = "LoginUser" method ="POST">                        
+            <b-form id = "RegisterForm" class ="d-flex flex-column  " @submit.prevent = "RegisterUser" method ="POST">                        
                 <label class ="form-label mt-4" for="first_name"> First Name</label> 
                 <b-form-input class ="form-control mt-2" type="text" name="first_name" id="first_name"></b-form-input>
 
@@ -57,7 +57,7 @@ export default {
         }
     }, 
     methods:{
-        LoginUser: function () {
+        RegisterUser: function () {
             let self = this;
             let regForm = document.getElementById("RegisterForm");
             let form_data = new FormData(regForm);

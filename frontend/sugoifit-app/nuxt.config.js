@@ -1,4 +1,5 @@
 // import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
+import authRoutes from './middleware/authRoutes'
 import pkg from './package'
 // const pkg = require("./package");
 export default {
@@ -18,8 +19,7 @@ export default {
       {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
       {rel: 'preconnect', href: 'https://fonts.gstatic.com' }, 
       {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap'},
-      {rel: 'stylesheet', href: '/assets/css/font-awesome/css/font-awesome.min.css'}
-   
+      
 
     ]
 
@@ -38,7 +38,8 @@ export default {
 
   ],
   router: {
-    middleware: ['csrf'],
+    middleware: ['csrf','authHeader', 'authRoutes'],
+    // prefetchLinks: false,
   },
   
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -46,19 +47,12 @@ export default {
     {src: '~/plugins/vee-validate', ssr: false},
     {src: '~/plugins/axios'},
     {src: '~/plugins/dashboard/dashboard-plugin'},
-    // {src: '~/plugins/vuetify'},
     {src: '~/plugins/chartist', mode: 'client'},
     {src: '~/plugins/vue-ellipse-progress', ssr: false},
     {src: '~/plugins/fontawesome.js', ssr: false},
+    {src: '~/plugins/addService.js', ssr: false},
   ],
-  // vuetify: {
-  //   treeShake: true,
-  //   customVariables: ['~/assets/variables.scss'],
-  //   theme: {
-  //     light: true,
-  
-  //   }
-  // },
+
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
@@ -113,10 +107,7 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    // transpile: ['vuetify/lib'],
-    // plugins: [new VuetifyLoaderPlugin()],
-    // loaders: {},
-    /*
+   /*
     ** You can extend webpack config here
     */
     extend(config, ctx) {

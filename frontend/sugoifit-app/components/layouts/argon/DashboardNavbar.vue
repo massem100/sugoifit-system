@@ -68,6 +68,7 @@ export default {
       showMenu: false,
       searchModalVisible: false,
       searchQuery: "",
+      submitted:false,
     };
   },
   methods: {
@@ -87,23 +88,17 @@ export default {
       this.$sidebar.displaySidebar(false);
     },
     Logout: function() {
-        let PATH_API = 'auth/logout';
-        this.$axios.get(`/api/${PATH_API}`, {
-          headers: {
-          'contentType': 'application/json',
-          }
-        })
-        .then(function (jsonResponse) {
-          return jsonResponse.data;
-        })
-        .then(function (jsonResponse) {
-          // this.setUsername(null);
-          $nuxt.$router.push({ name:'auth-Login'});
-        }).catch( err =>{
-            console.log(err);
-         });
-    }, 
-    
+        this.submitted = true;
+        const { dispatch } = this.$store;
+        try {
+              
+          this.$store.dispatch('authentication/logout');
+        
+        } catch (error) {
+            console.log(error);
+        }
+           
+        }
   },
 };
 </script>

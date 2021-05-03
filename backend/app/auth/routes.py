@@ -120,16 +120,25 @@ def login():
 @login_required
 def logout():
     # Clears user from session
-    logout_user()
-
-    # Flask-Principal: Remove session keys
-    for key in ('identity.name', 'identity.auth_type'):
-        session.pop(key, None)
-
-    # Flask-Principal: set user to anonymous
-    identity_changed.send(auth, identity=AnonymousIdentity())
     
-    return jsonify({'message': "You have been logged out successfully"})
+    if current_user.is_authenticated == True: 
+        logout_user()
+        
+        # Flask-Principal: Remove session keys
+        for key in ('identity.name', 'identity.auth_type'):
+            session.pop(key, None)
+
+        # Flask-Principal: set user to anonymous
+        identity_changed.send(auth, identity=AnonymousIdentity())
+
+        return jsonify({'message': "You have been logged out successfully"})
+
+    else:
+        return jsonify({'message': "You are not logged in."})
+
+
+    
+    
 
 
 @authorize.route('/api/users/register', methods=["POST"])

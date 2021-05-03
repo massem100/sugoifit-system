@@ -50,7 +50,7 @@
               <!-- Add Non Current Asset heading -->
               <b-col cols="12" class="text-primary mb-3 pl-0" xl="8" md="8">Add Non Current Asset</b-col>
               <!-- Major Form Fields -->
-              <b-col cols = "12" class = "ml-1 mt-4 ">
+              <b-col cols = "12" class = "ml-1 mt-4   ">
               <!-- Asset Name -->
                 <b-col cols = "8" class="mb-2   pl-0" xl="9" md="6" sm="12">
                   <validation-provider v-slot="{ errors }" rules="required" name="asset name" >
@@ -415,7 +415,7 @@ import BackButton from '../../../components/argon-core/BackButton.vue';
                 this.$axios.post(`/api/${PATH_API}`, form_data, {
                         headers: {
                         'contentType': 'application/json',
-                        "Authorization": "Bearer " + localStorage.getItem("token"),
+      
                         }
                 })
                 .then( jsonResponse =>{

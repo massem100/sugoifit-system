@@ -24,6 +24,7 @@
                 <b-form-input class ="form-control mt-2" 
                               type="text" 
                               name="email" 
+                              v-model="email"
                               id="email">
                 </b-form-input>
             
@@ -32,16 +33,18 @@
                 <b-form-input class ="form-control mt-2" 
                               type="password" 
                               name="password" 
+                              v-model="password"
                               id="password">
                 </b-form-input>
             
                 <b-col class =" align-items-center">
-                    <div  id="msgBox">
-                        <p> {{alert_message}} </p>
-                    </div>
+                    <!-- <div  id="msgBox">
+                        <p> {{alert.message}} </p>
+                    </div> -->
                     <button  style = "background-color: #7CC3CD;" 
                              class="d-flex flex-row justify-content-center btn submit text-white" 
-                             id="submit"> 
+                             id="submit"
+                             type="submit"> 
                              Submit 
                     </button>
                     <p class ="login-text m-3">Dont have an account? 
@@ -59,6 +62,10 @@
 
 <script>
 import BaseAlert from '../../components/argon-core/BaseAlert.vue';
+import Vuex from "vuex";
+import store from '../../store'
+import { mapGetters,  mapActions,  mapMutations} from 'vuex'
+
 
 
 export default {
@@ -70,53 +77,53 @@ export default {
     }
   },
   mounted(){
-      
-     
-  },
+
+   },
     data(){
         return{
            token: '', 
-           alert_message: ''
-           
+           email: '',
+           password: '',
+           submitted: false,
+           alert_message:'',
         }
-
     }, 
-    methods:{
-        LoginUser: function () {
-            let self = this;
+    computed: {
+        loggingIn () {
+            return this.$store.state.authentication.status.loggingIn;
+        },
+        alert () {
+            return this.$store.state.alert
+        }
+    },
+    created () {
+        // reset login status
+        this.$store.dispatch('authentication/reset');
+    },
+    methods: {
+        // ...mapActions({
+        //       login: 'authentication/login',
+        //       logout: 'authentication/logout',
+        //       reset: 'authentication/reset'
+        //   }),
+        LoginUser: function(e) {
+            this.submitted = true;
             let loginForm = document.getElementById("LoginForm");
             let form_data = new FormData(loginForm);
             form_data.append('form id', loginForm.getAttribute("id"));
-            let PATH_API = 'auth/login';
-                this.$axios({
-                    method: "POST",
-                    headers:{
-                        'Content-Type': 'application/json',
-                    },
-                    url: `/api/${PATH_API}`,
-                    data: form_data,
-                    }).then (res => {
-                        if (res.data.success["0"].message){
-                            this.alert_message = res.data.success["0"].message;
-                            var userid = res.data.success["0"].userid;
-                            let jwt_token = res.data.success["0"].token;
-                            localStorage.setItem("token", jwt_token);
-                            localStorage.setItem("userid", userid);
-                            console.info("Token generated and added to localStorage.");
-                            self.token = jwt_token;
-                            setTimeout(function(){
-                                $nuxt.$router.push({name: 'index'});
-                            }, 1000);
-
-                        }else{
-
-                        }
-                    }), error =>{
-                        console.log(error);
-                    }
-                    }
+            const { dispatch } = this.$store;
+            try {
+                 if (form_data) {
+                this.$store.dispatch('authentication/login', { form_data });
+            }
+            } catch (error) {
+                console.log(error);
+            }
+           
+        }
     }
-    }
+   
+}
 
 </script>
 
