@@ -46,7 +46,7 @@
                         </validation-provider>
                     </b-col>
 
-
+                
                 <b-col cols="12" class="text-right my-2">
                     <b-button type="submit" variant="primary">Submit</b-button>
                     <b-button type="reset" variant="danger" @click="resetForm()">Reset</b-button>
@@ -90,7 +90,7 @@
 
     export default {
         name: "business-create",
-        layout:'dashboard',
+        layout: 'DashboardLayout',
         components: {
             ValidationProvider,
             ValidationObserver,

@@ -27,63 +27,63 @@
                     <div class="top">
                         <div class="right-text" >
                             <h3>Cost Breakdown</h3>
-                            <p>Item Cost: {{ tprice }} </p>
-                            <p>Delivery Cost/Pick up: {{ deliver }}</p>
-                            <p>Total Cost: {{ tcost }}</p>
+                            <p id="tprice">Item Cost: ${{ tprice }} </p>
+                            <p>Delivery Cost/Pick up: ${{ deliver }}</p>
+                            <p id="tcost">Total Cost: ${{ tcost }}</p>
                         </div>
-                        <div class="right-btn">
+                        <!--<div class="right-btn">
                             <button id="checkout-btn" type="submit">Checkout</button>
-                        </div>
+                        </div>-->
                     </div>
 
                     <!-- customer info form -->
                     <div class="bottom">
-                        <div class="form">
+                        <div class="order-form-div">
                             <h3>You're Almost Done</h3>
                             <p>Please fill out the form below.</p>
-                            <form id="orderForm" method="post" @submit.prevent="custOrder" enctype="multipart/form-data">
-                                <input type="hidden" name="csrf_token" :value="token"/>
-                                <fieldset>
-                                    <label for="fname">First Name</label>
-                                    <input placeholder="" type="text" tabindex="1" required autofocus>
-                                </fieldset>
+                            
+                            <b-form id="orderForm" method="POST" @submit.prevent="custOrder" enctype="multipart/form-data">
+                                <input type="hidden" name="_token" :value="token">
 
-                                <fieldset>
-                                    <label for="lname">Last Name</label>
-                                    <input placeholder="" type="text" tabindex="2" required>
-                                </fieldset>
+                                <div class="business-form-item">
+                                    <label for="fname"> First Name </label>
+                                    <b-form-input placeholder= "" name="fname" id = "fname" required></b-form-input>
+                                </div>
+                                
+                                <div class = "business-form-item"> 
+                                    <label for="lname"> Last Name </label>
+                                    <b-form-input placeholder="" name="lname" id="lname"></b-form-input>
+                                </div>
 
-                                <fieldset>
+                                <div class="business-form-item">
                                     <label for="trn">TRN</label>
-                                    <input placeholder="" type="trn" tabindex="3" required>
-                                </fieldset>
-
-                                <fieldset>
+                                    <b-form-input placeholder= "" name="trn" id="trn"></b-form-input>
+                                </div>
+                                
+                                <div class="business-form-item">
                                     <label for="address">Address</label>
-                                    <input placeholder="" type="text" tabindex="4" required>
-                                </fieldset>
+                                    <b-form-input placeholder="" name="address" id="address"></b-form-input>
+                                </div>
 
-                                <fieldset>
+                                <div class="business-form-item">
                                     <label for="phone_num">Phone Number</label>
-                                    <input placeholder="" type="tel" tabindex="5" required>
-                                </fieldset>
+                                    <b-form-input placeholder="" name="phone_num" id="phone_num"></b-form-input>
+                                </div>
 
-                                <fieldset>
+                                <div class="business-form-item">
                                     <label for="email">Email Address</label>
-                                    <input placeholder="" type="email" tabindex="6" required>
-                                </fieldset>
+                                    <b-form-input placeholder="" name="email" id="email"></b-form-input>
+                                </div>
 
-                                <fieldset>
-                                    <button  name="submit" class="Submit" id="order-submit">Submit</button>
-                                </fieldset>
-                            </form>
+                                <div class="business-form-item">
+                                    <button type="submit" class="order-submit"> Order </button>
+                                </div>
+                            </b-form>
+                           
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="bottom">
-            
         </div>
         
     </div>
@@ -100,38 +100,39 @@ export default {
         return{
             cards: null,
             deliver: '',
-            token: '',
             tprice: '',
-            tcost: ''
+            tcost: '',
+            token: ''
         }
     },
     async created() {
-        const response = await fetch('http://localhost:8080/api/products');
+        const response = await fetch('http://localhost:8080/api/checkout-products');
         const data = await response.json();
-        this.cards = data.cards;
-        this.tcost = data.tcost;
-        this.deliver = data.deliver;
-        this.tprice = data.tprice;
+        this.cards = data.lst;
+        this.tcost = data.total_cost;
+        this.deliver = data.delivery_price;
+        this.tprice = data.total_price;
     },
     methods: {
         custOrder: function () {
-            let self = this;
+           let self = this;
             let orderForm = document.getElementById("orderForm");
             let form_data = new FormData(orderForm);
+            form_data.append("tcost",this.tcost);
 
-            fetch("http://localhost:8080/api/order", {
-                method: "POST",
-                body: form_data,
-                headers: {
-                    "Accept": "application/json",
-                    "X-CSRFToken": token,
-                },
-                credentials: "same-origin",
-            })
-            .then( response => response.json() );
-            
-            console.log(response);
-        },
+            let PATH_API = 'placeorder';
+                this.$axios.post(`/api/${PATH_API}`, form_data, {
+                  headers: {
+                  'contentType': 'application/json',
+                }
+              })
+              .then( jsonResponse =>{
+                return jsonResponse.json();
+              })
+              .then( jsonResponse =>{
+                console.log(jsonResponse);
+              })
+            }, 
         
             
     }
@@ -200,13 +201,6 @@ img {
     background-color: rgb(46, 158, 102);
 }
 
-.bottom{
-    flex: 1 1 200px;
-}
-
-fieldset{
-    padding: 10px 5px;
-}
 label{
   display:block;
   margin:1em 0 .2em;
@@ -222,12 +216,13 @@ input{
   resize:vertical;
 }
  
-#order-submit{
-   height: 3em;
-    width: 170px;
+.order-submit{
+    height: 2em;
+    width: 120px;
     border-radius: 15px;
     color: white;
     font-size: 15px;
+    margin:1em 0 .2em;
     background-color: rgb(46, 158, 102);
 }
 </style>

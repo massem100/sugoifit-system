@@ -52,9 +52,15 @@ ul, ol {
   height: 36px;
 }
 
+.quick_actions_div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 0px;
+}
 .quick_actions_div .quick_actions {
-  margin: 10px 15px 10px 0px;
-  background-color: #DFFBFF;
+  margin: 0px 15px 10px 5px;
+  background-color: #A7E4EC;
   width: 15rem;
   height: 5rem;
   padding: 20px;
@@ -81,4 +87,16 @@ ul, ol {
 .custom-popover .popover-body .pop-link:hover {
   background: #428B95;
   color: white;
+}
+
+.br-20 {
+  border-radius: 20px !important;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+.mh-lg {
+  min-height: 70px;
 }/*# sourceMappingURL=app.css.map */

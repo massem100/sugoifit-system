@@ -1,25 +1,15 @@
 <template>
     <div class="business-page"> 
-        <onboarding-side class = "side-bar m-0 h-100 "> </onboarding-side>
-
         <div class="business-main">
             <div class="business-heading">
                 <h5> Business Details </h5>
                 <p> Help us personalize your experience by providing some details about your business.</p>
             </div>
-
             <div class="business-form-div">
-                <b-form action="" class="business-form">
-                    <!--
-                    Type of Business , 
-                    Business Industry -->
                     <div class="business-form-item">
                         <label for = "corp_type">Type of corporation</label>
                         <b-form-select aria-placeholder="Select business type." id = corp_type :options="corp_types"> </b-form-select>
                         
-                        <!-- <div class="alert alert-info mt-4" role="alert">
-                            This is a info alert—check it out!
-                        </div> -->
                     </div>
                     
                     <div class="shares-div "> 
@@ -39,7 +29,6 @@
                         </div>
 
                        <button @click="AboutComp" type="button" class="btn bus-btn ">Next</button>
-                </b-form>
             </div>
 
 
@@ -50,10 +39,10 @@
 
 
 <script > 
-import onboardingSide from '../../../components/onboarding-side.vue'
 export default{
-  components: { onboardingSide },
+  components: {  },
     name: 'BusinessDetails', 
+    layout: 'onboarding',
     data() { 
         return { 
             corp_types: 

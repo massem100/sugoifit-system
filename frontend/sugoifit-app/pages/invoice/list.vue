@@ -26,14 +26,14 @@
 
     export default {
         components: {InvoiceCard},
-        layout: 'dashboard',
+        layout: 'DashboardLayout',
         name: "invoice-list",
         data() {
             return {
                 search: '',
                 invoices: [
                     {
-                        name: 'moniques botique',
+                        name: 'moniques boutique',
                         invoice_id: 'invoice0001',
                         balance: 1000,
                         billed_to:{
@@ -46,7 +46,7 @@
                         img:require('../../assets/uploads/onboard-img.svg')
                     },
                     {
-                        name: 'moniques botique 2',
+                        name: 'moniques boutique 2',
                         invoice_id: 'invoice0002',
                         balance: 1000,
                         billed_to:{
@@ -59,7 +59,7 @@
                         img:require('../../assets/uploads/onboard-img.svg')
                     },
                     {
-                        name: 'moniques botique 3',
+                        name: 'moniques boutique 3',
                         invoice_id: 'invoice0003',
                         balance: 1000,
                         billed_to:{

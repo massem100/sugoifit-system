@@ -10,10 +10,10 @@
     <b-link class="btnStyle pop-link" :to="{name:'settings-website-create'}">
         <span> Your Website</span>
     </b-link>
-    <b-link class="btnStyle pop-link" :to="{name:'settings-user-management'}">
+    <b-link class="btnStyle pop-link" :to="{name:''}">
         <span> User Management</span>
     </b-link>
-
+    
   </div>
 </template>
 

@@ -2,7 +2,6 @@
   <v-toolbar
     id="core-toolbar"
     flat
-    prominent
     style="background: #7CC3CD;"
   >
     <div class="v-toolbar-title">
@@ -26,8 +25,7 @@
     <v-toolbar-items>
       <v-flex
         align-center
-        layout
-        py-2
+        layout       
       >
         <v-text-field
           v-if="responsiveInput"
@@ -107,7 +105,7 @@
   export default {
     data: () => ({
       notifications: [
-
+        
       ],
       title: 'Dashboard',
       responsive: true,
@@ -152,14 +150,14 @@
           }
         })
         .then(function (jsonResponse) {
-          return jsonResponse.json();
+          return jsonResponse.data;
         })
         .then(function (jsonResponse) {
           // this.setUsername(null);
-          this.$router.push({ path: '/auth/login'});
+          $nuxt.$router.push({ name:'auth-Login'});
         }), error =>{
             console.log(error);
-          }},
+          }},        
     },
     mounted () {
       this.onResponsiveInverted()

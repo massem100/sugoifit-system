@@ -87,7 +87,7 @@
         data() {
             return {
                 invoice: {
-                    name: 'moniques botique',
+                    name: 'moniques boutique',
                     invoice_id: 'invoice0001',
                     address: 'Shop #3, xyz plaza. kingsater, Kingston',
                     balance: 1000,

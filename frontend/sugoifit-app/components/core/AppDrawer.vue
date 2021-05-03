@@ -1,12 +1,13 @@
 <template>
-  <v-navigation-drawer
-    id="app-drawer"
-    :value="drawer"
+  <v-navigation-drawer id="app-drawer"
+    v-model= "drawer"
     app
-    floating
+    flat
+    clipped
     mobile-break-point="991"
     width="280"
-    style="background: #C7ECF2;"
+    style="background: #A7E4EC;"
+    
     @input="navChanged"
   >
     <v-layout
@@ -216,6 +217,7 @@
             },
             navChanged(e) {
                 this.setDrawer(e)
+                
             }
         }
     }

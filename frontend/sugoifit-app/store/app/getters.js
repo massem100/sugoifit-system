@@ -1,8 +1,4 @@
 export default {
-  getImage(state) {
-    return state.image;
-  },
-
   getColor(state) {
     return state.color;
   },

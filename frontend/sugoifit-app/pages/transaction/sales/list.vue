@@ -4,7 +4,7 @@
       <b-row>
         <b-col cols="12" class="text-info mb-3 font-weight-bold">
           <h4>Sales</h4>
-          <h6>< Buisness name ></h6>
+          <h6> Buisness name ></h6>
         </b-col>
         <b-col cols="12" md="4">
           <b-form-datepicker v-model="start_date" class="mb-2"></b-form-datepicker>
@@ -52,7 +52,7 @@
 <script>
 
     export default {
-        layout: 'dashboard',
+        layout: 'DashboardLayout',
         name: "Reports",
         data() {
             return {
