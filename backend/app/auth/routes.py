@@ -8,7 +8,7 @@ from app import  db, login_manager,  csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission
 from app.forms import RegisterForm, LoginForm
 from app.model import  accounts, auth, sales, transactions
-
+from app.schema.role import role_schema, roles_schema
 from flask import  Blueprint, current_app,  request, jsonify, flash, session, _request_ctx_stack, g
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -96,14 +96,16 @@ def login():
             if check_password_hash(user.user_password, passwordGiven):
                 # get user id, load into session
                 login_user(user)
-                print(user)
 
                 # Flask-Principal, register user identity into the system
                 identity_changed.send(auth, identity = Identity(user.cid))
-
+         
+                user_roles = db.session.query(auth.Role).filter_by(userID = user.userID).all()
+                user_roles = roles_schema.dump(user_roles)
+                
                 payload = {'userid': user.userID}
                 token = jwt.encode(payload, current_app.config['TOKEN_KEY'], algorithm='HS256').decode('utf-8')
-                return jsonify(success = [{"token": token,"userid": user.userID, "message": "User successfully logged in."}])
+                return jsonify(success = [{"token": token, "user": user.userID, "user_role": user_roles, "message": "User successfully logged in."}])
                 
             else:
                 return jsonify({'error msg': 'Login credentials failed: Please check email or password.'})

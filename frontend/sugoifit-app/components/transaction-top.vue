@@ -2,7 +2,7 @@
   <div class="d-flex py-2 w-100 text-center flex-wrap">
     <button class="btnStyle" id="assetBtn" tabindex="0">
       <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon>
-      <span>Asset</span>
+      <span>Add Asset</span>
     </button>
     <b-popover target="assetBtn" triggers="hover" placement="bottom" custom-class="custom-popover">
       <div class="d-flex flex-column">

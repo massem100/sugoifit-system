@@ -46,6 +46,7 @@
     "scandir": "^0.1.2",
     "sweetalert2": "^9.5.4",
     "vee-validate": "^3.4.5",
+    "vue-browser-acl": "^0.15.2",
     "vue-chartist": "^2.3.1",
     "vue-chartjs": "^3.5.1",
     "vue-clipboard2": "^0.3.0",

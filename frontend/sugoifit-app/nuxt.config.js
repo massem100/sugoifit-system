@@ -51,6 +51,7 @@ export default {
     {src: '~/plugins/vue-ellipse-progress', ssr: false},
     {src: '~/plugins/fontawesome.js', ssr: false},
     {src: '~/plugins/addService.js', ssr: false},
+
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

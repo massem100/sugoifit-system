@@ -1,8 +1,7 @@
 <template>
   <div class="d-flex mx-3">
     <b-container fluid>
-      <top-bar/>
-      <h3 class="m-2">Create Invoice</h3>
+      <h3 class="m-2 mt-4">Create Invoice</h3>
       <invoice-top/>
       <validation-observer
         ref="observer"

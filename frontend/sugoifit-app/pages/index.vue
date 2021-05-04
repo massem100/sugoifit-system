@@ -24,7 +24,9 @@
       
       
          <b-row class="quick_actions_div mb-3 text-center">
-      <nuxt-link class="quick_actions " :to="{name:'manage-transaction'}">
+      <nuxt-link class="quick_actions " 
+                :to="{name:'manage-transaction'}"
+                >
         <font-awesome-icon :icon="['fas','plus']"></font-awesome-icon><span>Add Transaction</span>
       </nuxt-link>
 

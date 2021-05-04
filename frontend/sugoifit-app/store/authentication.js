@@ -1,6 +1,6 @@
 import { userService } from '../services';
 // import { userServ } from '../plugins/addService';
-const user = localStorage.getItem('userid');
+const user = localStorage.getItem('user_role');
 const initialState = user
     ? { status: { loggedIn: true }, user }
     : { status: {}, user: null };
@@ -37,13 +37,16 @@ export const mutations = {
 export const actions = {
     login({ dispatch, commit }, { form_data }) {
         commit('loginRequest', form_data.email);
-        console.log("reaching action");
         this.$userService.login(form_data)
             .then(
                 res=> {
-                
+                    dispatch('alert/success', 'User logged in successfully.',{root:true});
+
                     setTimeout(function(){
+                       
                         $nuxt.$router.push('/');
+                        dispatch('alert/clear');
+                        
                     }, 1000);
                     commit('loginSuccess', res["0"].userid);
                     

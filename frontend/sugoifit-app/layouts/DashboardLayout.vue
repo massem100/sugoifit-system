@@ -35,7 +35,7 @@
         <sidebar-item
           :link="{
             name: 'Manage Transactions',
-            icon: ['fab', 'receipt'],
+            icon: ['fas', 'receipt'],
             path: '/manage-transaction',
           }"
         >
@@ -180,18 +180,17 @@
         :type="$route.name === 'alternative' ? 'light' : 'default'"
       ></dashboard-navbar>
 
-      <div class = "" 
-      >
-      <base-alert   v-if="alert.message"
+      <div>
+      <base-alert v-if="alert.message"
                     :class="`alert ${alert.type}`"
                     style="
                            height: 3.5rem; 
                            width:100%;
                            z-index:1;" 
-                    dismissible      
-                    type= "secondary">Success: {{alert.message}}
+                    dismissible
+                     ><strong>Success:</strong> {{alert.message}}
       </base-alert>
-        <nuxt class = ""></nuxt>
+        <nuxt></nuxt>
       </div>
       <content-footer class = "" v-if="!$route.meta.hideFooter"></content-footer>
     </div>
@@ -241,7 +240,7 @@ export default {
             return this.$store.state.alert
         }
     },
-  watch:{
+  watch: {
         $route (to, from){
             // clear alert on location change
             this.$store.dispatch('alert/clear');

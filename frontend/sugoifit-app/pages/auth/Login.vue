@@ -1,13 +1,14 @@
 <template>
     
     <b-col class="d-flex flex-column justify-content-center align-items-center w-100 h-100">
-        <base-alert v-if= "alert_message" 
+        <!-- <base-alert v-if= "alert.message" 
                     class = "mt-5 d-flex flex-row justify-content-center" 
+                    :class="`alert ${alert.type}`"
                     style="width: 25rem; 
                            height: 3rem; " 
                     dismissible      
-                    type= "primary">{{alert_message}}
-        </base-alert>
+                    >{{alert.message}} 
+        </base-alert>-->
         <b-col class="d-flex flex-column align-items-center justify-content-center mt-5 h-100 ">
             <h2 class ="text-center"> Login </h2>                
             <p class ="text-center"> Welcome back, enter your username and password</p>
@@ -73,7 +74,7 @@ export default {
     name: 'auth-login',
     head(){
     return{
- 
+        title: 'Login'
     }
   },
   mounted(){
@@ -85,13 +86,13 @@ export default {
            email: '',
            password: '',
            submitted: false,
-           alert_message:'',
         }
     }, 
     computed: {
         loggingIn () {
             return this.$store.state.authentication.status.loggingIn;
         },
+
         alert () {
             return this.$store.state.alert
         }
@@ -100,11 +101,20 @@ export default {
         // reset login status
         this.$store.dispatch('authentication/reset');
     },
+    computed: {
+        alert () {
+            return this.$store.state.alert
+        }
+    },
+    watch:{
+        $route (to, from){
+            // clear alert on location change
+            this.$store.dispatch('alert/clear');
+        }
+    },
     methods: {
         // ...mapActions({
-        //       login: 'authentication/login',
-        //       logout: 'authentication/logout',
-        //       reset: 'authentication/reset'
+        //       alert_s:'alert/success'
         //   }),
         LoginUser: function(e) {
             this.submitted = true;
@@ -114,8 +124,11 @@ export default {
             const { dispatch } = this.$store;
             try {
                  if (form_data) {
-                this.$store.dispatch('authentication/login', { form_data });
-            }
+             
+                    this.$store.dispatch('authentication/login', { form_data });
+                    this.$store.dispatch('alert/clear');
+    
+                }
             } catch (error) {
                 console.log(error);
             }
