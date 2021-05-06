@@ -68,7 +68,6 @@
 <script>
     export default {
         name: "invoice-card",
-        layout: 'dashboard',
     }
 </script>
 

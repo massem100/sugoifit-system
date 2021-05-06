@@ -51,7 +51,7 @@
 
     <b-row class="mx-0">
       <b-col class="col-lg-6 ml-4 ">
-        <card type="white" header-classes="bg-transparent">
+        <card type="white" header-classes="bg-transparent" class="h-100">
           <div slot="header" class="row align-items-center">
             <b-col>
               <h6 class="text-light text-uppercase ls-1 mb-1">Overview</h6>
@@ -78,18 +78,11 @@
               </ul>
             </b-col>
           </div>
-          <line-chart
-            :height="200"
-            ref="bigChart"
-
-          >
-            <!-- :chart-data="bigLineChart.chartData"
-            :extra-options="bigLineChart.extraOptions" -->
-          </line-chart>
+          <line-chart :data="chartData" :options="chartOption" :height="250"></line-chart>
         </card>
       </b-col>
       <b-col class="col-lg-5 p-2 ">
-        <card type="white" header-classes="bg-transparent">
+        <card type="white" header-classes="bg-transparent" class="h-100">
           <div slot="header" class="row align-items-center">
             <div class="col">
               <h6 class="text-light text-uppercase ls-1 mb-1">Overview</h6>
@@ -116,15 +109,10 @@
               </ul>
             </div>
           </div>
-          <bar-chart
-            :height="200"
-            ref="bigChart"
-          >
-          </bar-chart>
-
-          <!-- :chart-data="bigLineChart.chartData"
-          :extra-options="bigLineChart.extraOptions" -->
-
+                    <bar-chart
+                      :data="barChartData" :options="barChartOption" :height="250"
+                    >
+                    </bar-chart>
         </card>
       </b-col>
     </b-row>
@@ -166,8 +154,8 @@
 
     // Charts
     import * as chartConfigs from "@/components/argon-core/Charts/config";
-    import LineChart from "@/components/argon-core/Charts/LineChart";
-    import BarChart from "@/components/argon-core/Charts/BarChart";
+    import LineChart from "@/components/charts/LineChart";
+    import BarChart from "@/components/charts/BarChart";
 
 
     export default {
@@ -181,6 +169,97 @@
         name: 'dashboard',
         data() {
             return {
+                chartData: {
+                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                    datasets: [
+                        {
+                            label: 'Income',
+                            data: [10000, 15000, 20000, 30000, 40000, 50000, 60000, 70000, 34000, 45000, 11000, 78000, 45000],
+                            borderColor: 'green',
+                            fill: false,
+                        },
+                        {
+                            label: 'Last year Income',
+                            data: [30000, 24000, 57000, 23000, 68000, 72000, 20005, 64000, 13300, 143000, 16500, 33000, 56000],
+                            borderColor: '#B3C4D4',
+                            fill: false
+                        }
+                    ]
+                },
+                barChartData: {
+                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                    datasets: [{
+                        data: [10000, 15000, 20000, 30000, 40000, 50000, 60000, 70000, 34000, 45000, 11000, 78000, 45000],
+                        fillColor: "rgba(14,72,100,1)",
+                        backgroundColor: "#33AEEF",
+                    }
+                    ]
+                },
+                chartOption: {
+                    responsive: true,
+                    legend: {
+                        display: true
+                    },
+                    title: {
+                        display: true,
+                        fontSize: 24,
+                        fontColor: '#6b7280'
+                    },
+                    tooltips: {
+                        backgroundColor: '#17BF62'
+                    },
+                    scales: {
+                        xAxes: [
+                            {
+                                gridLines: {
+                                    display: false
+                                }
+                            }
+                        ],
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true,
+                                    callback: function (value, index, values) {
+                                        return '$' + value;
+                                    }
+                                },
+                                gridLines: {
+                                    display: true
+                                }
+                            }
+                        ]
+                    }
+                },
+                barChartOption: {
+                    responsive: true,
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        backgroundColor: '#17BF62'
+                    },
+                    scales: {
+                        xAxes: [
+                            {
+                                gridLines: {
+                                    display: false
+                                }
+                            }
+                        ],
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true,
+                                    callback: function (value, index, values) {
+                                        return '$' + value;
+                                    }
+                                },
+
+                            }
+                        ]
+                    }
+                },
                 items: [
                     {age: 40, first_name: 'Dickerson', last_name: 'Macdonald'},
                     {age: 21, first_name: 'Larsen', last_name: 'Shaw'},

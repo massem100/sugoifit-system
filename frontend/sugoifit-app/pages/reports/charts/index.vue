@@ -88,7 +88,7 @@
               </div>
             </b-card-title>
             <b-card-text>
-              <line-chart :data="chartData" :options="chartData" :height="250"></line-chart>
+              <line-chart :data="chartData" :options="chartOption" :height="250"></line-chart>
             </b-card-text>
           </b-card>
         </b-col>
@@ -98,7 +98,7 @@
               <h3>Expenses</h3>
             </b-card-title>
             <b-card-text class="d-flex align-items-center justify-content-center" style="height: calc( 100% - 50px)">
-              <doughnut-chart :data="pieData" :options="pieOp" :height="250"></doughnut-chart>
+              <doughnut-chart :data="pieData" :options="pieOp" :height="200"></doughnut-chart>
             </b-card-text>
           </b-card>
         </b-col>
@@ -116,13 +116,13 @@
                   </b-tr>
                 </b-thead>
                 <b-tbody>
-                  <b-tr>
-                    <b-td>Acid Test</b-td>
+                  <b-tr v-for="(ratio,idx) in ratios" :key="idx" v-if="idx <= (maxRatio?ratios.length:4)">
+                    <b-td class="text-capitalize">{{ratio.name}}</b-td>
                     <b-td>
                       <div class="d-flex align-items-center justify-content-center">
-                        <b-progress :value="80" :max="100" class="mr-3" height="8px" variant="success"
+                        <b-progress :value="ratio.value" :max="100" class="mr-3" height="8px"
                                     style="min-width: 250px"></b-progress>
-                        <span>1:0</span>
+                        <span>{{ratio.ratio}}</span>
                       </div>
 
                     </b-td>
@@ -131,19 +131,11 @@
                     </b-td>
                   </b-tr>
                   <b-tr>
-                    <b-td>Cash Ratio</b-td>
-                    <b-td>
-                      <div class="d-flex align-items-center justify-content-center">
-                        <b-progress :value="30" :max="100" height="8px" class="mr-3" style="min-width: 250px"></b-progress>
-                        <span>2:0</span>
-                      </div>
+                    <b-td colspan="3" class="text-right">
+                      <b-button size="sm" variant="light" @click="maxRatio=!maxRatio">
+                        {{maxRatio?'See Less':'See All'}}
+                      </b-button>
                     </b-td>
-                    <b-td class="text-right">
-                       <b-button size="sm" variant="info">See more</b-button>
-                    </b-td>
-                  </b-tr>
-                  <b-tr>
-                    <b-td colspan="3" class="text-right"><b-button size="sm" variant="light">See All</b-button></b-td>
                   </b-tr>
                 </b-tbody>
               </b-table-simple>
@@ -196,6 +188,7 @@
                     revenue: 100000,
                     income: 5430000,
                 },
+                maxRatio: false,
                 chartData: {
                     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                     datasets: [
@@ -243,7 +236,7 @@
                                     }
                                 },
                                 gridLines: {
-                                    display: false
+                                    display: true
                                 }
                             }
                         ]
@@ -279,7 +272,18 @@
                     tooltips: {
                         backgroundColor: '#17BF62'
                     },
-                }
+                },
+                ratios: [
+                    {name: 'current ratio', value: '50', ratio: '1:0'},
+                    {name: 'acid test ratio', value: '10', ratio: '7:0'},
+                    {name: 'cash ratio', value: '75', ratio: '3:0'},
+                    {name: 'debt ratio', value: '95', ratio: '1:0'},
+                    {name: 'debt equity ratio', value: '25', ratio: '6:0'},
+                    {name: 'interest coverage ratio', value: '45', ratio: '1:0'},
+                    {name: 'asset turnover ratio', value: '80', ratio: '1:0'},
+                    {name: 'inventory turnover ratio', value: '5', ratio: '2:0'},
+                    {name: 'days inventory ratio', value: '65', ratio: '3:0'},
+                ]
             }
         },
         methods: {

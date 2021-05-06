@@ -1,7 +1,5 @@
 <template>
-  <div class="d-flex mx-3">
-    <b-container fluid>
-        <settings-top/>
+  <div>
         <validation-observer ref="observer" v-slot="{handleSubmit}">
         <b-form id = "websiteForm" @submit.stop.prevent="handleSubmit(onSubmit)">
             <b-row>
@@ -34,7 +32,7 @@
                         </b-form-invalid-feedback>
                         </validation-provider>
                     </b-col>
-                
+
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
                         <validation-provider v-slot="{ errors }" rules="required" name="reference number">
                         <label for="ref_no">Welcome image: </label>
@@ -49,7 +47,7 @@
                         </b-form-invalid-feedback>
                         </validation-provider>
                     </b-col>
-                  
+
 
                 <b-col cols="12" class="text-info mb-3">Product Section</b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
@@ -66,7 +64,7 @@
                         </b-form-invalid-feedback>
                         </validation-provider>
                     </b-col>
-                    
+
                 <b-col cols="12" class="text-info mb-3">Receipt Section</b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
                         <validation-provider v-slot="{ errors }" rules="required" name="receipt header">
@@ -96,7 +94,7 @@
                         </b-form-invalid-feedback>
                         </validation-provider>
                     </b-col>
-                
+
                 <b-col cols="12" class="text-info mb-3">Contact Section</b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
                         <validation-provider v-slot="{ errors }" rules="required" name="contact header">
@@ -126,8 +124,8 @@
                         </b-form-invalid-feedback>
                         </validation-provider>
                     </b-col>
-                
-                
+
+
                 <b-col cols="12" class="text-right my-2">
                     <b-button type="submit" variant="primary">Submit</b-button>
                     <b-button type="reset" variant="danger" @click="resetForm()">Reset</b-button>
@@ -162,8 +160,6 @@
                 </tr>
             </tbody>
         </table>
-   
-    </b-container>
   </div>
 </template>
 
@@ -173,7 +169,6 @@
 
     export default {
         name: "website-create",
-        layout: 'DashboardLayout',
         components: {
             ValidationProvider,
             ValidationObserver,
@@ -185,18 +180,18 @@
             }
         },
         methods: {
-            
+
             SubmitForm(){
                 let self = this;
               let PATH_API = 'test';
               let WebsiteForm = document.getElementById('websiteForm');
-              let form_data = new FormData(WebsiteForm); 
+              let form_data = new FormData(WebsiteForm);
               $axios.post(`/api/${PATH_API}`, {
                 body: form_data,
                 headers:{
                   'contentType': 'application/json',
                 }
-              })             
+              })
               .then( jsonResponse =>{
                 return jsonResponse.json();
               })
@@ -218,7 +213,7 @@
                 fetch(`/api/${PATH_API}`, {
                     method: "POST",
                     body: form_data,
-                    
+
                 })
                     .then(function (response) {
                     return response.json();
@@ -237,10 +232,10 @@
             // ViewSections: function (){
             //   let self = this;
             //   fetch("http://localhost:8080/api/testdrop",{
-            //       method: "GET", 
+            //       method: "GET",
             //       headers:{
             //         "Accept": "application/json"
-            //       }, 
+            //       },
             //       credentials: "same-origin",
             //   })
             //   .then(function (response){
@@ -253,7 +248,7 @@
             //     .catch( function(error){
             //      // console.log(error);
             //   });
-        // } 
+        // }
         }
     }
 </script>

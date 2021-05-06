@@ -3,15 +3,15 @@
     <notifications></notifications>
     <side-bar>
       <template slot="links">
-           
-          <div  class="d-flex flex-row justify-content-center"> 
+
+          <div  class="d-flex flex-row justify-content-center">
             <div  class="profile mt-3 mb-3 ">
                 <h5 id="profile_name" class="my-1 font-weight-bold"> Jane S.</h5>
                 <h5 id="profile_ID" class="my-1"> ID 1234567</h5>
                 <h5 id="role" class="my-1"> Role: Business Owner</h5>
               </div>
               <img id="profile-icon" class ="mt-3 ml-2 mr-2 w-25 h-25" :src="user" alt="" aspect-ratio="1" />
-             
+
             </div>
             <hr
               class="my-3"
@@ -35,20 +35,20 @@
         <sidebar-item
           :link="{
             name: 'Manage Transactions',
-            icon: ['fab', 'receipt'],
+            icon: ['fas', 'receipt'],
             path: '/manage-transaction',
           }"
         >
         </sidebar-item>
         <sidebar-item
-          
+
           :link="{
             name: 'Products',
             icon: ['fas', 'plus'],
             path: '',
           }"
         >
-        
+
           <sidebar-item
             opened
             :link="{
@@ -78,7 +78,7 @@
           </sidebar-item>
         </sidebar-item>
         <sidebar-item
-          
+
           :link="{
             name: 'Manage Sales',
             icon: ['fas', 'plus'],
@@ -94,7 +94,7 @@
             }"
           >
           </sidebar-item>
-         
+
         </sidebar-item>
          <sidebar-item
             :link="{
@@ -221,7 +221,7 @@ export default {
   data(){
     return{
       user: require('/assets/uploads/user-icon.svg'),
-      
+
     }
   },
   methods: {
@@ -232,7 +232,7 @@ export default {
       }
     },
   },
-  
+
 };
 </script>
 <style lang="scss">
@@ -240,6 +240,6 @@ export default {
     min-height: 100%;
     display: flex;
     flex-direction: column;
-    
+
 }
 </style>
