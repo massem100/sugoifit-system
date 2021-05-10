@@ -1,6 +1,7 @@
-import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
+// import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
+import authRoutes from './middleware/authRoutes'
 import pkg from './package'
-
+// const pkg = require("./package");
 export default {
   ssr: false,
   // Target: https://go.nuxtjs.dev/config-target
@@ -14,42 +15,45 @@ export default {
       {name: 'viewport', content: 'width=device-width, initial-scale=1'},
       {hid: 'description', name: 'description', content: ''},
     ],
-    link: [{rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}, {
-      rel: 'preconnect',
-      href: 'https://fonts.gstatic.com'
-    }, {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap'}]
+    link: [
+      {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
+      {rel: 'preconnect', href: 'https://fonts.gstatic.com' }, 
+      {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap'},
+      
+
+    ]
 
   },
+
   src: 'static/js/app.js',
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    'static/scss/sidebar.css',
+    '@fortawesome/fontawesome-svg-core/styles.css',
     'static/scss/website.css',
-    '~assets/style/index.scss',
-    'static/scss/style.css',
+    '~assets/style/app.css',
+    "assets/css/nucleo/css/nucleo.css",
+    "assets/sass/argon.scss",
+    "~assets/css/style.css"
 
   ],
   router: {
-    middleware: ['csrf'],
+    middleware: ['csrf','authHeader', 'authRoutes'],
+    // prefetchLinks: false,
   },
   
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     {src: '~/plugins/vee-validate', ssr: false},
     {src: '~/plugins/axios'},
-    '~/plugins/vuetify',
+    {src: '~/plugins/dashboard/dashboard-plugin'},
     {src: '~/plugins/chartist', mode: 'client'},
     {src: '~/plugins/vue-ellipse-progress', ssr: false},
+    {src: '~/plugins/fontawesome.js', ssr: false},
+    {src: '~/plugins/addService.js', ssr: false},
+
   ],
-  vuetify: {
-    treeShake: true,
-    customVariables: ['~/assets/variables.scss'],
-    theme: {
-      light: true,
-  
-    }
-  },
+
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
@@ -71,7 +75,6 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    // '@nuxtjs/fontawesome',
     [
       'nuxt-fontawesome', {
         imports: [
@@ -85,7 +88,7 @@ export default {
          }
        ]
       }
-], 
+],
         ['@nuxtjs/proxy']
   ],
   proxy:{
@@ -105,10 +108,7 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    transpile: ['vuetify/lib'],
-    plugins: [new VuetifyLoaderPlugin()],
-    loaders: {},
-    /*
+   /*
     ** You can extend webpack config here
     */
     extend(config, ctx) {

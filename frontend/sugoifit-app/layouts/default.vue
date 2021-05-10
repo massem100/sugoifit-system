@@ -1,9 +1,9 @@
 <template>
-  <v-app v-show="!isLoading">
-    <v-fade-transition mode="out-in">
+  <div>
+
       <nuxt />
-    </v-fade-transition>
-  </v-app>
+
+  </div>
 </template>
 
 <script>

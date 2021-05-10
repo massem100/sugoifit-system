@@ -1,16 +1,16 @@
-from app import db 
+from flask import current_app
+from app import db
 from app.model.auth import Busines
 import enum 
+
 
 class Financialstmt(db.Model):
     __tablename__ = 'financialstmt'
 
-    stmtID = db.Column(db.String(10), primary_key=True, unique=True)
-    fs_name = db.Column(db.String(50))
-    lines = db.relationship('Financialstmtline', backref= "Finacialstmt", lazy=True)
+    stmtID = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
+    fs_name = db.Column(db.String(50), nullable= False, unique=True)
 
-    def __init__(self, stmtID, fs_name): 
-        self.stmtID = stmtID
+    def __init__(self, fs_name):
         self.fs_name = fs_name
 
     def __repr__(self):
@@ -25,21 +25,16 @@ class FinancialStatementType(enum.Enum):
 class Financialstmtline(db.Model):
     __tablename__ = 'financialstmtline'
 
-    lineID = db.Column(db.Integer, primary_key=True, unique=True, default = 0)
-    fstmtID = db.Column(db.ForeignKey('financialstmt.stmtID', ondelete='CASCADE', onupdate='CASCADE'),nullable=False, unique=True)
+    lineID = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
     line_name = db.Column(db.String(250))
-    lineDesc = db.Column(db.String(50))
     tag = db.Column(db.String(50))
     sequences = db.relationship('Financialstmtlineseq', backref = "financialstmtline")
     desc = db.relationship('Financialstmtdesc', backref = 'financialstmtline')
     
     def __init__(self,  tag, line_name):
-        # self.lineID = lineID
         self.line_name = line_name
         self.tag = tag
-        # self.sequence = sequence
-        # self.fact = fact
-        # self.lineDesc = lineDesc
+        
 
 
 class Financialstmtdesc(db.Model):
@@ -49,7 +44,7 @@ class Financialstmtdesc(db.Model):
                           'fsLineID',
                           'fiscalYear',
                           'fiscalPeriod')])
-    fStmtDescID = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+    fStmtDescID = db.Column(db.Integer, primary_key=True, nullable=False, unique=True, autoincrement=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'),nullable=False, unique=True)
     fsLineID = db.Column(db.ForeignKey('financialstmtline.lineID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, unique=True)
     fiscalYear = db.Column(db.Integer)
@@ -77,11 +72,13 @@ class Financialstmtlinealia(db.Model):
     __tablename__ = 'financialstmtlinealias'
 
     
-    aliasID = db.Column(db.Integer, primary_key=True, nullable=False, unique=True)
+    aliasID = db.Column(db.Integer, primary_key=True, nullable=False, unique=True, autoincrement=True)
     lineID = db.Column(db.ForeignKey('financialstmtline.lineID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     lineAlias = db.Column(db.String(50), nullable= False, unique=True)
 
+
     financialstmtline = db.relationship('Financialstmtline')
+    
 
     def __init__(self, lineID, fsStmtID, aliasID, lineAlias):
         self.lineID = lineID
@@ -93,13 +90,14 @@ class Financialstmtlinealia(db.Model):
 class Financialstmtlineseq(db.Model):
     __tablename__ = 'financialstmtlineseq'
 
-    lineSeqID = db.Column(db.Integer, primary_key=True, nullable=False)
+    lineSeqID = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
     fsStmtID = db.Column(db.ForeignKey('financialstmt.stmtID', ondelete='CASCADE', onupdate='CASCADE'),  nullable=False, index=True)
     fsStmtLineID = db.Column(db.ForeignKey('financialstmtline.lineID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True)
     sequence = db.Column(db.Integer)
     db.UniqueConstraint(fsStmtID,fsStmtLineID)
 
     financialstmt = db.relationship('Financialstmt')
+
 
     def __init__(self, sequence, fsStmtID, fsStmtLineID): 
         # self.lineSeqID = lineSeqID

@@ -4,6 +4,8 @@
     <div class="mx-3">
       <h3 class="m-2">Add Invoice</h3>
       <!--<invoice-top/>-->
+       <invoice-top/>
+   
       <div class="d-flex mx-3">
         <b-container fluid>
           <validation-observer
@@ -94,6 +96,7 @@
                       </b-form-invalid-feedback>
                     </validation-provider>
                   </b-col>
+                 
 
                   <!-- Date Due -->
                   <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
@@ -182,12 +185,14 @@
                   <b-button type="submit" variant="primary">Submit</b-button>
                   <b-button type="reset" variant="danger" @click="resetForm()">Reset</b-button>
                 </b-col>
+
               </b-row>
             </b-form>
           </validation-observer>
         </b-container>
+      
       </div>
-    </div>
+  </div>
   </div>
 </template>
 
@@ -195,7 +200,7 @@
 import {ValidationObserver, ValidationProvider} from "vee-validate";
     export default {
         name: "add-invoice",
-        layout:'dashboard',
+        layout:'DashboardLayout',
         methods: {
             addInvoice: () => {
                 console.log('working');

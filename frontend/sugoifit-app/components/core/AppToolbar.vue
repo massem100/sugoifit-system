@@ -4,10 +4,9 @@
     flat
     style="background: #7CC3CD;"
   >
-    <div class="v-toolbar-title m-0">
-      <v-toolbar-title 
-      
-        class="white--text  font-weight-light"
+    <div class="v-toolbar-title">
+      <v-toolbar-title
+        class="white--text ml-4 font-weight-light"
       >
         <v-btn
           v-if="responsive"
@@ -30,7 +29,7 @@
       >
         <v-text-field
           v-if="responsiveInput"
-          class="mr-4 "
+          class="mr-4 mt-2 "
           label="Search..."
           hide-details
         />
@@ -81,7 +80,7 @@
         <nuxt-link
           v-ripple
           class="toolbar-items"
-          to="/user-profile"
+          to="/settings"
           title="User profile"
         >
           <v-icon color="white">mdi-account</v-icon>

@@ -3,10 +3,10 @@
     <b-container fluid>
       <h3 class="m-2">Add Transaction</h3>
       <transaction-top/>
-      <validation-observer
+      <!-- <validation-observer
         ref="observer"
         v-slot="{handleSubmit}"
-      >
+      > -->
 <!--        <b-form @submit.stop.prevent="handleSubmit(onSubmit)">-->
 <!--          <b-row>-->
 <!--            <b-col cols="12" class="text-info mb-3">Add Supplier</b-col>-->
@@ -90,7 +90,7 @@
 <!--            </b-col>-->
 <!--          </b-row>-->
 <!--        </b-form>-->
-      </validation-observer>
+      <!-- </validation-observer> -->
     </b-container>
   </div>
 </template>
