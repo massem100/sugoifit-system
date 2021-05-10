@@ -843,7 +843,7 @@ delta = b - a
 print (delta.days)
 
 """
-@app.route('/manage-orders')
+@app.route('/api/manage-orders')
 def manageOrders():
     #Get all orders that are pending
     date_format = "%Y-%m-%d"
@@ -868,13 +868,18 @@ def manageOrders():
         daysLeft = endDate - startDate
         daysLeft = daysLeft.days()
 
-        allOrders.append((orderID, orderTotal, date, custID, invoiceID,
-        busID, status, dueDate, daysLeft))
+        allOrders.append([orderID, orderTotal, date, custID, invoiceID,
+        busID, status, dueDate, daysLeft])
 
     allOrders.sort(lambda x: x[8], reverse = False)
+    results = []
+    for order in allOrders:
+        results.append({'orderID':order[0], 'custID':order[3], 'orderTotal':order[1], 
+        'date': order[2], 'dueDate':order[7], 'status': order[6]})
+
 
     #Need to print this list on the front end.
-    return jsonify(allOrders)
+    return jsonify({'results': results})
 
 
 
