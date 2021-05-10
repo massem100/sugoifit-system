@@ -80,8 +80,10 @@ class Product(db.Model):
     #grade = db.Column(db.String(5))
     prodStatus = db.Column(db.String(25))
     image = db.Column(db.String(50))
+    avg_lead = db.Column(db.Integer)
+    longest_lead = db.Column(db.Integer)
 
-    def ___init__(self, prodID, prodName, unit_price, Unit, limitedTime, taxPercent, prodStatus): 
+    def ___init__(self, prodID, prodName, unit_price, Unit, limitedTime, taxPercent, prodStatus, avg_lead, longest_lead): 
         self.prodID = prodID 
         self.prodName = prodName 
         self.unit_price = unit_price
@@ -89,6 +91,8 @@ class Product(db.Model):
         self.limitedTime = limitedTime
         self.taxPercent = taxPercent
         self.prodStatus = prodStatus
+        self.avg_lead = avg_lead
+        self.longest_lead = longest_lead
     
     def get_id(self):
         try:
