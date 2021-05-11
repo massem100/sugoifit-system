@@ -3,13 +3,13 @@
     :is="baseComponent"
     :to="link.path ? link.path : '/'"
     class="nav-item"
-    :class="{ active: isActive }"
+    :class="{ active: isActive}"
     tag="li"
   >
     <a
       v-if="isMenu"
       class="sidebar-menu-item nav-link"
-      :class="{ active: isActive }"
+      :class="{ active: isActive}"
       :aria-expanded="!collapsed"
       data-toggle="collapse"
       @click.prevent="collapseMenu"
@@ -46,6 +46,7 @@
 
     <slot
       name="title"
+      :class="{color:link.color}"
       v-if="children.length === 0 && !$slots.default && link.path"
     >
       <component
@@ -53,7 +54,7 @@
         @click.native="linkClick"
         :is="elementType(link, false)"
         class="nav-link"
-        :class="{ active: link.active }"
+        :class="{ active: link.active, color:link.color }"
         :target="link.target"
         :href="link.path"
       >

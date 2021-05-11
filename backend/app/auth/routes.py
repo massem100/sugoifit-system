@@ -105,7 +105,13 @@ def login():
                 
                 payload = {'userid': user.userID}
                 token = jwt.encode(payload, current_app.config['TOKEN_KEY'], algorithm='HS256').decode('utf-8')
-                return jsonify(success = [{"token": token, "user": user.userID, "user_role": user_roles, "message": "User successfully logged in."}])
+                return jsonify(success = [{
+                                           "token": token, 
+                                           "user": user.userID, 
+                                           "user_role": user_roles, 
+                                           "busID": current_user.busID,
+                                           "message": "User successfully logged in."
+                                         }])
                 
             else:
                 return jsonify({'error msg': 'Login credentials failed: Please check email or password.'})

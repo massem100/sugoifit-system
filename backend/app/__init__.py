@@ -86,8 +86,8 @@ def init_app():
         from app import views
         
          # from . import model
-        from .model import auth, accounts, financial_statement, sales
-        db.create_all()
+        # from .model import auth, accounts, financial_statement, sales
+        # db.create_all()
     return app 
 
 

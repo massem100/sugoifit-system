@@ -126,7 +126,11 @@ export default {
                  if (form_data) {
              
                     this.$store.dispatch('authentication/login', { form_data });
+                    $nuxt.$router.push('/');
                     this.$store.dispatch('alert/clear');
+                        
+                        
+                    
     
                 }
             } catch (error) {

@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <notifications></notifications>
-    <side-bar>
+    <side-bar class="bg-white text-black">
       <template slot="links">
            
           <div  class="d-flex flex-row justify-content-center"> 
@@ -29,6 +29,7 @@
             name: 'Dashboard',
             icon: ['fas', 'plus'],
             path: '/',
+            color: 'text-black',
           }"
         >
         </sidebar-item>
@@ -37,6 +38,7 @@
             name: 'Manage Transactions',
             icon: ['fas', 'receipt'],
             path: '/manage-transaction',
+            color: 'text-black',
           }"
         >
         </sidebar-item>
@@ -46,6 +48,7 @@
             name: 'Products',
             icon: ['fas', 'plus'],
             path: '',
+            color: 'text-black',
           }"
         >
         
@@ -55,6 +58,7 @@
               name: 'All Products',
               icon: ['fas', 'plus'],
               path: '/manageproducts/list',
+              color: 'text-black',
             }"
           >
           </sidebar-item>
@@ -64,6 +68,7 @@
               name: 'Add Products',
               icon: ['fas', 'plus'],
               path: '/manageproducts/add',
+              color: 'text-black',
             }"
           >
           </sidebar-item>
@@ -73,6 +78,7 @@
               name: 'Product Analytics',
               icon: ['fas', 'plus'],
               path: '/manageproducts/analytics',
+              color: 'text-black',
             }"
           >
           </sidebar-item>
@@ -83,6 +89,7 @@
             name: 'Manage Sales',
             icon: ['fas', 'plus'],
             path: '/managesales',
+            color: 'text-black',
           }"
         >
           <sidebar-item
@@ -91,6 +98,7 @@
               name: 'Orders',
               icon: ['fas', 'plus'],
               path: '/allproducts',
+              color: 'text-black',
             }"
           >
           </sidebar-item>
@@ -101,6 +109,7 @@
               name: 'Invoices',
               icon: ['fas', 'plus'],
               path: '/invoice/',
+              color: 'text-black',
             }"
           >
             <sidebar-item
@@ -108,6 +117,7 @@
                 name: 'Create Invoice',
                 icon: ['fas', 'plus'],
                 path: '/invoice/create',
+                color: 'text-black',
               }"
             >
             </sidebar-item>
@@ -116,6 +126,7 @@
                 name: 'All Invoices',
                 icon: ['fas', 'plus'],
                 path: '/invoice/list',
+                color: 'text-black',
               }"
             >
             </sidebar-item>
@@ -125,6 +136,7 @@
               name: 'Financials',
               icon: ['fas', 'plus'],
               path: '/financialstmts/',
+              color: 'text-black',
             }"
           >
           <sidebar-item
@@ -132,6 +144,7 @@
               name: 'Balance Sheet',
               icon: ['fas', 'plus'],
               path: '/financialstmts/balance-sheet/_slug',
+              color: 'text-black',
             }"
           >
           </sidebar-item>
@@ -140,6 +153,7 @@
               name: 'Income Statement',
               icon: ['fas', 'plus'],
               path: '/financialstmts/profit-loss/_slug',
+              color: 'text-black',
             }"
           >
           </sidebar-item>
@@ -149,6 +163,7 @@
               name: 'Reports',
               icon: ['fas', 'chart-bar'],
               path: '/reports/',
+              color: 'text-black',
             }"
           >
           <sidebar-item
@@ -156,6 +171,7 @@
               name: 'Report Generation',
               icon: ['fas', 'plus'],
               path: '/reports/charts',
+              color: 'text-black',
             }"
           >
           </sidebar-item>

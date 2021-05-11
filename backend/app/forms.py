@@ -143,3 +143,11 @@ class RevForm(FlaskForm):
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
     increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
+
+class EquityForm(FlaskForm): 
+    equity_name = StringField('Equity Name', validators = [InputRequired('Please enter the equity name')])
+    transaction_date = DateField('Transaction Date', validators = [InputRequired('Please enter a transaction date')])
+    equity_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
+    amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
+    paid_using = SelectField('Paid Using', choices = paid_using)
+    increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
