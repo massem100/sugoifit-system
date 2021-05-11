@@ -68,7 +68,10 @@
 <script>
     export default {
         name: "invoice-card",
+<<<<<<< HEAD
         layout: 'dashboard',
+=======
+>>>>>>> origin/Cheyenne
     }
 </script>
 

@@ -15,7 +15,11 @@
               <thead>
               <tr style="border-bottom: 4px solid #7cc3cd">
                 <th></th>
+<<<<<<< HEAD
                 <th v-for="mon in field" :key= "mon" class="text-capitalize">
+=======
+                <th v-for="mon in field" class="text-capitalize">
+>>>>>>> origin/Cheyenne
                   {{mon}}
                 </th>
               </tr>
@@ -26,49 +30,81 @@
               </tr>
               <tr class="br-bottom">
                 <td class="pl-4">Sales</td>
+<<<<<<< HEAD
                 <td v-for="mon in field" :key= "mon">
+=======
+                <td v-for="mon in field">
+>>>>>>> origin/Cheyenne
                   ${{sales[mon]}}
                 </td>
               </tr>
               <tr class="br-bottom">
                 <td class="pl-4">Cost of Goods Sold</td>
+<<<<<<< HEAD
                 <td v-for="mon in field" :key= "mon">
+=======
+                <td v-for="mon in field">
+>>>>>>> origin/Cheyenne
                   ${{cost_sold[mon]}}
                 </td>
               </tr>
               <tr>
                 <td class="font-weight-bold">Gross Profit</td>
+<<<<<<< HEAD
                 <td v-for="mon in field" :key= "mon" class="font-weight-bold">
+=======
+                <td v-for="mon in field" class="font-weight-bold">
+>>>>>>> origin/Cheyenne
                   ${{sales[mon]+cost_sold[mon]}}
                 </td>
               </tr>
               <tr class="br-bottom font-weight-bold">
                 <td>Other Operating Income</td>
+<<<<<<< HEAD
                 <td v-for="mon in field" :key= "mon">
+=======
+                <td v-for="mon in field">
+>>>>>>> origin/Cheyenne
                   ${{operate_income[mon]}}
                 </td>
               </tr>
               <tr class="br-bottom font-weight-bold">
                 <td>Less Expenses</td>
+<<<<<<< HEAD
                 <td v-for="mon in field" :key= "mon">
+=======
+                <td v-for="mon in field">
+>>>>>>> origin/Cheyenne
                   ${{sales[mon]}}
                 </td>
               </tr>
               <tr class="br-bottom">
                 <td class="pl-4">Expenses</td>
+<<<<<<< HEAD
                 <td v-for="mon in field" :key= "mon">
+=======
+                <td v-for="mon in field">
+>>>>>>> origin/Cheyenne
                   ${{cost_sold[mon]}}
                 </td>
               </tr>
               <tr class="br-bottom">
                 <td class="font-weight-bold">Total Expense</td>
+<<<<<<< HEAD
                 <td v-for="mon in field" :key= "mon" class="font-weight-bold">
+=======
+                <td v-for="mon in field" class="font-weight-bold">
+>>>>>>> origin/Cheyenne
                   ${{sales[mon]+cost_sold[mon]}}
                 </td>
               </tr>
               <tr>
                 <td class="font-weight-bold">Net Profit</td>
+<<<<<<< HEAD
                 <td v-for="mon in field" :key= "mon" class="font-weight-bold">
+=======
+                <td v-for="mon in field" class="font-weight-bold">
+>>>>>>> origin/Cheyenne
                   ${{sales[mon]+cost_sold[mon]}}
                 </td>
               </tr>

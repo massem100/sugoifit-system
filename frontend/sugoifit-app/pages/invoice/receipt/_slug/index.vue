@@ -60,7 +60,11 @@
         data() {
             return {
                 invoice: {
+<<<<<<< HEAD
                     name: 'moniques botique',
+=======
+                    name: 'moniques boutique',
+>>>>>>> origin/Cheyenne
                     invoice_id: 'invoice0001',
                     address: 'Shop #3, xyz plaza,<br> kingsater,<br> Kingston',
                     balance: 1000,
