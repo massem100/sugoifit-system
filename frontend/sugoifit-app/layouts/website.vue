@@ -1,5 +1,6 @@
 <template>
   <div >
+      <notifications></notifications>
       <header class="header">
             <nuxt-link to='/website/website'>
                 <h6 class="title">Monique's Boutique</h6>
@@ -41,14 +42,12 @@ export default {
 .header .title{
     margin-left: 2em;
     font-size: 2rem;
-    color:black;
 }
 .header ul{
     list-style: none;
     display: flex;
 }
 .header a{
-    color: black;
     padding: 0.3rem 1rem;
     margin-right: 0.5rem;
     float: left;

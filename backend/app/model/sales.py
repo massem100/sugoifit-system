@@ -81,6 +81,9 @@ class Product(db.Model):
     prodStatus = db.Column(db.String(25))
     image = db.Column(db.String(50))
 
+    receiptdetails = db.relationship('Receiptdetail')
+    stock = db.relationship('Stock')
+
     def ___init__(self, prodID, prodName, unit_price, Unit, limitedTime, taxPercent, prodStatus): 
         self.prodID = prodID 
         self.prodName = prodName 
@@ -137,6 +140,8 @@ class Service(db.Model):
     taxPercent = db.Column(db.DECIMAL(3, 2))
     in_season = db.Column(db.String(11))
     image = db.Column(db.String(50))
+
+    receiptdetails = db.relationship('Receiptdetail')
 
     def __init__(self, serviceID, serv_name, serv_cost, taxPercent, in_season): 
         self.serviceID = serviceID 
@@ -338,7 +343,9 @@ class Order(db.Model):
     busines = db.relationship('Busines')
     customer = db.relationship('Customer')
     invoice = db.relationship('Invoice')
-
+    receipt = db.relationship('Receipt')
+    receiptdetails = db.relationship('Receiptdetail')
+    orderdetails = db.relationship('Orderdetail',  uselist = False)
 
     def ___init__(self, orderID, order_tot,order_DATE, custID, invoiceID, busID, status): 
         self.orderID = orderID 
@@ -363,15 +370,14 @@ class Order(db.Model):
 class Orderdetail(db.Model):
     __tablename__ = 'orderdetails'
 
-    orderID = db.Column(db.ForeignKey('order.orderID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False)
+    orderID = db.Column(db.ForeignKey('custorder.orderID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False)
     detailsID = db.Column(db.Integer, primary_key=True, nullable=False)
     prodID = db.Column(db.String(10))
     serviceID = db.Column(db.String(10))
     quantity = db.Column(db.Integer)
     order_tot = db.Column(db.DECIMAL(10, 2))
 
-    order = db.relationship('Order')
-
+    
     def __init__(self, orderID, detailsID, prodID, serviceID, quantity, order_tot): 
         self.orderID = orderID 
         self.detailsID = detailsID
@@ -393,12 +399,11 @@ class Receipt(db.Model):
     __tablename__ = 'receipt'
 
     receiptID = db.Column(db.Integer, primary_key=True)
-    orderID = db.Column(db.ForeignKey('order.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    orderID = db.Column(db.ForeignKey('custorder.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     DATE_issued = db.Column(db.Date)
 
-    busines = db.relationship('Busines')
-    order = db.relationship('Order')
+    receiptdetails = db.relationship('Receiptdetail')
 
     def __init__(self, receiptID, orderID, busID, date_issued): 
         self.receiptID = receiptID
@@ -421,16 +426,13 @@ class Receiptdetail(db.Model):
 
     receiptID = db.Column(db.ForeignKey('receipt.receiptID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, unique=True)
     rdetailsID = db.Column(db.Integer, primary_key=True)
-    orderID = db.Column(db.ForeignKey('order.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    orderID = db.Column(db.ForeignKey('custorder.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     prodID = db.Column(db.ForeignKey('product.prodID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     serviceID = db.Column(db.ForeignKey('service.serviceID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     quantity = db.Column(db.Integer)
     order_tot = db.Column(db.DECIMAL(10, 2))
 
-    order = db.relationship('Order')
-    product = db.relationship('Product')
-    receipt = db.relationship('Receipt')
-    service = db.relationship('Service')
+  
 
     def ___init__(self, receiptID, rdetailsID, orderID, prodID, serviceID, quantity, order_tot):
         self.receiptID = receiptID

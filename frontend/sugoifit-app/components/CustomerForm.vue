@@ -155,8 +155,8 @@ export default {
 <style scoped>
 .submitbtn{
     background-color: white;
-    color: rgb(37, 167, 117);
-    border-color: rgb(37, 167, 117);
+    color: #7CC3CD;
+    border-color: #7CC3CD;
 }
 input{
     display:block;
@@ -164,7 +164,7 @@ input{
     padding:.3em;
     font-size:15px;
     border: none;
-    background-color: rgba(119, 255, 187, 0.705);
+    background-color: #7CC3CD;
     border-radius: 20px;
     resize:vertical;
 }

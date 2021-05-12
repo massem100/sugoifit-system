@@ -1,9 +1,11 @@
-from app import  db, login_manager, csrf_, principal
-from app.forms import orderForm
+from app import  db, login_manager, csrf_, principal, ma
+from app.forms import orderForm, newProductForm
 from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order
+from app.schema import sales
 from sqlalchemy import func, inspection, event
-from flask import  Blueprint,  request, jsonify, flash, session,  _request_ctx_stack, g
+from flask import  Blueprint, current_app, request, jsonify, flash, session,  _request_ctx_stack, g
 from werkzeug.utils import secure_filename
+import os
 
 
 product = Blueprint('product', __name__)
@@ -57,23 +59,29 @@ def new_product():
 @product.route('/api/products', methods = ['GET', 'POST'])
 def all_product():
     data_list = []
-    busID = "Mon2"
+    imgs = []
+    busID = "Mon1"
     products = Product.query.filter_by(busID=busID).all()
-    output = products_schema.dump(products)
+    output = sales.products_schema.dump(products)
     
-    
+    for img in os.listdir(r"C:\Users\User\Git Repositories\sugoifit-system\backend\app\static\uploads"):
+        imgs.append(img)
+
     for item in output:
+        for i in imgs:
+            if item['image'] == i:
+                full_path = os.path.join(r"C:\Users\User\Git Repositories\sugoifit-system\backend\app\static\uploads", i)
+                print(full_path)
         
-        
-        case = {
-            "id":item['prodID'],
-            "name":item['prodName'],
-            "price":item['unit_price'],
-            "tax":item['taxPercent'],
-            "status":item['prodStatus'],
-            "image":item['image']
-        }
-        data_list.append(case)
+                case = {
+                    "id":item['prodID'],
+                    "name":item['prodName'],
+                    "price":item['unit_price'],
+                    "tax":item['taxPercent'],   
+                    "status":item['prodStatus'],
+                    "image":item['image']
+                }
+                data_list.append(case)
         #data.update(item=item.index)
 
 
@@ -107,7 +115,7 @@ def all_product():
     ]
     data['products'] = products
     '''
-    #return jsonify(output)
+    #return jsonify(products)
     return jsonify(data_list)
 
 

@@ -19,7 +19,28 @@
 
             <!-- product section -->
             <div class="products">
-                <Slider />
+                <carousel
+                    @next="next"
+                    @prev="prev"
+                >
+                    <carousel-slide v-for="(product, index) in products" 
+                                    :key="product.id" 
+                                    :index="index" 
+                                    :product="product"
+                                    :visibleSlide ="visibleSlide"
+                    >
+                       <div class="card bg-dark text-white">
+                            <div id="img-con">
+                                <img class="card-img" :src="path +'/static/uploads/'+product.image" alt="">
+                            </div>
+                            <div class="card-img-overlay">
+                                <h5 class="card-title">{{product.name}}</h5>
+                                <p class="card-text">{{product.price}}</p>
+                            </div>
+                        </div>
+                    </carousel-slide>
+                
+                </carousel>
             </div>
             
 
@@ -77,16 +98,20 @@
 
 <script>
 import CustomerForm from '../../components/CustomerForm';
-import Slider from '../../components/ImageSlider';
+import Carousel from '../../components/Carousel';
+import CarouselSlide from '../../components/CarouselSlide';
 export default {
     name: 'Website',
     layout: 'website',
     components: {
-        Slider,
-        CustomerForm
+        CustomerForm,
+        Carousel,
+        CarouselSlide
     },
     data() {
         return {
+            visibleSlide: 0,
+            path: 'http://localhost:8080',
             items: {
                 address:"Montego Bay, Jamaica",
                 phone: "(876)971-1234",
@@ -94,7 +119,32 @@ export default {
             }
         }
     },
+    computed: {
+        products() {
+            return this.$store.state.products.products;
+        },
+        productlength() {
+            return this.$store.state.products.products.length;
+        }
+    },
+    mounted() {
+        this.$store.dispatch('products/getProducts');
+    },
     methods: {
+        next() {
+            if(this.visibleSlide >= this.productlength -1){
+                this.visibleSlide = 0;
+            }else{
+                this.visibleSlide++;
+            }
+        },
+        prev() {
+            if(this.visibleSlide <= 0) {
+                this.visibleSlide = this.productlength -1;
+            }else{
+                this.visibleSlide--;
+            }
+        },
         uploadReceipt(form) {
             console.log(form);
         },
@@ -138,12 +188,22 @@ export default {
 .welcome-img{
     width: 450px;
     height: 300px;
-    box-shadow: 3rem -20px rgb(46, 158, 102);
+    box-shadow: 3rem -20px #7CC3CD;
 }
 
 .receipt-img{
     width: 500px;
     height: 400px;
-    box-shadow: -3em -20px rgb(46, 158, 102);
+    box-shadow: -3em -20px #7CC3CD;
+}
+#img-con{
+    position: absolute;
+    left: 32%;
+    width: 300px;
+    height: 250px;
+}
+.img-con img{
+  width: 100%;
+  height: auto;
 }
 </style>
