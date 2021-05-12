@@ -1,153 +1,138 @@
 <template>
-  <div class="d-flex mx-3">
+  <div class="d-flex ">
     <b-container fluid>
-      <h3 class="m-2">Add Transaction</h3>
-      <transaction-top/>
-      
+
+       <base-alert v-if= "alert_message" 
+                    class = "mt-5 d-flex flex-row justify-content-center" 
+                    style="width: 25rem; 
+                           height: 3rem; 
+                           z-index:1;" 
+                    dismissible      
+                    type= "primary">{{alert_message}}
+      </base-alert>
+      <b-row>
+        <back-button class="mt-4 "></back-button>
+        <b-col>
+           <h3 class="mt-4 ml-0">Manage transactions</h3>
+            <p class = "mb-2 mt-2 "> 
+                Transactions are used to automatically generate your financials. 
+                Keep track of your daily transactions.
+              </p>
+        </b-col>
+      </b-row>
+     
+      <b-modal ref="confirmModal" 
+                 id = "confirmModal" 
+                  >
+            Are you sure you want to submit this transaction?
+            <template 
+                    class = "bg-primary" 
+                    v-slot:modal-title> 
+                    Confirmation Popup
+            </template>
+            <template  v-slot:modal-footer>
+                <b-button @click="modalCancel" id = "modal-cancel" variant = "outline-secondary">Cancel</b-button>
+                <b-button @click="modalSubmit" id = "modal-submit" variant="primary">Submit </b-button>
+            </template>
+              
+        </b-modal>
+      <transaction-top class="d-flex- justify-content-center"/>
       <validation-observer
         ref="observer"
         v-slot="{handleSubmit}"
       >
-        <b-form @submit.stop.prevent="handleSubmit(onSubmit)">
-          <b-row>
-            <b-col cols="12" class="text-info mb-3">Add Current Asset</b-col>
-            <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-              <validation-provider
-                v-slot="{ errors }"
-                rules="required"
-                name="asset name"
-              >
-                <label for="asset_name">Asset Name</label>
-                <b-form-input v-model="form.asset_name"
-                              type="text"
-                              id="asset_name"
-                              :state="getValidationState(errors)">
-                </b-form-input>
-                <b-form-invalid-feedback>
-                  {{ errors[0] }}
-                </b-form-invalid-feedback>
-              </validation-provider>
-            </b-col>
-            <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-              <validation-provider
-                v-slot="{ errors }"
-                rules="required"
-                name="reference number"
-              >
-                <label for="ref_no">Reference Number</label>
-                <b-form-input v-model="form.ref_no"
-                              type="text"
-                              id="ref_no"
-                              :state="getValidationState(errors)">
-                </b-form-input>
-                <b-form-invalid-feedback>
-                  {{ errors[0] }}
-                </b-form-invalid-feedback>
-              </validation-provider>
-            </b-col>
-            <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-              <validation-provider
-                v-slot="{ errors }"
-                rules="required"
-                name="date"
-              >
-                <label for="date">Date</label>
-                <b-form-datepicker id="date"
-                                   v-model="form.date"
-                                   :date-format-options="{ year: 'numeric', month: 'short', day: 'numeric' }"
-                                   locale="en-US"
-                                   required
-                                   calendar-width="180px"
-                                   :state="getValidationState(errors)"
-                >
-                </b-form-datepicker>
-                <b-form-invalid-feedback>
-                  {{ errors[0] }}
-                </b-form-invalid-feedback>
-              </validation-provider>
-            </b-col>
-            <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-              <validation-provider
-                v-slot="{ errors }"
-                rules="required"
-                name="time"
-              >
-                <label for="time">Time</label>
-                <b-form-timepicker v-model="form.time"
-                                   id="time"
-                                   required
-                                   :state="getValidationState(errors)">
-                </b-form-timepicker>
-                <b-form-invalid-feedback>
-                  {{ errors[0] }}
-                </b-form-invalid-feedback>
-              </validation-provider>
-            </b-col>
-            <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-              <validation-provider
-                v-slot="{ errors }"
-                rules="required"
-                name="cost of asset"
-              >
-                <label for="cost_of_asset">Cost Of Asset</label>
-                <b-form-input v-model="form.cost_of_asset"
-                              type="number"
-                              id="cost_of_asset"
-                              :state="getValidationState(errors)">
-                </b-form-input>
-                <b-form-invalid-feedback>
-                  {{ errors[0] }}
-                </b-form-invalid-feedback>
-              </validation-provider>
-            </b-col>
-            <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-              <validation-provider
-                v-slot="{ errors }"
-                rules="required"
-                name="asset type"
-              >
-                <label for="asset_type">Asset Type</label>
-                <b-form-select v-model="form.asset_type"
-                               :options="asset_options"
-                               id="asset_type"
-                               :state="getValidationState(errors)"
-                >
-                </b-form-select>
-                <b-form-invalid-feedback>
-                  {{ errors[0] }}
-                </b-form-invalid-feedback>
-              </validation-provider>
-            </b-col>
-            <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-              <validation-provider
-                v-slot="{ errors }"
-                rules="required"
-                name="asset lifespan"
-              >
-                <label for="asset_lifespan">Asset Lifespan</label>
-                <b-form-input v-model="form.asset_lifespan"
-                              type="text"
-                              id="asset_lifespan"
-                              :state="getValidationState(errors)">
-                </b-form-input>
-                <b-form-invalid-feedback>
-                  {{ errors[0] }}
-                </b-form-invalid-feedback>
-              </validation-provider>
-            </b-col>
-            <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
+        <b-form class="" id="AddNCAForm" @submit.stop.prevent="handleSubmit(launchConfirm)">
+          <b-row class="m-1 w-100">
+            <b-col cols="12" class="text-primary mb-3 pl-0">Add Current Asset</b-col>
 
-              <label for="description">Description</label>
-              <b-form-textarea v-model="form.description"
-                               type="text"
-                               id="description"
-              >
-              </b-form-textarea>
+            <b-col md="6" cols="12" class="bg-secondary px-5 py-3">
+              <div class="mb-2">
+                <validation-provider v-slot="{ errors }" rules="required" name="asset name">
+                  <label for="asset_name">Asset Name</label>
+                  <b-form-input v-model="form.asset_name" type="text" id="asset_name" required
+                                :state="getValidationState(errors)">
+                  </b-form-input>
+                  <b-form-invalid-feedback> {{ errors[0] }}</b-form-invalid-feedback>
+                </validation-provider>
+              </div>
+              <div class="mb-2">
+                <validation-provider v-slot="{ errors }" rules="required" name="transaction_date">
+                  <label for="date">Transaction Date</label>
+                  <b-form-datepicker id="transaction_date"
+                                     v-model="form.transaction_date"
+                                     :date-format-options="{ year: 'numeric', month: 'short', day: 'numeric' }"
+                                     locale="en-US"
+                                     required
+                                     calendar-width="180px"
+                                     :state="getValidationState(errors)"
+                  >
+                  </b-form-datepicker>
+                  <b-form-invalid-feedback>
+                    {{ errors[0] }}
+                  </b-form-invalid-feedback>
+                </validation-provider>
+              </div>
+              <div class="mb-2">
+                <validation-provider v-slot="{ errors }" rules="required" name="amount">
+
+                  <label for="amount">Amount</label>
+                  <b-form-input v-model="form.amount"
+                                type="number"
+                                id="amount"
+                                :state="getValidationState(errors)">
+                  </b-form-input>
+                  <b-form-invalid-feedback>
+                    {{ errors[0] }}
+                  </b-form-invalid-feedback>
+                </validation-provider>
+              </div>
+              <div class="mb-2"><label for="description">Description</label>
+                <b-form-textarea v-model="form.asset_desc" type="text" id="description"
+                                 maxlength="200"></b-form-textarea>
+              </div>
             </b-col>
-            <b-col cols="12" class="text-right my-2">
-              <b-button type="submit" variant="primary">Submit</b-button>
-              <b-button type="reset" variant="danger" @click="resetForm()">Reset</b-button>
+            <b-col md="6" cols="12" class="px-3">
+              <div class="mb-2">
+                <validation-provider v-slot="{ errors }" rules="required" name="tan_in">
+                  <label>Increase/Decrease</label>
+                  <b-form-radio-group v-model="form.increase_decrease"
+                                      :options="inc_dec"
+                                      class="border border-radius px-4 py-3"
+                                      style="Background: #E5E5E5; "
+                                      stacked
+                                      :state="getValidationState(errors)"
+                  >
+                  </b-form-radio-group>
+                  <b-form-invalid-feedback>
+                    {{ errors[0] }}
+                  </b-form-invalid-feedback>
+                </validation-provider>
+              </div>
+              <div class="mb-2">
+                <validation-provider v-slot="{ errors }" rules="required" name="paid_using">
+                  <label for="paid_using"> Paid Using</label>
+                  <b-form-radio-group v-model="form.paid_using"
+                                      :options="paid_using"
+                                      id="paid_using"
+                                      stacked
+                                      class="border border-radius py-3 px-4"
+                                      style="Background: #E5E5E5; "
+                                      :state="getValidationState(errors)"
+                  >
+                  </b-form-radio-group>
+
+
+                  <b-form-invalid-feedback>
+                    {{ errors[0] }}
+                  </b-form-invalid-feedback>
+                </validation-provider>
+              </div>
             </b-col>
+          </b-row>
+          <!-- Submit and Reset -->
+          <b-row  class="text-right my-4 px-3">
+            <b-button type="submit" variant="primary">Submit</b-button>
+            <b-button type="reset" variant="danger" @click="resetForm()">Reset</b-button>
           </b-row>
         </b-form>
       </validation-observer>
@@ -157,6 +142,9 @@
 
 <script>
     import {ValidationObserver, ValidationProvider} from "vee-validate";
+    import Modal from '../../../components/argon-core/Modal.vue';
+    import BaseAlert from '../../../components/argon-core/BaseAlert.vue';
+    import BackButton from '../../../components/argon-core/BackButton.vue';
 
     export default {
         layout: 'DashboardLayout',
@@ -164,20 +152,65 @@
         components: {
             ValidationProvider,
             ValidationObserver,
+            Modal,
+            BaseAlert,
+            BackButton
         },
         data() {
             return {
+                alert_message:'',
                 form: {
-                    date: new Date().toISOString()
+
+                    transaction_date: new Date().toISOString().substr(0, 10)
                 },
-                asset_options: [
-                    {value: null, text: 'Please select an option'},
-                    {value: 'a', text: 'This is First option'},
-                    {value: 'b', text: 'Selected Option'},
-                ]
+                inc_dec: [
+                    {value: 'Increase', text: 'Increase'},
+                    {value: 'Decrease', text: 'Decrease'}
+                ],
+
+                paid_using: [
+                    {value: 'Cash', text: 'Cash '},
+                    {value: 'Cheque', text: 'Cheque '},
+                    {value: 'Credit', text: 'Credit '},
+                ],
             }
         },
         methods: {
+            modalCancel(){
+                this.$refs['confirmModal'].hide();
+            },
+            modalSubmit() {
+                let PATH_API = 'transaction/currentasset';
+                let form_data = new FormData();
+                Object.entries(this.form).forEach(entry => {
+                    const [key, value] = entry;
+                    form_data.append(key, value);
+                });
+                form_data.append('form_id', 'AddCAForm');
+                this.$axios.post(`/api/${PATH_API}`, form_data, {
+                    headers: {
+                        'contentType': 'application/json',
+                        "Authorization": "Bearer " + localStorage.getItem("token"),
+                    }
+                })
+                    .then(jsonResponse => {
+                        return jsonResponse.json();
+                    })
+                    .then(jsonResponse => {
+                        this.$refs['confirmModal'].hide();
+                        console.log(jsonResponse);
+                        console.log(form_data);
+                        self.alert_message = jsonResponse.message;
+                    }).catch(err => {
+                         
+                          console.log(err);
+                      });
+            },
+            async launchConfirm(){
+                let self = this;
+                const submit = await this.$refs['confirmModal'].show();
+              
+            },
             getValidationState(errors) {
                 return errors.length > 0 ? false : null;
             },

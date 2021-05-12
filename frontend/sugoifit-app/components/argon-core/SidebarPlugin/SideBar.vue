@@ -1,6 +1,5 @@
 <template>
-  <div class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-secondary"
-       :data="backgroundColor">
+  <div class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light ">
     <div class="scrollbar-inner" ref="sidebarScrollArea">
       <div class="sidenav-header d-flex justify-content-center">
         <a class="m-4" href="#">
@@ -10,9 +9,7 @@
              
             </a>
       </div>
-      
       <slot></slot>
-      
       <div class="navbar-inner">
         <ul class="navbar-nav">
           <slot name="links">
@@ -38,26 +35,43 @@
 <script>
 export default {
   name: "sidebar",
-  data() {
-    return {
-      logo:  require('~/assets/uploads/Profile_icon.png'),
-      user: require('~/assets/uploads/Profile_icon.png'),
-    }
-  },
-  props:{
+  props: {
+    // title: {
+    //   type: String,
+    //   default: "Creative Tim",
+    //   description: "Sidebar title",
+    // },
+    // shortTitle: {
+    //   type: String,
+    //   default: "CT",
+    //   description: "Sidebar short title",
+    // },
+    logo: {
+      type: String,
+      default: "/img/brand/green.png",
+      description: "Sidebar app logo",
+    },
+  
     sidebarLinks: {
       type: Array,
       default: () => [],
       description:
         "List of sidebar links as an array if you don't want to use components for these.",
     },
+    autoClose: {
+      type: Boolean,
+      default: true,
+      description:
+        "Whether sidebar should autoclose on mobile when clicking an item",
+    },
   },
+  // provide() {
+  //   return {
+  //     autoClose: this.autoClose,
+  //   };
+  // },
   methods: {
-    beforeDestroy() {
-      if (this.$sidebar.showSidebar) {
-        this.$sidebar.showSidebar = false;
-      }
-    }
+   
   }
 
 };

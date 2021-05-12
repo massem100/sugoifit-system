@@ -8,7 +8,7 @@
           <b-form id="newProductForm" method="POST" @submit.stop.prevent="handleSubmit(onSubmit)" enctype="multipart/form-data">
             <input type="hidden" name="_token" :value="token">
             <b-row>
-              <b-col cols="12" class="text-info mb-3 font-weight-bold">Add Product</b-col>
+              <b-col cols="12" class="text-info mt-5 mb-3 font-weight-bold">Add Product</b-col>
               <b-col class="mb-2 c-box" xl="6" md="6" sm="12">
                 <validation-provider
                   v-slot="{ errors }"
@@ -168,7 +168,7 @@
     import {ValidationObserver, ValidationProvider} from "vee-validate";
 
     export default {
-        layout: 'dashboard',
+        layout: 'DashboardLayout',
         name: "add",
         components: {
             ValidationProvider,

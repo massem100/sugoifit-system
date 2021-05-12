@@ -86,9 +86,9 @@ $colors: map-merge((
 ), $colors);
 
 $default:       #172b4d !default;
-$primary:       #7CC3CD !default;
-$secondary:     #F0FBFF !default;
-$success:       $green !default;
+$primary:       #90D8E1 !default;
+$secondary:     #E5E5E5 !default;
+$success:       #09F9EA !default;
 $info:          $teal !default;
 $warning:       $orange !default;
 $danger:        $red !default;
@@ -729,7 +729,8 @@ $navbar-light-toggler-border-color:        transparent !default;
 
 $navbar-vertical-box-shadow:                0 0 2rem 0 rgba(136, 152, 170, .15) !default;
 $navbar-vertical-border-color:              rgba($black, .05) !default;
-$navbar-vertical-width:                     62px !default;
+// $navbar-vertical-width:                     62px !default;
+$navbar-vertical-width:                     250px !default;
 $navbar-vertical-open-width:                250px !default;
 $navbar-vertical-padding-x:                 1.5rem !default;
 $navbar-vertical-nav-link-padding-x:        1.5rem !default;

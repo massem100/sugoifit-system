@@ -3,11 +3,12 @@ import jwt
 import secrets
 import hashlib, random
 from functools import wraps
+from datetime import datetime
 from app import  db, login_manager,  csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission
 from app.forms import RegisterForm, LoginForm
 from app.model import  accounts, auth, sales, transactions
-
+from app.schema.role import role_schema, roles_schema
 from flask import  Blueprint, current_app,  request, jsonify, flash, session, _request_ctx_stack, g
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -95,14 +96,22 @@ def login():
             if check_password_hash(user.user_password, passwordGiven):
                 # get user id, load into session
                 login_user(user)
-                print(user)
 
                 # Flask-Principal, register user identity into the system
                 identity_changed.send(auth, identity = Identity(user.cid))
-
+         
+                user_roles = db.session.query(auth.Role).filter_by(userID = user.userID).all()
+                user_roles = roles_schema.dump(user_roles)
+                
                 payload = {'userid': user.userID}
                 token = jwt.encode(payload, current_app.config['TOKEN_KEY'], algorithm='HS256').decode('utf-8')
-                return jsonify(success = [{"token": token,"userid": user.userID, "message": "User successfully logged in."}])
+                return jsonify(success = [{
+                                           "token": token, 
+                                           "user": user.userID, 
+                                           "user_role": user_roles, 
+                                           "busID": current_user.busID,
+                                           "message": "User successfully logged in."
+                                         }])
                 
             else:
                 return jsonify({'error msg': 'Login credentials failed: Please check email or password.'})
@@ -119,16 +128,25 @@ def login():
 @login_required
 def logout():
     # Clears user from session
-    logout_user()
-
-    # Flask-Principal: Remove session keys
-    for key in ('identity.name', 'identity.auth_type'):
-        session.pop(key, None)
-
-    # Flask-Principal: set user to anonymous
-    identity_changed.send(auth, identity=AnonymousIdentity())
     
-    return jsonify({'message': "You have been logged out successfully"})
+    if current_user.is_authenticated == True: 
+        logout_user()
+        
+        # Flask-Principal: Remove session keys
+        for key in ('identity.name', 'identity.auth_type'):
+            session.pop(key, None)
+
+        # Flask-Principal: set user to anonymous
+        identity_changed.send(auth, identity=AnonymousIdentity())
+
+        return jsonify({'message': "You have been logged out successfully"})
+
+    else:
+        return jsonify({'message': "You are not logged in."})
+
+
+    
+    
 
 
 @authorize.route('/api/users/register', methods=["POST"])
@@ -195,7 +213,7 @@ def register():
             db.session.add(user_cred)
             db.session.add(user_roles)
             db.session.commit()
-            return jsonify(success =[{'message': 'Successfully registered'}])
+            return jsonify({'message': 'Successfully registered'})
 
         else: 
             # What to do if existing business is not none and email is not None

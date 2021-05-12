@@ -12,8 +12,11 @@ html, body {
   margin: 0;
   padding: 0;
   // background-color: aquamarine;
+  overflow-x: hidden;
 }
-
+.main-content{
+  overflow-x: hidden;
+}
 body, input, button, select, textarea {
   font: 300 1rem 'Poppins', sans-serif;
   color: #222222;
@@ -64,9 +67,13 @@ ul, ol {
 }
 
 .quick_actions_div {
+  display: flex; 
+  flex-direction: row;
+  justify-content: center;
+  margin: 0px;
   .quick_actions {
-    margin: 10px 15px 10px 0px;
-    background-color: #DFFBFF;
+    margin: 0px 15px 10px 5px;
+    background-color: #A7E4EC;
     width: 15rem;
     height: 5rem;
     padding: 20px;

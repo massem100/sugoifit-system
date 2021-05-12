@@ -60,8 +60,13 @@
           </b-row>
           <b-row>
             <b-col>
-
-              <line-chart :data="barChartData" :options="barChartOptions"/>
+              <b-card>
+                <b-card-title>Break-even</b-card-title>
+                <b-card-text>
+<line-chart :data="chartData" :options="chartOption" :height="250"/>
+                </b-card-text>
+              </b-card>
+              
             </b-col>
             <b-col></b-col>
           </b-row>
@@ -78,15 +83,70 @@
 <script>
     import commonChartDetails from "@/mixins/commonChartDetails";
     import {tableItems} from "../../assets/data/tableData";
-
+    import LineChart from "../../components/charts/LineChart";
 
     export default {
         name: "Reports",
-        layout: 'dashboard',
+        layout: 'DashboardLayout',
+        components: {LineChart},
         mixins: [commonChartDetails],
         data() {
             return {
-                tableItems: tableItems
+                tableItems: tableItems,
+                chartData: {
+                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                    datasets: [
+                        {
+                            label: 'Income',
+                            data: [10000, 15000, 20000, 30000, 40000, 50000, 60000, 70000, 34000, 45000, 11000, 78000, 45000],
+                            borderColor: 'green',
+                            fill: false,
+                        },
+                        {
+                            label: 'Last year Income',
+                            data: [30000, 24000, 57000, 23000, 68000, 72000, 20005, 64000, 13300, 143000, 16500, 33000, 56000],
+                            borderColor: '#B3C4D4',
+                            fill: false
+                        }
+                    ]
+                },
+                chartOption: {
+                    responsive: true,
+                    legend: {
+                        display: true
+                    },
+                    title: {
+                        display: true,
+                        fontSize: 24,
+                        fontColor: '#6b7280'
+                    },
+                    tooltips: {
+                        backgroundColor: '#17BF62'
+                    },
+                    scales: {
+                        xAxes: [
+                            {
+                                gridLines: {
+                                    display: false
+                                }
+                            }
+                        ],
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true,
+                                    callback: function (value, index, values) {
+                                        return '$' + value;
+                                    }
+                                },
+                                gridLines: {
+                                    display: true
+                                }
+                            }
+                        ]
+                    }
+                },
+               
             }
         },
         head() {

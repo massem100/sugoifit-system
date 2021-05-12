@@ -8,7 +8,11 @@ from xlrd.timemachine import unicode
 class Customer(db.Model):
     __tablename__ = 'customer'
 
+<<<<<<< HEAD
     custID = db.Column(db.Integer, primary_key=True)
+=======
+    custID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+>>>>>>> main
     fname = db.Column(db.String(100))
     lname = db.Column(db.String(100))
     trn = db.Column(db.Integer)
@@ -70,7 +74,11 @@ class Sale(db.Model):
 class Product(db.Model):
     __tablename__ = 'product'
 
+<<<<<<< HEAD
     prodID = db.Column(db.Integer, primary_key=True)
+=======
+    prodID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+>>>>>>> main
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     prodName = db.Column(db.String(100))
     unit_price = db.Column(db.DECIMAL(10, 2))
@@ -371,7 +379,11 @@ class Orderdetail(db.Model):
     __tablename__ = 'orderdetails'
 
     orderID = db.Column(db.ForeignKey('custorder.orderID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True, nullable=False)
+<<<<<<< HEAD
     detailsID = db.Column(db.Integer, primary_key=True, nullable=False)
+=======
+    detailsID = db.Column(db.String(10), primary_key=True, nullable=False)
+>>>>>>> main
     prodID = db.Column(db.String(10))
     serviceID = db.Column(db.String(10))
     quantity = db.Column(db.Integer)
@@ -398,7 +410,11 @@ class Orderdetail(db.Model):
 class Receipt(db.Model):
     __tablename__ = 'receipt'
 
+<<<<<<< HEAD
     receiptID = db.Column(db.Integer, primary_key=True)
+=======
+    receiptID = db.Column(db.String(10), primary_key=True)
+>>>>>>> main
     orderID = db.Column(db.ForeignKey('custorder.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     DATE_issued = db.Column(db.Date)
@@ -425,7 +441,11 @@ class Receiptdetail(db.Model):
     __tablename__ = 'receiptdetails'
 
     receiptID = db.Column(db.ForeignKey('receipt.receiptID', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, unique=True)
+<<<<<<< HEAD
     rdetailsID = db.Column(db.Integer, primary_key=True)
+=======
+    rdetailsID = db.Column(db.String(10), primary_key=True)
+>>>>>>> main
     orderID = db.Column(db.ForeignKey('custorder.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     prodID = db.Column(db.ForeignKey('product.prodID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     serviceID = db.Column(db.ForeignKey('service.serviceID', ondelete='CASCADE', onupdate='CASCADE'), index=True)

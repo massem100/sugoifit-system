@@ -14,6 +14,28 @@ product = Blueprint('product', __name__)
 """
 --------------------------------------- Product/Services Routes ----------------------------------------------------------
 """
+
+
+# @app.route('/dev/<int:id>/', methods=['PUT'])
+# def update_dev(id):
+#     dev = Developer.query.get(id)
+#     dev.name = request.json.get('name', dev.name)
+#     db.session.commit()
+#     return jsonify({'dev': dev.serialize()})
+
+@product.route('/api/product/<prodID>', methods =['PUT'])
+def update_product(prodID):
+    product = Product.query.get(prodID)
+    # What parts to
+    return 1
+
+@product.route('/api/product/<prodID>', methods = ['DELETE'])
+def delete_product(prodID): 
+    product = Product.query.get(prodID)
+    db.session.delete(product)
+    db.session.commit() 
+    return jsonify({'message': 'Product {} has been deleted.'}.format(prodID))
+
 @product.route('/api/newproduct', methods = ['GET', 'POST'])
 def new_product():
     form = newProductForm(request.form)
@@ -118,10 +140,13 @@ def all_product():
     #return jsonify(products)
     return jsonify(data_list)
 
+#@app.route('/api/product/classify', methods = ['GET', 'POST'])
+@product.route('/api/classify', methods = ['GET', 'POST'])
 
-@product.route('/api/product/classify', methods = ['GET', 'POST'])
+#safety stock = (max daily sales x max lead time in days) - (average daily sales x average lead time in days)
+
 def product_classify():
-    product_list = defaultdict(list)
+    #product_list = defaultdict(list)
     annual_consum_val = []
     total_consum_val = 0
     total_units_sold = 0
@@ -129,16 +154,46 @@ def product_classify():
 
     for product in product_sales: 
         consum_val = product.quantitySold * product.unit_price
-        annual_consum_val.append([product.psiID, consum_val])
+        annual_consum_val.append([product.psiID, consum_val, 'C']) #Set them as C by default
         total_consum_val += consum_val
         total_units_sold += product.quantitySold
 
+    #Sort consumption list in descending order
+    annual_consum_val.sort(key= lambda x: x[1], reverse = True)
+
+    total_valA = 0
+    total_valB = 0
+    index = None
+    #Check for A products
+    for product in annual_consum_val:
+        total_valA+= product[1]
+        product[2]= 'A'
+        percentage = (total_valA / total_consum_val) * 100
+        if percentage >=80:
+            index = annual_consum_val.index(product)
+            break
+
+    #Check for B products
+    for product in annual_consum_val[index + 1:]:
+        total_valB+= product[1]
+        product[2]= 'B'
+        percentage = (total_valB / total_consum_val) * 100
+        if percentage >=15:
+            break
+
+    data = []
+    #Convert to dict
+    for product in annual_consum_val:
+        data.append({'prodID':product[0], 'con_val': str(product[1]), 'grade':product[2]})
+    
+    return jsonify({'products': data})
+
     # Find Percentage of Annual Units Sold 
-    for product in product_sales: 
-        desc_consum_val = sorted(annual_consum_val, reverse=True) # List of Annual Consumption Values (Descending Order)
-        percent_units_sold = (product.quantitySold/total_units_sold)*100.0  # % of Annual Units Sold
-        for val in desc_con_val: 
-            percent_consum_val = (val/total_consum_val)*100.0  # % of Total Annual Consumption Value
+    # for product in product_sales: 
+    #     desc_consum_val = sorted(annual_consum_val, reverse=True) # List of Annual Consumption Values (Descending Order)
+    #     percent_units_sold = (product.quantitySold/total_units_sold)*100.0  # % of Annual Units Sold
+    #     for val in desc_con_val: 
+    #         percent_consum_val = (val/total_consum_val)*100.0  # % of Total Annual Consumption Value
 
             # Split Data ito 80/15/5
             # get length of product_list then divide by percentage
@@ -147,4 +202,48 @@ def product_classify():
 
     # Find Percentage of Annual Consumption Value
 
-    return jsonify({'products': products})
+
+
+@product.route('/api/checkout-products', methods = ['GET'])
+def checkoutproducts():
+    message = {}
+    data = {}
+    tprice = 0
+    deliver = 500
+
+    transaction_inputs = [
+            {
+                'id': 1,
+                'img': "https://5.imimg.com/data5/RU/WI/MY-46283651/school-skirts-500x500.jpg",
+                'name': 'skirt',
+                'quantity': '1',
+                'size': 'L',
+                'colour': 'black',
+                'price': "500"
+            },
+            {
+                'id': 2,
+                'img': "https://slimages.macysassets.com/is/image/MCY/products/2/optimized/17864922_fpx.tif?$browse$&wid=170&fmt=jpeg",
+                'name': 'pants',
+                'quantity': '1',
+                'size': 'medium',
+                'colour': 'white',
+                'price': '1000'
+            },
+            {
+                'id': 3,
+                'img': "https://di2ponv0v5otw.cloudfront.net/posts/2018/03/24/5ab6a736077b9758675a91e5/m_5ab6c769c9fcdfbadf53cd14.jpeg",
+                'name': 'top',
+                'quantity': '1',
+                'size': 'medium',
+                'colour': 'white',
+                'price': '800'
+            }
+        ]
+
+    for card in transaction_inputs:
+        tprice = tprice + int(card['price'])
+
+    tcost = tprice + deliver
+
+    return jsonify(data)

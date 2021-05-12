@@ -1,39 +1,84 @@
 <template>
   <div class="wrapper">
     <notifications></notifications>
-    <side-bar>
-      <template :slot-scope="props" slot="links">
+    <side-bar class="bg-white text-black">
+      <template slot="links">
            
-          <div  class="d-flex flex-row"> 
-            <div  class="profile mt-3 mb-2 ">
-                <h6 id="profile_name" class="my-1 font-weight-bold"> Jane S.</h6>
-                <h6 id="profile_ID" class="my-1"> ID 1234567</h6>
-                <h6 id="role" class="my-1"> Role: Business Owner</h6>
+          <div  class="d-flex flex-row justify-content-center"> 
+            <div  class="profile mt-3 mb-3 ">
+                <h5 id="profile_name" class="my-1 font-weight-bold"> Jane S.</h5>
+                <h5 id="profile_ID" class="my-1"> ID 1234567</h5>
+                <h5 id="role" class="my-1"> Role: Business Owner</h5>
               </div>
-              <img id="profile-icon" class ="mr-2 w-25 h-25" :src="user" alt="" aspect-ratio="0.8" />
+              <img id="profile-icon" class ="mt-3 ml-2 mr-2 w-25 h-25" :src="user" alt="" aspect-ratio="1" />
+             
             </div>
+            <hr
+              class="my-3"
+              style="
+                border: 0;
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                min-width: 80%;
+                overflow: visible;
+                box-sizing: content-box;
+                height: 0;
+              "
+            />
         <sidebar-item
           :link="{
             name: 'Dashboard',
-            icon: 'ni ni-shop text-primary',
-            path: '/dashboard',
+            icon: ['fas', 'plus'],
+            path: '/',
+            color: 'text-black',
+          }"
+        >
+        </sidebar-item>
+        <sidebar-item
+          :link="{
+            name: 'Manage Transactions',
+            icon: ['fas', 'receipt'],
+            path: '/manage-transaction',
+            color: 'text-black',
           }"
         >
         </sidebar-item>
         <sidebar-item
           
           :link="{
-            name: 'Manage Products',
-            icon: 'ni ni-bag-17 text-primary',
-            path: '/manageproducts',
+            name: 'Products',
+            icon: ['fas', 'plus'],
+            path: '',
+            color: 'text-black',
           }"
         >
+        
           <sidebar-item
             opened
             :link="{
               name: 'All Products',
-              icon: 'ni ni-bag-17 text-primary',
-              path: '/allproducts',
+              icon: ['fas', 'plus'],
+              path: '/manageproducts/list',
+              color: 'text-black',
+            }"
+          >
+          </sidebar-item>
+          <sidebar-item
+            opened
+            :link="{
+              name: 'Add Products',
+              icon: ['fas', 'plus'],
+              path: '/manageproducts/add',
+              color: 'text-black',
+            }"
+          >
+          </sidebar-item>
+          <sidebar-item
+            opened
+            :link="{
+              name: 'Product Analytics',
+              icon: ['fas', 'plus'],
+              path: '/manageproducts/analytics',
+              color: 'text-black',
             }"
           >
           </sidebar-item>
@@ -42,40 +87,91 @@
           
           :link="{
             name: 'Manage Sales',
-            icon: 'ni ni-bag-17 text-primary',
-            path: '/manageproducts',
+            icon: ['fas', 'plus'],
+            path: '/managesales',
+            color: 'text-black',
           }"
         >
           <sidebar-item
             opened
             :link="{
               name: 'Orders',
-              icon: 'ni ni-bag-17 text-primary',
+              icon: ['fas', 'plus'],
               path: '/allproducts',
+              color: 'text-black',
             }"
           >
           </sidebar-item>
+         
         </sidebar-item>
+         <sidebar-item
+            :link="{
+              name: 'Invoices',
+              icon: ['fas', 'plus'],
+              path: '/invoice/',
+              color: 'text-black',
+            }"
+          >
+            <sidebar-item
+              :link="{
+                name: 'Create Invoice',
+                icon: ['fas', 'plus'],
+                path: '/invoice/create',
+                color: 'text-black',
+              }"
+            >
+            </sidebar-item>
+            <sidebar-item
+              :link="{
+                name: 'All Invoices',
+                icon: ['fas', 'plus'],
+                path: '/invoice/list',
+                color: 'text-black',
+              }"
+            >
+            </sidebar-item>
+          </sidebar-item>
         <sidebar-item
             :link="{
               name: 'Financials',
-              icon: 'ni ni-bag-17 text-primary',
-              path: '/allproducts',
+              icon: ['fas', 'plus'],
+              path: '/financialstmts/',
+              color: 'text-black',
             }"
           >
+          <sidebar-item
+            :link="{
+              name: 'Balance Sheet',
+              icon: ['fas', 'plus'],
+              path: '/financialstmts/balance-sheet/_slug',
+              color: 'text-black',
+            }"
+          >
+          </sidebar-item>
+          <sidebar-item
+            :link="{
+              name: 'Income Statement',
+              icon: ['fas', 'plus'],
+              path: '/financialstmts/profit-loss/_slug',
+              color: 'text-black',
+            }"
+          >
+          </sidebar-item>
           </sidebar-item>
         <sidebar-item
             :link="{
               name: 'Reports',
-              icon: 'ni ni-bag-17 text-primary',
-              path: '/allproducts',
+              icon: ['fas', 'chart-bar'],
+              path: '/reports/',
+              color: 'text-black',
             }"
           >
           <sidebar-item
             :link="{
               name: 'Report Generation',
-              icon: 'ni ni-bag-17 text-primary',
+              icon: ['fas', 'plus'],
               path: '/reports/charts',
+              color: 'text-black',
             }"
           >
           </sidebar-item>
@@ -94,16 +190,25 @@
         />
       </template>
     </side-bar>
+    
     <div class="main-content">
       <dashboard-navbar
         :type="$route.name === 'alternative' ? 'light' : 'default'"
       ></dashboard-navbar>
 
-      <div class = "" @click="$sidebar.displaySidebar(true)"
-      >
+      <div>
+      <base-alert v-if="alert.message"
+                    :class="`alert ${alert.type}`"
+                    style="
+                           height: 3.5rem; 
+                           width:100%;
+                           z-index:1;" 
+                    dismissible
+                     ><strong>Success:</strong> {{alert.message}}
+      </base-alert>
         <nuxt></nuxt>
       </div>
-      <content-footer v-if="!$route.meta.hideFooter"></content-footer>
+      <content-footer class = "" v-if="!$route.meta.hideFooter"></content-footer>
     </div>
   </div>
 </template>
@@ -131,17 +236,31 @@ import DashboardNavbar from "~/components/layouts/argon/DashboardNavbar.vue";
 import ContentFooter from "~/components/layouts/argon/ContentFooter.vue";
 import DashboardContent from "~/components/layouts/argon/Content.vue";
 import Vuex from "vuex";
+import BaseAlert from '../components/argon-core/BaseAlert.vue';
 
 export default {
   components: {
     DashboardNavbar,
     ContentFooter,
     DashboardContent,
+    BaseAlert,
   },
   data(){
     return{
+      user: require('/assets/uploads/user-icon.svg'),
       
     }
+  },
+  computed: {
+        alert () {
+            return this.$store.state.alert
+        }
+    },
+  watch: {
+        $route (to, from){
+            // clear alert on location change
+            this.$store.dispatch('alert/clear');
+        }
   },
   methods: {
     initScrollbar() {
@@ -155,4 +274,10 @@ export default {
 };
 </script>
 <style lang="scss">
+.wrapper {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    
+}
 </style>

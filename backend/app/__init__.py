@@ -18,7 +18,9 @@ login_manager = LoginManager()
 csrf_ = csrf
 # JWT Authorization Setup
 jwt = JWTManager()
-ma = Marshmallow()
+ma = Marshmallow
+
+
 
 def init_app(): 
     app = Flask(__name__, instance_relative_config=False, template_folder = None)
@@ -29,11 +31,14 @@ def init_app():
     app.config['SECRET_KEY'] = b'\xbc\x86HN\x82\x12p\xceQV\x1f\x06eP\x16i\xc8=P\xb1\xc6^\xf0x'
     app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqlconnector://{}:{}@{}/sugoifit".format(username, password, server)
     app.config["SQLALCHEMY_BINDS"] ={
-                                        'sugoifit': 'mysql+mysqlconnector://localhost/sugofit'                                  
+                                        'sugoifit': "mysql+mysqlconnector://{}:{}@{}/sugoifit".format(username, password, server)                                  
                                     }
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+<<<<<<< HEAD
     app.config['UPLOAD_FOLDER'] = './app/static/uploads'
+=======
+>>>>>>> main
 
     # from app.model import db
     db.init_app(app)
@@ -56,6 +61,7 @@ def init_app():
         # CSRF Attack Protection
         csrf_wrap = csrf_.CSRFProtect(app)
 
+        
             
         # Cross Site Resource Sharing Protection
         cors = CORS(app, support_credentials=True, resources = {r"/api/*": {"origins": "http://localhost:3000"}})
@@ -76,10 +82,18 @@ def init_app():
         app.register_blueprint(product)
 
         from .auth.routes import authorize
-        app.register_blueprint(authorize)   
+        app.register_blueprint(authorize)  
 
+        from .generate_statements.routes import statement
+        app.register_blueprint(statement)   
+
+       
         #    Include View routes
         from app import views
+        
+         # from . import model
+        # from .model import auth, accounts, financial_statement, sales
+        # db.create_all()
     return app 
 
 

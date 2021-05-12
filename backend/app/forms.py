@@ -129,7 +129,7 @@ class CLLiabForm(FlaskForm):
 class ExpForm(FlaskForm): 
     expense_name = StringField('Expense  Name', validators = [InputRequired('Please enter the name of the asset.')])
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
-    expense_type = RadioField('Increase or Decrease', choices = expense_type)
+    expense_type = RadioField('Expense Type', choices = expense_type)
     expense_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
@@ -138,8 +138,16 @@ class ExpForm(FlaskForm):
 class RevForm(FlaskForm): 
     revenue_name = StringField('Asset Name', validators = [InputRequired('Please enter the name of the asset.')])
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
-    revenue_type = RadioField('Increase or Decrease', choices = revenue_type)
+    revenue_type = RadioField('Revenue Type', choices = revenue_type)
     revenue_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
+    amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
+    paid_using = SelectField('Paid Using', choices = paid_using)
+    increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
+
+class EquityForm(FlaskForm): 
+    equity_name = StringField('Equity Name', validators = [InputRequired('Please enter the equity name')])
+    transaction_date = DateField('Transaction Date', validators = [InputRequired('Please enter a transaction date')])
+    equity_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
     increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
