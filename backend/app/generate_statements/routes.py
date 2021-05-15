@@ -7,7 +7,7 @@ import pandas as pd
 
 # WTF Forms and SQLAlchemy Models
 from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm,orderForm, LTLiabForm, CAForm,ExpForm, RevForm
-from app.model import  accounts, auth, sales, transactions
+from app.model import  accounts, auth, sales
 from app.model.financial_statement import Financialstmt, Financialstmtline, Financialstmtlineseq, \
                                           Financialstmtlinealia,Financialstmtdesc 
 from app.accounting.routes import account_balances

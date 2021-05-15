@@ -1,9 +1,6 @@
 <template>
     <div class="wrapper">
-        
-        <div class="header">
-            <WebsiteHeader />
-        </div>
+     
         <div class="items">
             {{ content }}
         </div>
@@ -16,11 +13,12 @@
 </template>
 
 <script>
-import WebsiteHeader from '../../components/WebsiteHeader';
+
 export default {
     name: 'Products',
+    layout:'WebsiteLayout',
     components: {
-        WebsiteHeader
+       
     },
     data() {
         return {

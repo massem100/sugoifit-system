@@ -83,27 +83,7 @@
           >
           </sidebar-item>
         </sidebar-item>
-        <sidebar-item
-          
-          :link="{
-            name: 'Manage Sales',
-            icon: ['fas', 'plus'],
-            path: '/managesales',
-            color: 'text-black',
-          }"
-        >
-          <sidebar-item
-            opened
-            :link="{
-              name: 'Orders',
-              icon: ['fas', 'plus'],
-              path: '/allproducts',
-              color: 'text-black',
-            }"
-          >
-          </sidebar-item>
-         
-        </sidebar-item>
+       
          <sidebar-item
             :link="{
               name: 'Invoices',

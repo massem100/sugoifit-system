@@ -7,7 +7,7 @@ from datetime import datetime
 from app import  db, login_manager,  csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission
 from app.forms import RegisterForm, LoginForm
-from app.model import  accounts, auth, sales, transactions
+from app.model import  accounts, auth, sales
 from app.schema.role import role_schema, roles_schema
 from flask import  Blueprint, current_app,  request, jsonify, flash, session, _request_ctx_stack, g
 from werkzeug.utils import secure_filename

@@ -122,7 +122,7 @@
     import {ValidationObserver, ValidationProvider} from "vee-validate";
 
     export default {
-        layout: 'dashboard',
+        layout: 'DashboardLayout',
         components: {
             ValidationProvider,
             ValidationObserver,

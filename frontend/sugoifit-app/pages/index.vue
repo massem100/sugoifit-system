@@ -6,7 +6,12 @@
           <div class=" welcome-heading mt-4 mb-2 ml-5">
             <h3 class="font-weight-bold"> Welcome Back, <span> Jane</span></h3>
 
-            <p class="">Lorem ipsum dolor sit amet consectetur adi</p>
+            <p contenteditable 
+                class="editme" 
+                v-text="txt"
+                @blur="onEdit"
+                @keydown.enter="endEdit"
+                   >Lorem ipsum dolor sit amet consectetur adi</p>
           </div>
 
           <div class="d-flex font-weight-bold  ml-lg-auto m-2 mr-4">
@@ -128,7 +133,7 @@
 
     </b-row>
 
-    <div class="d-flex flex-row m-4">
+    <div id ="check" class="d-flex flex-row m-4">
       <b-col>
         <h4> Popular Products</h4>
         <div class="w-75 bg-white" v-for="item in items" :key="item.age">
@@ -150,7 +155,6 @@
 
 <script>
     import Card from '../components/argon-core/Cards/Card.vue';
-    import ImageSlider from '../components/ImageSlider.vue';
 
     // Charts
     import * as chartConfigs from "@/components/argon-core/Charts/config";
@@ -161,7 +165,6 @@
     export default {
         components: {
             Card,
-            ImageSlider,
             LineChart,
             BarChart
         },
@@ -169,6 +172,7 @@
         name: 'dashboard',
         data() {
             return {
+                txt: localStorage.getItem('text_change'), 
                 chartData: {
                     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                     datasets: [
@@ -269,9 +273,9 @@
             }
         },
 
-        head() {
-            return {
-                title: "Dashboard",
+        head: {
+            
+                title: "SugoiFit Dashboard",
                 meta: [
                     {
                         hid: "description",
@@ -280,8 +284,27 @@
                     }
                 ],
 
-            };
         },
+        watch:{
+            txt(){
+              this.txt = localStorage.getItem('text_change');
+              
+            }
+        },
+        methods: { 
+          onEdit(evt){
+             var src = evt.target.innerText
+             this.txt = src
+         },
+         endEdit(){
+            this.$el.querySelector('.editme').blur()
+            let te = this.$el.querySelector('.editme').innerText;
+            let elemt = this.$el.querySelector('#check').children;
+            console.log(te);
+            console.log(elemt);
+            localStorage.setItem('text_change', te );
+         },
+        }
     }
 </script>
 

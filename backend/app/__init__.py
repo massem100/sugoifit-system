@@ -12,6 +12,7 @@ from flask import Blueprint
 from flask import current_app
 from werkzeug.utils import import_string
 from flask_marshmallow import Marshmallow
+from flask_mail import Mail 
 
 db = SQLAlchemy()
 principal = Principal()
@@ -20,6 +21,8 @@ csrf_ = csrf
 # JWT Authorization Setup
 jwt = JWTManager()
 ma = Marshmallow
+
+mail = Mail()
 
 
 
@@ -49,6 +52,17 @@ def init_app():
 
     # Flask migrate
     migrate = Migrate(app, db)
+
+    # Flask Mail 
+    app.config['SECRET_KEY'] = 'Peter rabit bakes'
+    app.config['MAIL_SERVER'] = 'smtp.mailtrap.io'
+    app.config['MAIL_PORT'] = '465' # (or try 2525)
+    app.config['MAIL_USERNAME'] = 'massem100@outlook.com'
+    app.config['MAIL_PASSWORD'] = 'rabits'
+    app.config['MAIL_USE_TLS'] = False
+    app.config['MAIL_USE_SSL'] = True
+    mail.init_app(app)
+
 
     with app.app_context():      
 

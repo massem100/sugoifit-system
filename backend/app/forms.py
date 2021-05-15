@@ -12,7 +12,7 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Password', validators=[InputRequired('Please enter a password.')])
     business_name = StringField('Business Name', validators=[InputRequired('Please enter your business name.')])
     
-class newProductForm(FlaskForm):
+class NewProductForm(FlaskForm):
     product_name = StringField('Product Name', validators=[InputRequired('Please enter the product name, e.g. x shampoo.')])
     quantity = StringField('Quantity', validators=[InputRequired('Please enter the quantity')])
     uom = StringField('Unit of Measurement', validators=[InputRequired('Please enter the unit of measurement')])
@@ -32,7 +32,13 @@ class orderForm(FlaskForm):
     address = StringField('Address', validators=[InputRequired('Please enter your your address')])
     phone_num = StringField ('Telephone', validators =[InputRequired('Please enter your your phone number')])
     email = EmailField('Email', validators = [InputRequired('Email Field should not be  empty'), Email()])
-    submit = SubmitField('Submit')
+    # submit = SubmitField('Submit')
+
+class ProofOfPaymentForm(FlaskForm): 
+    pass
+
+class ContactForm(FlaskForm):
+    pass
 
 class websiteForm(FlaskForm):
     wel_head = StringField('Welcome Header', validators=[InputRequired('Welcome Header field should not be empty')])
@@ -69,42 +75,61 @@ increase_decrease= [('Increase', 'Increase'), ('Decrease', 'Decrease')]
 expense_type= [('Operating Expense', 'Operating Expense'), ('Non Operating Expense', 'Non Operating Expense')]
 revenue_type= [('Operating Revenue', 'Operating Revenue'), ('Non Operating Revenue', 'Non Operating Revenue')]
 tan_in= [('Tangible Asset', 'Tangible Asset'), ('Intangible Asset', 'Intangible Asset')]
+nca_tags= [
+            ('Property, Plant & Equipment', 'Property, Plant & Equipment'), 
+            ('Intangible Assets', 'Intangible Assets'),
+            ('Investments', 'Investments'),
+            ('Other Non Current Assets', 'Other Non Current Assets'),
+        ]
+ca_tags= [
+        ('Inventory', 'Inventory'), 
+        ('Cash', 'Cash'),
+        ('Cash Equivalents', 'Cash Equivalents'),
+        ('Accounts Receivables', 'Accounts Receivables'),
+        ('Prepaid Expenses', 'Prepaid Expenses'),
+        ('Marketable Securities', 'Marketable Securities'),
+        ('Other Current Assets', 'Other Current Assets'),
+    ]
+cl_tags= [
+        ('Accounts Payable', 'Accounts Payable'), 
+        ('Accrued Expenses', 'Accrued Expenses'),
+        ('Short Term Loans', 'Short Term Loans'),
+        ('Other Current Liabilities', 'Other Current Liabilities'),
+        
+]
+ltl_tags= [
+        ('Long Term Loans', 'Long Term Loans'), 
+        ('', 'Accrued Expenses'),
+        ('Short Term Loans', 'Short Term Loans'),
+        ('Other Long Term Liabilities', 'Other Long Term Liabilities'),
+        
+]
 
-"""
-IT'S JUST LOGIC, you got this!
-NEED TO HANDLE TYPE OF TRANSACTION: BOUGHT/SOLD, INCREASE/DECREASE 
-this will help to determine whether the account is to be debited or credited 
-- what will we use to determine operating versus non operating revenue and expense?
-
-Look over the 7 classifications of general ledger 
-How exactly will the general ledger be used to convert to financial statements 
-General Legder should have the list of all accounts and their final balances that 
-will be used to compute the statement
-
-HOWEVER, the individual accounts will also be used to populate the dropdowns for each category 
-So for each line item it should be account name and their final line balance.. and if it has a credit balance 
-it should be bracketed. 
-"""
 class NCAForm(FlaskForm): 
     asset_name = StringField('Asset Name', validators = [InputRequired('Please enter the name of the asset, e.g. Motor Vehicle')])
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
+    due_date = DateField('Due Date', validators = [InputRequired('Please Enter a due date for payment on credit.')])
     dep_type = SelectField('Depreciation Type', choices = dep_types_list)
-    dep_rate = DecimalField('Depreciation Rate', places=2, rounding=None, validators = [InputRequired('Please enter depreciation rate')])
     asset_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter asset amount.')])
+    salvage_val = DecimalField('Salvage Value', places=2, rounding=None, validators = [InputRequired('Please enter salvage value amount')])
     asset_lifespan = IntegerField('LifeSpanNumber')
+    totalUnits = IntegerField('Total Units')
     tan_in = RadioField("Tangible or Intangible", choices = tan_in)
     bought_sold = RadioField('Bought or Sold', choices = bought_sold)
     paid_using = RadioField('Paid Using', choices = paid_using)
+    tag = SelectField('Tag', choices= nca_tags)
 
 class CAForm(FlaskForm): 
     asset_name = StringField('Asset Name', validators = [InputRequired('Please enter the name of the asset.')])
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
     asset_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter asset amount.')])
+    asset_lifespan = IntegerField('LifeSpanNumber')
+    loan_period = IntegerField('Loan Period')
     increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
     paid_using = SelectField('Paid Using', choices = paid_using)
-
+    tag = SelectField('Tag', choices= ca_tags)
 
 class LTLiabForm(FlaskForm): 
     liab_name = StringField('Liability Name', validators = [InputRequired('Please enter liability name, e.g Notes Payable.')])
@@ -116,8 +141,9 @@ class LTLiabForm(FlaskForm):
     amount_borrowed = DecimalField('Amount Received', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
     account_affected= SelectField('Paid Using', choices = paid_using)
     increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
+    tag = SelectField('Tag', choices= ltl_tags)
 
-class CLLiabForm(FlaskForm): 
+class CLiabForm(FlaskForm): 
     liab_name = StringField('Liability Name', validators = [InputRequired('Please enter liability name, e.g Notes Payable.')])
     person_owed = StringField('Creditor Name', validators = [optional()])
     loan_rate = DecimalField('Loan Rate', validators= [InputRequired('Please enter the interest rate at which the loan must be repaid, e.g. .10')])
@@ -125,6 +151,7 @@ class CLLiabForm(FlaskForm):
     borrow_date = DateField('Loan Borrow Date', validators = [InputRequired('Please enter the date the loan was received.')])
     payment_start_date = DateField('Loan Payment Start Date', validators = [InputRequired('Please enter the date that repayment is expected to start.')])
     amount_borrowed = DecimalField('Amount Received', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
+    tag = SelectField('Tag', choices= cl_tags)
 
 class ExpForm(FlaskForm): 
     expense_name = StringField('Expense  Name', validators = [InputRequired('Please enter the name of the asset.')])
@@ -134,6 +161,7 @@ class ExpForm(FlaskForm):
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
     increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
+    # tag = SelectField('Tag', choices= nca_tags)
     
 class RevForm(FlaskForm): 
     revenue_name = StringField('Asset Name', validators = [InputRequired('Please enter the name of the asset.')])
@@ -143,6 +171,7 @@ class RevForm(FlaskForm):
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
     increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
+    #   tag = SelectField('Tag', choices= nca_tags)
 
 class EquityForm(FlaskForm): 
     equity_name = StringField('Equity Name', validators = [InputRequired('Please enter the equity name')])
@@ -151,3 +180,4 @@ class EquityForm(FlaskForm):
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
     increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
+    #   tag = SelectField('Tag', choices= nca_tags)

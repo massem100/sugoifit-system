@@ -1,50 +1,50 @@
 <template>
-    <div class="side-nav-on"> 
-        <!-- The inner divs will be triggered by a v-if to toggle active class/display -->
-        <div class="w-100">
-            <!-- I want to make the sidebar dynamic so when its time to change
-             the company type instead of the list its illustration or words -->
-            <div class="sugoifit-name">
-                <img class = "logo" src="~assets/uploads/logo.png" alt="">
-                <h5 class = ""> SugoiFIt App</h5>
-            </div>
 
-            <ul class = "list-nav d-flex flex-column"> 
-                    <!-- <img class = "checked" src="~assets/uploads/checked.svg" alt=""> -->
-                <li><span>1</span>Email Details</li>
-                <li><span>2</span>Company Type </li>
-                <!-- <li class = ""><span>3</span>Business Details </li> -->
-                <div class = "d-flex flex-row"> 
+<div class = "wrapper bg-white "> 
+    <b-nav class="m-4 mr-5 p-2">
+        <b-nav-item class = "h3" active>Monique Boutique</b-nav-item>
+        <b-row class="ml-lg-auto">
+            <b-nav-item active>Products</b-nav-item>
+            <!-- <b-nav-item>FAQ</b-nav-item> -->
+            <b-nav-item>Contact</b-nav-item>
+            
+            <b-nav-item>
+                <nuxt-link class="btnStyle pop-link" :to="{name:'website-placeorder'}">Shopping Cart</nuxt-link>
+            </b-nav-item>
+            <!-- <b-nav-item disabled>Disabled</b-nav-item> -->
+            
+         </b-row>
+  </b-nav>
+  <div class="nuxt-wrapper"> 
+         <nuxt />
+  </div>
+ 
+  <footer class= "footer bg-primary">
+      <h4 class="ml-4 mb-0 text-white"> Monique Boutique 2021</h4>
+  </footer>
+</div>
 
-               
-               <li><span>3</span></li>
-                <b-nav-item-dropdown  text="Business Details" right>
-                    
-                    <b-dropdown-item class = "list-style-none" href="#">Corporation</b-dropdown-item>
-                    <b-dropdown-item href="#">About your business</b-dropdown-item>
-                   
-                </b-nav-item-dropdown>
-                 </div>
-                <li><span>4</span> Team </li>
-                <li><span>5</span> Personal Details</li>
-            </ul>
-
-            <div class = "onboard-footer">
-
-            </div>
-              
-        </div>
-        
-    </div>
 </template>
+    
 
 <script>
 export default {
-    name: 'onboardingSide'
+    
+    
 }
 </script>
 
 <style scoped>
+.wrapper {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    
+}
+.nuxt-wrapper{
+    width:100%;
+    min-height: 100vh;
+}
  
     .side-nav-on{
         position:fixed;

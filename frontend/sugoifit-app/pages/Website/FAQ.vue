@@ -1,10 +1,6 @@
 <template>
     <div class="wrapper">
-        
-        <div class="header">
-            <WebsiteHeader />
-        </div>
-        
+               
         <div class="container">
 
 
@@ -14,11 +10,12 @@
 </template>
 
 <script>
-import WebsiteHeader from '../../components/WebsiteHeader';
+
 export default {
     name: 'FAQ',
+    layout:'WebsiteLayout',
     components: {
-        WebsiteHeader
+    
     }
 }
 </script>

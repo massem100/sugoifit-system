@@ -1,9 +1,5 @@
 <template>
     <div class="wrapper">
-        
-        <div class="header">
-            <WebsiteHeader />
-        </div>
         <div class="conatainer">
             <!-- contact section -->
             <div class="contact">
@@ -38,11 +34,11 @@
 </template>
 
 <script>
-import WebsiteHeader from '../../components/WebsiteHeader';
+
 export default {
     name: 'Contact',
+    layout:'WebsiteLayout',
     components: {
-        WebsiteHeader
     }
 }
 </script>

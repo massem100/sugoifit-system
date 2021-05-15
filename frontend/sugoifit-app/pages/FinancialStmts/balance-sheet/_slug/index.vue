@@ -15,7 +15,7 @@
               <thead>
               <tr style="border-bottom: 4px solid #7cc3cd">
                 <th></th>
-                <th class="text-right">$000</th>
+                <th class="text-right">$'000</th>
               </tr>
               </thead>
               <tbody>
@@ -50,7 +50,11 @@
                 <td class="text-right">$20</td>
               </tr>
               <tr>
-                <td class="font-weight-bold">Total Shareholders & Equity</td>
+                <td class="font-weight-bold">Total Liabilities</td>
+                <td class="text-right font-weight-bold">$40</td>
+              </tr>
+              <tr>
+                <td class="font-weight-bold">Total Liabilities & Equity</td>
                 <td class="text-right font-weight-bold">$40</td>
               </tr>
               </tbody>
@@ -68,10 +72,7 @@
 <script>
     export default {
         name: "invoice-card",
-<<<<<<< HEAD
         layout: 'dashboard',
-=======
->>>>>>> origin/Cheyenne
     }
 </script>
 
