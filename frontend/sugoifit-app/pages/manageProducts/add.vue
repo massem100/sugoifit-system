@@ -75,7 +75,7 @@
                 <validation-provider
                   v-slot="{ errors }"
                   rules="required"
-                  name="unit price"
+                  name="unit_price"
                 >
                   <label for="unit_price">Unit Price</label>
                   <b-form-input v-model="form.unit_price"
@@ -94,13 +94,33 @@
                 <validation-provider
                   v-slot="{ errors }"
                   rules="required"
-                  name="tax percent"
+                  name="man_units"
+                >
+                  <label for="man_units">Manufacture Units</label>
+                  <b-form-input v-model="form.man_unitts"
+                                type="number"
+                                class="w-100"
+                                id="man_units"
+                                name="man_units"
+                                :state="getValidationState(errors)">
+                  </b-form-input>
+                  <b-form-invalid-feedback>
+                    {{ errors[0] }}
+                  </b-form-invalid-feedback>
+                </validation-provider>
+              </b-col>
+              <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
+                <validation-provider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="tax_percent"
                 >
                   <label for="tax">Tax percent</label>
                   <b-form-input v-model="form.tax"
                                 type="number"
                                 class="w-100"
                                 id="tax"
+                                step=".01"
                                 name="tax"
                                 :state="getValidationState(errors)">
                   </b-form-input>
@@ -115,7 +135,7 @@
                 <validation-provider
                   v-slot="{ errors }"
                   rules="required"
-                  name="product status"
+                  name="product_status"
                 >
                   <label for="status">Product Status</label>
                   <b-form-select v-model="form.status"
@@ -135,10 +155,10 @@
                 <validation-provider
                   v-slot="{ errors }"
                   rules="required"
-                  name="product image"
+                  name="image"
                 >
                   <label for="image">Product Image</label>
-                  <b-form-file  v-model="form.image_file"
+                  <b-form-file  v-model="form.image"
                                 class="w-100"
                                 id="image"
                                 name="image"
@@ -215,19 +235,19 @@
                 });
 
             },
-            onSubmit() {
+            onSubmit(prodID) {
               let self = this;
               let newProductForm = document.getElementById("newProductForm");
               let form_data = new FormData(newProductForm);
 
-              let PATH_API = 'newproduct';
-                  this.$axios.post(`/api/${PATH_API}`, form_data, {
+              let busID = localStorage.getItem('busID'); 
+              this.$axios.post(`/api/${busID}/products`, form_data, {
                     headers: {
                     'contentType': 'application/json',
                   }
                 })
                 .then( jsonResponse =>{
-                  return jsonResponse.json();
+                  return jsonResponse.data;
                 })
                 .then( jsonResponse =>{
                   console.log(jsonResponse);

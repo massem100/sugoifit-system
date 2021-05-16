@@ -23,11 +23,12 @@ jwt = JWTManager()
 ma = Marshmallow
 
 mail = Mail()
+UPLOAD_FOLDER = './app/static/uploads'
 
 
 
 def init_app(): 
-    app = Flask(__name__, instance_relative_config=False, template_folder = None)
+    app = Flask(__name__, instance_relative_config=False )
     app.config.from_object('config.Config')
 
     username, password, server = 'root', 'SQLpass','localhost'
@@ -39,6 +40,9 @@ def init_app():
                                     }
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
     # from app.model import db
     db.init_app(app)

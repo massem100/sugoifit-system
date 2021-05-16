@@ -51,14 +51,14 @@
                  </b-row>
                 <ul id="products-div" class="row mt-4 list-unstyled"> 
                     
-                    <li v-for="product in ProductList" :key="product.id" 
+                    <li v-for="product in products" :key="product.prodID" 
                         class="d-flex flex-column align-items-center m-2 p-1"
                     >
-                        <img class="product" src="~/assets/uploads/products/dress3.jpg" alt=""> 
-                        <h4 class="mt-3">{{product.title}}</h4>
-                        <h6 class="text-center" :style="[{font: `300 0.75rem 'Poppins'`}, {width: '14rem'}]">{{product.desc}}</h6>
-                        <h3>{{product.price}}</h3>
-                        <button @click="AddToCart(product.id)" class="btn mt-0  bg-secondary">Add to Cart</button>
+                        <img class="product" :src=" 'http://localhost:8080/static/uploads/' + product.image"  alt=""> 
+                        <h4 class="mt-3">{{product.prodName}}</h4>
+                        <!-- <h6 class="text-center" :style="[{font: `300 0.75rem 'Poppins'`}, {width: '14rem'}]">{{product.desc}}</h6> -->
+                        <h3>${{product.unit_price}}</h3>
+                        <button @click="AddToCart(product.prodID)" class="btn mt-0  bg-secondary">Add to Cart</button>
                     </li>
 
             </ul>
@@ -215,74 +215,27 @@ export default {
             sections:[
                 1,1,1
             ],
-            products: [
-                {
-                    id: 1, 
-                    title: "Item 2",
-                    desc: 's simply dummy text of the printing and typesetting industry. Lorem Ipsum has',
-                    price: '$24.99'
-                },
-                {
-                    id: 2, 
-                    title: "Item 2",
-                    desc: 's simply dummy text of the printing and typesetting industry. Lorem Ipsum has',
-                    price: '$24.99'
-                },
-                
-                {
-                    id: 3, 
-                    title: "Item 2",
-                    desc: 's simply dummy text of the printing and typesetting industry. Lorem Ipsum has',
-                    price: '$24.99'
-                },
-                {
-                    id: 4, 
-                    title: "Item 2",
-                    desc: 's simply dummy text of the printing and typesetting industry. Lorem Ipsum has',
-                    price: '$24.99'
-                },
-                {
-                    id: 5, 
-                    title: "Item 2",
-                    desc: 's simply dummy text of the printing and typesetting industry. Lorem Ipsum has',
-                    price: '$24.99'
-                },
-                {
-                    id: 6, 
-                    title: "Item vlhsdfgbdgvjkds2",
-                    desc: 's simply dummy text of the printing and typesetting industry. Lorem Ipsum has',
-                    price: '$24.99'
-                },
-                {
-                    id: 7, 
-                    title: "Item 2bhbsdjgvjlsdfbgvd",
-                    desc: 's simply dummy text of the printing and typesetting industry. Lorem Ipsum has',
-                    price: '$24.99'
-                },
-                {
-                    id: 8, 
-                    title: "Item fsbjs",
-                    desc: 's simply dummy text of the printing and typesetting industry. Lorem Ipsum has',
-                    price: '$24.99'
-                },
-                {
-                    id: 9, 
-                    title: "Item fsbjs",
-                    desc: 's simply dummy text of the printing and typesetting industry. Lorem Ipsum has',
-                    price: '$24.99'
-                },
-                {
-                    id: 10, 
-                    title: "Item fsbjs",
-                    desc: 's simply dummy text of the printing and typesetting industry. Lorem Ipsum has',
-                    price: '$24.99'
-                },
-            ]
+            products: [],
         }
     }, 
-    mounted: function() {
-       
-    }, 
+    
+    mounted() {
+        let self=this;
+        const busID = localStorage.getItem('busID');
+        this.$axios.get(`/api/${busID}/products`
+            ).then(res =>{
+                return res.data;
+            }).then(res =>{
+                if (res){
+                    self.products = res;
+            
+            }else{
+                console.log('Data not found')
+            }
+            });
+
+    
+    },
     computed: {
         ProductList() {
             const items = this.products;

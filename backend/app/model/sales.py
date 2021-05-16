@@ -95,6 +95,7 @@ class Product(db.Model):
     prodID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     prodName = db.Column(db.String(100))
+    prodType = db.Column(db.String(40))
     unit_price = db.Column(db.DECIMAL(10, 2))
     Unit = db.Column(db.DECIMAL(10, 2))
     limitedTime = db.Column(db.DateTime())
@@ -103,14 +104,16 @@ class Product(db.Model):
     prodStatus = db.Column(db.String(25))
     image = db.Column(db.String(50))
 
-    def ___init__(self, prodID, prodName, unit_price, Unit, limitedTime, taxPercent, prodStatus): 
+    def ___init__(self, prodID, busID, prodName, unit_price, Unit, limitedTime, taxPercent, prodStatus,image): 
         self.prodID = prodID 
         self.prodName = prodName 
+        self.busID = busID 
         self.unit_price = unit_price
         self.Unit = Unit 
         self.limitedTime = limitedTime
         self.taxPercent = taxPercent
         self.prodStatus = prodStatus
+        self.image =image
     
     def get_id(self):
         try:
