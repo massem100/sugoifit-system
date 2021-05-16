@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
 from flask_login import LoginManager
 from flask_wtf import csrf
 from flask_cors import CORS
@@ -20,19 +19,18 @@ login_manager = LoginManager()
 csrf_ = csrf
 # JWT Authorization Setup
 jwt = JWTManager()
-ma = Marshmallow
-
+ma = Marshmallow()
 mail = Mail()
 UPLOAD_FOLDER = './app/static/uploads'
 
 
 
 def init_app(): 
-    app = Flask(__name__, instance_relative_config=False )
+    app = Flask(__name__,  )
     app.config.from_object('config.Config')
 
-    username, password, server = 'root', 'SQLpass','localhost'
-    # username, password, server = 'root', '', 'localhost'
+    # username, password, server = 'root', 'SQLpass','localhost'
+    username, password, server = 'root', '', 'localhost'
     app.config['SECRET_KEY'] = b'\xbc\x86HN\x82\x12p\xceQV\x1f\x06eP\x16i\xc8=P\xb1\xc6^\xf0x'
     app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqlconnector://{}:{}@{}/sugoifit".format(username, password, server)
     app.config["SQLALCHEMY_BINDS"] ={
@@ -54,6 +52,9 @@ def init_app():
     login_manager.init_app(app)
     login_manager.login_view = 'login'
 
+    # Flask marshmallow
+    # ma.init_app(app)
+
     # Flask migrate
     migrate = Migrate(app, db)
 
@@ -74,7 +75,6 @@ def init_app():
         csrf_wrap = csrf_.CSRFProtect(app)
 
         
-            
         # Cross Site Resource Sharing Protection
         cors = CORS(app, support_credentials=True, resources = {r"/api/*": {"origins": "http://localhost:3000"}})
         app.config['TOKEN_KEY'] = "3cc8464f0b2eef61bf0872ebf640505db394175ed8d314ab9f2d9e6eb27552ce"
@@ -100,7 +100,7 @@ def init_app():
         app.register_blueprint(statement)   
 
        
-        #    Include View routes
+        # Include View routes
         from app import views
         
          # from . import model
@@ -121,4 +121,3 @@ employee_permission= Permission (RoleNeed('employee'))
 
 # Financial Manager should only be able to see invoices and Accounting statements.
 fin_manger_permission= Permission (RoleNeed('manager'))
-

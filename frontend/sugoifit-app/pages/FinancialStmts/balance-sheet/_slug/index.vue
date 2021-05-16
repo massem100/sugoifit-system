@@ -3,6 +3,7 @@
     <b-container fluid>
       <b-card>
         <b-row>
+          <back-button class="mt-4 ml-2"></back-button>
           <b-col cols="12" class="text-left">
             <h4 class="font-weight-bold text-capitalize my-0">Marqui bottique</h4>
             <h3 class="text-info font-weight-bold text-capitalize my-0">Balance Sheet</h3>
@@ -70,10 +71,17 @@
 </template>
 
 <script>
+import BackButton from '../../../../components/argon-core/BackButton.vue';
     export default {
         name: "invoice-card",
-        layout: 'dashboard',
-    }
+        layout: 'DashboardLayout',
+        components: { BackButton },
+        head(){
+          return{
+              title: 'Balance Sheet'
+          }
+        },
+    };
 </script>
 
 <style scoped lang="scss">

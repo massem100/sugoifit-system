@@ -10,7 +10,6 @@
                     type= "primary">{{alert_message}}
       </base-alert>
         <b-row>
-          <back-button class="mt-4 "></back-button>
           
           <b-col>
             <h3  class="mt-3 ml-0"> Manage Transactions </h3>
@@ -48,7 +47,7 @@
             <b-col  class = "m-1">
               
               <!-- Add Non Current Asset heading -->
-              <b-col cols="12" class="text-primary mb-3 pl-0" xl="8" md="8">Add Non Current Asset</b-col>
+              <b-col cols="12" class="text-primary mb-3 pl-0" xl="8" md="8" v-b-tooltip.hover title="Non-current Assets are......">Add Non Current Asset</b-col>
               <!-- Major Form Fields -->
               <b-col cols = "12" class = "ml-1 mt-4   ">
               <!-- Asset Name -->
@@ -329,8 +328,6 @@
     import {ValidationObserver, ValidationProvider} from "vee-validate";
 import Modal from '../../../components/argon-core/Modal.vue';
 import BaseAlert from '../../../components/argon-core/BaseAlert.vue';
-import BackButton from '../../../components/argon-core/BackButton.vue';
-
 
     export default {
         name: "non-current-asset-create",
@@ -341,7 +338,6 @@ import BackButton from '../../../components/argon-core/BackButton.vue';
       
                 Modal,
                 BaseAlert,
-                BackButton,
              },
         data() {
             return {

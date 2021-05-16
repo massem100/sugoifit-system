@@ -95,6 +95,11 @@
             ValidationProvider,
             ValidationObserver,
         },
+        head(){
+          return{
+              title: 'Edit Business Details'
+          }
+        },
         data() {
             return {
                 form: {

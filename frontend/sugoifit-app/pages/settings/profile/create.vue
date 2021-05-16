@@ -97,6 +97,11 @@
             ValidationProvider,
             ValidationObserver,
         },
+        head(){
+          return{
+              title: 'Edit Personal Details'
+          }
+        },
         data() {
             return {
                 form: {

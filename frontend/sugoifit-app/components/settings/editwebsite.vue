@@ -1,9 +1,11 @@
 <template>
-  <div class="d-flex mx-3">
-    <!-- <b-container fluid>
+  <div class="d-flex">
+    <side-bar></side-bar>
+    <b-container fluid>
+        <top-bar/>
         <settings-top/>
         <validation-observer ref="observer" v-slot="{handleSubmit}">
-        <b-form id = "websiteForm" @submit.stop.prevent="handleSubmit(onSubmit)">
+        <form id = "websiteForm" @submit.stop.prevent="handleSubmit(onSubmit)">
             <b-row>
                 <b-col cols="12" class="text-info mb-3">Welcome Section</b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
@@ -34,11 +36,11 @@
                         </b-form-invalid-feedback>
                         </validation-provider>
                     </b-col>
-                
+                    <!--
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
                         <validation-provider v-slot="{ errors }" rules="required" name="reference number">
                         <label for="ref_no">Welcome image: </label>
-                        <b-form-input v-model="form.wel_img"
+                        <b-form-input v-model="form.ref_no"
                                         type="text"
                                         id="wel_img"
                                         name="wel_img"
@@ -49,7 +51,7 @@
                         </b-form-invalid-feedback>
                         </validation-provider>
                     </b-col>
-                  
+                    -->
 
                 <b-col cols="12" class="text-info mb-3">Product Section</b-col>
                     <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
@@ -133,64 +135,31 @@
                     <b-button type="reset" variant="danger" @click="resetForm()">Reset</b-button>
                 </b-col>
             </b-row>
-        </b-form>
+        </form>
         </validation-observer>
-
-        <table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Position</th>
-                    <th scope="col">Section Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Welcome</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Products</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Receipt</td>
-                </tr>
-                <tr>
-                    <th scope="row">4</th>
-                    <td>Contact</td>
-                </tr>
-            </tbody>
-        </table>
-   
-    </b-container> -->
+        
+        <b-table :items = "section"> </b-table>
+          <h6>{{section}}</h6>
+          <!-- <h1>{{msg}}</h1> -->
+    </b-container>
   </div>
 </template>
-
 
 <script>
     import {ValidationObserver, ValidationProvider} from "vee-validate";
 
     export default {
         name: "website-create",
-        layout: 'DashboardLayout',
         components: {
             ValidationProvider,
             ValidationObserver,
         },
-        head(){
-          return{
-              title: 'Edit Website Details'
-          }
-        },
         data() {
             return {
-                section: [],
-                form:{}
+                section: []
             }
         },
         methods: {
-            
             SubmitForm(){
                 let self = this;
               let PATH_API = 'test';
@@ -214,61 +183,56 @@
                 return errors.length > 0 ? false : null;
             },
 
-        //     },
-        //     getValidationState(errors) {
-        //         return errors.length > 0 ? false : null;
-        //     },
+            onSubmit() {
+                let self = this;
+                let websiteForm = document.getElementById("websiteForm");
+                let form_data = new FormData(websiteForm);
+                let PATH_API = 'website-settings'
 
-        //     onSubmit() {
-        //         let self = this;
-        //         let websiteForm = document.getElementById("websiteForm");
-        //         let form_data = new FormData(websiteForm);
-        //         let PATH_API = 'website-settings'
-
-        //         fetch(`/api/${PATH_API}`, {
-        //             method: "POST",
-        //             body: form_data,
+                fetch(`/api/${PATH_API}`, {
+                    method: "POST",
+                    body: form_data,
                     
-        //         })
-        //             .then(function (response) {
-        //             return response.json();
-        //         })
-        //         .then(function (jsonResponse){
-        //                 console.log("form_data");
-        //         }).catch(function (error) {
-        //             console.log(error);
-        //         });
-
-        //     },
-        //     resetForm() {
-        //         this.form = {};
-        //         this.$nextTick(() => {
-        //             this.$refs.observer.reset();
-        //         });
+                })
+                    .then(function (response) {
+                    return response.json();
+                })
+                .then(function (jsonResponse){
+                        console.log("form_data");
+                }).catch(function (error) {
+                    console.log(error);
+                });
 
             },
-            // ViewSections: function (){
-            //   let self = this;
-            //   fetch("http://localhost:8080/api/testdrop",{
-            //       method: "GET", 
-            //       headers:{
-            //         "Accept": "application/json"
-            //       }, 
-            //       credentials: "same-origin",
-            //   })
-            //   .then(function (response){
-            //       return response.json();
-            //   })
-            //     .then(function(jsonResponse){
-            //       console.log(jsonResponse);
-            //       self.stmt = jsonResponse;
-            //     })
-            //     .catch( function(error){
-            //      // console.log(error);
-            //   });
-        // } 
+            resetForm() {
+                this.form = {};
+                this.$nextTick(() => {
+                    this.$refs.observer.reset();
+                });
+
+            },
+            ViewSections: function (){
+              let self = this;
+              fetch("http://localhost:8080/api/testdrop",{
+                  method: "GET", 
+                  headers:{
+                    "Accept": "application/json"
+                  }, 
+                  credentials: "same-origin",
+              })
+              .then(function (response){
+                  return response.json();
+              })
+                .then(function(jsonResponse){
+                  console.log(jsonResponse);
+                  self.stmt = jsonResponse;
+                })
+                .catch( function(error){
+                 // console.log(error);
+              });
         }
-    
+        }
+    }
 </script>
 
 <style scoped>

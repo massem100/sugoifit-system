@@ -3,6 +3,7 @@
     <b-container fluid>
       <b-card>
         <b-row>
+          <back-button class="mt-4 ml-2"></back-button>
           <b-col cols="12" class="text-left">
             <h4 class="font-weight-bold text-capitalize my-0">Marqui bottique</h4>
             <h3 class="text-info font-weight-bold text-capitalize my-0">Balance Sheet</h3>
@@ -15,7 +16,7 @@
               <thead>
               <tr style="border-bottom: 4px solid #7cc3cd">
                 <th></th>
-                <th v-for="mon in field" :key= "mon" class="text-capitalize">
+                <th v-for="(mon,index) in field" :key="index" class="text-capitalize">
                   {{mon}}
                 </th>
               </tr>
@@ -26,49 +27,49 @@
               </tr>
               <tr class="br-bottom">
                 <td class="pl-4">Sales</td>
-                <td v-for="mon in field" :key= "mon">
+                <td v-for="(mon,index) in field" :key="index">
                   ${{sales[mon]}}
                 </td>
               </tr>
               <tr class="br-bottom">
                 <td class="pl-4">Cost of Goods Sold</td>
-                <td v-for="mon in field" :key= "mon">
+                <td v-for="(mon,index) in field" :key="index">
                   ${{cost_sold[mon]}}
                 </td>
               </tr>
               <tr>
                 <td class="font-weight-bold">Gross Profit</td>
-                <td v-for="mon in field" :key= "mon" class="font-weight-bold">
+                <td v-for="(mon,index) in field" :key="index" class="font-weight-bold">
                   ${{sales[mon]+cost_sold[mon]}}
                 </td>
               </tr>
               <tr class="br-bottom font-weight-bold">
                 <td>Other Operating Income</td>
-                <td v-for="mon in field" :key= "mon">
+                <td v-for="(mon,index) in field" :key="index">
                   ${{operate_income[mon]}}
                 </td>
               </tr>
               <tr class="br-bottom font-weight-bold">
                 <td>Less Expenses</td>
-                <td v-for="mon in field" :key= "mon">
+                <td v-for="(mon,index) in field" :key="index">
                   ${{sales[mon]}}
                 </td>
               </tr>
               <tr class="br-bottom">
                 <td class="pl-4">Expenses</td>
-                <td v-for="mon in field" :key= "mon">
+                <td v-for="(mon,index) in field" :key="index">
                   ${{cost_sold[mon]}}
                 </td>
               </tr>
               <tr class="br-bottom">
                 <td class="font-weight-bold">Total Expense</td>
-                <td v-for="mon in field" :key= "mon" class="font-weight-bold">
+                <td v-for="(mon,index) in field" :key="index" class="font-weight-bold">
                   ${{sales[mon]+cost_sold[mon]}}
                 </td>
               </tr>
               <tr>
                 <td class="font-weight-bold">Net Profit</td>
-                <td v-for="mon in field" :key= "mon" class="font-weight-bold">
+                <td v-for="(mon,index) in field" :key="index" class="font-weight-bold">
                   ${{sales[mon]+cost_sold[mon]}}
                 </td>
               </tr>
@@ -85,9 +86,16 @@
 </template>
 
 <script>
+import BackButton from '../../../../components/argon-core/BackButton.vue';
     export default {
+        components: { BackButton },
         name: "invoice-card",
         layout: 'dashboard',
+        head(){
+          return{
+              title: 'Profit-Loss'
+          }
+        },
         data() {
             return {
                 field: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'

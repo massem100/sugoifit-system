@@ -1,6 +1,7 @@
 <template>
     <div class="about-business-page "> 
         <div class="about-business-main">
+            <back-button class="mt-4 ml-2"></back-button>
             <div class="about-business-heading">
                 <h5> Personal Details </h5>
                 <p> Yes! You are almost done.  Enter some information about yourself. </p>
@@ -53,10 +54,16 @@
 
 
 <script > 
+import BackButton from '../../components/argon-core/BackButton.vue';
 export default{
-  components: {  },
+    components: { BackButton },
     name: 'personal-details', 
     layout: 'onboarding',
+    head(){
+          return{
+              title: 'User Profile'
+          }
+        },
     data () { 
         return { 
             corp_types: [

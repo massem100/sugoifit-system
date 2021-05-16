@@ -43,6 +43,11 @@ export default{
   components: {  },
     name: 'BusinessDetails', 
     layout: 'onboarding',
+    head(){
+          return{
+              title: 'About the Corporation'
+          }
+        },
     data() { 
         return { 
             corp_types: 

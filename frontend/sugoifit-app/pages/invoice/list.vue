@@ -2,6 +2,7 @@
   <div class="d-flex mx-3">
     <b-container fluid>
       <b-row>
+        <back-button class="mt-4 ml-2"></back-button>
         <b-col cols="12" class="text-info mb-3 font-weight-bold">View Invoices</b-col>
         <b-col cols="12" lg="6" xl="4" class="d-flex">
           <b-form-input v-model="search"
@@ -23,11 +24,16 @@
 <script>
 
     import InvoiceCard from "../../components/invoice-card";
-
+    import BackButton from '../../components/argon-core/BackButton.vue';
     export default {
-        components: {InvoiceCard},
+        components: {InvoiceCard, BackButton},
         layout: 'DashboardLayout',
         name: "invoice-list",
+        head(){
+          return{
+              title: 'Invoice List'
+          }
+        },
         data() {
             return {
                 search: '',

@@ -32,7 +32,7 @@
       >
         <b-form id="LTLiabForm" @submit.stop.prevent="handleSubmit(launchConfirm)">
           <b-row>
-            <b-col cols="12" class="text-primary mb-3 pl-0">Add Long Term Liability</b-col>
+            <b-col cols="12" class="text-primary mb-3 pl-0" v-b-tooltip.hover title="Long term liabilities are......">Add Long Term Liability</b-col>
 
             <b-col md="6" cols="12" lg="4" class="bg-secondary px-5 py-3">
               <div class="mb-2">
@@ -205,7 +205,6 @@
     import {ValidationObserver, ValidationProvider} from "vee-validate";
     import Modal from '../../../components/argon-core/Modal.vue';
     import BaseAlert from '../../../components/argon-core/BaseAlert.vue';
-
 
     export default {
         layout: 'DashboardLayout',

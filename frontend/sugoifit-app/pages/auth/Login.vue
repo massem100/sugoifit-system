@@ -38,7 +38,7 @@
                               id="password">
                 </b-form-input>
             
-                <b-col class =" align-items-center">
+                <b-col class =" align-items-center mt-2">
                     <!-- <div  id="msgBox">
                         <p> {{alert.message}} </p>
                     </div> -->

@@ -1,6 +1,7 @@
 <template>
 
      <div class=" email-create-section w-100" >
+         <back-button class="mt-4 ml-2"></back-button>
                 <div class="email-form-section h-25 d-flex flex-column">
                     <div class = "email-heading">
                         <h4 class ="mb-4">Set up your Business Profile.</h4>
@@ -28,12 +29,17 @@
 
 
 <script>
-
+import BackButton from '../../components/argon-core/BackButton.vue';
 
 export default {
-    components: {},
+    components: { BackButton },
     layout: 'onboarding',
     name: 'emailsection', 
+    head(){
+          return{
+              title: 'Business Profile'
+          }
+        },
     data(){
         return{
 

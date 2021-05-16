@@ -4,6 +4,7 @@
       
       <div class="dashboard-main">
         <!-- Overview -->
+        <back-button class="mt-4 ml-2"></back-button>
         <b-row class="justify-content-between mx-0 flex-nowrap">
           <div class="welcome-heading">
             <h5 class="font-weight-bold"> Welcome Back, <span> Jane</span></h5>
@@ -45,10 +46,16 @@
         lineChartOptions,
         pieChartData, pieChartOptions
     } from "../../assets/data/chartData";
-
+    import BackButton from '../../components/argon-core/BackButton.vue';
     export default {
+      components: { BackButton },
         name: "Reports",
         layout: 'dashboard',
+        head(){
+          return{
+              title: 'Report'
+          }
+        },
         data() {
             return {}
         },

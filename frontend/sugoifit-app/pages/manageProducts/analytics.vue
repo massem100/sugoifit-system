@@ -6,6 +6,7 @@
       <div class="dashboard-main">
         <!-- Overview -->
         <b-row class="justify-content-between mx-0 flex-nowrap">
+          <back-button class="mt-4 ml-2"></back-button>
           <div class="welcome-heading">
             <h5 class="font-weight-bold"> Welcome Back, <span> Jane</span></h5>
             <p class="">Lorem ipsum dolor sit amet consectetur adi</p>
@@ -84,12 +85,17 @@
     import commonChartDetails from "@/mixins/commonChartDetails";
     import {tableItems} from "../../assets/data/tableData";
     import LineChart from "../../components/charts/LineChart";
-
+    import BackButton from '../../components/argon-core/BackButton.vue';
     export default {
         name: "Reports",
         layout: 'DashboardLayout',
-        components: {LineChart},
+        components: {LineChart, BackButton},
         mixins: [commonChartDetails],
+        head(){
+          return{
+              title: 'Product Analytics'
+          }
+        },
         data() {
             return {
                 tableItems: tableItems,

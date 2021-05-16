@@ -9,6 +9,7 @@ from datetime import datetime
 from flask import  Blueprint, current_app,  request, jsonify, flash, session,  _request_ctx_stack, g
 from flask_login import current_user
 from werkzeug.utils import secure_filename
+import os
 
 
 product = Blueprint('product', __name__)

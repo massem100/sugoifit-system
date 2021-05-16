@@ -116,6 +116,11 @@ export default{
   components: {  },
     name: 'about-businessDetails', 
     layout: 'onboarding',
+    head(){
+          return{
+              title: 'About the Business'
+          }
+        },
     data () { 
         return { 
             corp_types: [

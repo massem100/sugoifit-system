@@ -50,7 +50,6 @@
 </template>
 
 <script>
-
     export default {
         layout: 'DashboardLayout',
         name: "Reports",
