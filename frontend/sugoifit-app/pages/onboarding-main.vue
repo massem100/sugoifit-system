@@ -35,6 +35,11 @@ export default {
     },
     name: 'on-boarding',
     layout: 'onboarding',
+    head(){
+          return{
+              title: 'Onboarding'
+          }
+        },
     data(){
         return{
             secfocus: true,

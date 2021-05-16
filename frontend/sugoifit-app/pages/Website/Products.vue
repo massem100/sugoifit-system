@@ -45,6 +45,11 @@
 export default {
     name: 'Products',
     layout: 'website',
+    head(){
+          return{
+              title: 'Our Products'
+          }
+        },
     data() {
         return {
             products: []

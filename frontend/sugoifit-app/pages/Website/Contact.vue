@@ -142,6 +142,11 @@ export default {
         ValidationProvider,
         ValidationObserver,
     },
+    head(){
+          return{
+              title: 'Contact Us'
+          }
+        },
     data() {
         return {
             token: '',

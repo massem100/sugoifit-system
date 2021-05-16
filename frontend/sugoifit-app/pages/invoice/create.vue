@@ -3,6 +3,7 @@
     <b-container fluid>
       <h3 class="m-2 mt-4">Create Invoice</h3>
       <invoice-top/>
+      <back-button class="mt-4 ml-2"></back-button>
       <validation-observer
         ref="observer"
         v-slot="{handleSubmit}"
@@ -187,10 +188,16 @@
 
 <script>
     import {ValidationObserver, ValidationProvider} from "vee-validate";
-
+    import BackButton from '../../components/argon-core/BackButton.vue';
     export default {
+        components: { BackButton },
         name: "invoice-create",
         layout: 'DashboardLayout',
+        head(){
+          return{
+              title: 'Create Invoice'
+          }
+        },
         components: {
             ValidationProvider,
             ValidationObserver,

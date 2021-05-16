@@ -32,7 +32,7 @@
     >
       <b-form @submit.stop.prevent="handleSubmit(launchConfirm)">
         <b-row>
-          <b-col cols="12" class="text-info mb-3">Add Purchases</b-col>
+          <b-col cols="12" class="text-info mb-3" v-b-tooltip.hover title="Example of purchases are......">Add Purchases</b-col>
           <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
             <validation-provider
               v-slot="{ errors }"
@@ -189,7 +189,6 @@
     import {ValidationObserver, ValidationProvider} from "vee-validate";
     import Modal from '../../../components/argon-core/Modal.vue';
     import BaseAlert from '../../../components/argon-core/BaseAlert.vue';
-
 
     export default {
         layout: 'DashboardLayout',

@@ -110,9 +110,14 @@
 <script>
 import BackButton from '../components/argon-core/BackButton.vue';
     export default {
-  components: { BackButton },
+        components: { BackButton },
         name: "add-transaction",
         layout: 'DashboardLayout',
+        head(){
+          return{
+              title: 'Transactions'
+          }
+        },
         methods: {
             addTransaction: () => {
                 console.log('working');

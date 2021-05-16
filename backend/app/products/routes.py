@@ -50,25 +50,13 @@ def new_product():
 
         image_file = request.files['image']
         if image_file:
-            basedir = os.path.abspath(os.path.dirname(__file__))
             filename = secure_filename(image_file.filename)
-            image_file.save(os.path.join(basedir, current_app.config['UPLOAD_FOLDER'], filename))
+            image_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
 
-        last_product = db.session.query(sales.Product).order_by(sales.Product.prodID.desc()).first()
-        if last_product is None: 
-            prod_int = 1
-        else:
-                
-            # Get the numeric part of the last User ID and increment by 1
-            last_pID = last_product.prodID
-            prod_int = int(last_pID[1:])
-            prod_int +=1
-
-        # ADD QUANTITY TO DATABASE
-        newProdID = 'P' + str(prod_int)
-        newProduct = Product(prodID=newProdID, busID="Mon2", prodName=product_name, unit_price=unit_price, 
+       
+        newProduct = Product(prodID=None, busID="Mon1", prodName=product_name, unit_price=unit_price, 
                             Unit="", limitedTime="", taxPercent=tax, prodStatus=status, image=filename)
-        print(last_pID)
+    
         try:
             db.session.add(newProduct)
             db.session.commit()
@@ -81,63 +69,21 @@ def new_product():
 @product.route('/api/products', methods = ['GET', 'POST'])
 def all_product():
     data_list = []
-    imgs = []
     busID = "Mon1"
     products = Product.query.filter_by(busID=busID).all()
     output = sales.products_schema.dump(products)
-    
-    for img in os.listdir(r"C:\Users\User\Git Repositories\sugoifit-system\backend\app\static\uploads"):
-        imgs.append(img)
 
     for item in output:
-        for i in imgs:
-            if item['image'] == i:
-                full_path = os.path.join(r"C:\Users\User\Git Repositories\sugoifit-system\backend\app\static\uploads", i)
-                print(full_path)
+        case = {
+            "id":item['prodID'],
+            "name":item['prodName'],
+            "price":item['unit_price'],
+            "tax":item['taxPercent'],   
+            "status":item['prodStatus'],
+            "image":item['image']
+        }
+        data_list.append(case)
         
-                case = {
-                    "id":item['prodID'],
-                    "name":item['prodName'],
-                    "price":item['unit_price'],
-                    "tax":item['taxPercent'],   
-                    "status":item['prodStatus'],
-                    "image":item['image']
-                }
-                data_list.append(case)
-        #data.update(item=item.index)
-
-
-    '''
-    data = {}
-    products = [
-        {
-            "id":1,
-            "name":"Black Dress",
-            "price":6000,
-            "tax":15,
-            "status":"active",
-            "image":"dress1.jpg"
-        },
-        {
-            "id":2,
-            "name":"White Skirt",
-            "price":1000,
-            "tax":15,
-            "status":"active",
-            "image":"skirt1.jpg"
-        },
-        {
-            "id":3,
-            "name":"Plaid top",
-            "price":500,
-            "tax":15,
-            "status":"active",
-            "image":"top1.jpg"
-        },
-    ]
-    data['products'] = products
-    '''
-    #return jsonify(products)
     return jsonify(data_list)
 
 #@app.route('/api/product/classify', methods = ['GET', 'POST'])

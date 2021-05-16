@@ -7,6 +7,7 @@
         ref="observer"
         v-slot="{handleSubmit}"
       > -->
+<!--       <back-button class="mt-4 ml-2"></back-button> -->
 <!--        <b-form @submit.stop.prevent="handleSubmit(onSubmit)">-->
 <!--          <b-row>-->
 <!--            <b-col cols="12" class="text-info mb-3">Add Supplier</b-col>-->
@@ -97,7 +98,6 @@
 
 <script>
     import {ValidationObserver, ValidationProvider} from "vee-validate";
-
     export default {
         layout:'dashboard',
         name: "supply-create",

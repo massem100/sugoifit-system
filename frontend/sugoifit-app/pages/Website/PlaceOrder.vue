@@ -90,6 +90,11 @@
 export default {
     name: 'PlaceOrder',
     layout: 'website',
+    head(){
+          return{
+              title: 'Shopping Cart'
+          }
+        },
     data() {
         return{
             cards: null,

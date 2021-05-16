@@ -32,7 +32,7 @@
       >
         <b-form class="" id="AddNCAForm" @submit.stop.prevent="handleSubmit(launchConfirm)">
           <b-row class="m-1 w-100">
-            <b-col cols="12" class="text-primary mb-3 pl-0">Add Revenue</b-col>
+            <b-col cols="12" class="text-primary mb-3 pl-0" v-b-tooltip.hover title="Examples of revenue are......">Add Revenue</b-col>
 
             <b-col md="6" cols="12" class="bg-secondary px-5 py-3">
               <div class="mb-2">

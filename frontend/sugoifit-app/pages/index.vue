@@ -150,7 +150,7 @@
 
 <script>
     import Card from '../components/argon-core/Cards/Card.vue';
-    import ImageSlider from '../components/ImageSlider.vue';
+   // import ImageSlider from '../components/ImageSlider.vue';
 
     // Charts
     import * as chartConfigs from "@/components/argon-core/Charts/config";
@@ -161,7 +161,7 @@
     export default {
         components: {
             Card,
-            ImageSlider,
+            //ImageSlider,
             LineChart,
             BarChart
         },

@@ -1,6 +1,7 @@
 <template>
 <div class = "company-type-page">
     <div  class="company-type-section" >
+        <back-button class="mt-4 ml-2"></back-button>
         <div class = "company-heading">
             <h4 class=" m-4">Choose the type of business</h4>
             <p class="m-4">Choose the option that best describes your business.</p>
@@ -39,19 +40,25 @@
 
 
 <script>
-
+import BackButton from '../../components/argon-core/BackButton.vue';
 
 export default {
-  name: 'company-type',
-  layout:'onboarding',
-  data (){
-      return {}
-  }, 
-  methods: {
-      BusDetail: function(){
-          this.$router.push('business-details/corporation');
-      }
-  }
+components: { BackButton },
+name: 'company-type',
+layout:'onboarding',
+head(){
+        return{
+            title: 'Company Type'
+        }
+    },
+data (){
+    return {}
+}, 
+methods: {
+    BusDetail: function(){
+        this.$router.push('business-details/corporation');
+    }
+}
     
 }
 </script>

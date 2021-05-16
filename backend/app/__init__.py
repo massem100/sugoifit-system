@@ -18,8 +18,8 @@ login_manager = LoginManager()
 csrf_ = csrf
 # JWT Authorization Setup
 jwt = JWTManager()
-ma = Marshmallow
-
+ma = Marshmallow()
+UploadFolder = './app/static/uploads'
 
 
 def init_app(): 
@@ -35,11 +35,8 @@ def init_app():
                                     }
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-<<<<<<< HEAD
-    app.config['UPLOAD_FOLDER'] = './app/static/uploads'
-=======
->>>>>>> main
 
+    app.config['UPLOAD_FOLDER'] = UploadFolder
     # from app.model import db
     db.init_app(app)
 

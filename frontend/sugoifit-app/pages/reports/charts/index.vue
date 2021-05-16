@@ -2,6 +2,7 @@
   <client-only>
     <b-container fluid="" class="py-4">
       <b-row>
+        <back-button class="mt-4 ml-2"></back-button>
         <b-col sm="3" cols="12">
           <b-card no-body>
             <b-card-text class="d-flex justify-content-between align-items-center p-3">
@@ -174,12 +175,17 @@
     import commonChartDetails from "@/mixins/commonChartDetails";
     import DoughnutChart from "../../../components/charts/DoughnutChart";
     import LineChart from "../../../components/charts/LineChart";
-
+    import BackButton from '../../../components/argon-core/BackButton.vue';
     export default {
         name: "Reports",
-        components: {DoughnutChart, LineChart},
+        components: {DoughnutChart, LineChart, BackButton},
         layout: 'DashboardLayout',
         mixins: [commonChartDetails],
+        head(){
+          return{
+              title: 'Report Charts'
+          }
+        },
         data() {
             return {
                 report: {

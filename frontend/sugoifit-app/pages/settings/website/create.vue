@@ -178,6 +178,11 @@
             ValidationProvider,
             ValidationObserver,
         },
+        head(){
+          return{
+              title: 'Edit Website Details'
+          }
+        },
         data() {
             return {
                 section: [],

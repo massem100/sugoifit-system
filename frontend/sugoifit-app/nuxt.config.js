@@ -30,7 +30,7 @@ export default {
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css',
-    'static/scss/website.css',
+    //'static/scss/website.css',
     '~assets/style/app.css',
     "assets/css/nucleo/css/nucleo.css",
     "assets/sass/argon.scss",

@@ -11,7 +11,7 @@
                     type= "primary">{{alert_message}}
       </base-alert>
       <b-row>
-        <back-button class="mt-4 "></back-button>
+        <back-button class="mt-4 ml-2"></back-button>
         <b-col>
            <h3 class="mt-4 ml-0">Manage transactions</h3>
             <p class = "mb-2 mt-2 "> 
@@ -41,23 +41,28 @@
         ref="observer"
         v-slot="{handleSubmit}"
       >
-        <b-form class="" id="AddNCAForm" @submit.stop.prevent="handleSubmit(launchConfirm)">
+        <b-form class="" id="AddNCAForm" @submit.stop.prevent="handleSubmit(launchConfirm)" method="POST" enctype="multipart/form-data">
           <b-row class="m-1 w-100">
-            <b-col cols="12" class="text-primary mb-3 pl-0">Add Current Asset</b-col>
+            <b-col cols="12" class="text-primary mb-3 pl-0" v-b-tooltip.hover.left title="Assets are......">Add Current Asset</b-col>
 
             <b-col md="6" cols="12" class="bg-secondary px-5 py-3">
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="asset name">
-                  <label for="asset_name">Asset Name</label>
+                  <label for="asset_name" >Asset Name 
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                  </label>
                   <b-form-input v-model="form.asset_name" type="text" id="asset_name" required
                                 :state="getValidationState(errors)">
+                              
                   </b-form-input>
                   <b-form-invalid-feedback> {{ errors[0] }}</b-form-invalid-feedback>
                 </validation-provider>
               </div>
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="transaction_date">
-                  <label for="date">Transaction Date</label>
+                  <label for="date">Transaction Date
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                  </label>
                   <b-form-datepicker id="transaction_date"
                                      v-model="form.transaction_date"
                                      :date-format-options="{ year: 'numeric', month: 'short', day: 'numeric' }"
@@ -75,7 +80,9 @@
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="amount">
 
-                  <label for="amount">Amount</label>
+                  <label for="amount">Amount
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                  </label>
                   <b-form-input v-model="form.amount"
                                 type="number"
                                 id="amount"
@@ -86,7 +93,10 @@
                   </b-form-invalid-feedback>
                 </validation-provider>
               </div>
-              <div class="mb-2"><label for="description">Description</label>
+              <div class="mb-2">
+                <label for="description">Description
+                  <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                </label>
                 <b-form-textarea v-model="form.asset_desc" type="text" id="description"
                                  maxlength="200"></b-form-textarea>
               </div>
@@ -94,7 +104,9 @@
             <b-col md="6" cols="12" class="px-3">
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="tan_in">
-                  <label>Increase/Decrease</label>
+                  <label>Increase/Decrease
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                  </label>
                   <b-form-radio-group v-model="form.increase_decrease"
                                       :options="inc_dec"
                                       class="border border-radius px-4 py-3"
@@ -110,7 +122,9 @@
               </div>
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="paid_using">
-                  <label for="paid_using"> Paid Using</label>
+                  <label for="paid_using"> Paid Using
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                  </label>
                   <b-form-radio-group v-model="form.paid_using"
                                       :options="paid_using"
                                       id="paid_using"
@@ -160,7 +174,6 @@
             return {
                 alert_message:'',
                 form: {
-
                     transaction_date: new Date().toISOString().substr(0, 10)
                 },
                 inc_dec: [

@@ -108,6 +108,11 @@ export default {
         Carousel,
         CarouselSlide
     },
+    head(){
+          return{
+              title: 'Our Website'
+          }
+        },
     data() {
         return {
             visibleSlide: 0,

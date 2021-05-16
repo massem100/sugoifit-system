@@ -46,7 +46,9 @@ export default {
   components: { },
     name: 'auth-register',
     head(){
-        return{}
+      return{
+          title: 'Register'
+      }
   },
   mounted(){
   },

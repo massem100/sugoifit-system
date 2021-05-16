@@ -20,8 +20,10 @@ export class userService  {
                     this.alert_message = res.success["0"].message;
                     let userid = res.success["0"].userid;
                     let jwt_token = res.success["0"].token;
+                    let busid = res.success["0"].busid;
                     localStorage.setItem("token", jwt_token);
                     localStorage.setItem("userid", userid);
+                    localStorage.setItem("busid", busid);
                     console.info("Token generated and added to localStorage.");    
                 }
                 return res.success;

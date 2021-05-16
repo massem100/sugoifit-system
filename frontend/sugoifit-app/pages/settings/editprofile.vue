@@ -5,6 +5,7 @@
         ref="observer"
         v-slot="{handleSubmit}"
       >
+      <back-button class="mt-4 ml-2"></back-button>
         <b-form @submit.stop.prevent="handleSubmit()" enctype="multipart/form-data">
           <b-row class="align-items-center">
             <b-col class="mb-2" md="2" sm="12">
@@ -120,12 +121,13 @@
 
 <script>
     import {ValidationObserver, ValidationProvider} from "vee-validate";
-
+    import BackButton from '../../components/argon-core/BackButton.vue';
     export default {
         layout: 'dashboard',
         components: {
             ValidationProvider,
             ValidationObserver,
+            BackButton
         },
         data() {
             return {

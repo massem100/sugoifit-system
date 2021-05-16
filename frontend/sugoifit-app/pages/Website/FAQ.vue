@@ -44,6 +44,11 @@
 export default {
     name: 'FAQ',
     layout: 'website',
+    head(){
+          return{
+              title: 'About Us'
+          }
+        },
     data() {
     return {
       items: [
