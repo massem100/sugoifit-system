@@ -50,7 +50,7 @@
     </b-row>
 
     <b-row class="mx-0">
-      <b-col class="col-lg-6 ml-4 ">
+      <b-col lg="6" cols="12">
         <card type="white" header-classes="bg-transparent" class="h-100">
           <div slot="header" class="row align-items-center">
             <b-col>
@@ -81,8 +81,8 @@
           <line-chart :data="chartData" :options="chartOption" :height="250"></line-chart>
         </card>
       </b-col>
-      <b-col class="col-lg-5 p-2 ">
-        <card type="white" header-classes="bg-transparent" class="h-100">
+      <b-col lg="6" cols="12">
+        <b-card  class="h-100">
           <div slot="header" class="row align-items-center">
             <div class="col">
               <h6 class="text-light text-uppercase ls-1 mb-1">Overview</h6>
@@ -109,41 +109,47 @@
               </ul>
             </div>
           </div>
-                    <bar-chart
-                      :data="barChartData" :options="barChartOption" :height="250"
-                    >
-                    </bar-chart>
-        </card>
+          <bar-chart
+            :data="barChartData" :options="barChartOption" :height="250"
+          >
+          </bar-chart>
+        </b-card>
       </b-col>
     </b-row>
-    <b-row class="d-flex flex-row m-4">
-      <b-col>
-        <h4> Fillable Orders</h4>
-        <b-table class="m-2 bg-white" striped hover :items="items"></b-table>
+    <b-row class="mx-0 my-4">
+      <b-col md="7" cols="12">
+        <b-card class="h-100">
+          <h4> Fillable Orders</h4>
+          <b-table class="m-2 bg-white" striped hover :items="items" responsive></b-table>
+        </b-card>
       </b-col>
-      <card class="w-25 mt-4 m-2">
-        <h5>Inventory Items <span> Restock</span></h5>
-        <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero accusamus se </p>
-      </card>
-
+      <b-col md="5" cols="12">
+        <b-card class="h-100">
+          <h5>Inventory Items <span> Restock</span></h5>
+          <h6 class="card-title">These items have fallen below threshhold</h6>
+          <b-table striped hover :items="tableItems" responsive></b-table>
+        </b-card>
+      </b-col>
     </b-row>
 
-    <div class="d-flex flex-row m-4">
-      <b-col>
-        <h4> Popular Products</h4>
-        <div class="w-75 bg-white" v-for="item in items" :key="item.age">
-          <img src="" alt="">
-          <h5>{{item.age}}</h5>
-          <!-- <h5>{{item.first_name}}</h5> -->
-        </div>
+    <b-row class="mx-0">
+      <b-col md="7" cols="12">
+        <b-card class="h-100">
+          <h4> Popular Products</h4>
+          <div v-for="item in items" :key="item.age">
+            <img src="" alt="">
+            <h5>{{item.age}}</h5>
+          </div>
+        </b-card>
       </b-col>
-      <card class="w-25 m-2">
-        <h5>Inventory Items <span> Restock</span></h5>
-        <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero accusamus se </p>
-      </card>
-
-
-    </div>
+      <b-col md="5" cols="12">
+        <b-card class="h-100">
+          <h5>Inventory Items <span> Restock</span></h5>
+          <h6 class="card-title">These items have fallen below threshhold</h6>
+          <b-table striped hover :items="tableItems" responsive></b-table>
+        </b-card>
+      </b-col>
+    </b-row>
   </div>
 
 </template>
@@ -169,6 +175,12 @@
         name: 'dashboard',
         data() {
             return {
+                tableItems: [
+                    {product_id: 1, product_name: 'Product 1', quantity: 10},
+                    {product_id: 2, product_name: 'Product 2', quantity: 10},
+                    {product_id: 3, product_name: 'Product 3', quantity: 20},
+                    {product_id: 4, product_name: 'Product 4', quantity: 40}
+                ],
                 chartData: {
                     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                     datasets: [

@@ -3,7 +3,7 @@
     <b-container fluid>
       <b-card>
         <b-row>
-        <b-col cols="12" class="text-info mt-4 mb-3 font-weight-bold">View All Products</b-col>
+        <b-col cols="12" class="text-info mt-4 mb-3 font-weight-bold">View All Inventory</b-col>
         <b-col cols="12" md="6" lg="4" class="d-flex">
           <b-form-input v-model="search"
                         placeholder="enter product name or ID"

@@ -105,7 +105,7 @@
         <b-col cols="12">
           <b-card>
             <b-card-title>Ratio Analysis</b-card-title>
-            <b-card-title>Profitability Ratio</b-card-title>
+            <b-card-title>Profit Ability Ration</b-card-title>
             <b-card-text>
               <b-table-simple responsive>
                 <b-thead>
@@ -127,7 +127,14 @@
 
                     </b-td>
                     <b-td class="text-right">
-                      <b-button size="sm" variant="info">See more</b-button>
+                      <b-button size="sm" variant="info" v-b-modal="'modal'+idx">See more</b-button>
+                      <b-modal :id="'modal'+idx" hide-footer>
+                        <template #modal-title>
+                          <div class="text-uppercase">{{ratio.name}}</div>
+                        </template>
+                        <p class="mb-4">Formula: {{ratio.formula}}</p>
+                        <p class="my-4">Description: {{ratio.desc}}</p>
+                      </b-modal>
                     </b-td>
                   </b-tr>
                   <b-tr>
@@ -274,15 +281,63 @@
                     },
                 },
                 ratios: [
-                    {name: 'current ratio', value: '50', ratio: '1:0'},
-                    {name: 'acid test ratio', value: '10', ratio: '7:0'},
-                    {name: 'cash ratio', value: '75', ratio: '3:0'},
-                    {name: 'debt ratio', value: '95', ratio: '1:0'},
-                    {name: 'debt equity ratio', value: '25', ratio: '6:0'},
-                    {name: 'interest coverage ratio', value: '45', ratio: '1:0'},
-                    {name: 'asset turnover ratio', value: '80', ratio: '1:0'},
-                    {name: 'inventory turnover ratio', value: '5', ratio: '2:0'},
-                    {name: 'days inventory ratio', value: '65', ratio: '3:0'},
+                    {
+                        name: 'current ratio',
+                        value: '50',
+                        ratio: '1:0',
+                        formula: 'Current Assets/Current Liabilities',
+                        desc: 'Liquidity ratio which measures if the business has enough resources to meet its short term obligations.'
+                    },
+                    {
+                        name: 'acid test ratio',
+                        value: '10',
+                        ratio: '7:0',
+                        formula: 'Current Assets - Inventory/Current Liabilities',
+                        desc: 'Also called the Quick Ratio, measures the liquidity of the company by calculating how well the current assets can cover current liabilities.'
+                    },
+                    {
+                        name: 'cash ratio', value: '75', ratio: '3:0', formula: 'Cash + Cash Equivalent/Current Liabilities',
+                        desc: 'Measures the ability of a company to pay its liabilities with cash.'
+                    },
+                    {
+                        name: 'debt ratio', value: '95', ratio: '1:0', formula: 'Total debt/Total Assets',
+                        desc: 'Measures the amount of leverage used by a company in terms of total debt to total assets.'
+                    },
+                    {
+                        name: 'debt equity ratio',
+                        value: '25',
+                        ratio: '6:0',
+                        formula: 'Total Liability/Total Shareholders Equity',
+                        desc: 'Compares a companys total liabilities to its shareholder equity and can be used to evaluate how much leverage a company is using.'
+                    },
+                    {
+                        name: 'interest coverage ratio',
+                        value: '45',
+                        ratio: '1:0',
+                        formula: 'EBITDA/Interest Expense',
+                        desc: 'Used to determine how easily a company can pay interest on its outstanding debt.'
+                    },
+                    {
+                        name: 'asset turnover ratio',
+                        value: '80',
+                        ratio: '1:0',
+                        formula: 'Total Sales/Beginning Assets + Ending Assets',
+                        desc: 'Can be used as an indicator of the efficiencey with which a company is using its assets to generate revenue.'
+                    },
+                    {
+                        name: 'inventory turnover ratio',
+                        value: '5',
+                        ratio: '2:0',
+                        formula: 'Cost of Goods Sold/Average Inventory',
+                        desc: 'The rate at which the business replaces inventory in a given period due to sales.'
+                    },
+                    {
+                        name: 'days inventory ratio',
+                        value: '65',
+                        ratio: '3:0',
+                        formula: '365/Inventory Turnover Ratio',
+                        desc: 'Indicates the average time in days that the business takes to turn its inventory'
+                    },
                 ]
             }
         },

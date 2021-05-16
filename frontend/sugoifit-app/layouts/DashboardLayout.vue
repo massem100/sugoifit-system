@@ -67,16 +67,26 @@
             }"
           >
           </sidebar-item>
+        </sidebar-item>
+         <!-- <sidebar-item
+
+          :link="{
+            name: 'Inventory',
+            icon: ['fas', 'plus'],
+            path: '',
+          }"
+        >
+
           <sidebar-item
             opened
             :link="{
-              name: 'Product Analytics',
+              name: 'All Inventory',
               icon: ['fas', 'plus'],
-              path: '/manageproducts/analytics',
+              path: '/inventory/list',
             }"
           >
           </sidebar-item>
-        </sidebar-item>
+         </sidebar-item> -->
         <sidebar-item
 
           :link="{
@@ -156,6 +166,15 @@
               name: 'Report Generation',
               icon: ['fas', 'plus'],
               path: '/reports/charts',
+            }"
+          >
+          </sidebar-item>
+          <sidebar-item
+            opened
+            :link="{
+              name: 'Product Analytics',
+              icon: ['fas', 'plus'],
+              path: '/manageproducts/analytics',
             }"
           >
           </sidebar-item>
