@@ -1,5 +1,5 @@
-from app import  db, login_manager, csrf_, principal, ma
-from app.forms import orderForm, newProductForm
+from app import  db, login_manager, csrf_, principal
+from app.forms import orderForm, NewProductForm
 from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order
 from app.schema import sales
 from sqlalchemy import func, inspection, event
@@ -38,7 +38,7 @@ def delete_product(prodID):
 
 @product.route('/api/newproduct', methods = ['GET', 'POST'])
 def new_product():
-    form = newProductForm(request.form)
+    form = NewProductForm(request.form)
 
     if request.method == "POST":
         product_name = form.product_name.data
@@ -83,7 +83,13 @@ def all_product():
             "image":item['image']
         }
         data_list.append(case)
+<<<<<<< HEAD
         
+=======
+        #data.update(item=item.index)
+
+    #return jsonify(output)
+>>>>>>> main
     return jsonify(data_list)
 
 #@app.route('/api/product/classify', methods = ['GET', 'POST'])
@@ -150,46 +156,34 @@ def product_classify():
 
 
 
-@product.route('/api/checkout-products', methods = ['GET'])
-def checkoutproducts():
-    message = {}
+
+'''
     data = {}
-    tprice = 0
-    deliver = 500
-
-    transaction_inputs = [
-            {
-                'id': 1,
-                'img': "https://5.imimg.com/data5/RU/WI/MY-46283651/school-skirts-500x500.jpg",
-                'name': 'skirt',
-                'quantity': '1',
-                'size': 'L',
-                'colour': 'black',
-                'price': "500"
-            },
-            {
-                'id': 2,
-                'img': "https://slimages.macysassets.com/is/image/MCY/products/2/optimized/17864922_fpx.tif?$browse$&wid=170&fmt=jpeg",
-                'name': 'pants',
-                'quantity': '1',
-                'size': 'medium',
-                'colour': 'white',
-                'price': '1000'
-            },
-            {
-                'id': 3,
-                'img': "https://di2ponv0v5otw.cloudfront.net/posts/2018/03/24/5ab6a736077b9758675a91e5/m_5ab6c769c9fcdfbadf53cd14.jpeg",
-                'name': 'top',
-                'quantity': '1',
-                'size': 'medium',
-                'colour': 'white',
-                'price': '800'
-            }
-        ]
-
-    for card in transaction_inputs:
-        tprice = tprice + int(card['price'])
-
-    tcost = tprice + deliver
-
-    return jsonify(data)
+    products = [
+        {
+            "id":1,
+            "name":"Black Dress",
+            "price":6000,
+            "tax":15,
+            "status":"active",
+            "image":"dress1.jpg"
+        },
+        {
+            "id":2,
+            "name":"White Skirt",
+            "price":1000,
+            "tax":15,
+            "status":"active",
+            "image":"skirt1.jpg"
+        },
+        {
+            "id":3,
+            "name":"Plaid top",
+            "price":500,
+            "tax":15,
+            "status":"active",
+            "image":"top1.jpg"
+        },
+    ]
+    data['products'] = products
+    '''

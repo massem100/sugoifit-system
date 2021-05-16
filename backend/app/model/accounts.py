@@ -40,6 +40,7 @@ class CurrentAsset(db.Model):
     assetName = db.Column(db.String(100))
     acquisDATE = db.Column(db.Date)   
     tag = db.Column(db.String(50))
+    lifeSpan = db.Column(db.Integer)
     related_entry = db.Column(db.String(50))
     debitBalance = db.Column(db.DECIMAL(10,0))
     creditBalance = db.Column(db.DECIMAL(10,0))
@@ -49,8 +50,8 @@ class CurrentAsset(db.Model):
    
     genLedger = db.relationship('GeneralLedger')
 
-    def ___init__(self, id, busID,  assetName, acquisDATE, tag, related_entry, Balance, BalanceDC, debitBalance=0, creditBalance =0):
-        self.busID = busID 
+    def ___init__(self, id, ledgerID,  assetName, acquisDATE, tag, lifeSpan, related_entry, Balance, BalanceDC, debitBalance=0, creditBalance =0):
+        self.ledgerID = ledgerID 
         self.id =id
         self.assetName = assetName 
         self.lifeSpan = lifeSpan
@@ -66,17 +67,17 @@ class CurrentAsset(db.Model):
         return "<Current Asset {}, {}>".format(self.id, self.assetName)
     
     def debit(id, related_entry,  tag, asset_name, balance, balanceDC, lst): 
-        balance += float(lst[4])
-        debitEntry = CurrentAsset(id = id, busID = lst[0],  assetName = asset_name, 
-                                            acquisDATE = lst[3], tag = tag,  related_entry = related_entry, 
-                                            Balance = balance, BalanceDC = balanceDC, debitBalance = lst[4])
+        balance += float(lst[2])
+        debitEntry = CurrentAsset(id = id, ledgerID = lst[0],  assetName = asset_name, 
+                                            acquisDATE = lst[1], tag = tag, lifeSpan= lst[3], related_entry = related_entry, 
+                                            Balance = balance, BalanceDC = balanceDC, debitBalance = lst[2])
         return debitEntry 
 
     def credit(id, related_entry,  tag, asset_name, balance, balanceDC, lst): 
-        balance -= float(lst[4])
-        creditEntry =  CurrentAsset(id = id, busID = lst[0],  assetName = asset_name, 
-                                    acquisDATE = lst[3], tag = tag, related_entry = related_entry, 
-                                    Balance = balance, BalanceDC = balanceDC, creditBalance = lst[4])
+        balance -= float(lst[2])
+        creditEntry =  CurrentAsset(id = id, ledgerID = lst[0],  assetName = asset_name, 
+                                    acquisDATE = lst[1], tag = tag, lifeSpan= lst[3], related_entry = related_entry, 
+                                    Balance = balance, BalanceDC = balanceDC, creditBalance = lst[2])
         return creditEntry
     
 
@@ -88,8 +89,7 @@ class NonCurrentAsset(db.Model):
     assetName = db.Column(db.String(100))
     tag = db.Column(db.String(50))
     lifeSpan = db.Column(db.Integer)
-    accumDep = db.Column(db.DECIMAL(10, 2))
-    disposalAmt = db.Column(db.DECIMAL(10, 2))
+    totalUnits = db.Column(db.Integer)
     depType = db.Column(db.String(100))
     acquisDATE = db.Column(db.Date)   
     related_entry = db.Column(db.String(50))
@@ -100,16 +100,15 @@ class NonCurrentAsset(db.Model):
 
     genLedger = db.relationship('GeneralLedger')
 
-    def __init__(self, id, busID, assetName, lifeSpan, depType, acquisDATE, tag,
-                related_entry, Balance, BalanceDC, accumDep = 0, disposalAmt =0,debitBalance =0, creditBalance=0):
-        self.busID = busID 
+    def __init__(self, id, ledgerID, assetName, lifeSpan, depType, acquisDATE, tag,  related_entry, 
+                  Balance, BalanceDC, totalUnits=0, debitBalance =0, creditBalance=0):
+        self.ledgerID = ledgerID 
         self.id = id
         self.assetName = assetName 
         self.lifeSpan = lifeSpan
         self.tag = tag
-        self.accumDep = accumDep
-        self.disposalAmt = disposalAmt
         self.depType = depType
+        self.totalUnits = totalUnits
         self.acquisDATE = acquisDATE
         self.related_entry = related_entry
         self.debitBalance = debitBalance    
@@ -119,32 +118,51 @@ class NonCurrentAsset(db.Model):
     
     def debit(id, related_entry,  tag, asset_name, balance, balanceDC, lst): 
         balance += float(lst[4])
-        debitEntry = NonCurrentAsset(id= id, busID = lst[0], assetName = asset_name, lifeSpan = lst[1],
+        debitEntry = NonCurrentAsset(id= id, ledgerID = lst[0], assetName = asset_name, lifeSpan = lst[1],
                                      depType = lst[2], acquisDATE = lst[3], tag = tag, related_entry = related_entry, 
                                      Balance = balance, BalanceDC = balanceDC, debitBalance = lst[4])
         return debitEntry
     
     def credit(id, related_entry,  tag, asset_name, balance, balanceDC, lst): 
         balance -= float(lst[4])
-        creditEntry = NonCurrentAsset(id= id, busID = lst[0], assetName = asset_name, lifeSpan = lst[1], 
+        creditEntry = NonCurrentAsset(id= id, ledgerID = lst[0], assetName = asset_name, lifeSpan = lst[1], 
                                       depType = lst[2], acquisDATE = lst[3], tag = tag,  related_entry = related_entry,  
                                       Balance = balance, BalanceDC = balanceDC, creditBalance = lst[4])
         return creditEntry
     
-     
-    def straightLineDep(assetCost, salvageVal, lifeSpan):
-        return (assetCost - salvageVal)/lifeSpan
-    
-    def DDMethod(assetCost,lifeSpan):
-        dep_rate = (1/lifeSpan)*2
-        return assetCost*dep_rate
+    def calcDepExpense(dep_type,  assetCost, lifeSpan=0.00, totalUnits=0, salvageVal=0.00, remainingLife=0): 
+        if dep_type=="Straight-Line Method": 
+            return NonCurrentAsset.straightLineDep(AssetCost = assetCost, SalvageVal = salvageVal, LifeSpan = lifeSpan)
+        elif dep_type == "Declining Balance":
+            return NonCurrentAsset.DDMethod(AssetCost = assetCost, LifeSpan = lifeSpan)
+        elif dep_type == "Units of Production":  
+            return NonCurrentAsset.UnitsOfProd(TotalUnits = totalUnits, AssetCost = assetCost, SalvageVal = salvageVal)
+            
+        else: 
+            # to be calculated 
+            sumDigits= 0
+            for i in range(1, len(lifeSpan)+1): 
+                print(i)
+                sumDigits += i
+                    
+            return NonCurrentAsset.SumYearDigits(RemainingLife=remainingLife, SumDigits = sumDigits, 
+                                        AssetCost = assetCost, SalvageVal = salvageVal)
 
-    def UnitsOfProd(unitsProduced, lifeSpanInUnits, assetCost, salvageVal):
-        dep_expense = (unitsProduced / lifeSpanInUnits) * (assetCost - salvageVal)
+    def straightLineDep(**kwargs):
+        return (kwargs.get("AssetCost", 0 ) - kwargs.get("SalvageVal", 0 ))/ kwargs.get("LifeSpan", 0 )
+
+    def DDMethod(**kwargs):
+        dep_rate = (1/kwargs.get("LifeSpan", 0 ))*2
+        return kwargs.get("AssetCost", 0 )*dep_rate
+
+    def UnitsOfProd(**kwargs):
+        dep_expense = (kwargs.get("AssetCost", 0 ) - kwargs.get("SalvageVal", 0 )) / kwargs.get('TotalUnits', 0)
         return dep_expense
 
-    def SumYearDigits():
-        pass
+    def SumYearDigits(**kwargs):
+        dep_expense = (kwargs.get("remainingLife", 0 ) / kwargs.get("sumDigits", 0 )) *\
+                      (kwargs.get("assetCost", 0 ) - kwargs.get("salvageVal", 0 ))
+        return dep_expense
     
     def __repr__(self): 
         return "<Non Current Asset {}, {} >".format(self.id, self.assetName)
@@ -159,7 +177,7 @@ class Currentliability(db.Model):
     ledgerID = db.Column(db.ForeignKey('genledger.ledgerID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     liabName = db.Column(db.String(100))
     borwDATE = db.Column(db.Date)
-    dueDATE  = db.Column(db.Date)
+    loanPeriods = db.Column(db.Integer)
     tag = db.Column(db.String(50))
     related_entry = db.Column(db.String(50))
     debitBalance = db.Column(db.DECIMAL(10,0))
@@ -169,12 +187,12 @@ class Currentliability(db.Model):
    
     genLedger = db.relationship('GeneralLedger')
     
-    def __init__(self, id, busID, liabName, borwDATE, dueDATE, tag, related_entry, Balance, BalanceDC, debitBalance = 0, creditBalance =0): 
+    def __init__(self, id, ledgerID, liabName, borwDATE, loanPeriods, tag, related_entry, Balance, BalanceDC, debitBalance = 0, creditBalance =0): 
         self.id = id 
-        self.busID = busID 
+        self.ledgerID = ledgerID 
         self.liabName = liabName
         self.borwDATE = borwDATE
-        self.dueDATE = dueDATE
+        self.loanPeriods = loanPeriods
         self.tag = tag
         self.related_entry = related_entry
         self.debitBalance = debitBalance
@@ -187,15 +205,15 @@ class Currentliability(db.Model):
 
     def debit(id, related_entry,  tag, liab_name, balance, balanceDC, lst): 
         balance -= float(lst[3])
-        debitEntry= Currentliability(id = id, busID =lst[0], liabName = liab_name,
-                                     borwDATE = lst[1], dueDATE = lst[2], tag = tag, related_entry = related_entry,
+        debitEntry= Currentliability(id = id, ledgerID =lst[0], liabName = liab_name,
+                                     borwDATE = lst[1], loanPeriods= lst[2], tag = tag, related_entry = related_entry,
                                      Balance = balance, BalanceDC = balanceDC, debitBalance = lst[3])
         return debitEntry
     
     def credit(id, related_entry,  tag, liab_name, balance, balanceDC, lst): 
         balance += float(lst[3])
-        creditEntry = Currentliability(id = id, busID =lst[0], liabName = liab_name,
-                                       borwDATE = lst[1], dueDATE =lst[2], tag = tag, related_entry = related_entry,
+        creditEntry = Currentliability(id = id, ledgerID =lst[0], liabName = liab_name,
+                                       borwDATE = lst[1], loanPeriods =lst[2], tag = tag, related_entry = related_entry,
                                        Balance = balance, BalanceDC = balanceDC, creditBalance = lst[3])
         return creditEntry
 
@@ -207,7 +225,7 @@ class Longtermliability(db.Model):
     ledgerID = db.Column(db.ForeignKey('genledger.ledgerID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     liabName = db.Column(db.String(100))
     borwDATE = db.Column(db.Date)
-    dueDATE  = db.Column(db.Date)
+    loanPeriods = db.Column(db.Integer)
     tag = db.Column(db.String(50))
     related_entry = db.Column(db.String(50))
     debitBalance = db.Column(db.DECIMAL(10,0))
@@ -218,12 +236,12 @@ class Longtermliability(db.Model):
     
     genLedger = db.relationship('GeneralLedger')
 
-    def __init__(self, id, busID, liabName, borwDATE, dueDATE, tag,  related_entry, Balance, BalanceDC, debitBalance =0, creditBalance =0): 
+    def __init__(self, id, ledgerID, liabName, borwDATE, loanPeriods, tag,  related_entry, Balance, BalanceDC, debitBalance =0, creditBalance =0): 
         self.id = id
-        self.busID = busID 
+        self.ledgerID = ledgerID 
         self.liabName = liabName
         self.borwDATE = borwDATE
-        self.dueDATE = dueDATE
+        self.loanPeriods = loanPeriods
         self.tag = tag
         self.related_entry = related_entry
         self.debitBalance = debitBalance
@@ -236,15 +254,15 @@ class Longtermliability(db.Model):
     
     def debit(id, related_entry,  tag, liab_name, balance, balanceDC, lst): 
         balance -= float(lst[3])
-        debitEntry= Longtermliability(id = id, busID =lst[0], liabName = liab_name,
-                                     borwDATE = lst[1], dueDATE = lst[2], tag= tag, related_entry = related_entry,
+        debitEntry= Longtermliability(id = id, ledgerID =lst[0], liabName = liab_name,
+                                     borwDATE = lst[1], loanPeriods = lst[2], tag= tag, related_entry = related_entry,
                                      Balance = balance, BalanceDC = balanceDC, debitBalance = lst[3])
         return debitEntry
-        # lst= [busID,  borrow_date, dueDate, amount]
+        # lst= [ledgerID,  borrow_date, dueDate, amount]
     def credit(id, related_entry,  tag, liab_name, balance, balanceDC, lst): 
         balance += float(lst[3])
-        creditEntry = Longtermliability(id = id, busID =lst[0], liabName = liab_name,
-                                       borwDATE = lst[1], dueDATE = lst[2], tag = tag, related_entry = related_entry,
+        creditEntry = Longtermliability(id = id, ledgerID =lst[0], liabName = liab_name,
+                                       borwDATE = lst[1], loanPeriods= lst[2], tag = tag, related_entry = related_entry,
                                        Balance = balance, BalanceDC = balanceDC, creditBalance = lst[3])
         return creditEntry
     
@@ -270,10 +288,10 @@ class OperatingExpense(db.Model):
 
     genLedger = db.relationship('GeneralLedger')
 
-    def __init__(self, id, busID, opexName, dateIncurred, expenseCategory,tag, related_entry,
+    def __init__(self, id, ledgerID, opexName, dateIncurred, expenseCategory,tag, related_entry,
                  Balance, balanceDC, debitBalance =0, creditBalance =0): 
         self.id =id 
-        self.busID = busID 
+        self.ledgerID = ledgerID 
         self.opexName = opexName 
         self.dateIncurred = dateIncurred
         self.expenseCategory = expenseCategory
@@ -289,14 +307,14 @@ class OperatingExpense(db.Model):
     
     def debit(id, related_entry,  tag, exp_name, balance, balanceDC, lst): 
         balance += float(lst[3])
-        debitEntry = OperatingExpense(id= id, busID =lst[0], opexName = exp_name, dateIncurred = lst[1],
+        debitEntry = OperatingExpense(id= id, ledgerID =lst[0], opexName = exp_name, dateIncurred = lst[1],
                                       expenseCategory =lst[2], tag = tag, related_entry=related_entry, 
                                       balance = balance, balanceDC = balanceDC, debitBalance =lst[3])
         return debitEntry
     
     def credit(id, related_entry,  tag, exp_name, balance, balanceDC, lst): 
         balance -= float([3])
-        creditEntry = OperatingExpense(id= id, busID =lst[0], opexName = exp_name, dateIncurred = lst[1],
+        creditEntry = OperatingExpense(id= id, ledgerID =lst[0], opexName = exp_name, dateIncurred = lst[1],
                                       expenseCategory =lst[2], tag = tag, related_entry =related_entry, 
                                       balance = balance, balanceDC = balanceDC, creditBalance =lst[3])
         return creditEntry
@@ -320,9 +338,9 @@ class NonOperatingExpense(db.Model):
 
     genLedger = db.relationship('GeneralLedger')
 
-    def __init__(self, id, busID, nOpexName, dateIncurred, tag, related_entry, Balance, BalanceDC, debitBalance =0, creditBalance=0): 
+    def __init__(self, id, ledgerID, nOpexName, dateIncurred, tag, related_entry, Balance, BalanceDC, debitBalance =0, creditBalance=0): 
         self.id = id 
-        self.busID = busID 
+        self.ledgerID = ledgerID 
         self.nOpexName = nOpexName 
         self.dateIncurred = dateIncurred
         self.tag = tag
@@ -338,13 +356,13 @@ class NonOperatingExpense(db.Model):
      
     def debit(id, related_entry,  tag, exp_name, balance, balanceDC, lst): 
         balance += float(lst[2])
-        debitEntry = OperatingExpense(id= id, busID =lst[0], nOpexName = exp_name, dateIncurred = lst[1], tag = tag,
+        debitEntry = OperatingExpense(id= id, ledgerID =lst[0], nOpexName = exp_name, dateIncurred = lst[1], tag = tag,
                                       related_entry=related_entry, Balance = balance, BalanceDC = balanceDC, debitBalance =lst[2])
         return debitEntry
     
     def credit(id, related_entry,  tag, exp_name, balance, balanceDC, lst): 
         balance -= float([2])
-        creditEntry = OperatingExpense(id= id, busID =lst[0], opexName = exp_name, dateIncurred = lst[1], tag = tag,
+        creditEntry = OperatingExpense(id= id, ledgerID =lst[0], opexName = exp_name, dateIncurred = lst[1], tag = tag,
                                       related_entry =related_entry, Balance = balance, BalanceDC = balanceDC, creditBalance =lst[2])
         return creditEntry
    
@@ -369,9 +387,9 @@ class OperatingRevenue(db.Model):
 
     genLedger = db.relationship('GeneralLedger')
 
-    def __init__(self, id, busID, oprevName, dateEarned, tag, related_entry, Balance, BalanceDC, debitBalance = 0, creditBalance =0): 
+    def __init__(self, id, ledgerID, oprevName, dateEarned, tag, related_entry, Balance, BalanceDC, debitBalance = 0, creditBalance =0): 
         self.id = id
-        self.busID = busID 
+        self.ledgerID = ledgerID 
         self.oprevName = oprevName
         self.dateEarned = dateEarned
         self.tag = tag
@@ -386,13 +404,13 @@ class OperatingRevenue(db.Model):
     
     def debit(id, related_entry,  tag, rev_name, balance, balanceDC, lst): 
         balance -= float(lst[2])
-        debitEntry = OperatingRevenue(id = id, busID = lst[0], oprevName = rev_name, dateEarned = lst[1], tag = tag,
+        debitEntry = OperatingRevenue(id = id, ledgerID = lst[0], oprevName = rev_name, dateEarned = lst[1], tag = tag,
                                       related_entry = related_entry, Balance = balance, BalanceDC = balanceDC, debitBalance = lst[2])
         return debitEntry
     
     def credit(id, related_entry,  tag, rev_name, balance, balanceDC, lst):
         balance += float(lst[2])
-        creditEntry = OperatingRevenue(id = id, busID = lst[0], oprevName = rev_name, dateEarned = lst[1], tag = tag,
+        creditEntry = OperatingRevenue(id = id, ledgerID = lst[0], oprevName = rev_name, dateEarned = lst[1], tag = tag,
                                       related_entry = related_entry, Balance = balance, BalanceDC = balanceDC, creditBalance = lst[2])
         return creditEntry
    
@@ -414,9 +432,9 @@ class NonOperatingRevenue(db.Model):
 
     genLedger = db.relationship('GeneralLedger')
 
-    def __init__(self, id, busID, nOprevName, dateEarned, tag, related_entry, Balance, BalanceDC, debitBalance =0, creditBalance=0): 
+    def __init__(self, id, ledgerID, nOprevName, dateEarned, tag, related_entry, Balance, BalanceDC, debitBalance =0, creditBalance=0): 
         self.id= id
-        self.busID = busID 
+        self.ledgerID = ledgerID 
         self.nOprevName = nOprevName
         self.dateEarned = dateEarned
         self.tag = tag
@@ -431,13 +449,13 @@ class NonOperatingRevenue(db.Model):
     
     def debit(id, related_entry,  tag, rev_name, balance, balanceDC, lst): 
         balance -= float(lst[2])
-        debitEntry = NonOperatingRevenue(id= id, busID = lst[0], nOprevName = rev_name, dateEarned = lst[1], tag = tag,
+        debitEntry = NonOperatingRevenue(id= id, ledgerID = lst[0], nOprevName = rev_name, dateEarned = lst[1], tag = tag,
                                       related_entry = related_entry, Balance = balance, BalanceDC = balanceDC, debitBalance = lst[2])
         return debitEntry
     
     def credit(id, related_entry,  tag, rev_name, balance, balanceDC, lst):
         balance += float(lst[2])
-        creditEntry = NonOperatingRevenue(id= id, busID = lst[0], nOprevName = rev_name, dateEarned = lst[1], tag = tag,
+        creditEntry = NonOperatingRevenue(id= id, ledgerID = lst[0], nOprevName = rev_name, dateEarned = lst[1], tag = tag,
                                       related_entry = related_entry, Balance = balance, BalanceDC = balanceDC, creditBalance = lst[2])
         return creditEntry
     
@@ -464,9 +482,9 @@ class ShareholdersEquity(db.Model):
  
     genLedger = db.relationship('GeneralLedger')
 
-    def ___init__(self, id, busID, equityName, date, tag, related_entry, Balance, BalanceDC, debitBalance =0, creditBalance= 0): 
+    def ___init__(self, id, ledgerID, equityName, date, tag, related_entry, Balance, BalanceDC, debitBalance =0, creditBalance= 0): 
         self.id = id
-        self.busID =busID 
+        self.ledgerID =ledgerID 
         self.equityName =equityName
         self.date =date 
         self.tag = tag
@@ -481,13 +499,13 @@ class ShareholdersEquity(db.Model):
     
     def debit(id, related_entry,  tag, equity_name, balance, balanceDC, lst): 
         balance -= float(lst[2])
-        debitEntry = ShareholdersEquity(id = id, busID = lst[0], equityName = equity_name, date = lst[1], tag = tag,
+        debitEntry = ShareholdersEquity(id = id, ledgerID = lst[0], equityName = equity_name, date = lst[1], tag = tag,
                                         related_entry = related_entry, Balance = balance, BalanceDC = balanceDC, debitBalance =lst[2])
         return debitEntry
     
     def credit(id, related_entry,  tag, equity_name, balance, balanceDC, lst): 
         balance += float(lst[2])
-        creditEntry = ShareholdersEquity(id = id, busID = lst[0], equityName = equity_name, date = lst[1], tag = tag,
+        creditEntry = ShareholdersEquity(id = id, ledgerID = lst[0], equityName = equity_name, date = lst[1], tag = tag,
                                         related_entry = related_entry, Balance = balance, BalanceDC = balanceDC, creditBalance =lst[2])
         return creditEntry
     

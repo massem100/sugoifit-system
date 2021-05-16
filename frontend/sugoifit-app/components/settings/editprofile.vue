@@ -122,8 +122,12 @@
     import {ValidationObserver, ValidationProvider} from "vee-validate";
 
     export default {
+<<<<<<< HEAD:frontend/sugoifit-app/components/settings/editprofile.vue
         name: 'EditProfile',
         layout: 'dashboard',
+=======
+        layout: 'DashboardLayout',
+>>>>>>> main:frontend/sugoifit-app/pages/settings/edit-profile.vue
         components: {
             ValidationProvider,
             ValidationObserver,

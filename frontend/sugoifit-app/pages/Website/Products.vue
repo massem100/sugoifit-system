@@ -1,5 +1,6 @@
 <template>
     <div class="wrapper">
+<<<<<<< HEAD
         <v-col>
             
             <v-container fluid >
@@ -8,6 +9,12 @@
                     <v-col  class="col-4" :md="6" :sm="8">
                         <v-card class="d-flex flex-row mb-6" flat tile >
                             <v-card v-for="item in products" :key="item.id" class="pa-2" flat tile>
+=======
+     
+        <div class="items">
+            {{ content }}
+        </div>
+>>>>>>> main
 
                             <v-img :src='require("~/assets/uploads/boutique.jpg")' aspect-ratio="1" class="grey lighten-2 " max-height="184" max-width="100%"></v-img>
                                 <v-card-text class="text--primary text-center">
@@ -42,6 +49,7 @@
 </template>
 
 <script>
+<<<<<<< HEAD
 export default {
     name: 'Products',
     layout: 'website',
@@ -50,6 +58,15 @@ export default {
               title: 'Our Products'
           }
         },
+=======
+
+export default {
+    name: 'Products',
+    layout:'WebsiteLayout',
+    components: {
+       
+    },
+>>>>>>> main
     data() {
         return {
             products: []

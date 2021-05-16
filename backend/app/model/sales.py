@@ -3,23 +3,27 @@ from app import db
 from app.model.auth import Busines
 from xlrd.timemachine import unicode
 
-# db = current_app.db
 
 class Customer(db.Model):
     __tablename__ = 'customer'
 
     custID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     fname = db.Column(db.String(100))
     lname = db.Column(db.String(100))
     trn = db.Column(db.Integer)
     email = db.Column(db.String(255))
+    address = db.Column(db.String(255))
 
-    def ___init__(self, custID, fname, lname, trn, email):
+    business = db.relationship('Busines')
+
+    def ___init__(self, custID, fname, lname, trn, email,address):
         self.custID = custID
         self.fname = fname
         self.lname = lname 
         self.trn = trn 
         self.email = email 
+        self.address = address
     
     def get_id(self):
         try:
@@ -30,6 +34,24 @@ class Customer(db.Model):
     def __repr__(self):
         name = self.fname + "" + self.lname
         return "<Customer {}, {}".format(self.custID, name)
+
+
+class CustomerPayment(db.Model): 
+    __tablename__ ='customerpayment'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    cusID = db.Column(db.ForeignKey('customer.custID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    orderID =db.Column(db.ForeignKey('custorder.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    receipt = db.Column(db.String(255))
+
+    def __init__(self, custID, orderID, receipt): 
+        self.cusID =custID
+        self.orderID = orderID
+        self.receipt = receipt
+
+    def __repr__(self):
+        return "<Order Proof_Payment {}>".format(self.id)
+
 
 class Sale(db.Model):
     __tablename__ = 'sale'

@@ -45,7 +45,7 @@
           <b-row class="m-1 w-100">
             <b-col cols="12" class="text-primary mb-3 pl-0" v-b-tooltip.hover.left title="Assets are......">Add Current Asset</b-col>
 
-            <b-col md="6" cols="12" class="bg-secondary px-5 py-3">
+            <b-col md="6" cols="12" class="px-5 py-3">
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="asset name">
                   <label for="asset_name" >Asset Name 
@@ -102,6 +102,26 @@
               </div>
             </b-col>
             <b-col md="6" cols="12" class="px-3">
+              <div class = "mb-2">
+                 <validation-provider
+                      v-slot="{ errors }"
+                      rules="required"
+                      name="tag"
+                    >
+                      <label for="tag">Select a Tag</label>
+                      <b-form-select v-model="form.tag"
+                                    :options="asset_tags"
+                                    id="tag"
+                                    name="tag"
+                                    class="text-black"
+                                    :state="getValidationState(errors)"
+                      >
+                      </b-form-select>
+                      <b-form-invalid-feedback>
+                        {{ errors[0] }}
+                      </b-form-invalid-feedback>
+                    </validation-provider>
+              </div>
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="tan_in">
                   <label>Increase/Decrease
@@ -109,8 +129,7 @@
                   </label>
                   <b-form-radio-group v-model="form.increase_decrease"
                                       :options="inc_dec"
-                                      class="border border-radius px-4 py-3"
-                                      style="Background: #E5E5E5; "
+                                      class="px-4 py-3"
                                       stacked
                                       :state="getValidationState(errors)"
                   >
@@ -129,13 +148,10 @@
                                       :options="paid_using"
                                       id="paid_using"
                                       stacked
-                                      class="border border-radius py-3 px-4"
-                                      style="Background: #E5E5E5; "
+                                      class="py-3 px-4"
                                       :state="getValidationState(errors)"
                   >
                   </b-form-radio-group>
-
-
                   <b-form-invalid-feedback>
                     {{ errors[0] }}
                   </b-form-invalid-feedback>
@@ -186,6 +202,18 @@
                     {value: 'Cheque', text: 'Cheque '},
                     {value: 'Credit', text: 'Credit '},
                 ],
+                asset_tags:[ 
+                    {value: null, text: 'Please select an option'},
+                    {value: 'Inventory', text: 'Inventory'},
+                    {value: 'Cash', text: 'Cash'},
+                    {value: 'Cash Equivalents', text: 'Cash Equivalents'},
+                    {value: 'Accounts Receivables', text: 'Accounts Receivables'},
+                    {value: 'Prepaid Expenses', text: 'Prepaid Expenses'},
+                    {value: 'Marketable Securities', text: 'Marketable Securities'},
+                    {value: 'Other Current Assets', text: 'Other Current Assets'},
+
+                    
+                ]
             }
         },
         methods: {
@@ -203,7 +231,6 @@
                 this.$axios.post(`/api/${PATH_API}`, form_data, {
                     headers: {
                         'contentType': 'application/json',
-                        "Authorization": "Bearer " + localStorage.getItem("token"),
                     }
                 })
                     .then(jsonResponse => {

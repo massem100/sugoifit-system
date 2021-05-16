@@ -348,7 +348,7 @@ import BaseAlert from '../../../components/argon-core/BaseAlert.vue';
                     date: new Date().toISOString()
                 },
                 asset_options: [
-                    {value: null, text: 'Please select an option'},
+                    {value:'', text: 'Please select an option'},
                     {value: 'Straight-Line Method', text: 'Straight-Line'},
                     {value: 'Declining Balance', text: 'Declining Balance '},
                     {value: 'Units of Production', text: 'Units of Production'},

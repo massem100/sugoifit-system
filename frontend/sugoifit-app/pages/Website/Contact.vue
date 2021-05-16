@@ -1,5 +1,6 @@
 <template>
     <div class="wrapper">
+<<<<<<< HEAD
         <b-col>
             <b-container fluid>
                 
@@ -126,6 +127,34 @@
                             <button type="button" class="btn btn-outline-danger" @click="resetForm()">Reset</button>
                         </b-col>
                     </b-row>
+=======
+        <div class="conatainer">
+            <!-- contact section -->
+            <div class="contact">
+                <h2>Contact us!</h2>
+                <p>Contact us today, and get reply with in 24 hours!</p>
+
+                <form id="contact" action="" method="post">
+                    <fieldset>
+                        <label for="name">Full Name</label>
+                        <input placeholder="" type="text" tabindex="1" required autofocus>
+                    </fieldset>
+                    <fieldset>
+                        <label for="mail">Email Address</label>
+                        <input placeholder="" type="email" tabindex="2" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="num">Phone Number</label>
+                        <input placeholder="" type="tel" tabindex="3" required>
+                    </fieldset>
+                    <fieldset>
+                        <label for="message">Message</label>
+                        <textarea placeholder="" tabindex="5" required></textarea>
+                    </fieldset>
+                    <fieldset>
+                        <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
+                    </fieldset>
+>>>>>>> main
                 </form>
                 </validation-observer>
             </b-container>
@@ -134,6 +163,7 @@
 </template>
 
 <script>
+<<<<<<< HEAD
 import {ValidationObserver, ValidationProvider} from "vee-validate";
 export default {
     name: 'Contact',
@@ -191,6 +221,13 @@ export default {
                 console.log(jsonResponse);
             })
             }, 
+=======
+
+export default {
+    name: 'Contact',
+    layout:'WebsiteLayout',
+    components: {
+>>>>>>> main
     }
 }
 </script>

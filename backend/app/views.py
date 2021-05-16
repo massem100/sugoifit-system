@@ -6,8 +6,7 @@ from datetime import datetime, timedelta
 # from app import   db, login_manager, cors, csrf_, principal, admin_permission, \
 #                             owner_permission, employee_permission, fin_manger_permission, jwt_token
 # WTF Forms and SQLAlchemy Models
-from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm, orderForm, newProductForm
-from app.model import  accounts, auth, sales, transactions
+from app.model import  accounts, auth
 from app.model.sales import Product, ProductSaleItem
 from app.schema.sales import products_schema
 

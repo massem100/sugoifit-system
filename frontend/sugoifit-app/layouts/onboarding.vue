@@ -4,195 +4,43 @@
     <b-col>
       
       <b-row>
-    <side-bar style="background-color: #A7E4EC; " class="text-white">
-      <template slot="links">
-           
-          <div  class="d-flex flex-row justify-content-center text-white"> 
-            <div  class="profile mt-3 mb-3 text-white">
-                <h5 id="profile_name" class="my-1 font-weight-bold text-white"> Jane S.</h5>
-                <h5 id="profile_ID" class="my-1 text-white"> ID 1234567</h5>
-                <h5 id="role" class="my-1 text-white"> Role: Business Owner</h5>
-              </div>
-              <img id="profile-icon" class ="mt-3 ml-2 mr-2 w-25 h-25" :src="user" alt="" aspect-ratio="1" />
-             
+       <div class="side-nav-on"> 
+        <!-- The inner divs will be triggered by a v-if to toggle active class/display -->
+        <div class="w-100">
+            <!-- I want to make the sidebar dynamic so when its time to change
+             the company type instead of the list its illustration or words -->
+            <div class="sugoifit-name">
+                <img class = "logo" src="~assets/uploads/logo.png" alt="">
+                <h5 class = ""> SugoiFIt App</h5>
             </div>
-            <hr
-              class="my-3"
-              style="
-                border: 0;
-                border-top: 1px solid rgba(0, 0, 0, 0.1);
-                min-width: 80%;
-                overflow: visible;
-                box-sizing: content-box;
-                height: 0;
-              "
-            />
-        <sidebar-item
-          :link="{
-            name: 'Dashboard',
-            icon: ['fas', 'plus'],
-            path: '/',
-            color: 'text-white',
-          }"
-        >
-        </sidebar-item>
-        <sidebar-item
-          :link="{
-            name: 'Manage Transactions',
-            icon: ['fas', 'receipt'],
-            path: '/manage-transaction',
-            color: 'text-white',
-          }"
-        >
-        </sidebar-item>
-        <sidebar-item
-          
-          :link="{
-            name: 'Products',
-            icon: ['fas', 'plus'],
-            path: '',
-            color: 'text-white',
-          }"
-        >
-        
-          <sidebar-item
-            opened
-            :link="{
-              name: 'All Products',
-              icon: ['fas', 'plus'],
-              path: '/manageproducts/list',
-              color: 'text-white',
-            }"
-          >
-          </sidebar-item>
-          <sidebar-item
-            opened
-            :link="{
-              name: 'Add Products',
-              icon: ['fas', 'plus'],
-              path: '/manageproducts/add',
-              color: 'text-white',
-            }"
-          >
-          </sidebar-item>
-          <sidebar-item
-            opened
-            :link="{
-              name: 'Product Analytics',
-              icon: ['fas', 'plus'],
-              path: '/manageproducts/analytics',
-              color: 'text-white',
-            }"
-          >
-          </sidebar-item>
-        </sidebar-item>
-        <sidebar-item
-          
-          :link="{
-            name: 'Manage Sales',
-            icon: ['fas', 'plus'],
-            path: '/managesales',
-            color: 'text-white',
-          }"
-        >
-          <sidebar-item
-            opened
-            :link="{
-              name: 'Orders',
-              icon: ['fas', 'plus'],
-              path: '/allproducts',
-              color: 'text-white',
-            }"
-          >
-          </sidebar-item>
-         
-        </sidebar-item>
-         <sidebar-item
-            :link="{
-              name: 'Invoices',
-              icon: ['fas', 'plus'],
-              path: '/invoice/',
-              color: 'text-white',
-            }"
-          >
-            <sidebar-item
-              :link="{
-                name: 'Create Invoice',
-                icon: ['fas', 'plus'],
-                path: '/invoice/create',
-                color: 'text-white',
-              }"
-            >
-            </sidebar-item>
-            <sidebar-item
-              :link="{
-                name: 'All Invoices',
-                icon: ['fas', 'plus'],
-                path: '/invoice/list',
-                color: 'text-white',
-              }"
-            >
-            </sidebar-item>
-          </sidebar-item>
-        <sidebar-item
-            :link="{
-              name: 'Financials',
-              icon: ['fas', 'plus'],
-              path: '/financialstmts/',
-              color: 'text-white',
-            }"
-          >
-          <sidebar-item
-            :link="{
-              name: 'Balance Sheet',
-              icon: ['fas', 'plus'],
-              path: '/financialstmts/balance-sheet/_slug',
-              color: 'text-white',
-            }"
-          >
-          </sidebar-item>
-          <sidebar-item
-            :link="{
-              name: 'Income Statement',
-              icon: ['fas', 'plus'],
-              path: '/financialstmts/profit-loss/_slug',
-              color: 'text-white',
-            }"
-          >
-          </sidebar-item>
-          </sidebar-item>
-        <sidebar-item
-            :link="{
-              name: 'Reports',
-              icon: ['fas', 'chart-bar'],
-              path: '/reports/',
-              color: 'text-white',
-            }"
-          >
-          <sidebar-item
-            :link="{
-              name: 'Report Generation',
-              icon: ['fas', 'plus'],
-              path: '/reports/charts',
-              color: 'text-white',
-            }"
-          >
-          </sidebar-item>
-          </sidebar-item>
 
-        <hr
-          class="my-3"
-          style="
-            border: 0;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            min-width: 80%;
-            overflow: visible;
-            box-sizing: content-box;
-            height: 0;
-          "
-        />
-      </template>
-    </side-bar>
+            <ul class = "list-nav d-flex flex-column"> 
+                    <!-- <img class = "checked" src="~assets/uploads/checked.svg" alt=""> -->
+                <li><span>1</span>Email Details</li>
+                <li><span>2</span>Company Type </li>
+                <!-- <li class = ""><span>3</span>Business Details </li> -->
+                <div class = "d-flex flex-row"> 
+
+               
+               <li><span>3</span></li>
+                <b-nav-item-dropdown  text="Business Details" right>
+                    
+                    <b-dropdown-item class = "list-style-none" href="#">Corporation</b-dropdown-item>
+                    <b-dropdown-item href="#">About your business</b-dropdown-item>
+                   
+                </b-nav-item-dropdown>
+                 </div>
+                <li><span>4</span> Team </li>
+                <li><span>5</span> Personal Details</li>
+            </ul>
+
+            <div class = "onboard-footer">
+
+            </div>
+              
+        </div>
+        
+    </div>
     
     <div class="main-content">
       <!-- <dashboard-navbar

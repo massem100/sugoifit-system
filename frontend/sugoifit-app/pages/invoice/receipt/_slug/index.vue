@@ -32,7 +32,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr v-for="(bill,idx) in invoice.bills" :key="bill" :index="idx">
+              <tr v-for="(bill) in invoice.bills" :key="bill">
                 <td>{{bill.name}}</td>
                 <td class="text-center">{{bill.quantity}}</td>
                 <td class="text-center">${{bill.unit_price*bill.quantity}}</td>
@@ -68,7 +68,7 @@ import BackButton from '../../../../components/argon-core/BackButton.vue';
         data() {
             return {
                 invoice: {
-                    name: 'moniques boutique',
+                    name: 'moniques botique',
                     invoice_id: 'invoice0001',
                     address: 'Shop #3, xyz plaza,<br> kingsater,<br> Kingston',
                     balance: 1000,

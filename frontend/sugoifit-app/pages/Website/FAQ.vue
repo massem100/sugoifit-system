@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
     <div class="wrapper" >
         <v-col>
         
@@ -24,6 +25,11 @@
 
                 <v-card class="d-flex flex-row mb-6" flat tile >
                     <v-card v-for="item in items" :key="item" class="pa-2" flat tile>
+=======
+    <div class="wrapper">
+               
+        <div class="container">
+>>>>>>> main
 
                        <v-img :src="item.src" aspect-ratio="1" class="grey lighten-2 " max-height="184" max-width="100%"></v-img>
                         <v-card-text class="text--primary text-center">
@@ -41,6 +47,7 @@
 </template>
 
 <script>
+<<<<<<< HEAD
 export default {
     name: 'FAQ',
     layout: 'website',
@@ -73,6 +80,15 @@ export default {
       ]
     };
   }
+=======
+
+export default {
+    name: 'FAQ',
+    layout:'WebsiteLayout',
+    components: {
+    
+    }
+>>>>>>> main
 }
 </script>
 
