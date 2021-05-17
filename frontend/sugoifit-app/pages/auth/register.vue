@@ -12,23 +12,28 @@
             <p class ="login-text text-center"> Welcome back, enter your username and password</p>
             
             <b-form id = "RegisterForm" class ="d-flex flex-column  " @submit.prevent = "RegisterUser" method ="POST">                        
-                <label class ="form-label mt-4" for="first_name"> First Name</label> 
+                <label class ="form-label mt-4" for="first_name"> First Name
+                  <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. Jess"/></label> 
                 <b-form-input class ="form-control mt-2" type="text" name="first_name" id="first_name"></b-form-input>
 
-                <label class ="form-label mt-4" for="last_name"> Last Name</label> 
+                <label class ="form-label mt-4" for="last_name"> Last Name
+                  <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. Reid"/></label> 
                 <b-form-input class ="form-control mt-2" type="text" name="last_name" id="last_name"></b-form-input>
 
-                <label class =" form-label text-left mt-4" for ="email">Email:</label>
+                <label class =" form-label text-left mt-4" for ="email">Email:
+                  <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Company email eg. compemail@outlook.com"/>
+                </label>
                 <b-form-input class ="form-control mt-2" type="text" name="email" id="email"></b-form-input>
             
                 <label class ="form-label mt-4" for="password"> Password:</label> 
                 <b-form-input class ="form-control mt-2" type="password" name="password" id="password"></b-form-input>
 
-                <label class ="form-label mt-4" for="business_name">Business Name</label> 
+                <label class ="form-label mt-4" for="business_name">Business Name
+                  <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. Monique's Boutique"/></label> 
                 <b-form-input class ="form-control mt-2" type="text" name="business_name" id="business_name"></b-form-input>
             
                 <b-col class ="d-flex flex-column align-items-center">
-                    <div  id="msgBox">
+                    <div  id="msgBox" v-show="show">
                         <p> {Display error messages here} </p>
                     </div>
                     <button  class="btn submit" id="submit"> Submit </button>
@@ -41,9 +46,9 @@
 </template>
 
 <script>
-
+import BaseAlert from '../../components/argon-core/BaseAlert.vue';
 export default {
-  components: { },
+  components: {BaseAlert },
     name: 'auth-register',
     head(){
       return{
@@ -54,8 +59,9 @@ export default {
   },
     data(){
         return{
-           token: '', 
-           alert_message: ''
+          show=false,
+          token: '', 
+          alert_message: ''
         }
     }, 
     methods:{
@@ -77,7 +83,13 @@ export default {
                 console.log(jsonResponse);
                 self.alert_message = jsonResponse.message;
               })
-            }, 
+        }, 
+        error: function () {
+          if (this.alert_message === ) {
+            show= true;
+          }
+
+        }
                     
     }
     }

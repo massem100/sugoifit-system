@@ -10,18 +10,22 @@
             
             <div class="type-item">
                 <img class = "type-icon" src="~assets/uploads/checked.svg" alt="">
-                <h6> Sole Trader </h6>
-                <p> A business owned and operated by one individual.</p>
+                <h6> Sole Trader 
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="A business owned and operated by one individual."/>
+                </h6>
             </div>
             <div class="type-item">
                 <img class = "type-icon" src="~assets/uploads/checked.svg" alt="">
-                <h6>Partnership</h6>
-                <p>An unincorporated business owned by two or more persons.</p>
+                <h6>Partnership
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="An unincorporated business owned by two or more persons."/>
+                </h6>
             </div>
             <div class="type-item">
                 <img class = "type-icon" src="~assets/uploads/checked.svg" alt="">
-                <h6>Company</h6>
-                <p>A business that is incorporated. Please select type of incorporation, private or public.</p>
+                <h6>Company
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                        "A business that is incorporated. Please select type of incorporation, private or public."/>
+                </h6>
             </div>
             <div class ="d-flex flex-row justify-content-center ">
             <div @click = "BusDetail" class="type-btn-n btn btn-lg">

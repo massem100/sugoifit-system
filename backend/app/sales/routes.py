@@ -97,3 +97,24 @@ def manageOrders():
     #Need to print this list on the front end.
     return allOrders
 
+@sales.route('/api/invoice', methods = ['GET', 'POST'])
+def all_product():
+    data_list = []
+    busID = "Mon1"
+    products = Product.query.filter_by(busID=busID).all()
+    output = sales.products_schema.dump(products)
+
+    for item in output:
+        case = {
+            "id":item['prodID'],
+            "name":item['prodName'],
+            "price":item['unit_price'],
+            "tax":item['taxPercent'],   
+            "status":item['prodStatus'],
+            "image":item['image']
+        }
+        data_list.append(case)
+        #data.update(item=item.index)
+
+    #return jsonify(output)
+    return jsonify(data_list)

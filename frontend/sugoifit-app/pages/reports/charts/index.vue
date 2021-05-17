@@ -106,7 +106,10 @@
         <b-col cols="12">
           <b-card>
             <b-card-title>Ratio Analysis</b-card-title>
-            <b-card-title>Profitability Ratio</b-card-title>
+            <b-card-title>Profitability Ratio
+              <font-awesome-icon icon="info-circle" 
+                 v-b-tooltip.hover title="Shows ...."/>
+            </b-card-title>
             <b-card-text>
               <b-table-simple responsive>
                 <b-thead>

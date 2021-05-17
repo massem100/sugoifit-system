@@ -37,7 +37,9 @@
             <b-col md="6" cols="12" class="bg-secondary px-5 py-3">
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="expense name">
-                  <label>Expense Name</label>
+                  <label>Expense Name
+                     <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="name of what the transaction is for eg. "/>
+                  </label>
                   <b-form-input v-model="form.expense_name" type="text" required
                                 :state="getValidationState(errors)">
                   </b-form-input>
@@ -46,7 +48,9 @@
               </div>
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="transaction_date">
-                  <label for="date">Transaction Date</label>
+                  <label for="date">Transaction Date
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Date transaction was made "/>
+                  </label>
                   <b-form-datepicker id="transaction_date"
                                      v-model="form.transaction_date"
                                      :date-format-options="{ year: 'numeric', month: 'short', day: 'numeric' }"
@@ -64,7 +68,9 @@
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="amount">
 
-                  <label for="amount">Amount</label>
+                  <label for="amount">Amount
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Cost of the transaction "/>
+                  </label>
                   <b-form-input v-model="form.amount"
                                 type="number"
                                 id="amount"
@@ -75,7 +81,10 @@
                   </b-form-invalid-feedback>
                 </validation-provider>
               </div>
-              <div class="mb-2"><label for="description">Description</label>
+              <div class="mb-2"><label for="description">Description
+                <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    "eg. name of bill: water bill"/>
+              </label>
                 <b-form-textarea v-model="form.expense_desc" type="text" id="description"
                                  maxlength="200"></b-form-textarea>
               </div>
@@ -83,7 +92,9 @@
             <b-col md="6" cols="12" class="px-3">
                <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="tan_in">
-                  <label>Expense Type</label>
+                  <label>Expense Type
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=" eg. utility bill "/>
+                  </label>
                   <b-form-radio-group v-model="form.expense_type"
                                       :options="inc_dec"
                                       class="border border-radius px-4 py-3"
@@ -99,7 +110,10 @@
               </div>
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="tan_in">
-                  <label>Increase/Decrease</label>
+                  <label>Increase/Decrease
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    " indicates whether a business should be able to meet its short-term obligations "/>
+                  </label>
                   <b-form-radio-group v-model="form.increase_decrease"
                                       :options="inc_dec"
                                       class="border border-radius px-4 py-3"

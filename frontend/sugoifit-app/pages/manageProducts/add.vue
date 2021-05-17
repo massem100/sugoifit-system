@@ -54,7 +54,7 @@
                     name="product name"
                   >
                     <label for="product_name">Product Name
-                      <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                      <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. High waisted leather pants "/>
                     </label>
                     <b-form-input v-model="form.product_name"
                                   type="text"
@@ -76,7 +76,7 @@
                       name="product image"
                     >
                       <label for="image">Product Image
-                        <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                        <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. filename.(jpg/jpeg)"/>
                       </label>
                       <b-form-file  v-model="form.image_file"
                                     class="w-100"
@@ -102,7 +102,8 @@
                   name="product description"
                 >
                   <label for="desc">Product Description
-                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                    <font-awesome-icon icon="info-circle" 
+                    v-b-tooltip.hover title="Helps customers choose a product eg. 100% cotton, iron on low heat"/>
                   </label>
                   <b-form-textarea v-model="form.desc"
                                 class="w-100"
@@ -120,16 +121,16 @@
                 <validation-provider
                   v-slot="{ errors }"
                   rules="required"
-                  name="measurement unit"
+                  name="size"
                 >
-                  <label for="uom">Unit of Measurement
-                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                  <label for="size">Sizing
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="what size do you offer this product in? Large "/>
                   </label>
-                  <b-form-select v-model="form.uom"
+                  <b-form-select v-model="form.size"
                                 class="w-100"
-                                id="uom"
-                                name="uom"
-                                :options="uom_options"
+                                id="size"
+                                name="size"
+                                :options="size_options"
                                 :state="getValidationState(errors)">
                   </b-form-select>
                   <b-form-invalid-feedback>
@@ -146,7 +147,7 @@
                       name="quantity stock"
                     >
                       <label for="quantity">Quantity In Stock
-                        <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                        <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="How many of this item do you currently have? 16"/>
                       </label>
                       <b-form-input v-model="form.quanitity"
                                     type="number"
@@ -168,7 +169,8 @@
                       name="unit price"
                     >
                       <label for="unit_price">Unit Price
-                        <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                        <font-awesome-icon icon="info-circle" 
+                          v-b-tooltip.hover title="Price at which you are selling/had bought this product for? $400"/>
                       </label>
                       <b-form-input v-model="form.unit_price"
                                     type="number"
@@ -190,7 +192,7 @@
                       name="tax percent"
                     >
                       <label for="tax">Tax percent
-                        <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                        <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="What is the tax for this product? eg 16%"/>
                       </label>
                       <b-form-input v-model="form.tax"
                                     type="number"

@@ -51,7 +51,7 @@ def init_app():
     login_manager.login_view = 'login'
 
     # Flask marshmallow
-    ma.init_app(app)
+    #ma.init_app(app)
 
     # Flask migrate
     migrate = Migrate(app, db)

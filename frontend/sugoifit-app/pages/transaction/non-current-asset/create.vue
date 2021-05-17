@@ -53,7 +53,10 @@
               <!-- Asset Name -->
                 <b-col cols = "8" class="mb-2   pl-0" xl="9" md="6" sm="12">
                   <validation-provider v-slot="{ errors }" rules="required" name="asset name" >
-                    <label for="asset_name">Asset Name</label>
+                    <label for="asset_name">Asset Name
+                       <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                       "name of what the transaction is for eg.commercial paper, Treasury bills "/>
+                    </label>
                     <b-form-input v-model="form.asset_name" type="text" id="asset_name" name="asset_name"
                                   :state="getValidationState(errors)">
                     </b-form-input>
@@ -64,7 +67,9 @@
                 <!-- Transaction Date -->
                 <b-col class="mb-2 pl-0" xl="9" md="6" sm="12">
                   <validation-provider v-slot="{ errors }" rules="required" name="transaction_date">
-                    <label for="date">Date</label>
+                    <label for="date"> Transaction Date
+                      <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Date transaction was made "/>
+                    </label>
                     <b-form-datepicker id="transaction_date"
                                       name ="transaction_date"
                                       v-model="form.date"
@@ -86,7 +91,9 @@
                 <b-col  class="mb-2 pl-0" xl="9" md="6" sm="12">
                   <validation-provider v-slot="{ errors }" rules="required" name="amount">
                   
-                    <label for="amount">Amount</label>
+                    <label for="amount">Amount
+                      <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Cost of the transaction "/>
+                    </label>
                     <b-form-input v-model="form.amount" type="number" id="amount" name="amount"
                                   :state="getValidationState(errors)">
                     </b-form-input>
@@ -99,7 +106,10 @@
               
                   <!-- Description Input -->
                 <b-col class="mb-2 pl-0" xl="9" md="6" sm="12">
-                    <label for="description">Description</label>
+                    <label for="description">Description
+                      <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    " eg. for intellectual propert: Utility patents, design patents etc."/>
+                    </label>
                     <b-form-textarea v-model="form.description" type="text" id="description"></b-form-textarea>
                 </b-col>
               
@@ -111,7 +121,12 @@
             </b-col>
              <b-col>
                 <div v-if= "reduct_hide">
-                  <b-col cols="8" class="text-info mb-3 pl-0">Amortization</b-col>
+                  <b-col cols="8" class="text-info mb-3 pl-0">Amortization
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    " cost of those intangible assets that have a specific useful life
+                     eg. Broadcast licenses. Copyrights"/>
+                    cost of those intangible assets that have a specific useful life
+                  </b-col>
                   <b-col class = "m-2">
                     
                   <!-- Depreciation Type Input  -->
@@ -122,6 +137,8 @@
                       name="dep type"
                     >
                       <label for="dep_type">Depreciation Type</label>
+                      <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                      "Depreciation: refers to the decline in the value of fixed assets due to their usage, passage of time or obsolescence"/>
                       <b-form-select v-model="form.asset_type"
                                     :options="asset_options"
                                     id="dep_type"

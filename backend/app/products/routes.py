@@ -83,13 +83,9 @@ def all_product():
             "image":item['image']
         }
         data_list.append(case)
-<<<<<<< HEAD
-        
-=======
         #data.update(item=item.index)
 
     #return jsonify(output)
->>>>>>> main
     return jsonify(data_list)
 
 #@app.route('/api/product/classify', methods = ['GET', 'POST'])
@@ -154,36 +150,3 @@ def product_classify():
 
     # Find Percentage of Annual Consumption Value
 
-
-
-
-'''
-    data = {}
-    products = [
-        {
-            "id":1,
-            "name":"Black Dress",
-            "price":6000,
-            "tax":15,
-            "status":"active",
-            "image":"dress1.jpg"
-        },
-        {
-            "id":2,
-            "name":"White Skirt",
-            "price":1000,
-            "tax":15,
-            "status":"active",
-            "image":"skirt1.jpg"
-        },
-        {
-            "id":3,
-            "name":"Plaid top",
-            "price":500,
-            "tax":15,
-            "status":"active",
-            "image":"top1.jpg"
-        },
-    ]
-    data['products'] = products
-    '''
