@@ -1,25 +1,37 @@
 <template>
     <div class= "container"> 
-        <h1> ABC Analysis </h1>
+        <h1> Order List </h1>
         <hr>
         <table class= "content-table">
           <thead>
             <tr>
-              <th scope="col"> Product ID </th>
-              <th scope="col"> Consumption Value </th>
-              <th scope="col"> Grade </th>
-              <th scope="col"> Action </th>
+              
+              <th scope="col"> Customer ID </th>
+              <th scope="col"> Invoice ID </th>
+              <th scope="col"> Order ID </th>
+              <th scope="col"> Order Total </th>
+              <th scope="col"> Date Ordered </th>
+              <th scope="col"> Date Due </th>
+              <th scope="col"> Status </th>
+              
+              
             </tr>
           </thead>
 
             <tbody>
-                <tr v-for="(product,prodID) in products" :key="prodID">
+                <tr v-for="(result,index) in results" :key="index">
                     
-                    <td> {{product.prodID}} </td>
-                    <td> {{product.con_val}} </td>
-                    <td> {{product.grade}} </td>
-                    <td> Button </td>
-        
+                    
+                    <td> {{result.custID}} </td>
+                    <td> {{result.invoiceID}} </td>
+                    <td> {{result.orderID}} </td>
+                    <td> {{result.orderTotal}} </td>
+                    <td> {{result.date}} </td>
+                    <td> {{result.dueDate}} </td>
+                    <td> {{result.status}} </td>
+                    
+                    
+
                 </tr>
             </tbody>
         </table>
@@ -31,7 +43,7 @@
  import BackButton from '../components/argon-core/BackButton.vue';
  export default {
    components: { BackButton },
-        name: "eversley",
+        name: "eversley2",
         layout: 'DashboardLayout',
         methods: {
             test: () => {
@@ -40,15 +52,15 @@
   },
   data() {
     return {
-      products: [],
+      result: [],
     };
   },
   methods: {
-    getProducts() {
-      const path = 'http://localhost:8080/api/classify';
+    getResult() {
+      const path = 'http://localhost:8080/api/manage-orders';
       axios.get(path)
         .then((res) => {
-          this.products = res.data.products;
+          this.results = res.data.results;
         })
         .catch((error) => {
           console.error(error);
@@ -56,7 +68,7 @@
     },
   },
   created() {
-    this.getProducts();
+    this.getResult();
   },
  };
  </script>

@@ -338,6 +338,7 @@ class Order(db.Model):
     invoiceID = db.Column(db.ForeignKey('invoice.custID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     status = db.Column(db.String(20))
+    dueDate = db.Column(db.Date)
 
     busines = db.relationship('Busines')
     customer = db.relationship('Customer')

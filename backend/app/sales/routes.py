@@ -3,6 +3,8 @@ from flask import Blueprint, request, jsonify, flash, session,  _request_ctx_sta
 from werkzeug.utils import secure_filename
 from app.forms import orderForm
 from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order
+from datetime import datetime  
+#from datetime import timedelta  
  
 sales= Blueprint('sales', __name__)
 
@@ -37,7 +39,7 @@ def place_order():
     todayString = today.strftime(date_format)
     dateDue = (today + timedelta(days=7)).strftime(date_format)
 
-    new_order = Order(orderID="O1", order_tot=total_price, order_DATE=todayString, custID=customer.custID, invoiceID="", busID="", status=status)
+    new_order = Order(orderID="O1", order_tot=total_price, order_DATE=todayString, custID=customer.custID, invoiceID="", busID="", status=status, dueDate = dateDue)
     try:
         db.session.add(new_order)
         db.session.commit()
@@ -64,13 +66,22 @@ delta = b - a
 print (delta.days)
 
 """
-@sales.route('/manage-orders')
+@sales.route('/api/manage-orders')
 def manageOrders():
     #Get all orders that are pending
+    rank = {
+        "Payment Received": 1,
+        "Processing": 2,
+        "Pending": 3,
+        "On Hold": 4,
+        "Shipped": 5,
+        "Cancelled": 6,
+        "Failed": 7
+    }
+
     date_format = "%Y-%m-%d"
     allOrders = []
-    ordersQuery = Order.query.filter_by(status="Pending").all()
-
+    ordersQuery = Order.query.filter_by().all()
     #Calculate days left for each record
     #Put record in tuple form and append to list
     for record in ordersQuery:
@@ -79,21 +90,34 @@ def manageOrders():
         date = record.order_DATE
         custID = record.custID
         invoiceID = record.invoiceID
-        busID = record.busIDo
+        busID = record.busID
         status = record.status
         dueDate = record.dueDate
 
-        startDate = datetime.strptime(date, date_format)
-        endDate = datetime.strptime(dueDate, date_format)
+        datestr = date.strftime(date_format)
+        dueDatestr = dueDate.strftime(date_format)
+        
+        startDate = datetime.strptime(datestr, date_format)
+        endDate = datetime.strptime(dueDatestr, date_format)
 
         daysLeft = endDate - startDate
-        daysLeft = daysLeft.days()
+        daysLeft = daysLeft.days
 
-        allOrders.append((orderID, orderTotal, date, custID, invoiceID,
-        busID, status, dueDate, daysLeft))
+        rankVal = rank[status]
+        allOrders.append((orderID, orderTotal, datestr, custID, invoiceID,
+        busID, status, dueDatestr, daysLeft, rankVal))
 
-    allOrders.sort(lambda x: x[8], reverse = False)
+    #Sort by days left
+    allOrders.sort(key = lambda x: x[8], reverse = False)
 
-    #Need to print this list on the front end.
-    return allOrders
+    #Sort by rank
+    allOrders.sort(key = lambda x: x[9], reverse = False)
+
+    #Build dictionary to send to frontend
+    data = []
+    for order in allOrders:
+        data.append({'orderID': order[0], 'orderTotal': "$" + str(order[1]), 'date': order[2], 'custID': order[3], 
+        'invoiceID': order[4], 'busID':order[5], 'status': order[6], 'dueDate': order[7]})
+
+    return jsonify({'results':data})
 

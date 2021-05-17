@@ -195,7 +195,6 @@ def product_classify():
     # Find Percentage of Annual Consumption Value
 
 
-
 @product.route('/api/checkout-products', methods = ['GET'])
 def checkoutproducts():
     message = {}
