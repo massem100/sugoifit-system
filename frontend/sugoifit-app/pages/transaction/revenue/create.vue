@@ -85,7 +85,7 @@
                 <validation-provider v-slot="{ errors }" rules="required" name="tan_in">
                   <label>Revenue Type</label>
                   <b-form-radio-group v-model="form.revenue_type"
-                                      :options="inc_dec"
+                                      :options="revenue_type"
                                       class="border border-radius px-4 py-3"
                                       style="Background: #E5E5E5; "
                                       stacked
@@ -173,8 +173,11 @@
                 paid_using: [
                     {value: 'Cash', text: 'Cash '},
                     {value: 'Cheque', text: 'Cheque '},
-                    {value: 'Credit', text: 'Credit '},
                 ],
+                revenue_type:[
+                   {value: 'Operating Revenue', text: 'Operating Revenue'},
+                    {value: 'Non Operating Revenue', text: 'Non Operating Revenue'},
+                ]
             }
         },
         methods: {

@@ -21,7 +21,7 @@
                   
                 </div>
                 <div class="d-flex flex-row justify-content-end w-50 ">
-                    <img class=" " src="~/assets/uploads/products/boutique.jpg" alt="Picture">
+                    <img class=" " src="~/assets/uploads/boutique.jpg" alt="Picture">
                 </div>
             </div>
              
@@ -75,7 +75,7 @@
                     <img style="position: absolute;
                                 left:0;" 
                          class=" receipt-img" 
-                         src="~/assets/uploads/products/boutique2.jpg" 
+                         src="~/assets/uploads/boutique2.jpg" 
                          alt="Picture">
                 </div>
                 <div class="d-flex flex-column m-3  ">

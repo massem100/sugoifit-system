@@ -2,7 +2,7 @@
   <client-only>
     <b-container fluid="" class="py-4">
       <b-row>
-        <back-button class="mt-4 ml-2"></back-button>
+        <!-- <back-button class="mt-4 ml-2"></back-button> -->
         <b-col sm="3" cols="12">
           <b-card no-body>
             <b-card-text class="d-flex justify-content-between align-items-center p-3">
@@ -117,7 +117,8 @@
                   </b-tr>
                 </b-thead>
                 <b-tbody>
-                  <b-tr v-for="(ratio,idx) in ratios" :key="idx" v-if="idx <= (maxRatio?ratios.length:4)">
+                   <!-- idx <= (maxRatio?ratios.length:4)  -->
+                  <b-tr v-for="(ratio,idx) in ratios" :key="idx" >
                     <b-td class="text-capitalize">{{ratio.name}}</b-td>
                     <b-td>
                       <div class="d-flex align-items-center justify-content-center">

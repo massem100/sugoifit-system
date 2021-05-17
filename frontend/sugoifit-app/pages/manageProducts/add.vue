@@ -45,7 +45,7 @@
             <input type="hidden" name="_token" :value="token">
             <b-row class="m-1 w-100">
               <b-col cols="12" class="text-primary mb-3 pl-0">Add Product</b-col>
-              <b-col md="12" cols="12" class="bg-secondary px-5 py-3">
+              <!-- <b-col md="12" cols="12" class="bg-secondary px-5 py-3"> -->
                 <b-row>
                   <div class="mb-2 w-50">
                     <validation-provider
@@ -138,7 +138,7 @@
                 </validation-provider>
               </div>
               -->
-             </b-row>
+            </b-row>
             <b-row>
               <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
                 <validation-provider
@@ -239,98 +239,6 @@
                     {{ errors[0] }}
                   </b-form-invalid-feedback>
                 </validation-provider>
-                <b-row>
-                  <div class="mb-2 ">
-                    <validation-provider
-                      v-slot="{ errors }"
-                      rules="required"
-                      name="quantity stock"
-                    >
-                      <label for="quantity">Quantity In Stock
-                        <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
-                      </label>
-                      <b-form-input v-model="form.quanitity"
-                                    type="number"
-                                    class="w-100"
-                                    id="quantity"
-                                    name="quantity"
-                                    :state="getValidationState(errors)">
-                      </b-form-input>
-                      <b-form-invalid-feedback>
-                        {{ errors[0] }}
-                      </b-form-invalid-feedback>
-                    </validation-provider>
-                  </div>
-
-                  <div class="ml-5 mb-2">
-                    <validation-provider
-                      v-slot="{ errors }"
-                      rules="required"
-                      name="unit price"
-                    >
-                      <label for="unit_price">Unit Price
-                        <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
-                      </label>
-                      <b-form-input v-model="form.unit_price"
-                                    type="number"
-                                    class="w-100"
-                                    id="unit_price"
-                                    name="unit_price"
-                                    :state="getValidationState(errors)">
-                      </b-form-input>
-                      <b-form-invalid-feedback>
-                        {{ errors[0] }}
-                      </b-form-invalid-feedback>
-                    </validation-provider>
-                  </div>
-
-                  <div class="ml-5 mb-2">
-                    <validation-provider
-                      v-slot="{ errors }"
-                      rules="required"
-                      name="tax percent"
-                    >
-                      <label for="tax">Tax percent
-                        <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
-                      </label>
-                      <b-form-input v-model="form.tax"
-                                    type="number"
-                                    class="w-100"
-                                    id="tax"
-                                    name="tax"
-                                    :state="getValidationState(errors)">
-                      </b-form-input>
-                      <b-form-invalid-feedback>
-                        {{ errors[0] }}
-                      </b-form-invalid-feedback>
-                    </validation-provider>
-                  </div>
-                </b-row>
-
-                <b-row>
-                  <div class="mb-2">
-                    <validation-provider
-                      v-slot="{ errors }"
-                      rules="required"
-                      name="product status"
-                    >
-                      <label for="status">Product Status</label>
-                      <b-form-select v-model="form.status"
-                                    class="w-100"
-                                    id="status"
-                                    name="status"
-                                    :options="status_options"
-                                    :state="getValidationState(errors)">
-                      </b-form-select>
-                      <b-form-invalid-feedback>
-                        {{ errors[0] }}
-                      </b-form-invalid-feedback>
-                    </validation-provider>
-                  </div>
-
-                  
-                </b-row>
-
               </b-col>
             </b-row>
             <b-row class=" my-4 px-3">

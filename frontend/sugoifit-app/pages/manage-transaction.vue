@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <!-- Quick Actions -->
-    
+  <div class="w-100">
     <div class="mx-3">
       <b-row>
         <back-button class="mt-4 ml-2"></back-button>
@@ -17,8 +15,10 @@
       </b-row>
      
       <transaction-top class="d-flex flex-row justify-content-center mt-4 w-100"/>
-      
-      <b-col class= "mt-4 ml-0 d-flex flex-column align-items-start w-100">
+ 
+    
+    <b-col class= "mt-4 ml-0 d-flex flex-column align-items-start w-100">
+        
         <b-row class="w-100">
            <b-form-group
             label="Filter"
@@ -97,7 +97,7 @@
                   </b-button>
                   
               </template>
-              
+         
 
             </b-table>
             <b-pagination class="m-lg-auto" v-model="currentPage" :total-rows="totalRows" :per-page="perPage"></b-pagination>
@@ -108,10 +108,13 @@
 </template>
 
 <script>
+
+
 import BackButton from '../components/argon-core/BackButton.vue';
+
     export default {
-        components: { BackButton },
-        name: "add-transaction",
+        components: {  BackButton },
+        name: "manage-transaction",
         layout: 'DashboardLayout',
         head(){
           return{
@@ -125,9 +128,11 @@ import BackButton from '../components/argon-core/BackButton.vue';
         },
         data() {
             return {
+                transForm: null,
                 assetName: "",
                 assetType: "",
                 depreciationMethod: "",
+                sortOptions:{},
                 el: "",
                 totalRows: 1,
                 currentPage: 1,
@@ -203,6 +208,10 @@ import BackButton from '../components/argon-core/BackButton.vue';
         created(){
 
         }, 
+        computed: {
+            
+      
+        }, 
         mounted() {
             // Set the initial number of items
             this.totalRows = this.items.length
@@ -212,6 +221,12 @@ import BackButton from '../components/argon-core/BackButton.vue';
             this.totalRows = filteredItems.length
             this.currentPage = 1
           },
+           async launchConfirm(){
+                let self = this;
+                const submit = await this.$refs['confirmModal'].show();
+              
+            },
+            
         }
     };
 </script>

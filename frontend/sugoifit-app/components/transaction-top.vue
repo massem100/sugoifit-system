@@ -6,9 +6,9 @@
     </button>
     <b-popover target="assetBtn" triggers="hover" placement="bottom" custom-class="custom-popover">
       <div class="d-flex flex-column">
-        <b-link class="pop-link" :to="{name:'transaction-non-current-asset-create'}">Non Current Asset</b-link>
+        <b-link   class=" pop-link" :to="{name:'transaction-non-current-asset-create'}" >Non Current Asset</b-link>
         <hr class="my-0"/>
-        <b-link class="pop-link" :to="{name:'transaction-current-asset-create'}">Current Asset</b-link>
+        <b-link  class="pop-link" :to="{name:'transaction-current-asset-create'}">Current Asset</b-link>
       </div>
     </b-popover>
     <button class="btnStyle" id="liabilityBtn" tabindex="0">
@@ -51,7 +51,10 @@
 
 <script>
     export default {
-        name: "transaction-top"
+        name: "transaction-top", 
+        methods:{
+          
+        }
     }
 </script>
 
@@ -64,6 +67,7 @@
     display: flex;
     flex-direction: column;
     text-decoration: none !important;
+    font: 600 1rem "Poppins";
     color: #065863;
     align-items: center;
     justify-content: center;

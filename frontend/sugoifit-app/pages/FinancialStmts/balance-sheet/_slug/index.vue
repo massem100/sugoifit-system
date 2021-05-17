@@ -23,10 +23,27 @@
               <tr class="br-bottom">
                 <td colspan="2" class="font-weight-bold">Assets</td>
               </tr>
-              <tr class="br-bottom">
+               <tr  class="br-bottom">
                 <td class="pl-4">Non Current Assets</td>
+                <td class="text-right"></td>
+              </tr>
+              <tr v-for= "(bal,line_item) in non_current_assets" :key="line_item"  class="br-bottom">
+                <td class="pl-5">{{line_item}}</td>
+                <td class="text-right">{{bal}}</td>
+              </tr>
+               <tr  class="br-bottom">
+                <td class="pl-4">Total Non Current Assets</td>
+                <td class="text-right">{{total.nca_total}}</td>
+              </tr>
+              <tr  class="br-bottom">
+                <td class="pl-4">Current Assets</td>
                 <td class="text-right">$20</td>
               </tr>
+              <tr v-for= "(asset,index) in current_assets" :key="index" class="br-bottom">
+                <td class="pl-5">{{index}}</td>
+                <td class="text-right">{{asset}}</td>
+              </tr>
+             
               <tr class="br-bottom">
                 <td class="pl-4">Non Current Assets</td>
                 <td class="text-right">$20</td>
@@ -81,6 +98,52 @@ import BackButton from '../../../../components/argon-core/BackButton.vue';
               title: 'Balance Sheet'
           }
         },
+        data(){
+          return{
+            line_items: [],
+            current_assets: [],
+            non_current_assets: [], 
+            current_liabilities: [], 
+            long_term_liabilities: [], 
+            capital: [], 
+            total: {
+              nca_total: null,
+              ca_total: null,
+              cl_total: null,
+              lt_total: null,
+            }
+          }
+        },
+        mounted(){
+          let self=this;
+          const busID = localStorage.getItem('busID');
+          const year =2021
+          this.$axios.get(`/api/financialstmt/balancesheet/${busID}/${year}`
+              ).then(res =>{
+                  return res.data;
+              }).then(res =>{
+                  if (res){
+                      self.line_items = res;
+                      self.current_assets= res["Current Asset"]; 
+                      self.non_current_assets= res["Non Current Asset"]; 
+                      self.current_liabilities= res["Current Liabilities"]; 
+                      self.long_term_liabilities= res["Long Term Liability"]; 
+                      // self.capital= res["Capital"]; 
+                      // self.total.nca_total = new Intl.NumberFormat('en-IN', { maximumSignificantDigits: 10
+                      //                        }).format(this.non_current_assets["Total Non Current Assets"]);
+
+
+                      // console.log(res["Current Liabilities"]);
+              
+              }else{
+                  console.log('Data not found')
+              }
+              });
+
+          },
+        methods:{
+         
+        }
     };
 </script>
 
