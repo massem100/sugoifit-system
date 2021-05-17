@@ -72,18 +72,45 @@
             }"
           >
           </sidebar-item>
+        </sidebar-item>
+         <!-- <sidebar-item
+
+          :link="{
+            name: 'Inventory',
+            icon: ['fas', 'plus'],
+            path: '',
+          }"
+        >
+
           <sidebar-item
             opened
             :link="{
-              name: 'Product Analytics',
+              name: 'All Inventory',
               icon: ['fas', 'plus'],
-              path: '/manageproducts/analytics',
-              color: 'text-black',
+              path: '/inventory/list',
             }"
           >
           </sidebar-item>
+         </sidebar-item> -->
+        <sidebar-item
+
+          :link="{
+            name: 'Manage Sales',
+            icon: ['fas', 'plus'],
+            path: '/managesales',
+          }"
+        >
+          <sidebar-item
+            opened
+            :link="{
+              name: 'Orders',
+              icon: ['fas', 'plus'],
+              path: '/allproducts',
+            }"
+          >
+          </sidebar-item>
+
         </sidebar-item>
-       
          <sidebar-item
             :link="{
               name: 'Invoices',
@@ -152,6 +179,15 @@
               icon: ['fas', 'plus'],
               path: '/reports/charts',
               color: 'text-black',
+            }"
+          >
+          </sidebar-item>
+          <sidebar-item
+            opened
+            :link="{
+              name: 'Product Analytics',
+              icon: ['fas', 'plus'],
+              path: '/manageproducts/analytics',
             }"
           >
           </sidebar-item>

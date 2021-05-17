@@ -30,6 +30,8 @@
           </b-form-input>
           <b-button class="mx-3 br-20" variant="light">Search</b-button>
         </b-col>
+        </b-row>
+
         <b-col cols="12" class="my-4">
           
             <b-table striped hover :items="allproducts"
@@ -48,7 +50,6 @@
           
           <b-pagination v-model="currPage" :total-rows="rows" :per-page="perPage"></b-pagination>
         </b-col>
-      </b-row>
     </b-container>
   </div>
 </template>
@@ -91,12 +92,11 @@
           this.$store.dispatch('products/displayProducts');
         },
         methods: {
-          
-          /* ADD AN ALERT OPTION BEFORE DELETING */
-          deleteItem(id) {
-            const index = this.items.indexOf((x) => x.id == id);
-            this.items.splice(index, 1);
-          }
+            /* ADD AN ALERT OPTION BEFORE DELETING */
+            deleteItem(id) {
+                const index = this.items.indexOf((x) => x.id == id);
+                this.items.splice(index, 1);
+            }
         }
     }
 </script>
