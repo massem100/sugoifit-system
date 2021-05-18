@@ -1,5 +1,5 @@
 <template>
-    <div class="about-business-page "> 
+    <div class="about-business-page ">
         <div class="about-business-main">
             <div class="about-business-heading">
                 <h5> Personal Details </h5>
@@ -8,9 +8,9 @@
 
             <div class="about-business-form-div">
                 <b-form action="" class="about-business-form">
-                   
+
                     <div class="about-business-form-item">
-                       
+
                         <label for = "comp-name">Company Name</label>
                          <div class="name-container d-flex flex-row">
                         <!-- <b-form-select id = corp_type :options="corp_types"> </b-form-select> -->
@@ -21,9 +21,9 @@
                             This is a info alert—check it out!
                         </div> -->
                     </div>
-                    
-                    <div class="shares-div "> 
-                        <div class = "about-business-form-item"> 
+
+                    <div class="shares-div ">
+                        <div class = "about-business-form-item">
                             <label for = ""> Product or Service </label>
                              <b-form-select id = corp_type :options="busNature"> </b-form-select>
                         </div>
@@ -31,7 +31,7 @@
                             <label for = ""> Telephone </label>
                             <b-form-input placeholder="(555)-XXX-XXXX" id = ""></b-form-input>
                         </div>
-                        
+
                     </div>
                     <div class="about-business-form-item">
                             <label for = ""> Business Address</label>
@@ -48,24 +48,24 @@
 
         </div>
     </div>
-    
+
 </template>
 
 
-<script > 
+<script >
 export default{
   components: {  },
-    name: 'personal-details', 
+    name: 'personal-details',
     layout: 'onboarding',
-    data () { 
-        return { 
+    data () {
+        return {
             corp_types: [
                 {value : null, text: 'Please select your type of incorporation.'},
                 {value : 'a', text: 'Private Company '},
                 {value : 'b', text: 'Unlimited Liability Company'},
                 {value : 'c', text: 'Limited Liability Company'},
-                
-            ], 
+
+            ],
             busNature: [
                 {value: null, text: 'Select Product-Based or Service-Based'},
                 {value: 'a', text: 'Product-Based'},
@@ -83,8 +83,8 @@ export default{
         display: flex;
         flex-direction: row;
         min-height: 100vh;
- 
-        
+
+
     }
 
     .side-bar{
@@ -98,9 +98,9 @@ export default{
 
     }
 
-    .about-business-heading p{ 
+    .about-business-heading p{
         margin: 2rem 0;
-        
+
         font: 400 1rem "Poppins";
 
     }
@@ -108,7 +108,7 @@ export default{
         display: flex;
         flex-direction: row;
         width: 26rem;
-    
+
 
     }
     .shares-div .about-business-form-item{
@@ -116,14 +116,14 @@ export default{
     }
     .shares-div b-form-input{
         margin-right: 1rem;
-        
+
     }
 
-    .about-business-heading h5{ 
+    .about-business-heading h5{
         font: 600 1.8rem "Poppins";
     }
 
-    .about-business-form-item{ 
+    .about-business-form-item{
         margin: 1rem 0;
         width: 25rem;
     }
@@ -140,7 +140,7 @@ export default{
     }
     /* Extra small devices (phones, 600px and down) */
     @media only screen and (max-width: 600px) {
-        
+
     }
 /* Small devices (portrait tablets and large phones, 600px and up) */
     @media only screen and (min-width: 600px) {
@@ -153,8 +153,8 @@ export default{
         .side-bar{
             display: block;
             position:fixed;
-           
-            
+
+
         }
         .about-business-main{
             margin-left: 20rem;
@@ -163,13 +163,13 @@ export default{
 
     /* Large devices (laptops/desktops, 992px and up) */
     @media only screen and (min-width: 992px) {
-        
+
     }
     /* Extra large devices (large laptops and desktops, 1200px and up) */
     @media only screen and (min-width: 1200px) {
-        
-    }
-   
 
-   
+    }
+
+
+
 </style>

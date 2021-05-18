@@ -1,28 +1,7 @@
 <template>
 
-     <div class=" email-create-section w-100" >
-                <div class="email-form-section h-25 d-flex flex-column">
-                    <div class = "email-heading">
-                        <h4 class ="mb-4">Set up your Business Profile.</h4>
-                        <p class="email-text mb-5"> Managing your business has never been this easy. <br>
-                            Enter your business email address to continue. 
-                        </p>
-                    </div>
-                    <div class = "email-container  ml-3">
-                    
-                        <label class ="d-flex text-center align-items-center" for="email">Email Address</label>
-                        <input type="text" name ="email" class="form-control" >
-                    
-                        <div @click ="ChangeComp" class="get-started btn btn-sm ">Get Started <span></span></div>
-                    </div>
 
-                </div>
-                <div class="w-40 ">
-                    <img class="business-image" src="~assets/uploads/business_board.jpg" alt="">
-                    <img class="doodle" src="~assets/uploads/linecurve.svg" alt="">
-                </div>
-    </div>
-   
+
 </template>
 
 
@@ -33,33 +12,33 @@
 export default {
     components: {},
     layout: 'onboarding',
-    name: 'emailsection', 
+    name: 'emailsection',
     data(){
         return{
 
         }
-    }, 
+    },
     methods: {
         ChangeComp: function() {
            this.$router.push('company-type');
         //    this.nuxt.$options.router.push({path: this.localePath('company-type')});
         }
     }
-    
+
 }
 </script>
 
 
 
 <style scoped>
-    
+
     .email-create-section{
         margin-top: 5rem;
         margin-left: 4rem;
         display: flex;
         flex-direction: row;
         min-height:100vh;
-        
+
     }
     .business-image{
         margin-left: 2rem;
@@ -67,15 +46,15 @@ export default {
         height: 24rem;
         border-radius: 20px;
     }
-    
-   
+
+
     .email-heading{
         margin: 20px 20px 20px 20px;
 
         font : 400 1rem "Poppins";
     }
 
-    .email-heading h4{ 
+    .email-heading h4{
         font: 600 1.6rem "Poppins";
     }
     .email-container{
@@ -83,17 +62,17 @@ export default {
         flex-direction: row;
         /* justify-content: center; */
         align-items: center;
-    
+
     }
     .email-form{
-       
+
         display: flex;
         flex-direction:column;
     }
     .email-form input{
         width: 12rem;
         margin: 10px;
-       
+
     }
     .email-form label{
         margin:10px;
@@ -111,20 +90,20 @@ export default {
 
     .doodle{
         position:absolute;
-        right: 0; 
+        right: 0;
         top: 32rem;
-        z-index: 1; 
-        overflow: hidden;   
+        z-index: 1;
+        overflow: hidden;
         width: 42rem;
-        
+
     }
-    
+
     /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
     .color-bg{
         /* background-color: green; */
     }
-    .side-bar{ 
+    .side-bar{
         display:none;
     }
 
@@ -138,7 +117,7 @@ export default {
     /* .color-bg{
         background-color: purple;
     } */
-    .side-bar{ 
+    .side-bar{
         display:none;
     }
     .business-image{
@@ -148,7 +127,7 @@ export default {
         /* align-items: center; */
         justify-content: center ;
     }
-    
+
 }
 
 /* Medium devices (landscape tablets, 768px and up) */
@@ -156,7 +135,7 @@ export default {
     .color-bg{
         /* background-color: yellow; */
     }
-    .side-bar{ 
+    .side-bar{
         display:block;
         position: fixed;
     }
@@ -185,7 +164,7 @@ export default {
         overflow: hidden;
 
     }
-    
+
 }
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
@@ -201,17 +180,17 @@ export default {
 
     .doodle{
         position:absolute;
-        right: 0; 
+        right: 0;
         top: 28rem;
-        z-index: 1; 
-        overflow: hidden;   
+        z-index: 1;
+        overflow: hidden;
         width: 42rem;
-        
+
     }
     .email-form input{
         width: 16rem;
         margin: 10px;
-       
+
     }
 }
 </style>
