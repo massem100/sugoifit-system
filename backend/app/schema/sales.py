@@ -13,6 +13,11 @@ class BusinessSchema(Schema):
 
 class CustomerSchema(Schema):
     custID = fields.String()
+    fname = fields.String()
+    lname = fields.String()
+    trn = fields.Float()
+    email = fields.String()
+    address = fields.String()
 
 class ProductSchema(Schema):
     prodID = fields.String()
@@ -32,6 +37,11 @@ class InvoiceSchema(Schema):
     invoice_DATE = fields.DateTime(dump_only=True)
     tax_tot = fields.Float()
 
+class OrderSchema(Schema):
+    orderID = fields.String()
+    order_tot = fields.Float()
+    order_DATE = fields.DateTime(dump_only=True)
+
 # class ServiceSchema(Schema):
 #     prodID = fields.String()
 #     busID = fields.Nested(BusinessSchema, validate=must_not_be_blank)
@@ -48,3 +58,5 @@ product_schema = ProductSchema()
 products_schema = ProductSchema(many=True)
 business_schema = BusinessSchema()    
 invoices_schema = InvoiceSchema(many=True)
+customer_schema = CustomerSchema()
+order_schema = OrderSchema()

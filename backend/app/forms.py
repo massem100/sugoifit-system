@@ -17,6 +17,8 @@ class RegisterForm(FlaskForm):
     
 class NewProductForm(FlaskForm):
     product_name = StringField('Product Name', validators=[InputRequired('Please enter the product name, e.g. x shampoo.')])
+    desc = TextAreaField('Product Description', validators=[InputRequired('Please enter the product description, e.g. expires in 4 days.')])
+    size = StringField('Product Size', validators=[InputRequired('Please enter the product size')])
     quantity = StringField('Quantity', validators=[InputRequired('Please enter the quantity')])
     man_units = StringField('Manufacture Units', validators=[InputRequired('Please enter the unit of measurement')])
     unit_price = StringField('Unit Price', validators=[InputRequired('Please enter the unit price')])

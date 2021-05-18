@@ -29,8 +29,8 @@ def init_app():
     app = Flask(__name__,  )
     app.config.from_object('config.Config')
 
-    username, password, server = 'root', 'SQLpass','localhost'
-    # username, password, server = 'root', '', 'localhost'
+    # username, password, server = 'root', 'SQLpass','localhost'
+    username, password, server = 'root', '', 'localhost'
     app.config['SECRET_KEY'] = b'\xbc\x86HN\x82\x12p\xceQV\x1f\x06eP\x16i\xc8=P\xb1\xc6^\xf0x'
     app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqlconnector://{}:{}@{}/sugoifit".format(username, password, server)
     app.config["SQLALCHEMY_BINDS"] ={

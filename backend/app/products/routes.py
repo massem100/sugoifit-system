@@ -42,18 +42,21 @@ def delete_product(busID, prodID):
 
 @product.route('/api/<busID>/products', methods = ["GET", "POST"])
 def new_product(busID):
-    busID = current_user.busID 
+    #busID = current_user.busID 
     form = NewProductForm(request.form)
 
     if request.method == "POST":
         if form.validate_on_submit():
             product_name = form.product_name.data
+            image_file = request.files["image"]
+            prod_desc = form.desc.data
             quantity = form.quantity.data
+            prod_size = form.size.data
             man_units = form.man_units.data
             unit_price = form.unit_price.data
             status = form.status.data
             tax = form.tax.data 
-            image_file = request.files["image"]
+            
 
             if image_file is not None:
                 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -61,8 +64,9 @@ def new_product(busID):
                 image_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], sec_filename))
 
                 try:
-                    newProduct = Product(prodID=None, busID=busID, prodName=product_name, unit_price=unit_price, 
-                                    Unit=man_units, limitedTime=datetime.now(), taxPercent=tax, 
+                    newProduct = Product(prodID=None, busID=busID, prodName=product_name, prodType="None", 
+                                prodDesc=prod_desc, prodQuantity=quantity, prodSize=prod_size, unit_price=unit_price, 
+                                    Unit=man_units, limitedTime=datetime.now(), taxPercent=tax, grade="", 
                                     prodStatus=status, image=sec_filename)
 
                     db.session.add(newProduct)

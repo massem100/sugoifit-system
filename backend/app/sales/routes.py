@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 from app import db
 from flask_login import current_user
 from app.forms import orderForm
+from app.schema.sales import *
 from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order, Receipt
 from datetime import timedelta, datetime
  
@@ -104,14 +105,33 @@ def manageOrders():
     #Need to print this list on the front end.
     return allOrders
 
+
 @sales.route('/api/<busID>/invoice', methods = ['GET', 'POST'])
 def all_invoice(busID):
     if request.method == "GET":
-        busID = current_user.busID 
+        #busID = current_user.busID 
         invoice_list = db.session.query(Invoice).filter_by(busID=busID).all()
-        output = sales.invoices_schema.dump(invoice_list)
+        for item in invoice_list:
+            customer = db.session.query(Customer).filter_by(custID=item.custID).first()
+            order = db.session.query(Order).filter_by(invoiceID=item.invoiceID).first()
+        order_d = sales.order_schema.dump(order)
+        invoice_d = sales.invoices_schema.dump(invoice_list)
+        customer_d = sales.customer_schema(customer)
 
-    return jsonify(output)
+        info = {
+            name: customer_d.fname + " " + customer_d.lname,
+            invoice_id: invoice_d.invoiceID,
+            balance: order_d.order_tot,
+            billed_to:{
+                user: customer_d.fname + " " + customer_d.lname,
+                user_mail:customer_d.email,
+                user_phone:customer_d.tel
+            },
+            issue_Date:invoice_d.invoice_DATE,
+            due_date:'March 18, 2021',
+            
+        }
+    return jsonify(info)
 
 @sales.route('/api/<busID>/receipt', methods = ['GET', 'POST'])
 def all_receipt(busID):

@@ -7,7 +7,12 @@ class RoleSchema(Schema):
         # Fields to expose
         fields = ("userID", "role_name")
 
-
+class UserSchema(Schema):
+    userID = fields.String()
+    fname = fields.String()
+    lname = fields.String()
+    
 
 role_schema = RoleSchema()
 roles_schema = RoleSchema(many=True)
+users_schema = UserSchema(many=True)

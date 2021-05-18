@@ -382,13 +382,11 @@ class Order(db.Model):
     order_tot = db.Column(db.DECIMAL(10, 2))
     order_DATE = db.Column(db.Date)
     custID = db.Column(db.ForeignKey('customer.custID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
-    invoiceID = db.Column(db.ForeignKey('invoice.custID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    invoiceID = db.Column(db.ForeignKey('invoice.invoiceID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     status = db.Column(db.String(20))
 
-    busines = db.relationship('Busines')
-    customer = db.relationship('Customer')
-    invoice = db.relationship('Invoice')
+   
     receipt = db.relationship('Receipt')
     receiptdetails = db.relationship('Receiptdetail')
     customerpayment = db.relationship('CustomerPayment')
