@@ -27,7 +27,9 @@
         <b-container fluid>
           <b-row>
             <b-col>
-              <h5 class="card-title">Popular Products</h5>
+              <h5 class="card-title">Popular Products
+                <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="These are the items that have generated the most revenue this week"/>
+              </h5>
               <b-card>
 
                 <h6 class="card-title">Items of the week</h6>
@@ -52,9 +54,13 @@
               </b-card>
             </b-col>
             <b-col>
-              <h5 class="card-title">Inventory Items- Need Restock</h5>
+              <h5 class="card-title">Inventory Items- Need Restock
+                <font-awesome-icon icon="info-circle" 
+                  v-b-tooltip.hover title="These are the items in your inventory that has fallen below the minimum quantity value. 
+                  Restock immediately."/>
+              </h5>
               <b-card>
-                <h6 class="card-title">These items have fallen below threshhold</h6>
+                <!--<h6 class="card-title">These items have fallen below threshhold</h6>-->
                 <b-table striped hover :items="tableItems"></b-table>
               </b-card>
             </b-col>
@@ -62,9 +68,13 @@
           <b-row>
             <b-col>
               <b-card>
-                <b-card-title>Break-even</b-card-title>
+                <b-card-title>Break-even
+                  <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                        "Breakeven refers to the point at which cost and income are equal.
+                         There is neither a profit nor a loss"/>
+                </b-card-title>
                 <b-card-text>
-<line-chart :data="chartData" :options="chartOption" :height="250"/>
+                  <line-chart :data="chartData" :options="chartOption" :height="250"/>
                 </b-card-text>
               </b-card>
               

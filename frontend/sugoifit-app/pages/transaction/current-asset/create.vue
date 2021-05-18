@@ -43,13 +43,14 @@
       >
         <b-form class="" id="AddNCAForm" @submit.stop.prevent="handleSubmit(launchConfirm)" method="POST" enctype="multipart/form-data">
           <b-row class="m-1 w-100">
-            <b-col cols="12" class="text-primary mb-3 pl-0" v-b-tooltip.hover.left title="Assets are......">Add Current Asset</b-col>
+            <b-col cols="12" class="text-primary mb-3 pl-0" >Add Current Asset</b-col>
 
             <b-col md="6" cols="12" class="px-5 py-3">
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="asset name">
                   <label for="asset_name" >Asset Name 
-                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    "name of what the transaction is for eg.commercial paper, Treasury bills "/>
                   </label>
                   <b-form-input v-model="form.asset_name" type="text" id="asset_name" required
                                 :state="getValidationState(errors)">
@@ -61,7 +62,7 @@
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="transaction_date">
                   <label for="date">Transaction Date
-                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Date transaction was made "/>
                   </label>
                   <b-form-datepicker id="transaction_date"
                                      v-model="form.transaction_date"
@@ -81,7 +82,7 @@
                 <validation-provider v-slot="{ errors }" rules="required" name="amount">
 
                   <label for="amount">Amount
-                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Cost of the transaction "/>
                   </label>
                   <b-form-input v-model="form.amount"
                                 type="number"
@@ -95,7 +96,8 @@
               </div>
               <div class="mb-2">
                 <label for="description">Description
-                  <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                  <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    " eg. 14-day Treasury bill"/>
                 </label>
                 <b-form-textarea v-model="form.asset_desc" type="text" id="description"
                                  maxlength="200"></b-form-textarea>
@@ -108,7 +110,10 @@
                       rules="required"
                       name="tag"
                     >
-                      <label for="tag">Select a Tag</label>
+                      <label for="tag">Select a Tag
+                        <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                          " Types of current assets"/>
+                      </label>
                       <b-form-select v-model="form.tag"
                                     :options="asset_tags"
                                     id="tag"
@@ -125,7 +130,8 @@
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="tan_in">
                   <label>Increase/Decrease
-                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    " indicates whether a business should be able to meet its short-term obligations "/>
                   </label>
                   <b-form-radio-group v-model="form.increase_decrease"
                                       :options="inc_dec"

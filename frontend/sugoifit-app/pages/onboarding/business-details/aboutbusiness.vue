@@ -10,11 +10,12 @@
                 <validation-observer ref="observer" v-slot="{}">
                 <!-- <b-form action="" class="about-business-form"> -->
                     <div class="about-business-form-item">
-                        <label for = "comp-name">Company Name</label>
+                        <label for = "comp-name">Company Name
+                            <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. Monique's Boutique"/>
+                        </label>
                         <div class="name-container d-flex flex-row">
                             <validation-provider v-slot="{ errors }" rules="required" name="comp name" >
                                 <b-form-input 
-                                    placeholder="E.g. Monique's Boutique" 
                                     class = "mr-2 w-80" 
                                     id = "comp_name" 
                                     name="comp_name"
@@ -40,7 +41,10 @@
                     <div class="shares-div "> 
                         <div class = "about-business-form-item"> 
                             <validation-provider v-slot="{ errors }" rules="required" name="corp_type" >
-                                <label for = ""> Product or Service </label>
+                                <label for = ""> Product or Service 
+                                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                                    "Does your company offere services such as accounting or products such as clothing?"/>
+                                </label>
                                 <b-form-select 
                                     id = "corp_type" 
                                     name= "corp_type" 
@@ -53,7 +57,9 @@
                         </div>
                         <div class="about-business-form-item">
                             <validation-provider v-slot="{ errors }" rules="required" name="bus_tel" >
-                                <label for = ""> Telephone </label>
+                                <label for = ""> Telephone 
+                                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Company's contact number"/>
+                                </label>
                                 <b-form-input 
                                     placeholder="(555)-XXX-XXXX" 
                                     id = "bus_tel"
@@ -69,7 +75,9 @@
                 
                     <div class="about-business-form-item">
                         <validation-provider v-slot="{ errors }" rules="required" name="bus_address" >    
-                            <label for = ""> Business Address</label>
+                            <label for = ""> Business Address
+                                <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Company's adress"/>
+                            </label>
                             <b-form-input 
                                 placeholder="1234 Plaza Square, Place, Jamaica, JMDCN10" 
                                 class = "bus-address" 
@@ -83,7 +91,10 @@
                     </div>
                     <div class="about-business-form-item">
                         <validation-provider v-slot="{ errors }" rules="required" name="industry" >
-                            <label for="industry"> Business Description</label>
+                            <label for="industry"> Business Description
+                                <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                                "Two or three sentences describing your business."/>
+                            </label>
                             <b-form-input 
                                 placeholder = "Write 2 or 3 sentences" 
                                 class = "bus-desc" 

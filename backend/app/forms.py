@@ -4,6 +4,9 @@ from wtforms import TextAreaField, StringField, PasswordField, SubmitField , Sel
 from wtforms.validators import InputRequired, Email, Length, optional
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
+class LoginForm(FlaskForm):
+    email = EmailField('Email', validators = [InputRequired('Please enter your email address e.g. johndoe@XXXX.XXX.'), Email()])
+    password = PasswordField('Password', validators = [InputRequired('Please enter a password.')]) 
 
 class RegisterForm(FlaskForm):
     first_name = StringField('first Name', validators=[InputRequired('Please enter your first name, e.g. John.')])
@@ -14,6 +17,8 @@ class RegisterForm(FlaskForm):
     
 class NewProductForm(FlaskForm):
     product_name = StringField('Product Name', validators=[InputRequired('Please enter the product name, e.g. x shampoo.')])
+    desc = TextAreaField('Product Description', validators=[InputRequired('Please enter the product description, e.g. expires in 4 days.')])
+    size = StringField('Product Size', validators=[InputRequired('Please enter the product size')])
     quantity = StringField('Quantity', validators=[InputRequired('Please enter the quantity')])
     man_units = StringField('Manufacture Units', validators=[InputRequired('Please enter the unit of measurement')])
     unit_price = StringField('Unit Price', validators=[InputRequired('Please enter the unit price')])
@@ -21,9 +26,6 @@ class NewProductForm(FlaskForm):
     status = StringField('Product Status', validators=[InputRequired('Please enter the product status')])
     image = FileField('Image', validators=[FileAllowed(['jpg','jpeg','png'], 'Images only!')])
 
-class LoginForm(FlaskForm):
-    email = EmailField('Email', validators = [InputRequired('Please enter your email address e.g. johndoe@XXXX.XXX.'), Email()])
-    password = PasswordField('Password', validators = [InputRequired('Please enter a password.')]) 
 
 class orderForm(FlaskForm):
     fname = StringField('first Name', validators=[InputRequired('First name field should not be empty')])

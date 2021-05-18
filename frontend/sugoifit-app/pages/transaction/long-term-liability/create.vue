@@ -32,7 +32,7 @@
       >
         <b-form id="LTLiabForm" @submit.stop.prevent="handleSubmit(launchConfirm)">
           <b-row>
-            <b-col cols="12" class="text-primary mb-3 pl-0" v-b-tooltip.hover title="Long term liabilities are......">Add Long Term Liability</b-col>
+            <b-col cols="12" class="text-primary mb-3 pl-0" >Add Long Term Liability</b-col>
 
             <b-col md="6" cols="12" lg="4" class="bg-secondary px-5 py-3">
               <div class="mb-2">
@@ -41,7 +41,10 @@
                   rules="required"
                   name="liability name"
                 >
-                  <label>Liability name</label>
+                  <label>Liability name
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    "name of what the transaction is for eg. company's short-term debts to a specific place "/>
+                  </label>
                   <b-form-input v-model="form.liab_name"
                                 required
                                 :state="getValidationState(errors)">
@@ -52,7 +55,10 @@
                 </validation-provider>
               </div>
               <div class="mb-2">
-                <label>Creditor name</label>
+                <label>Creditor name
+                  <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    "name of the person who received payment"/>
+                </label>
                 <b-form-input v-model="form.person_owed">
                 </b-form-input>
               </div>
@@ -62,7 +68,10 @@
                   rules="required"
                   name="loan rate"
                 >
-                  <label>Loan Rate</label>
+                  <label>Loan Rate
+                     <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    "rate of return for the lender"/>
+                  </label>
                   <b-form-input v-model="form.loan_rate"
                                 type="number"
                                 required
@@ -79,7 +88,10 @@
                   rules="required"
                   name="Loan Period"
                 >
-                  <label>Loan Period</label>
+                  <label>Loan Period
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    "How long until borrower has to pay loan in full"/>
+                  </label>
                   <b-form-input v-model="form.loan_periods"
                                 type="number"
                                 required
@@ -98,7 +110,10 @@
                   rules="required"
                   name="amount borrowed"
                 >
-                  <label for="amount_borrowed">Amount Recieved</label>
+                  <label for="amount_borrowed">Amount Recieved
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    "Value of the loan"/>
+                  </label>
                   <b-form-input v-model="form.amount_borrowed"
                                 type="number"
                                 id="amount_borrowed"
@@ -115,7 +130,10 @@
                   rules="required"
                   name="borrow date"
                 >
-                  <label>Loan Borrow Date</label>
+                  <label>Loan Borrow Date
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    "Date the loan was created "/>
+                  </label>
                   <b-form-datepicker
                     v-model="form.borrow_date"
                     :date-format-options="{ year: 'numeric', month: 'short', day: 'numeric' }"
@@ -136,7 +154,10 @@
                   rules="required"
                   name="Payment Start Date"
                 >
-                  <label>Payment Start Date</label>
+                  <label>Payment Start Date
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    "Day in which the borrower should start paying the lender"/>
+                  </label>
                   <b-form-datepicker
                     v-model="form.payment_start_date"
                     :date-format-options="{ year: 'numeric', month: 'short', day: 'numeric' }"
@@ -155,7 +176,10 @@
             <b-col md="6" cols="12" lg="4" class="px-5 py-3">
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="tan_in">
-                  <label>Increase/Decrease</label>
+                  <label>Increase/Decrease
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    " indicates whether a business should be able to meet its short-term obligations "/>
+                  </label>
                   <b-form-radio-group v-model="form.increase_decrease"
                                       :options="inc_dec"
                                       class="border border-radius px-4 py-3"

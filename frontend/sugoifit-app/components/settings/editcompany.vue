@@ -101,6 +101,7 @@
     import {ValidationObserver, ValidationProvider} from "vee-validate";
 
     export default {
+        name: 'EditCompany',
         layout: 'DashboardLayout',
         components: {
             ValidationProvider,

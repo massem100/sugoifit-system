@@ -19,8 +19,8 @@
                     method ="POST">
              
             
-                <label class =" form-label text-left" 
-                       for ="email">Email:
+                <label class =" form-label text-left" for ="email">Email:
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Compnay email eg. compemail@outlook.com"/>
                 </label>
                 <b-form-input class ="form-control mt-2" 
                               type="text" 
@@ -30,7 +30,8 @@
                 </b-form-input>
             
                 <label class ="form-label mt-4" 
-                       for="password"> Password:</label> 
+                       for="password"> Password:
+                       <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="User password"/></label> 
                 <b-form-input class ="form-control mt-2" 
                               type="password" 
                               name="password" 

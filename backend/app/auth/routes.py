@@ -8,7 +8,7 @@ from app import  db, login_manager,  csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission
 from app.forms import RegisterForm, LoginForm
 from app.model import  accounts, auth, sales
-from app.schema.role import role_schema, roles_schema
+from app.schema.role import role_schema, roles_schema, users_schema
 from flask import  Blueprint, current_app,  request, jsonify, flash, session, _request_ctx_stack, g
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -69,6 +69,24 @@ def token():
 """
 --------------------------------------- User Authentication Routes ----------------------------------------------------------
 """
+@authorize.route('/api/auth/<userid>', methods = ["GET"])
+def userDetails(userid):
+    #userid = current_user.userID
+    result=[]
+    user = db.session.query(auth.User).filter_by(userID=userid).all()
+    output = users_schema.dump(user)
+    for item in output:
+        fname = item['fname']
+        lname = item['lname']
+    return jsonify(fname=fname, lname=lname)
+
+@authorize.route('/api/business', methods = ["GET"])
+def busDetails(busID):
+    busid = current_user.busID
+    if busID == busid:
+        business = db.session.query(auth.Business).filter_by(busID=busID).all()
+        #output = sales.invoices_schema.dump(user)
+    return jsonify(business)
 
 @identity_loaded.connect_via(authorize)
 def on_identity_loaded(sender, identity):

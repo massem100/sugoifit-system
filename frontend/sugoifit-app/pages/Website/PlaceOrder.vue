@@ -1,4 +1,24 @@
 <template>
+
+    <div class="wrapper">
+        <div class="container">
+            <div class="left">
+                <div class="column">
+                    <div class="card" v-for="card in cards" :card="card" :key="card.id" >
+                        
+                        <div class="card-image"> 
+                            <img :src="card.img" />
+                        </div>
+                        <div class="card-text">
+                            <p class="quantity">Quantity: {{ card.quantity }} </p>
+                            <p class="size">Size: {{card.size}} </p>
+                            <p class="colour">Colour: {{card.colour}} </p>
+                            <p class="price">Price: {{card.price}} </p>
+                        </div>
+                
+                    </div>
+                </div>
+
     <div class="d-flex flex-column justify-content-center m-2">
         <h1 class="m-3 ml-4">Shopping Cart </h1>
         <b-col class="d-flex" >
@@ -41,6 +61,7 @@
                         
                     </b-col>
                 </b-col>
+
             </div>
 
             <div class="ml-5">
@@ -147,7 +168,6 @@
 
 <script>
 
-
 export default {
     name: 'placeorder',
     layout:'WebsiteLayout',
@@ -155,6 +175,7 @@ export default {
     head:{
         title: 'Business Name Checkout'
     },
+
     data() {
         return{
             products: [],

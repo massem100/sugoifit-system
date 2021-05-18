@@ -71,7 +71,9 @@
                 </validation-provider>
                 <validation-provider class="w-50 ml-3" v-slot="{ errors }" rules="required" name="amount">
 
-                  <label for="amount">Amount</label>
+                  <label for="amount">Amount
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Cost of the transaction "/>
+                  </label>
                   <b-form-input v-model="form.amount"
                                 type="number"
                                 id="amount"

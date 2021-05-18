@@ -1,8 +1,12 @@
 # from app import  db, login_manager, cors, csrf_, principal, jwt_token
 from flask import Blueprint, request, jsonify, flash, session,  _request_ctx_stack, g
 from werkzeug.utils import secure_filename
+from app import db
+from flask_login import current_user
 from app.forms import orderForm
-from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order
+from app.schema.sales import *
+from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order, Receipt
+from datetime import timedelta, datetime
  
 sales= Blueprint('sales', __name__)
 
@@ -10,9 +14,10 @@ sales= Blueprint('sales', __name__)
 --------------------------------------- Orders ----------------------------------------------------------
 """
 
-@sales.route('/api/placeorder', methods = ['POST', 'GET'])
-def place_order():
+@sales.route('/api/<busID>/placeorder', methods = ['POST', 'GET'])
+def place_order(busID):
   #Display order based on rank
+  busID = current_user.busID 
   form = orderForm(request.form)
 
   if request.method == "POST":
@@ -37,7 +42,10 @@ def place_order():
     todayString = today.strftime(date_format)
     dateDue = (today + timedelta(days=7)).strftime(date_format)
 
-    new_order = Order(orderID="O1", order_tot=total_price, order_DATE=todayString, custID=customer.custID, invoiceID="", busID="", status=status)
+    new_order = Order(orderID="None", order_tot=total_price, order_DATE=todayString, custID=customer.custID, invoiceID="None", busID=busID, status=status)
+    order = Order.query.filter_by(busID=busID).order_by(Order.orderID.desc()).first()
+    new_invoice = Invoice(invoiceID=order.invoiceID, busID=busID, custID=customer.custID, invoice_DATE=todayString, tax_tot="")
+
     try:
         db.session.add(new_order)
         db.session.commit()
@@ -64,7 +72,7 @@ delta = b - a
 print (delta.days)
 
 """
-@sales.route('/manage-orders')
+@sales.route('/api/manage-orders')
 def manageOrders():
     #Get all orders that are pending
     date_format = "%Y-%m-%d"
@@ -97,3 +105,40 @@ def manageOrders():
     #Need to print this list on the front end.
     return allOrders
 
+
+@sales.route('/api/<busID>/invoice', methods = ['GET', 'POST'])
+def all_invoice(busID):
+    if request.method == "GET":
+        #busID = current_user.busID 
+        invoice_list = db.session.query(Invoice).filter_by(busID=busID).all()
+        for item in invoice_list:
+            customer = db.session.query(Customer).filter_by(custID=item.custID).first()
+            order = db.session.query(Order).filter_by(invoiceID=item.invoiceID).first()
+        order_d = sales.order_schema.dump(order)
+        invoice_d = sales.invoices_schema.dump(invoice_list)
+        customer_d = sales.customer_schema(customer)
+
+        info = {
+            name: customer_d.fname + " " + customer_d.lname,
+            invoice_id: invoice_d.invoiceID,
+            balance: order_d.order_tot,
+            billed_to:{
+                user: customer_d.fname + " " + customer_d.lname,
+                user_mail:customer_d.email,
+                user_phone:customer_d.tel
+            },
+            issue_Date:invoice_d.invoice_DATE,
+            due_date:'March 18, 2021',
+            
+        }
+    return jsonify(info)
+
+@sales.route('/api/<busID>/receipt', methods = ['GET', 'POST'])
+def all_receipt(busID):
+    
+    if request.method == "GET":
+        busID = current_user.busID 
+        receipt_list = db.session.query(Receipt).filter_by(busID=busID).all()
+        output = sales.invoices_schema.dump(receipt_list)
+
+    return jsonify(output)
