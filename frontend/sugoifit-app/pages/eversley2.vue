@@ -7,12 +7,11 @@
             <tr>
               <th scope="col"> Customer ID </th>
               <th scope="col"> Invoice ID </th>
-              <th scope="col"> Order ID </th>
+              <th scope="col"> Order Num </th>
               <th scope="col"> Order Total </th>
               <th scope="col"> Date Ordered </th>
               <th scope="col"> Date Due </th>
               <th scope="col"> Status </th>
-              <th scope="col"> Change Status </th>
             </tr>
           </thead>
 
@@ -26,8 +25,8 @@
                     <td> {{result.date}} </td>
                     <td> {{result.dueDate}} </td>
                     <td> {{result.status}} </td>
-                    
-                    <br>
+
+                    <!-- <br>
                     <select name="status" id="action" onchange="this.form.submit()">
                       <option value="Pending">Pending</option>
                       <option value="Payment Received">Payment Received</option>
@@ -38,7 +37,7 @@
                       <option value="Failed">Failed</option>
                     </select>
                     <br>
-                    <br>
+                    <br> -->
                     
                 </tr>
             </tbody>

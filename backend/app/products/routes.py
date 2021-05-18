@@ -162,18 +162,14 @@ def product_classify():
         daysPassed = today - pDateAdded
         daysPassed = daysPassed.days
         
-        print("days passed = " + str(daysPassed))
-
-
         if daysPassed >=28:    
-            annual_consum_val.append([product.psiID, consum_val, 'C']) #Set them as C by default
+            annual_consum_val.append([product.psiID, consum_val, 'C', 0]) #Set them as C by default
             total_consum_val += consum_val
             total_units_sold += product.quantitySold
         else:
-            notApplicable.append([product.psiID, consum_val, 'N/A'])
+            notApplicable.append([product.psiID, consum_val, 'N/A', 'N/A'])
 
-        
-
+    
     #Sort consumption list in descending order
     annual_consum_val.sort(key= lambda x: x[1], reverse = True)
 
@@ -185,6 +181,7 @@ def product_classify():
         total_valA+= product[1]
         product[2]= 'A'
         percentage = (total_valA / total_consum_val) * 100
+        product[3] = (product[1] / total_consum_val ) *100
         if percentage >=80:
             index = annual_consum_val.index(product)
             break
@@ -194,8 +191,18 @@ def product_classify():
         total_valB+= product[1]
         product[2]= 'B'
         percentage = (total_valB / total_consum_val) * 100
+        product[3] = (product[1] / total_consum_val ) *100
+        
         if percentage >=15:
             break
+    
+    try:
+        for product in annual_consum_val[index + 1:]:
+            product[3] = (product[1] / total_consum_val ) *100     
+    except LookupError:
+        print("Out of bounds")
+    else:
+        print("complete")
 
     
     data = []
@@ -210,7 +217,9 @@ def product_classify():
         updatedDate = updatedDate.strftime(date_format)
 
         product[1] = "{:.2f}".format(product[1])
-        data.append({'prodID':prod[0].prodName, 'con_val': "$"+product[1], 'grade':product[2], 'stock': prod[0].prodStatus, 'dateAdded':updatedDate})
+        product[3] = "{:.2f}".format(product[3])
+        data.append({'prodID':prod[0].prodName, 'con_val': "$"+product[1], 'grade':product[2], 'stock': prod[0].prodStatus, 
+            'dateAdded':updatedDate, 'percent':product[3]})
 
     for naItem in notApplicable:
         prod = db.session.query(Product).filter_by(prodID = naItem[0])
@@ -221,7 +230,8 @@ def product_classify():
         updatedDate = updatedDate.strftime(date_format)
 
         naItem[1] = "{:.2f}".format(naItem[1]) #consumption val
-        data.append({'prodID':prod[0].prodName, 'con_val': "$"+naItem[1], 'grade':naItem[2], 'stock': prod[0].prodStatus, 'dateAdded':updatedDate})
+        data.append({'prodID':prod[0].prodName, 'con_val': "$"+naItem[1], 'grade':naItem[2], 'stock': prod[0].prodStatus, 
+            'dateAdded':updatedDate, 'percent':naItem[3]})
 
     
     return jsonify({'products': data})

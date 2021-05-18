@@ -1,7 +1,22 @@
 <template>
     <div class= "container"> 
         <h1> ABC Analysis </h1>
+        
+        <!-- <h2> A grade products </h2>
+        <ul>
+          <li> These collectively account for at least 80% of your revenue </li>
+          <li> Always have A grade products on hand </li>
+          <li> Push A grade products more during your marketing campaigns </li>
+        </ul>
+        <h2> A grade products </h2>
+        <ul>
+          <li> These collectively account for at least 80% of your revenue </li>
+          <li> Always have A grade products on hand </li>
+          <li> Push A grade products more during your marketing campaigns </li>
+        </ul> -->
+
         <hr>
+
         <table class= "content-table">
           <thead>
             <tr>
@@ -10,6 +25,7 @@
               <th scope="col"> Status </th>
               <th scope="col"> Date Updated </th>
               <th scope="col"> Grade </th>
+              <th scope="col"> % ACV </th>
 
             </tr>
           </thead>
@@ -22,6 +38,7 @@
                     <td> {{product.stock}} </td>
                     <td> {{product.dateAdded}} </td>
                     <td> {{product.grade}} </td>
+                    <td> {{product.percent}} </td>
                     
                 </tr>
             </tbody>
