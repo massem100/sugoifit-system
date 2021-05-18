@@ -303,6 +303,7 @@ class ProductSaleItem(db.Model):
         self.prodID = prodID
         self.taxAmt = taxAmt 
     
+    
     def get_id(self):
         try:
             return unicode(self.psiID)  # python 2 support

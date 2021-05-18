@@ -27,26 +27,18 @@
         <sidebar-item
           :link="{
             name: 'Dashboard',
-            icon: ['fas', 'plus'],
+            icon: ['fas', 'home'],
             path: '/',
             color: 'text-black',
           }"
         >
         </sidebar-item>
-        <sidebar-item
-          :link="{
-            name: 'Manage Transactions',
-            icon: ['fas', 'receipt'],
-            path: '/manage-transaction',
-            color: 'text-black',
-          }"
-        >
-        </sidebar-item>
+      
         <sidebar-item
           
           :link="{
             name: 'Products',
-            icon: ['fas', 'plus'],
+            icon: ['fas', 'box-open'],
             path: '',
             color: 'text-black',
           }"
@@ -96,7 +88,7 @@
 
           :link="{
             name: 'Manage Sales',
-            icon: ['fas', 'plus'],
+            icon: ['fas', 'tag'],
             path: '/managesales',
           }"
         >
@@ -105,7 +97,7 @@
             :link="{
               name: 'Orders',
               icon: ['fas', 'plus'],
-              path: '/allproducts',
+              path: '/inventory/list',
             }"
           >
           </sidebar-item>
@@ -114,7 +106,7 @@
          <sidebar-item
             :link="{
               name: 'Invoices',
-              icon: ['fas', 'plus'],
+              icon: ['fas', 'file-invoice'],
               path: '/invoice/',
               color: 'text-black',
             }"
@@ -138,10 +130,19 @@
             >
             </sidebar-item>
           </sidebar-item>
+            <sidebar-item
+          :link="{
+            name: 'Accounting Entries',
+            icon: ['fas', 'pen-square'],
+            path: '/manage-transaction',
+            color: 'text-black',
+          }"
+        >
+        </sidebar-item>
         <sidebar-item
             :link="{
               name: 'Financials',
-              icon: ['fas', 'plus'],
+              icon: ['fas', 'calculator'],
               path: '/financialstmts/',
               color: 'text-black',
             }"
@@ -168,15 +169,15 @@
         <sidebar-item
             :link="{
               name: 'Reports',
-              icon: ['fas', 'chart-bar'],
+              icon: ['fas', 'chart-pie'],
               path: '/reports/',
               color: 'text-black',
             }"
           >
           <sidebar-item
             :link="{
-              name: 'Report Generation',
-              icon: ['fas', 'plus'],
+              name: 'Financial Reports',
+              icon: ['fas', ''],
               path: '/reports/charts',
               color: 'text-black',
             }"
@@ -185,7 +186,7 @@
           <sidebar-item
             opened
             :link="{
-              name: 'Product Analytics',
+              name: 'Product Reports',
               icon: ['fas', 'plus'],
               path: '/manageproducts/analytics',
             }"
@@ -207,7 +208,7 @@
          <sidebar-item
             :link="{
               name: 'Start Onboarding Process',
-              icon: ['fas', 'plus'],
+              icon: ['fas', ''],
               path: '/onboarding-main/',
               color: 'text-black',
             }"

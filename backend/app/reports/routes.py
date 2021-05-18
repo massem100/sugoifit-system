@@ -15,9 +15,6 @@ from sqlalchemy import func, inspection, event
 from flask import  Blueprint, request, jsonify, flash, session, _request_ctx_stack, g
 from werkzeug.utils import secure_filename
 
-
-
-
 reports = Blueprint('reports', __name__)
 
 

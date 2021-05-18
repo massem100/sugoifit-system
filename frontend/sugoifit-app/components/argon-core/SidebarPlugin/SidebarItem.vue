@@ -16,8 +16,9 @@
     >
       <template v-if="addLink">
         <span class="nav-link-text">
-          {{ link.name }} <b class="caret"></b>
-          <font-awesome-icon :icon="['fas', 'chevron-down']"></font-awesome-icon>
+          {{ link.name }} <b class=""></b>
+          <font-awesome-icon class="bg-danger" :style="[`{'font-weight':900}`]" :icon="[`{'fas', 'caret-down'}`]"></font-awesome-icon>
+          <img :src="'~/assets/uploads/caret-down.svg'" alt="">
         </span>
       </template>
       <template v-else>

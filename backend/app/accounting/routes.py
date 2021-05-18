@@ -59,10 +59,10 @@ def get_last_id(ledgerID, *args,**accounts):
         id_lst.append(last_id)
     return id_lst
 
-""" ADD LABEL TO INDIVIDUAL FUNCTIONS........."""
 def bal_debit_cred(ledgerID, balance_label, amount, **balances): 
     debit_cred = []
-    for key, value in balances.items(): 
+    for key, value in balances.items():
+        print(type(key)) 
         total_sum =  value.query.with_entities( value.ledgerID,
                                                 func.coalesce(func.sum(value.debitBalance),0).label("totalDebit"),
                                                 func.coalesce(func.sum(value.creditBalance),0).label("totalCredit")
@@ -76,6 +76,39 @@ def bal_debit_cred(ledgerID, balance_label, amount, **balances):
         debit_cred.append(BalanceDC)
     return debit_cred 
 
+def findLedger(busID, year): 
+    ledger = db.session.query(accounts.GeneralLedger).filter_by(busID =busID, year = year).first()
+    if ledger is None:
+        newledger = accounts.GeneralLedger(ledgerID=None, busID=busID, year=year)
+
+        try:
+            db.session.add(newledger)
+            db.session.commit()
+        except Exception as e:
+            error = str(e)
+            print(error)
+        newledger = db.session.query(accounts.GeneralLedger).filter_by(busID=busID, year=year).first()
+        if newledger is not None: 
+            return newledger.ledgerID
+    else:
+        return ledger.ledgerID
+    
+def prepAccounts(ledgerID, label, amount, *args, **kwargs):
+    account_starter ={} 
+    for  key, value in kwargs.items():
+        account_store = []
+        last_id = get_last_id(ledgerID, key=value)
+        account_store.append(last_id)
+        # Get the balances of Accounts 
+        balances = account_balances(ledgerID, key=value)
+        account_store.append(balances)
+
+        BalanceDC = bal_debit_cred(ledgerID, "Debit", amount, key=value)
+        account_store.append(BalanceDC)
+        account_starter[key]=account_store
+    return account_starter
+
+    
 
 @accounting.route('/api/transaction/currentasset', methods = ["POST", "GET"])
 @login_required
@@ -92,19 +125,13 @@ def ca_transaction():
         increase_decrease = form.increase_decrease.data
         loanPeriods = form.loan_period.data
         tag=form.tag.data
-        ledgerID = 1
+        ledgerID =findLedger(current_user.busID, 2021)
+        # FIX HOW DATE IS ADDED__ CURRENTLY HARDCODED
 
-        # Get IDs for related_entry
-        last_id = get_last_id(ledgerID, CurrentAsset = accounts.CurrentAsset, Currentliability = accounts.Currentliability)
-        last_ca, last_cl = last_id[0], last_id[1]
-
-        # Get the balances of Accounts 
-        balances = account_balances(ledgerID, NonCurrentAsset =  accounts.NonCurrentAsset, CurrentAsset = accounts.CurrentAsset,
-                                    Currentliability =accounts.Currentliability)
-        NCA_Balance, CA_Balance, CL_Balance = balances[0], balances[1], balances[2]
-
-        BalanceDC = bal_debit_cred(ledgerID, "Debit", amount, CurrentAsset = accounts.CurrentAsset)
-        CA_BalanceDC = BalanceDC[0] 
+        prep_acc = prepAccounts(ledgerID, "Debit", amount, CurrentAsset = accounts.CurrentAsset, Currentliability = accounts.Currentliability)
+        last_ca, CA_Balance, CA_BalanceDC = prep_acc["CurrentAsset"][0][0], prep_acc["CurrentAsset"][1][0],prep_acc["CurrentAsset"][2][0]
+        last_cl, CL_Balance, CL_BalanceDC = prep_acc["Currentliability"][0][0], prep_acc["Currentliability"][1][0],prep_acc["Currentliability"][2][0]
+        # prep_accs = results in a dicitonary {'Non Current Assset': [id, balance, BalanceDC]}
 
         if "Increase" in  increase_decrease: 
             debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,  "CA" + str(last_ca+1), tag, asset_name, CA_Balance, CA_BalanceDC)
@@ -163,24 +190,19 @@ def nca_transaction():
             remainingLife = 1  #form.remainingLife.data  #calculate remaining life from lifeSpan
             bought_sold = form.bought_sold.data
             tag= form.tag.data
-            ledgerID = 1
+            ledgerID =findLedger(current_user.busID, 2021)
             """ How to deal with INTANGIBLE ASSETS """
             # CHANGE TRANSACTION DATE TO DUE DATE
-           
+
+            # Calculate Net Asset by subtracting Depreciation from Asset at Cost 
             assetCost = amount - accounts.NonCurrentAsset.calcDepExpense(dep_type, amount, lifeSpan, totalUnits, salvageVal, remainingLife)
-            
-            last_id = get_last_id(ledgerID, NonCurrentAsset = accounts.NonCurrentAsset, CurrentAsset = accounts.CurrentAsset,
-                                    Currentliability = accounts.Currentliability)
-            last_nca, last_ca, last_cl = last_id[0], last_id[1], last_id[2]
 
-            # Get the balances of Accounts 
-            balances = account_balances(ledgerID, NonCurrentAsset = accounts.NonCurrentAsset, CurrentAsset = accounts.CurrentAsset,
-                                        Currentliability = accounts.Currentliability)
-            NCA_Balance, CA_Balance, CL_Balance = balances[0], balances[1], balances[2]
-
-            BalanceDC = bal_debit_cred(ledgerID, "Debit", amount, NonCurrentAsset = accounts.NonCurrentAsset, CurrentAsset = accounts.CurrentAsset)
-            NCA_BalanceDC, CA_BalanceDC = BalanceDC[0], BalanceDC[1]
-                                
+            # Get Last Account ID, Balance, Label Balance
+            prep_acc = prepAccounts(ledgerID, "Debit", amount, NonCurrentAsset = accounts.NonCurrentAsset, CurrentAsset = accounts.CurrentAsset,
+                                                                Currentliability = accounts.Currentliability)
+            last_ca, CA_Balance, CA_BalanceDC = prep_acc["CurrentAsset"][0][0], prep_acc["CurrentAsset"][1][0],prep_acc["CurrentAsset"][2][0]
+            last_cl, CL_Balance, CL_BalanceDC = prep_acc["Currentliability"][0][0], prep_acc["Currentliability"][1][0],prep_acc["Currentliability"][2][0]
+            last_nca, NCA_Balance, NCA_BalanceDC = prep_acc["NonCurrentAsset"][0][0], prep_acc["NonCurrentAsset"][1][0],prep_acc["NonCurrentAsset"][2][0]
             
             if "Bought" in  bought_sold: 
                 debitEntry = accounts.NonCurrentAsset.debit(last_nca, ledgerID, transaction_date, assetCost,lifeSpan, dep_type, "CA" + str(last_ca), tag, asset_name, NCA_Balance, NCA_BalanceDC)
@@ -191,8 +213,6 @@ def nca_transaction():
                     creditEntry = accounts.CurrentAsset.credit(last_ca,ledgerID, transaction_date, assetCost,"NCA" + str(last_nca), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC)
 
                 else: 
-                    BalanceDC = bal_debit_cred(ledgerID, "Debit", amount, Currentliability = accounts.Currentliability)
-                    CL_BalanceDC = BalanceDC[0]
 
                     debitEntry = accounts.NonCurrentAsset.debit(last_nca, ledgerID, transaction_date, assetCost,lifeSpan, dep_type, "CLiab" + str(last_cl), tag, asset_name, NCA_Balance, NCA_BalanceDC)
                     creditEntry = accounts.Currentliability.credit(last_cl, ledgerID, transaction_date, loan_periods, amount,"NCA" + str(last_nca), "Accounts Payable" ,"Accounts Payable", CL_Balance, CL_BalanceDC)
@@ -238,17 +258,14 @@ def cl_transaction():
         account_affected = form.account_affected.data
         increase_decrease = form.increase_decrease.data
         tag = form.tag.data
-        ledgerID = 1 
+        ledgerID =findLedger(current_user.busID, 2021)
         # new year = datetime.strptime(borrow_date, "%Y-%m-%d").year + loan_periods
-        last_id = get_last_id(ledgerID, CurrentAsset = accounts.CurrentAsset, Currentliability = accounts.Currentliability)
-        last_ca, last_cl = last_id[0], last_id[1]
 
-        # Get the balances of Accounts 
-        balances = account_balances(ledgerID, CurrentAsset = accounts.CurrentAsset, Currentliability = accounts.Currentliability)
-        CA_Balance, CL_Balance = balances[0], balances[1]
-
-        BalanceDC = bal_debit_cred(ledgerID, "Credit", amount_borrowed, CurrentAsset = accounts.CurrentAsset,Currentliability = accounts.Currentliability)
-        CA_BalanceDC, CL_BalanceDC = BalanceDC[0], BalanceDC[1]
+        # Get Last Account ID, Balance, Label Balance
+        prep_acc = prepAccounts(ledgerID, "Credit", amount_borrowed, CurrentAsset = accounts.CurrentAsset, Currentliability = accounts.Currentliability)
+        last_ca, CA_Balance, CA_BalanceDC = prep_acc["CurrentAsset"][0][0], prep_acc["CurrentAsset"][1][0],prep_acc["CurrentAsset"][2][0]
+        last_cl, CL_Balance, CL_BalanceDC = prep_acc["Currentliability"][0][0], prep_acc["Currentliability"][1][0],prep_acc["Currentliability"][2][0]
+    
                             
         if "Increase" in increase_decrease: 
             creditEntry = accounts.Currentliability.credit(last_cl, ledgerID, borrow_date, loan_periods, amount_borrowed, "CA" +str (last_ca), tag, liab_name, CL_Balance, CL_BalanceDC)
@@ -282,6 +299,7 @@ def lt_transaction():
     if request.method == "POST": 
         if request['form_id'] == "LTLiabForm":
             form = LTLiabForm(request.form)
+            
             liab_name = form.liab_name.data
             person_owed = form.person_owed.data 
             loan_rate = form.loan_rate.data 
@@ -289,23 +307,45 @@ def lt_transaction():
             borrow_date = form.borrow_date.data 
             payment_start_date = form.payment_start_date.data 
             amount_borrowed = float(form.amount_borrowed.data )
+            account_affected = form.account_affected.data
+            increase_decrease = form.increase_decrease.data
             tag = form.tag.data
-            ledgerID = 1
-             # I need to calculate interest on long term loan 
-            # How to handle the current portion of long term loan that should be paid out
-            transaction_inputs = [ledgerID, borrow_date, loan_periods, amount_borrowed]
-        
-            last_id = get_last_id(ledgerID, CurrentAsset = accounts.CurrentAsset, Currentliability = accounts.Currentliability)
-            last_ca, last_cl = last_id[0], last_id[1]
+            ledgerID =findLedger(current_user.busID, 2021) 
 
-            # Get the balances of Accounts 
-            balances = account_balances(ledgerID, CurrentAsset = accounts.CurrentAsset, Currentliability = accounts.Currentliability)
-            CA_Balance, CL_Balance = balances[0], balances[1]
-
-            BalanceDC = bal_debit_cred(ledgerID, "Credit", amount_borrowed, CurrentAsset = accounts.CurrentAsset,Currentliability = accounts.Currentliability)
-            CA_BalanceDC, CL_BalanceDC = BalanceDC[0], BalanceDC[1]
-            return 1
-        
+            # CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE CABALCNE TO LTBALANCE
+            
+            # new year = datetime.strptime(borrow_date, "%Y-%m-%d").year + loan_periods
+            # Get Last Account ID, Balance, Label Balance
+            prep_acc = prepAccounts(ledgerID, "Credit", amount_borrowed, CurrentAsset = accounts.CurrentAsset, Currentliability = accounts.Currentliability)
+            last_ca, CA_Balance, CA_BalanceDC = prep_acc["CurrentAsset"][0][0], prep_acc["CurrentAsset"][1][0],prep_acc["CurrentAsset"][2][0]
+            last_cl, CL_Balance, CL_BalanceDC = prep_acc["Currentliability"][0][0], prep_acc["Currentliability"][1][0],prep_acc["Currentliability"][2][0]
+             # prep_accs = results in a dicitonary {'Non Current Assset': [id, balance, BalanceDC]}
+                                                        
+            if "Increase" in increase_decrease: 
+                creditEntry = accounts.Currentliability.credit(last_cl, ledgerID, borrow_date, loan_periods, amount_borrowed, "CA" +str (last_ca), tag, liab_name, CL_Balance, CL_BalanceDC)
+                if account_affected == "Cash": 
+                    debitEntry = accounts.CurrentAsset.debit(last_ca, ledgerID, borrow_date, amount_borrowed,  "CL" +str(last_cl), "Cash", "Cash", CA_Balance, CA_BalanceDC)
+                else:
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,  ledgerID, borrow_date, amount_borrowed,  "CL" +str(last_cl), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC)
+                    
+            else: 
+                debitEntry = accounts.Currentliability.debit(last_cl, ledgerID, borrow_date, loan_periods, amount_borrowed,  "CA" +str(last_ca), tag, liab_name, CL_Balance, CL_BalanceDC)
+                if account_affected == "Cash": 
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, borrow_date, amount_borrowed, "CL" +str(last_cl),"Cash", "Cash", CA_Balance, CA_BalanceDC)
+                else:
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, borrow_date, amount_borrowed, "CL" +str(last_cl), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC)
+            try:
+                db.session.add(debitEntry)
+                db.session.add(creditEntry)
+                db.session.commit()
+            except Exception as e:
+                error = str(e)
+                print(error)
+            return jsonify({'message': 'Transaction sucessfully added.'}) 
+        else:
+            error_list = form_errors(form)
+            return jsonify(errors= error_list)   
+            
 
 @accounting.route('/api/transaction/expense', methods = ["POST", "GET"])
 @login_required
@@ -322,22 +362,15 @@ def exp_transaction():
         account_affected = form.paid_using.data
         increase_decrease = form.increase_decrease.data
         tag= form.tag.data
-        ledgerID = 1
-        transaction_inputs = [ledgerID,  transaction_date, amount]
-
-        last_id = get_last_id(ledgerID, CurrentAsset = accounts.CurrentAsset, OperatingExpense = accounts.OperatingExpense,
+        ledgerID =findLedger(current_user.busID, 2021)
+        
+        # Get Last Account ID, Balance, Label Balance
+        prep_acc = prepAccounts(ledgerID, "Credit", amount, CurrentAsset = accounts.CurrentAsset, OperatingExpense = accounts.OperatingExpense,
                                 NonOperatingExpense = accounts.NonOperatingExpense)
-        last_ca, last_opex, last_nOpex = last_id[0], last_id[1], last_id[2]
-
-        # Get the balances of Accounts 
-        balances = account_balances(ledgerID, CurrentAsset = accounts.CurrentAsset, OperatingExpense = accounts.OperatingExpense,
-                                    NonOperatingExpense=accounts.NonOperatingExpense)
-        CA_Balance, OE_Balance, nOE_Balance = balances[0], balances[1], balances[2]
-
-        BalanceDC = bal_debit_cred(ledgerID, "Debit", amount, CurrentAsset = accounts.CurrentAsset, OperatingExpense = accounts.OperatingExpense,
-                                    NonOperatingExpense=accounts.NonOperatingExpense)
-        CA_BalanceDC, OE_BalanceDC, nOE_BalanceDC = BalanceDC[0], BalanceDC[1], BalanceDC[2]
-
+        last_ca, CA_Balance, CA_BalanceDC = prep_acc["CurrentAsset"][0][0], prep_acc["CurrentAsset"][1][0],prep_acc["CurrentAsset"][2][0]
+        last_opex,  OE_Balance, OE_BalanceDC = prep_acc["OperatingExpense"][0][0], prep_acc["OperatingExpense"][1][0],prep_acc["OperatingExpense"][2][0]
+        last_nOpex, nOE_Balance, nOE_BalanceDC = prep_acc["NonOperatingExpense"][0][0], prep_acc["NonOperatingExpense"][1][0],prep_acc["NonOperatingExpense"][2][0]
+    
         if "Operating" in  expense_category: 
             # use Operating classess.. 
             if "Increase" in increase_decrease: 
@@ -401,21 +434,15 @@ def rev_transaction():
         account_affected = form.paid_using.data   
         increase_decrease = form.increase_decrease.data    
         tag = form.tag.data
-        ledgerID = 1
-       
-        last_id = get_last_id(ledgerID, CurrentAsset = accounts.CurrentAsset, OperatingRevenue = accounts.OperatingRevenue,
+        ledgerID =findLedger(current_user.busID, 2021)
+
+        # Get Last Account ID, Balance, Label Balance
+        prep_acc = prepAccounts(ledgerID, "Credit", amount, CurrentAsset = accounts.CurrentAsset, OperatingRevenue = accounts.OperatingRevenue,
                                 NonOperatingRevenue= accounts.NonOperatingRevenue)
-        last_ca, last_opRevenueID, last_nopRevenueID = last_id[0], last_id[1], last_id[2]
-
-        # Get the balances of Accounts 
-        balances = account_balances(ledgerID, CurrentAsset = accounts.CurrentAsset, OperatingRevenue= accounts.OperatingRevenue,
-                                    NonOperatingRevenue=accounts.NonOperatingRevenue)
-        CA_Balance, OR_Balance, nOR_Balance = balances[0], balances[1], balances[2]
-
-        BalanceDC = bal_debit_cred(ledgerID,"Credit", amount, CurrentAsset = accounts.CurrentAsset, OperatingRevenue = accounts.OperatingRevenue,
-                                    NonOperatingRevenue=accounts.NonOperatingRevenue)
-        CA_BalanceDC, OR_BalanceDC, nOR_BalanceDC = BalanceDC[0], BalanceDC[1], BalanceDC[2]
-
+        last_ca, CA_Balance, CA_BalanceDC = prep_acc["CurrentAsset"][0][0], prep_acc["CurrentAsset"][1][0],prep_acc["CurrentAsset"][2][0]
+        last_opRevenueID,  OR_Balance, OE_BalanceDC = prep_acc["OperatingRevenue"][0][0], prep_acc["OperatingRevenue"][1][0],prep_acc["OperatingRevenue"][2][0]
+        last_nopRevenueID, nOR_Balance, nOR_BalanceDC = prep_acc["NonOperatingRevenue"][0][0], prep_acc["NonOperatingRevenue"][1][0],prep_acc["NonOperatingRevenue"][2][0]
+    
         if "Operating" in  revenue_type: 
             # use Operating classess.. 
             if "Increase" in increase_decrease: 
@@ -483,18 +510,13 @@ def equity_transaction():
         account_affected = form.paid_using.data
         increase_decrease = form.increase_decrease.data
         tag = form.tag.data
-        ledgerID = 1
-               
-        last_id = get_last_id(ledgerID, CurrentAsset = accounts.CurrentAsset, ShareholdersEquity = accounts.ShareholdersEquity)
-        last_ca, last_equityID = last_id[0], last_id[1]
+        ledgerID =findLedger(current_user.busID, 2021)
 
-        # Get the balances of Accounts 
-        balances = account_balances(ledgerID, CurrentAsset = accounts.CurrentAsset, ShareholdersEquity = accounts.ShareholdersEquity)
-        CA_Balance, SE_Balance = balances[0], balances[1]
-
-        BalanceDC = bal_debit_cred(ledgerID, "Credit", amount, CurrentAsset = accounts.CurrentAsset, ShareholdersEquity = accounts.ShareholdersEquity)
-        CA_BalanceDC, SE_BalanceDC= BalanceDC[0], BalanceDC[1]
-
+        # Get Last Account ID, Balance, Label Balance
+        prep_acc = prepAccounts(ledgerID, "Credit", amount, CurrentAsset = accounts.CurrentAsset, ShareholdersEquity = accounts.ShareholdersEquity)
+        last_ca, CA_Balance, CA_BalanceDC = prep_acc["CurrentAsset"][0][0], prep_acc["CurrentAsset"][1][0],prep_acc["CurrentAsset"][2][0]
+        last_equityID,  SE_Balance, SE_BalanceDC = prep_acc["ShareholdersEquity"][0][0], prep_acc["ShareholdersEquity"][1][0],prep_acc["ShareholdersEquity"][2][0]
+    
         if "Increase" in increase_decrease: 
             # Increase in Capital
             creditEntry = accounts.ShareholdersEquity.credit(last_equityID,ledgerID, transaction_date, amount, "CA" + str(last_ca), tag, equity_name, SE_Balance, SE_BalanceDC)
@@ -521,13 +543,4 @@ def equity_transaction():
     else: 
         error_list = form_errors(form)
         return jsonify(errors= error_list)
-    
-@accounting.route('/api/printstmtdata', methods= ["GET"])
-def stmt():
-    resultstmt = []
-    financiatransaction_inputsmt = Financialstmt.query.all()
-    for stmt in financiatransaction_inputsmt:
-        resultstmt.append({ 'id' :stmt.stmtID,'Statement Name': stmt.fs_name})
-
-    return jsonify(response = [resultstmt])
-
+  

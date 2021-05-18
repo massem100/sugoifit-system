@@ -64,7 +64,7 @@ export default {
     '@nuxtjs/fontawesome', 
     
     // https://go.nuxtjs.dev/eslint
-    '@nuxtjs/eslint-module',
+    
 
   ],
 
@@ -76,20 +76,9 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    [
-      'nuxt-fontawesome', {
-        imports: [
-         {
-           set: '@fortawesome/free-solid-svg-icons',
-           icons: ['fas']
-         },
-         {
-           set:'@fortawesome/free-brands-svg-icons',
-           icons: ['fab']
-         }
-       ]
-      }
-],
+    
+      'nuxt-fontawesome', 
+        
         ['@nuxtjs/proxy']
   ],
   proxy:{

@@ -7,7 +7,8 @@ import pandas as pd
 
 # WTF Forms and SQLAlchemy Models
 from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm,orderForm, LTLiabForm, CAForm,ExpForm, RevForm
-from app.model import  accounts, auth, sales
+from app.model import  accounts, auth
+from app.model.sales import Sale
 from app.model.financial_statement import Financialstmt, Financialstmtline, Financialstmtlineseq, \
                                           Financialstmtlinealia,Financialstmtdesc 
 from app.accounting.routes import account_balances
@@ -45,58 +46,54 @@ How to calculate stuff that cant be directly entered?
 """
 ------------------------------------------------------ Generate Income Statement -------------------------------------------------------------------------
 """
-def calcNetSales(prod_service, *args, **kwargs):
-    # get balance of service sale item and product sale item
-    if prod_service == "Product": 
-        # total number of goods x average price per good sold
-        # average price per services sold x number of service 
-        # grossSales = db.session.query(ProductSaleItem).order_by(ProductSaleItem.id.desc()).first()
-        # filter_by Year
-        grossSales = ProductSaleItem.query.with_entities(func.coalesce(func.sum(ProductSaleItem.saleAmtPaid), 0).label("totalSales")).first()
-        grossSales = (str(grossSales.totalSales) if grossSales is not None else 0)
+def calcNetSales(busID, *args, **kwargs):
+    total_sales = 0
+    sales = db.session.query(Sale, Sale.busID,func.coalesce(func.sum(Sale.saleAmtPaid), 0).label("totalSales")).filter_by(busID=busID).all()
+    print(sales)
+    total_sales = (float(sales.total_sales) if sales is not None else 0)
+    return total_sales
 
-        # Get balance from sale reductions table
-        saleReductions = db.session.query(SaleReductions).filter_by(SaleType = "Product").order_by(SaleReductions.id.desc()).first()
-        saleReductions = (str(saleReductions.Balance) if  saleReductions is not None else 0)
-        
-        return grossSales-saleReductions
-    elif prod_service== "Service": 
-        # total number of goods x average price per good sold
-        # average price per services sold x number of service 
-        grossSales = ServiceSaleItem.query.with_entities(func.coalesce(func.sum(ServiceSaleItem.saleAmtPaid), 0).label("totalSales")).first()
-        grossSales = (str(grossSales.totalSales) if grossSales is not None else 0)
-
-        # Get balance from sale reductions table
-        saleReductions = db.session.query(SaleReductions).filter_by(SaleType = "Service").order_by(SaleReductions.id.desc()).first()
-        saleReductions = (str(saleReductions.Balance) if  saleReductions is not None else 0)
-           
-        return grossSales-saleReductions
-    else: 
-        productSales = ProductSaleItem.query.with_entities(func.coalesce(func.sum(ProductSaleItem.saleAmtPaid), 0).label("totalSales")).first()
-        productSales = (str(productSales.totalSales) if productSales is not None else 0)
-
-        serviceSales = ServiceSaleItem.query.with_entities(func.coalesce(func.sum(ServiceSaleItem.saleAmtPaid), 0).label("totalSales")).first()
-        serviceSales = (str(serviceSales.totalSales) if serviceSales is not None else 0)
-
-
-def calculateNetProfit(grossProfit, expenses): 
-    return grossProfit - expenses
-
-def calculateCOGS(beg_inv, end_inv, purchases, year): 
-
-
+def calcCOGS(beg_inv, end_inv, purchases, year): 
     return beg_inv + purchases - end_inv
 
-def calcTotalExpenses(): 
+def calcOtherOpIncomeExp():
+    pass
+
+def calcTotalOpex():
+    pass
+def calcOtherOpIncomeExp():
+    pass
+
+def calcNonOperatingRev():
     pass
 
 
-def calcOperatingRevenue(): 
-    pass
+def calcIncomeStmtTotals(busID, ledgerID, *args, **kwargs):
+    totals = {} 
+    sales = calcNetSales(busID) #Operating Revenue -Sales business operations
+    totals["Sales"] = sales
+    cogs = calcCOGS(busID)
+    totals["Costs of Good Sold"] = cogs
+    grossProfit = sales - purchases
+    totals["Gross Profit"] = grossProfit
+    expenses = calcTotalOpex(busID, ledgerID) #Total Operating Expenses
+    operating_income = grossProfit - expenses
+    totals["Operating Income"] = operating_income 
+    other_op_rev_exp = calcOtherOpIncomeExp(busID, ledgerID) # Add Revenue but subtract expense
+    totals["Other Operating Income and Expenses"] = other_op_rev_exp
+    non_op_rev =calcNonOperatingRev(busID, ledgerID)  #Non Operating Revenue
+    totals["Non Operating Revenue"] = non_op_rev
+    incomeBTax = operating_income + other_op_rev_exp
+    totals["Income Before Tax"] = incomeBTax
+    if bus_type == "Sole Trader": 
+        taxation = incomeBTax*0.25
 
-def calcTaxation(): 
-    pass
-
+    else: 
+        taxation = incomeBTax*0.333
+    totals["Taxation"] = taxation
+    net_profit = incomeBTax - taxation
+    totals["Net Profit"] = net_profit
+    return totals 
 
 def opex_list_items(ledgerID): 
     selling_admin = 0 
@@ -137,9 +134,6 @@ def opex_list_items(ledgerID):
                             }
     return operating_expense_lst    
                 
-            
-
-
 def nopex_list_items(ledgerID): 
     interest_exp = 0 
     loss_disposals = 0 
@@ -167,6 +161,46 @@ def nopex_list_items(ledgerID):
                             }
     return nonoperating_expense_lst    
 
+                
+def noprev_list_items(ledgerID): 
+    other_nop_rev = 0 
+   
+    noprev_line_items = db.session.query(accounts.NonOperatingRevenue, 
+                                                accounts.NonOperatingRevenue.tag,
+                                                func.coalesce(func.sum(accounts.NonOperatingRevenue.debitBalance), 0).label("totalDebit"),
+                                                func.coalesce(func.sum(accounts.NonOperatingRevenue.creditBalance), 0).label("totalCredit")
+                                            ).filter_by(ledgerID= ledgerID).group_by(accounts.NonOperatingRevenue.tag).all()
+    if noprev_line_items is not None: 
+        for revenue in noprev_line_items: 
+            other_nop_rev += revenue.totalDebit - revenue.totalCredit
+            
+
+        nonoperating_revenue_lst = {
+                                'Non Operating Revenue': str(interest_exp), 
+                               
+                            }
+    return nonoperating_revenue_lst    
+
+def oprev_list_items(ledgerID): 
+
+    other_op = 0 
+
+    oprev_line_items = db.session.query(accounts.OperatingRevenue, 
+                                                accounts.OperatingRevenue.tag,
+                                                func.coalesce(func.sum(accounts.OperatingRevenue.debitBalance), 0).label("totalDebit"),
+                                                func.coalesce(func.sum(accounts.OperatingRevenue.creditBalance), 0).label("totalCredit")
+                                            ).filter_by(ledgerID= ledgerID).group_by(accounts.OperatingRevenue.tag).all()
+    if oprev_line_items is not None: 
+        for  revenue in oprev_line_items: 
+            other_oprev += expense.totalDebit - expense.totalCredit
+
+        operating_revenue_lst = {
+                                'Other operating income': str(other_op), 
+                                
+                               
+                            }
+    return operating_revenue_lst    
+                
 
 @statement.route('/api/financialstmt/incomestatement/<busID>/<year>')
 def generate_income_statement(busID, year =str(datetime.today().strftime('%Y'))):
@@ -178,14 +212,19 @@ def generate_income_statement(busID, year =str(datetime.today().strftime('%Y')))
         return jsonify({
             'Operating Expenses': opex_list_items(id), 
             'Non Operating Expenses': nopex_list_items(id),
-            # 'Operating Revenue': opex_list_items(id), 
-            # 'Non Operating Revenue': nopex_list_items(id),
-            'Sales': str(1), 
-            'Cost of Goods Sold': str(1), 
-            'Gross Profit': str(1), 
-
+            'Operating Revenue': oprev_list_items(id), 
+            'Non Operating Revenue': noprev_list_items(id),
+            'Sales': calcIncomeStmtTotals(busID, ledgerID)["Sales"], 
+            'Cost of Goods Sold': calcIncomeStmtTotals(busID, ledgerID)["Cost of Good Sold"], 
+            'Gross Profit': calcIncomeStmtTotals(busID, ledgerID)["Gross Profit"], 
+            'Taxation': calcIncomeStmtTotals(busID, ledgerID)["Taxation"], 
+            'Income Before Tax': calcIncomeStmtTotals(busID, ledgerID)["Income Before Tax"], 
+            'Net Profit': calcIncomeStmtTotals(busID, ledgerID)["Net Profit"], 
+            'Operating Income': calcIncomeStmtTotals(busID, ledgerID)["Operating Income"], 
+            
         })
     else: 
+
         return jsonify({'message': 'No general ledger'})
 
 
@@ -197,7 +236,6 @@ def generate_income_statement(busID, year =str(datetime.today().strftime('%Y')))
 
 def calcTotalAssets(ledgerID): 
     # get the balance from NCA and CA accounts and sum  
-    # if inventory is separate from current asset add that in
     balance = account_balances(ledgerID, NonCurrentAsset=accounts.NonCurrentAsset, CurrentAsset = accounts.CurrentAsset)
     NCA_Total,CA_Total  = balance[0], balance[1]
     
@@ -392,6 +430,7 @@ def lt_list_items(ledgerID):
 
 # Find some of Capital 
         
+# Balance Sheet Totals - Total Assets Total Liabilities Total Equity
 
 @statement.route('/api/financialstmt/balancesheet/<busID>/<year>')
 def generate_balance_sheet(busID, year =str(datetime.today().strftime('%Y'))):
@@ -406,13 +445,38 @@ def generate_balance_sheet(busID, year =str(datetime.today().strftime('%Y'))):
             'Non Current Asset': nca_list_items(id),
             'Current Liabilities': cl_list_items(id),
             'Long Term Liability': lt_list_items(id),
-            'Capital': str(calcCapital(id))
+            'Equity': str(calcCapital(id))
         })
     else: 
         return jsonify({'message': 'No general ledger'})
 
 
+# Generate Cash Flow Statement 
+# Main Headings 
+"""   Operating Activities   Investing Activities financing activities
 
+1. Start with the Opening Balance
+2. Calculate the Cash Coming in (Sources of Cash)
+
+
+"""
+@statement.route('/api/financialstmt/cashflow/<busID>/<year>')
+def generate_cashflow(busID, year =str(datetime.today().strftime('%Y'))):
+
+    GeneralLedger = db.session.query(accounts.GeneralLedger).filter_by(busID = busID, year = year).first()
+    if GeneralLedger is not None: 
+        id = GeneralLedger.ledgerID 
+        
+        
+        return jsonify({
+            'Investing Activities': invest_list_items(id), 
+            'Operating Activities': op_list_items(id),
+            'Financing Activities': fin_list_items(id),
+            'Long Term Liability': lt_list_items(id),
+            'Equity': str(calcCapital(id))
+        })
+    else: 
+        return jsonify({'message': 'No general ledger'})
 
 
 

@@ -4,19 +4,25 @@ from app.model.auth import Busines
 from app.model.financial_statement import Financialstmt
 import enum
 
-# db = current_app.db
 """
 --------------------------------------- General Ledger Tables ----------------------------------------------------------
 """
 class GeneralLedger(db.Model): 
     __tablename__ = 'genledger'
 
-    ledgerID = db.Column(db.String(80), primary_key=True)
+    ledgerID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     year = db.Column(db.String(15))
-    test = db.Column(db.Integer)
 
     busines = db.relationship('Busines')
+
+    def __init__(self, ledgerID, busID, year):
+        self.ledgerID = ledgerID 
+        self.busID = busID
+        self.year = year
+    
+    def __repr__(self): 
+        return "<General ledger ${}, BusID: ${}".format(self.ledgerID, self.busID)
 
 class GeneraLedgerDetails(db.Model): 
     __tablename__ = 'ledgerdetails'
