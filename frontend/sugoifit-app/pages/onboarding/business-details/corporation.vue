@@ -7,25 +7,35 @@
             </div>
             <div class="business-form-div">
                     <div class="business-form-item">
-                        <label for = "corp_type">Type of corporation</label>
+                        <label for = "corp_type">Type of corporation
+                            <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                            "Private Company: business entity owned by a private group of owners.
+                             Limited Liability Company: business owners are not personally liable for the company's debts or liabilities
+                             Unlimited Liability Company: business owners are personally liable for any loss the business makes "/>
+                        </label>
                         <b-form-select aria-placeholder="Select business type." id = corp_type :options="corp_types"> </b-form-select>
                         
                     </div>
                     
                     <div class="shares-div "> 
                         <div class = "business-form-item"> 
-                            <label for = ""> Number of Shares </label>
-                            <b-form-input placeholder="Standard: 10000" id = ""></b-form-input>
+                            <label for = ""> Number of Shares 
+                                <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Standard: 10000"/>
+                            </label>
+                            <b-form-input  id = ""></b-form-input>
                         </div>
                         <div class="business-form-item">
-                            <label for = ""> Per value </label>
-                            <b-form-input placeholder= "Cost per share" id = ""></b-form-input>
+                            <label for = ""> Per value 
+                                <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Cost per share"/>
+                            </label>
+                            <b-form-input  id = ""></b-form-input>
                         </div>
                     </div>
                         <div class="business-form-item">
-                            <label for="industry"> Industry</label>
-                            <b-form-input placeholder="e.g Technology / Finance"
-                             id = "industry"></b-form-input>
+                            <label for="industry"> Industry
+                                <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="e.g Technology / Finance"/>
+                            </label>
+                            <b-form-input id = "industry"></b-form-input>
                         </div>
 
                        <button @click="AboutComp" type="button" class="btn bus-btn ">Next</button>
@@ -43,6 +53,11 @@ export default{
   components: {  },
     name: 'BusinessDetails', 
     layout: 'onboarding',
+    head(){
+          return{
+              title: 'About the Corporation'
+          }
+        },
     data() { 
         return { 
             corp_types: 

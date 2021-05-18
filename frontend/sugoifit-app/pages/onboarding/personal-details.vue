@@ -1,6 +1,7 @@
 <template>
     <div class="about-business-page "> 
         <div class="about-business-main">
+            <back-button class="mt-4 ml-2"></back-button>
             <div class="about-business-heading">
                 <h5> Personal Details </h5>
                 <p> Yes! You are almost done.  Enter some information about yourself. </p>
@@ -24,22 +25,31 @@
                     
                     <div class="shares-div "> 
                         <div class = "about-business-form-item"> 
-                            <label for = ""> Product or Service </label>
+                            <label for = ""> Product or Service 
+                                <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                                "Does your company offere services such as accounting or products such as clothing?"/></label>
                              <b-form-select id = corp_type :options="busNature"> </b-form-select>
                         </div>
                         <div class="about-business-form-item">
-                            <label for = ""> Telephone </label>
+                            <label for = ""> Telephone 
+                                <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Company's contact number"/>
+                            </label>
                             <b-form-input placeholder="(555)-XXX-XXXX" id = ""></b-form-input>
                         </div>
                         
                     </div>
                     <div class="about-business-form-item">
-                            <label for = ""> Business Address</label>
+                            <label for = ""> Business Address
+                                <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Company's adress"/>
+                            </label>
                             <b-form-input placeholder="1234 Plaza Square, Place, Jamaica, JMDCN10" class = "bus-address" id = ""></b-form-input>
                         </div>
                         <div class="about-business-form-item">
-                            <label for="industry"> Business Description</label>
-                            <b-form-input placeholder = "Write 2 or 3 sentences" class = "bus-desc" id = "industry"></b-form-input>
+                            <label for="industry"> Business Description
+                                <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                                "Two or three sentences describing your business."/>
+                            </label>
+                            <b-form-input placeholder = "" class = "bus-desc" id = "industry"></b-form-input>
                         </div>
                         <button @click="TeamAdd" type="button" class="btn bus-btn ">Next</button>
                 </b-form>
@@ -53,10 +63,16 @@
 
 
 <script > 
+import BackButton from '../../components/argon-core/BackButton.vue';
 export default{
-  components: {  },
+    components: { BackButton },
     name: 'personal-details', 
     layout: 'onboarding',
+    head(){
+          return{
+              title: 'User Profile'
+          }
+        },
     data () { 
         return { 
             corp_types: [

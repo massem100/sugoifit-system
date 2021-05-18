@@ -7,79 +7,114 @@
             </div>
 
             <div class="about-business-form-div">
-                <b-form action="" class="about-business-form">
+                <validation-observer ref="observer" v-slot="{}">
+                <!-- <b-form action="" class="about-business-form"> -->
                     <div class="about-business-form-item">
-                       
-                        <label for = "comp-name">Company Name</label>
-                         <div class="name-container d-flex flex-row">
-                        
-                            <b-form-input 
-                                placeholder="E.g. Monique's Boutique" 
-                                class = "mr-2 w-80" 
-                                id = "comp_name" 
-                                name="comp_name"
-                                >
-                            </b-form-input>
-                            <b-form-input 
-                                placeholder = "eg. Ltd." 
-                                class = "w-25" 
-                                id="name_end" 
-                                name = "name_end"
-                                >
-                            </b-form-input>
-                        </div>
+                        <label for = "comp-name">Company Name
+                            <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. Monique's Boutique"/>
+                        </label>
+                        <div class="name-container d-flex flex-row">
+                            <validation-provider v-slot="{ errors }" rules="required" name="comp name" >
+                                <b-form-input 
+                                    class = "mr-2 w-80" 
+                                    id = "comp_name" 
+                                    name="comp_name"
+                                    v-model="form.comp_name"
+                                    >
+                                </b-form-input>
+                                <b-form-invalid-feedback> {{ errors[0] }}</b-form-invalid-feedback>
+                            </validation-provider>
+                            <validation-provider v-slot="{ errors }" rules="required" name="name_end" >
+                                <b-form-input 
+                                    placeholder = "eg. Ltd." 
+                                    class = "w-25" 
+                                    id="name_end" 
+                                    name = "name_end"
+                                    v-model="form.name_end"
+                                    >
+                                </b-form-input>
+                            <b-form-invalid-feedback> {{ errors[0] }}</b-form-invalid-feedback>
+                            </validation-provider>
+                        </div>  
                     </div>
                     
                     <div class="shares-div "> 
                         <div class = "about-business-form-item"> 
-                            <label for = ""> Product or Service </label>
-                             <b-form-select 
-                                id = corp_type 
-                                name= "corp_type" 
-                                :options="busNature"
-                             > 
-                             </b-form-select>
+                            <validation-provider v-slot="{ errors }" rules="required" name="corp_type" >
+                                <label for = ""> Product or Service 
+                                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                                    "Does your company offere services such as accounting or products such as clothing?"/>
+                                </label>
+                                <b-form-select 
+                                    id = "corp_type" 
+                                    name= "corp_type" 
+                                    :options="busNature"
+                                    v-model="form.corp_type"
+                                > 
+                                </b-form-select>
+                                <b-form-invalid-feedback> {{ errors[0] }}</b-form-invalid-feedback>
+                            </validation-provider>
                         </div>
                         <div class="about-business-form-item">
-                            <label for = ""> Telephone </label>
-                            <b-form-input 
-                                placeholder="(555)-XXX-XXXX" 
-                                id = "bus_tel"
-                                name = "bus_tel"
-
-                                >
-                            </b-form-input>
+                            <validation-provider v-slot="{ errors }" rules="required" name="bus_tel" >
+                                <label for = ""> Telephone 
+                                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Company's contact number"/>
+                                </label>
+                                <b-form-input 
+                                    placeholder="(555)-XXX-XXXX" 
+                                    id = "bus_tel"
+                                    name = "bus_tel"
+                                    v-model="form.bus_tel"
+                                    >
+                                </b-form-input>
+                                <b-form-invalid-feedback> {{ errors[0] }}</b-form-invalid-feedback>
+                            </validation-provider>
                         </div>
                         
                     </div>
+                
                     <div class="about-business-form-item">
-                            <label for = ""> Business Address</label>
+                        <validation-provider v-slot="{ errors }" rules="required" name="bus_address" >    
+                            <label for = ""> Business Address
+                                <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Company's adress"/>
+                            </label>
                             <b-form-input 
                                 placeholder="1234 Plaza Square, Place, Jamaica, JMDCN10" 
                                 class = "bus-address" 
                                 id = "bus_address"
                                 name = "bus_address"
+                                v-model="form.bus_address"
                                 >
                             </b-form-input>
-                        </div>
-                        <div class="about-business-form-item">
-                            <label for="industry"> Business Description</label>
+                            <b-form-invalid-feedback> {{ errors[0] }}</b-form-invalid-feedback>
+                        </validation-provider>
+                    </div>
+                    <div class="about-business-form-item">
+                        <validation-provider v-slot="{ errors }" rules="required" name="industry" >
+                            <label for="industry"> Business Description
+                                <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                                "Two or three sentences describing your business."/>
+                            </label>
                             <b-form-input 
                                 placeholder = "Write 2 or 3 sentences" 
                                 class = "bus-desc" 
                                 id = "industry"
                                 name= "industry"
+                                v-model="form.industry"
                                 >
                             </b-form-input>
-                        </div>
-                        <button 
-                            @click="TeamAdd" 
-                            type="button" 
-                            class="btn bus-btn "
-                            >
-                            Next
-                        </button>
-                </b-form>
+                            <b-form-invalid-feedback> {{ errors[0] }}</b-form-invalid-feedback>
+                        </validation-provider>
+                    </div>
+                    <button 
+                        @click="TeamAdd" 
+                        type="button" 
+                        class="btn bus-btn "
+                        >
+                        Next
+                    </button>
+                <!-- </b-form> -->
+                </validation-observer>
             </div>
         </div>
     </div>
@@ -92,6 +127,11 @@ export default{
   components: {  },
     name: 'about-businessDetails', 
     layout: 'onboarding',
+    head(){
+          return{
+              title: 'About the Business'
+          }
+        },
     data () { 
         return { 
             corp_types: [
@@ -105,7 +145,14 @@ export default{
                 {value: null, text: 'Select Product-Based or Service-Based'},
                 {value: 'a', text: 'Product-Based'},
                 {value: 'b', text: 'Service-Based'},
-            ]
+            ],
+            form: {
+                comp_name: '', 
+                name_end : '', 
+                bus_tel: '', 
+                bus_address: '', 
+                industry: '',
+            }
         }
     }, 
     methods: {

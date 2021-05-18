@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <!-- Quick Actions -->
-    
+  <div class="w-100">
     <div class="mx-3">
       <b-row>
         <back-button class="mt-4 ml-2"></back-button>
@@ -17,8 +15,10 @@
       </b-row>
      
       <transaction-top class="d-flex flex-row justify-content-center mt-4 w-100"/>
-      
-      <b-col class= "mt-4 ml-0 d-flex flex-column align-items-start w-100">
+ 
+    
+    <b-col class= "mt-4 ml-0 d-flex flex-column align-items-start w-100">
+        
         <b-row class="w-100">
            <b-form-group
             label="Filter"
@@ -97,7 +97,7 @@
                   </b-button>
                   
               </template>
-              
+         
 
             </b-table>
             <b-pagination class="m-lg-auto" v-model="currentPage" :total-rows="totalRows" :per-page="perPage"></b-pagination>
@@ -108,11 +108,19 @@
 </template>
 
 <script>
+
+
 import BackButton from '../components/argon-core/BackButton.vue';
+
     export default {
-  components: { BackButton },
-        name: "add-transaction",
+        components: {  BackButton },
+        name: "manage-transaction",
         layout: 'DashboardLayout',
+        head(){
+          return{
+              title: 'Transactions'
+          }
+        },
         methods: {
             addTransaction: () => {
                 console.log('working');
@@ -120,93 +128,64 @@ import BackButton from '../components/argon-core/BackButton.vue';
         },
         data() {
             return {
+                transForm: null,
                 assetName: "",
                 assetType: "",
                 depreciationMethod: "",
+                sortOptions:{},
                 el: "",
                 totalRows: 1,
                 currentPage: 1,
-                perPage: 5,
+                perPage: 10,
                 pageOptions: [5, 10, 15, { value: 100, text: "Show a lot" }],
                 sortBy: '',
                 sortDesc: false,
                 sortDirection: 'asc',
                 filter: null,
                 filterOn: [],
-                fields: [
-                          {key:'date', sortable: true},
-                          {key: 'transaction_id', sortable: false},
-                          {key: 'transaction_name', sortable: true},
-                          {key: 'related_entry', sortable: false}, 
-                          {key:'amount', sortable: true},
-                          {key:'actions', sortable: false},
-              
-                        ],
-                items: [
-                 {'date': '12/1/2008', 
-                 'transaction_id': 'nca_1', 
-                 'transaction_name': 'Non Current Asset', 
-                  'related_entry': 'CA_1',
-                  'amount': '$200.50',
-                  'actions': true, 
-                  
-                  } ,
-                 {'date': '12/1/2008', 
-                 'transaction_id': 'nca_1', 
-                 'transaction_name': 'Non Current Asset', 
-                  'related_entry': 'CA_1',
-                  'amount': '$200.75',
-                  'actions': true, 
-                 
-                  },
-                   {'date': '12/1/2008', 
-                 'transaction_id': 'nca_1', 
-                 'transaction_name': 'Non Current Asset', 
-                  'related_entry': 'CA_1',
-                  'amount': '$200.75',
-                  'actions': true, 
-                 
-                  },
-                   {'date': '12/1/2008', 
-                 'transaction_id': 'nca_1', 
-                 'transaction_name': 'Non Current Asset', 
-                  'related_entry': 'CA_1',
-                  'amount': '$200.75',
-                  'actions': true, 
-                 
-                  } ,
-                   {'date': '12/1/2008', 
-                 'transaction_id': 'nca_1', 
-                 'transaction_name': 'Non Current Asset', 
-                  'related_entry': 'CA_1',
-                  'amount': '$200.75',
-                  'actions': true, 
-                 
-                  },
-                   {'date': '12/1/2008', 
-                 'transaction_id': 'nca_1', 
-                 'transaction_name': 'Non Current Asset', 
-                  'related_entry': 'CA_1',
-                  'amount': '$200.75',
-                  'actions': true, 
-                 
-                  },
-                  ]
+                fields: ['date', 'transaction_id', 'transaction_name', 'related_entry', 'amount', 'actions'],
+                items: [],
             };
                 
         },
         created(){
 
+
+        }, 
+        computed: {
+            
+      
         }, 
         mounted() {
             // Set the initial number of items
-            this.totalRows = this.items.length
+          let self=this;
+          
+          const busID = localStorage.getItem('busID');
+          this.$axios.get(`/api/transactions/${busID}`
+              ).then(res =>{
+                  return res.data;
+              }).then(res =>{
+                  if (res){
+                      self.items = res.transaction;
+                      console.log(res);
+                      this.totalRows = this.res.transaction.length
+              
+              }else{
+                  console.log('Data not found')
+              }
+              });
           },
         methods:{
           onFiltered(filteredItems) {
             this.totalRows = filteredItems.length
             this.currentPage = 1
           },
+           async launchConfirm(){
+                let self = this;
+                const submit = await this.$refs['confirmModal'].show();
+              
+            },
+            
         }
     };
 </script>

@@ -20,8 +20,14 @@ export class userService  {
                     this.alert_message = res.success["0"].message;
                     let userid = res.success["0"].userid;
                     let jwt_token = res.success["0"].token;
+                    let user_role = res.success["0"].user_role["0"].role_name;
+                    console.log(res.success["0"].user_role);
+                    let busID = res.success["0"].busID;
                     localStorage.setItem("token", jwt_token);
                     localStorage.setItem("userid", userid);
+                    localStorage.setItem("user_role",user_role);
+
+                    localStorage.setItem("busID", busID);
                     console.info("Token generated and added to localStorage.");    
                 }
                 return res.success;
@@ -42,11 +48,27 @@ export class userService  {
             });
         
         
-    }
+    };
     resetLogin(){
         localStorage.removeItem('userid');
         localStorage.removeItem('token');
-    }
+        localStorage.removeItem('busID');
+        localStorage.removeItem('user_role');
+    };
+
+    async nca_show(){
+        this.$store.dispatch('transaction_forms/noncurrentasset', {root:true});
+        const submit = await this.$refs['nca_modal'].show();
+          
+    };
+      async ca_show()  {
+        this.$store.dispatch('transaction_forms/currentasset', {root:true});
+        const submit = await this.$refs['ca_modal'].show();
+      };
+      async cliab_show()  {
+        this.$store.dispatch('transaction_forms/currentliab');
+        const submit = await this.$refs['cliab_modal'].show();
+      };
     handleResponse(response) {
     return response.text().then(text => {
         const data = text && JSON.parse(text);

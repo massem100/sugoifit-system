@@ -221,6 +221,7 @@
                       console.log(jsonResponse);
                       console.log(form_data);
                       self.alert_message = jsonResponse.message;
+                       this.$refs['confirmModal'].close();
                   }).catch(err =>{
                     console.log(err);
                   });

@@ -1,73 +1,143 @@
 <template>
     <div class="d-flex mx-3">
+      
       <b-container fluid>
+        
+       <base-alert v-if= "alert_message" 
+                    class = "mt-5 d-flex flex-row justify-content-center" 
+                    style="width: 25rem; 
+                           height: 3rem; 
+                           z-index:1;" 
+                    dismissible      
+                    type= "primary">{{message}}
+      </base-alert>
+      <b-row>
+        <back-button class="mt-4 ml-2"></back-button>
+        <b-col>
+           <h3 class="mt-4 ml-0">Manage Products</h3>
+            <p class = "mb-2 mt-2 ">  
+                Keep track of your products.
+              </p>
+        </b-col>
+      </b-row>
+     
+      <b-modal ref="confirmModal" 
+                 id = "confirmModal" 
+                  >
+            Are you sure you want to add this product?
+            <template 
+                    class = "bg-primary" 
+                    v-slot:modal-title> 
+                    Confirmation Popup
+            </template>
+            <template  v-slot:modal-footer>
+                <b-button @click="modalCancel" id = "modal-cancel" variant = "outline-secondary">Cancel</b-button>
+                <b-button @click="modalSubmit" id = "modal-submit" variant="primary">Submit </b-button>
+            </template>
+              
+        </b-modal>
         <validation-observer
           ref="observer"
           v-slot="{handleSubmit}"
         >
-          <b-form id="newProductForm" method="POST" @submit.stop.prevent="handleSubmit(onSubmit)" enctype="multipart/form-data">
+        
+          <b-form id="newProductForm" method="POST" @submit.stop.prevent="handleSubmit(launchConfirm)" enctype="multipart/form-data">
             <input type="hidden" name="_token" :value="token">
-            <b-row>
-              <b-col cols="12" class="text-info mt-5 mb-3 font-weight-bold">Add Product</b-col>
-              <b-col class="mb-2 c-box" xl="6" md="6" sm="12">
+            <b-row class="m-1 w-100">
+              <b-col cols="12" class="text-primary mb-3 pl-0">Add Product</b-col>
+              <!-- <b-col md="12" cols="12" class="bg-secondary px-5 py-3"> -->
+                <b-row>
+                  <div class="mb-2 w-50">
+                    <validation-provider
+                    v-slot="{ errors }"
+                    rules="required"
+                    name="product name"
+                  >
+                    <label for="product_name">Product Name
+                      <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. High waisted leather pants "/>
+                    </label>
+                    <b-form-input v-model="form.product_name"
+                                  type="text"
+                                  id="product_name"
+                                  name="product_name"
+                                  :state="getValidationState(errors)">
+                    </b-form-input>
+                    <b-form-invalid-feedback>
+                      {{ errors[0] }}
+                    </b-form-invalid-feedback>
+                  </validation-provider>
+                  </div>
+                </b-row>
+                <b-row>
+                  <div class=" mb-2">
+                    <validation-provider
+                      v-slot="{ errors }"
+                      rules="required"
+                      name="product image"
+                    >
+                      <label for="image">Product Image
+                        <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. filename.(jpg/jpeg)"/>
+                      </label>
+                      <b-form-file  v-model="form.image_file"
+                                    class="w-100"
+                                    id="image"
+                                    name="image"
+                                    placeholder="Choose a file or drop it here..."
+                                    drop-placeholder="Drop file here..."
+                                    :state="getValidationState(errors)">
+                      </b-form-file>
+                      <b-form-invalid-feedback>
+                        {{ errors[0] }}
+                      </b-form-invalid-feedback>
+                    </validation-provider>
+                  </div>
+                </b-row>
+                  
+                
+              
+              <!--<div class="mb-2">
                 <validation-provider
                   v-slot="{ errors }"
                   rules="required"
-                  name="product name"
+                  name="product description"
                 >
-                  <label for="product_name">Product Name</label>
-                  <b-form-input v-model="form.product_name"
-                                type="text"
-                                id="product_name"
-                                name="product_name"
+                  <label for="desc">Product Description
+                    <font-awesome-icon icon="info-circle" 
+                    v-b-tooltip.hover title="Helps customers choose a product eg. 100% cotton, iron on low heat"/>
+                  </label>
+                  <b-form-textarea v-model="form.desc"
+                                class="w-100"
+                                id="desc"
+                                name="desc"
                                 :state="getValidationState(errors)">
-                  </b-form-input>
+                  </b-form-textarea>
                   <b-form-invalid-feedback>
                     {{ errors[0] }}
                   </b-form-invalid-feedback>
                 </validation-provider>
-              </b-col>
-            </b-row>
-            <b-row>
-              <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
+              </div>
+              
+              <div class="mb-2">
                 <validation-provider
                   v-slot="{ errors }"
                   rules="required"
-                  name="quantity stock"
+                  name="size"
                 >
-                  <label for="quantity">Quantity In Stock</label>
-                  <b-form-input v-model="form.quanitity"
-                                type="number"
+                  <label for="size">Sizing
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="what size do you offer this product in? Large "/>
+                  </label>
+                  <b-form-select v-model="form.size"
                                 class="w-100"
-                                id="quantity"
-                                name="quantity"
-                                :state="getValidationState(errors)">
-                  </b-form-input>
-                  <b-form-invalid-feedback>
-                    {{ errors[0] }}
-                  </b-form-invalid-feedback>
-                </validation-provider>
-              </b-col>
-              <!--
-              <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-                <validation-provider
-                  v-slot="{ errors }"
-                  rules="required"
-                  name="measurement unit"
-                >
-                  <label for="uom">Unit of Measurement</label>
-                  <b-form-select v-model="form.uom"
-                                class="w-100"
-                                id="uom"
-                                name="uom"
-                                :options="uom_options"
+                                id="size"
+                                name="size"
+                                :options="size_options"
                                 :state="getValidationState(errors)">
                   </b-form-select>
                   <b-form-invalid-feedback>
                     {{ errors[0] }}
                   </b-form-invalid-feedback>
                 </validation-provider>
-              </b-col>
+              </div>
               -->
             </b-row>
             <b-row>
@@ -75,7 +145,7 @@
                 <validation-provider
                   v-slot="{ errors }"
                   rules="required"
-                  name="unit price"
+                  name="unit_price"
                 >
                   <label for="unit_price">Unit Price</label>
                   <b-form-input v-model="form.unit_price"
@@ -94,13 +164,33 @@
                 <validation-provider
                   v-slot="{ errors }"
                   rules="required"
-                  name="tax percent"
+                  name="man_units"
+                >
+                  <label for="man_units">Manufacture Units</label>
+                  <b-form-input v-model="form.man_unitts"
+                                type="number"
+                                class="w-100"
+                                id="man_units"
+                                name="man_units"
+                                :state="getValidationState(errors)">
+                  </b-form-input>
+                  <b-form-invalid-feedback>
+                    {{ errors[0] }}
+                  </b-form-invalid-feedback>
+                </validation-provider>
+              </b-col>
+              <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
+                <validation-provider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="tax_percent"
                 >
                   <label for="tax">Tax percent</label>
                   <b-form-input v-model="form.tax"
                                 type="number"
                                 class="w-100"
                                 id="tax"
+                                step=".01"
                                 name="tax"
                                 :state="getValidationState(errors)">
                   </b-form-input>
@@ -115,7 +205,7 @@
                 <validation-provider
                   v-slot="{ errors }"
                   rules="required"
-                  name="product status"
+                  name="product_status"
                 >
                   <label for="status">Product Status</label>
                   <b-form-select v-model="form.status"
@@ -131,32 +221,11 @@
                 </validation-provider>
               </b-col>
 
-              <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-                <validation-provider
-                  v-slot="{ errors }"
-                  rules="required"
-                  name="product image"
-                >
-                  <label for="image">Product Image</label>
-                  <b-form-file  v-model="form.image_file"
-                                class="w-100"
-                                id="image"
-                                name="image"
-                                placeholder="Choose a file or drop it here..."
-                                drop-placeholder="Drop file here..."
-                                :state="getValidationState(errors)">
-                  </b-form-file>
-                  <b-form-invalid-feedback>
-                    {{ errors[0] }}
-                  </b-form-invalid-feedback>
-                </validation-provider>
-              </b-col>
+             
             </b-row>
-            <b-row>
-              <b-col cols="12" class="text-right my-2">
+            <b-row class=" my-4 px-3">
                 <b-button type="submit" variant="primary">Submit</b-button>
                 <b-button type="reset" variant="danger" @click="resetForm()">Reset</b-button>
-              </b-col>
             </b-row>
           </b-form>
         </validation-observer>
@@ -166,17 +235,21 @@
 
 <script>
     import {ValidationObserver, ValidationProvider} from "vee-validate";
-
+    import Modal from '../../components/argon-core/Modal.vue';
+    import BaseAlert from '../../components/argon-core/BaseAlert.vue';
+    import BackButton from '../../components/argon-core/BackButton.vue';
     export default {
+        components: { ValidationObserver, ValidationProvider, BackButton, Modal, BaseAlert },
         layout: 'DashboardLayout',
         name: "add",
-        components: {
-            ValidationProvider,
-            ValidationObserver,
+        head(){
+          return{
+              title: 'Add Product'
+          }
         },
         data() {
             return {
-                
+                alert_message:'',
                 token: '',
                 form: {
                   date: new Date().toISOString()
@@ -203,7 +276,17 @@
                 ]
             }
         },
-        
+        computed: {
+            alert () {
+                return this.$store.state.alert
+            }
+        },
+        watch:{
+            $route (to, from){
+                // clear alert on location change
+                this.$store.dispatch('alert/clear');
+            }
+        },
         methods: {
             getValidationState(errors) {
                 return errors.length > 0 ? false : null;
@@ -213,27 +296,31 @@
                 this.$nextTick(() => {
                     this.$refs.observer.reset();
                 });
-
             },
-            onSubmit() {
-              let self = this;
+            async launchConfirm(){
+                let self = this;
+                const submit = await this.$refs['confirmModal'].show();
+            },
+            modalCancel(){
+                this.$refs['confirmModal'].hide();
+            },
+            modalSubmit() {
               let newProductForm = document.getElementById("newProductForm");
               let form_data = new FormData(newProductForm);
-
-              let PATH_API = 'newproduct';
-                  this.$axios.post(`/api/${PATH_API}`, form_data, {
-                    headers: {
-                    'contentType': 'application/json',
-                  }
-                })
-                .then( jsonResponse =>{
-                  return jsonResponse.json();
-                })
-                .then( jsonResponse =>{
-                  console.log(jsonResponse);
-                })
-              }, 
-        }
+              
+              try {
+                 if (form_data) {
+             
+                    this.$store.dispatch('products/addProduct', {form_data});
+                    //$nuxt.$router.push('/');
+                    this.$store.dispatch('alert/clear');
+                        
+                }
+              } catch (error) {
+                  console.log(error);
+                }
+            }
+        },
     }
 </script>
 

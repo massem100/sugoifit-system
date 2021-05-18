@@ -7,8 +7,8 @@ from datetime import datetime
 from app import  db, login_manager,  csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission
 from app.forms import RegisterForm, LoginForm
-from app.model import  accounts, auth, sales, transactions
-from app.schema.role import role_schema, roles_schema
+from app.model import  accounts, auth, sales
+from app.schema.role import role_schema, roles_schema, users_schema
 from flask import  Blueprint, current_app,  request, jsonify, flash, session, _request_ctx_stack, g
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -69,6 +69,24 @@ def token():
 """
 --------------------------------------- User Authentication Routes ----------------------------------------------------------
 """
+@authorize.route('/api/auth/<userid>', methods = ["GET"])
+def userDetails(userid):
+    #userid = current_user.userID
+    result=[]
+    user = db.session.query(auth.User).filter_by(userID=userid).all()
+    output = users_schema.dump(user)
+    for item in output:
+        fname = item['fname']
+        lname = item['lname']
+    return jsonify(fname=fname, lname=lname)
+
+@authorize.route('/api/business', methods = ["GET"])
+def busDetails(busID):
+    busid = current_user.busID
+    if busID == busid:
+        business = db.session.query(auth.Business).filter_by(busID=busID).all()
+        #output = sales.invoices_schema.dump(user)
+    return jsonify(business)
 
 @identity_loaded.connect_via(authorize)
 def on_identity_loaded(sender, identity):
@@ -105,7 +123,13 @@ def login():
                 
                 payload = {'userid': user.userID}
                 token = jwt.encode(payload, current_app.config['TOKEN_KEY'], algorithm='HS256').decode('utf-8')
-                return jsonify(success = [{"token": token, "user": user.userID, "user_role": user_roles, "message": "User successfully logged in."}])
+                return jsonify(success = [{
+                                           "token": token, 
+                                           "userid": user.userID, 
+                                           "user_role": user_roles, 
+                                           "busID": current_user.busID,
+                                           "message": "User successfully logged in."
+                                         }])
                 
             else:
                 return jsonify({'error msg': 'Login credentials failed: Please check email or password.'})
@@ -119,7 +143,6 @@ def login():
 
 
 @authorize.route('/api/auth/logout', methods = ["GET"])
-@login_required
 def logout():
     # Clears user from session
     
@@ -221,8 +244,10 @@ def register():
 
 @login_manager.user_loader
 def load_user(id):
-    user = auth.UserCredential.query.get(id)
-    return user
+    user = db.session.query(auth.UserCredential).get(id)
+    if user is not None: 
+        user_obj = auth.UserCredential(user.userID, user.busID, user.user_email, user.user_password, user.active , user.cid)
+        return user_obj
 
 """
 --------------------------------------- Onboarding Routes (To be added)----------------------------------------------------------

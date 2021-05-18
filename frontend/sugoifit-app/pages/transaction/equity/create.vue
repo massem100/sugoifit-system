@@ -32,7 +32,7 @@
       >
         <b-form id= "equityForm" @submit.stop.prevent="handleSubmit(launchConfirm)">
           <b-row>
-            <b-col cols="12" class="text-info mb-3">Add Equity</b-col>
+            <b-col cols="12" class="text-info mb-3" v-b-tooltip.hover title="An equity is......">Add Equity</b-col>
           </b-row>
         </b-form>
       </validation-observer>
@@ -42,9 +42,8 @@
 
 <script>
     import {ValidationObserver, ValidationProvider} from "vee-validate";
-     import Modal from '../../../components/argon-core/Modal.vue';
+    import Modal from '../../../components/argon-core/Modal.vue';
     import BaseAlert from '../../../components/argon-core/BaseAlert.vue';
-
 
     export default {
         layout: 'DashboardLayout',
@@ -73,7 +72,8 @@
                 this.$refs['confirmModal'].hide();
             },
             modalSubmit(){
-                let PATH_API = 'transaction/equity';
+                let busID = localStorage.getItem('busID');
+                let PATH_API = `transaction/${busID}/equity`;
                 let form_data = new FormData();
                 Object.entries(this.form).forEach(entry => {
                     const [key, value] = entry;

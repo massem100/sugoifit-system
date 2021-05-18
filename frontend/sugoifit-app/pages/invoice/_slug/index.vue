@@ -3,6 +3,7 @@
     <b-container fluid>
       <b-card>
         <b-row>
+          <back-button class="mt-4 ml-2"></back-button>
           <b-col cols="12" class="text-info mb-3 font-weight-bold text-capitalize">Invoice of {{invoice.billed_to.user}}</b-col>
           <b-col cols="12" v-if="invoice">
             <b-row style="border-bottom: 2px solid #00bcd4" class="mx-0 pb-3">
@@ -52,7 +53,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr class="br-bottom" v-for="(bill,idx) in invoice.bills" :key="bill">
+              <tr class="br-bottom" v-for="(bill,idx) in invoice.bills" :key="idx">
                 <td>{{bill.name}}</td>
                 <td class="text-center">${{bill.unit_price}}</td>
                 <td class="text-center">{{bill.quantity}}</td>
@@ -81,13 +82,20 @@
 </template>
 
 <script>
+import BackButton from '../../../components/argon-core/BackButton.vue';
     export default {
+        components: { BackButton },
         name: "invoice-card",
         layout: 'dashboard',
+        head(){
+          return{
+              title: 'Invoice'
+          }
+        },
         data() {
             return {
                 invoice: {
-                    name: 'moniques botique',
+                    name: 'moniques boutique',
                     invoice_id: 'invoice0001',
                     address: 'Shop #3, xyz plaza. kingsater, Kingston',
                     balance: 1000,

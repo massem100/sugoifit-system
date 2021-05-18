@@ -24,13 +24,13 @@ export default {
     ]
 
   },
-
+  devtools: true,
   src: 'static/js/app.js',
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     '@fortawesome/fontawesome-svg-core/styles.css',
-    'static/scss/website.css',
+    //'static/scss/website.css',
     '~assets/style/app.css',
     "assets/css/nucleo/css/nucleo.css",
     "assets/sass/argon.scss",
@@ -51,7 +51,8 @@ export default {
     {src: '~/plugins/vue-ellipse-progress', ssr: false},
     {src: '~/plugins/fontawesome.js', ssr: false},
     {src: '~/plugins/addService.js', ssr: false},
-
+    { src: '~/plugins/jquery.min.js', ssr: false },
+    { src: '~plugins/vuedraggable.js',ssr:false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -63,7 +64,7 @@ export default {
     '@nuxtjs/fontawesome', 
     
     // https://go.nuxtjs.dev/eslint
-    '@nuxtjs/eslint-module',
+    
 
   ],
 
@@ -75,20 +76,9 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    [
-      'nuxt-fontawesome', {
-        imports: [
-         {
-           set: '@fortawesome/free-solid-svg-icons',
-           icons: ['fas']
-         },
-         {
-           set:'@fortawesome/free-brands-svg-icons',
-           icons: ['fab']
-         }
-       ]
-      }
-],
+    
+      'nuxt-fontawesome', 
+        
         ['@nuxtjs/proxy']
   ],
   proxy:{

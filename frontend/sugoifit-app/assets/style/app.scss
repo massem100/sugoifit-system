@@ -12,8 +12,11 @@ html, body {
   margin: 0;
   padding: 0;
   // background-color: aquamarine;
+  overflow-x: hidden;
 }
-
+.main-content{
+  overflow-x: hidden;
+}
 body, input, button, select, textarea {
   font: 300 1rem 'Poppins', sans-serif;
   color: #222222;

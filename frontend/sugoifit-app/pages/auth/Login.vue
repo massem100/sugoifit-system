@@ -19,8 +19,8 @@
                     method ="POST">
              
             
-                <label class =" form-label text-left" 
-                       for ="email">Email:
+                <label class =" form-label text-left" for ="email">Email:
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Compnay email eg. compemail@outlook.com"/>
                 </label>
                 <b-form-input class ="form-control mt-2" 
                               type="text" 
@@ -30,7 +30,8 @@
                 </b-form-input>
             
                 <label class ="form-label mt-4" 
-                       for="password"> Password:</label> 
+                       for="password"> Password:
+                       <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="User password"/></label> 
                 <b-form-input class ="form-control mt-2" 
                               type="password" 
                               name="password" 
@@ -38,7 +39,7 @@
                               id="password">
                 </b-form-input>
             
-                <b-col class =" align-items-center">
+                <b-col class =" align-items-center mt-2">
                     <!-- <div  id="msgBox">
                         <p> {{alert.message}} </p>
                     </div> -->
@@ -126,7 +127,11 @@ export default {
                  if (form_data) {
              
                     this.$store.dispatch('authentication/login', { form_data });
+                    $nuxt.$router.push('/');
                     this.$store.dispatch('alert/clear');
+                        
+                        
+                    
     
                 }
             } catch (error) {

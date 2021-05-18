@@ -3,13 +3,18 @@ import secrets
 import hashlib, random
 from functools import wraps
 from datetime import datetime, timedelta
-from app import db, login_manager, csrf_, principal, admin_permission, \
+from app import db, mail,  login_manager, csrf_, principal, admin_permission, \
                             owner_permission, employee_permission, fin_manger_permission
+
 # WTF Forms and SQLAlchemy Models
-from app.forms import websiteForm,orderForm
-from app.model import  accounts, auth, sales, transactions
-from flask import Blueprint, request, jsonify, flash, session, _request_ctx_stack, g
+from app.forms import websiteForm, orderForm,ProofOfPaymentForm, ContactForm
+from app.model import auth
+from app.model.sales import CustomerPayment, Customer, Order, Orderdetail
+from app.views import form_errors
+from flask import Blueprint, current_app, request, jsonify, flash, session, _request_ctx_stack, g
+from flask_login import current_user
 from werkzeug.utils import secure_filename
+from flask_mail import Message 
 
 website= Blueprint('website', __name__)
 
@@ -17,55 +22,6 @@ website= Blueprint('website', __name__)
 """
 --------------------------------------- Website Routes ----------------------------------------------------------
 """
-@website.route('/api/checkout-products', methods = ['GET'])
-def checkoutproducts():
-    message = {}
-    data = {}
-    tprice = 0
-    deliver = 500
-
-    transaction_inputs = [
-            {
-                'id': 1,
-                'img': "https://5.imimg.com/data5/RU/WI/MY-46283651/school-skirts-500x500.jpg",
-                'name': 'skirt',
-                'quantity': '1',
-                'size': 'L',
-                'colour': 'black',
-                'price': "500"
-            },
-            {
-                'id': 2,
-                'img': "https://slimages.macysassets.com/is/image/MCY/products/2/optimized/17864922_fpx.tif?$browse$&wid=170&fmt=jpeg",
-                'name': 'pants',
-                'quantity': '1',
-                'size': 'medium',
-                'colour': 'white',
-                'price': '1000'
-            },
-            {
-                'id': 3,
-                'img': "https://di2ponv0v5otw.cloudfront.net/posts/2018/03/24/5ab6a736077b9758675a91e5/m_5ab6c769c9fcdfbadf53cd14.jpeg",
-                'name': 'top',
-                'quantity': '1',
-                'size': 'medium',
-                'colour': 'white',
-                'price': '800'
-            }
-        ]
-
-    for card in transaction_inputs:
-        tprice = tprice + int(card['price'])
-
-    tcost = tprice + deliver
-    data["lst"] = lst
-    data["total_price"] = tprice
-    data["delivery_price"] = deliver
-    data["total_cost"] = tcost
-
-    return jsonify(data)
-
-
 
 """
 ----------------------------------------SETTINGS------------------------------------------------------
@@ -113,3 +69,99 @@ def websiteinfo():
   return jsonify({'message':"Success"}, settings)
 
   
+  
+"""
+---------------------------------------- WEBSITE FORMS ------------------------------------------------------
+"""
+
+@website.route('/api/proof-payment', methods = ['POST'])
+def proof_payment(): 
+    form = ProofOfPaymentForm(request.form)
+    if request.method == 'POST' and form.validate_on_submit(): 
+
+        order_no = form.order_no.data 
+        customer_name = form.customer_name.data 
+        receipt = form.receipt.data
+
+        secure_file = secure_filename(receipt.filename)
+        receipt.save(os.path.join(current_app.config['UPLOAD_FOLDER'], secure_file))
+
+        fname, lname = customer_name.split() 
+
+        custID = db.session.query(Customer).filter_by(fname = fname, lname = lname).first()
+        order_num = db.session.query(Order).filter_by(orderID = order_no).first()
+
+        if custID is None or order_num is None: 
+            jsonify({'message': 'No Order exists with that order number or customer name.' })
+        else: 
+            new_payment = CustomerPayment(custID, order_no, receipt)
+            db.session.add(new_payment)
+            db.session.commit()
+            return jsonify({'message': 'Proof of Payment successfully added. An email will be sent when order is updated.'})
+    else: 
+        error_list = form_errors(form)
+        return jsonify(errors= error_list)
+            
+# ----------------------- NEED TO BE TESTED -----------------------------------------
+@website.route('/api/website/place-order', methods=['POST', 'GET'])
+def web_place_order(): 
+    cust_form = orderForm(request.form)
+    if request.method == 'POST' and request.form.validate_on_submit(): 
+        # CHANGE ALL TO GET DIRECTLY FROM REQUEST - let frontend handle validation using vee-validate
+        fname = cust_form.fname.data 
+        lname = cust_form.lname.data
+        trn = cust_form.trn.data 
+        address = cust_form.address.data 
+        phone_num = cust_form.phone_num.data 
+        email = cust_form.email.data 
+
+
+        order_date = datetime.now() 
+        order_tot = cust_form.order_tot.data 
+        custID = 1
+        invoiceID = 1
+        # order_total = form.o
+        new_customer = Customer(custID=None, 
+                                fname = fname, 
+                                lname = lname, 
+                                trn = trn,
+                                email = email, 
+                                address = address)
+        last_orderID = db.session.query(Order).filter_by(busID = current_user.busID).order_by(Order.orderID.desc()).first()
+        orderID = (int(last_orderID.orderID)+1 if last_orderID is not None else 1)
+
+        new_order = Order(  orderID=None, 
+                            order_tot=order_tot,
+                            order_DATE= order_date, 
+                            custID=custID,
+                            invoiceID=invoiceID,
+                            busID=current_user.busID,
+                            status='Pending Payment')
+        # Orderdetail(orderID = orderID, detailsID, prodID, serviceID, quantity, order_tot)
+    else: 
+        error_list = form_errors(cust_form)
+        return jsonify({'Order Number': orderID, 'errors': error_list})
+            
+
+
+
+@website.route('/api/website/contact')
+def contact_form(): 
+    form = ContactForm(request.form)
+    if request.method == 'POST' and form.validate_on_submit(): 
+        
+        customer_name = form.name.data  
+        subject = form.subject.data 
+        email = form.email.data 
+        phone_num = form.phone_num.data 
+        message = form.message.data 
+
+        msg = Message(subject, sender=(customer_name, email), recipients=[email])
+        msg.body = message
+        mail.send(msg)
+        return jsonify({'message': 'Email sent successfully!'})
+
+    else: 
+        error_list = form_errors(form)
+        return jsonify(errors= error_list)
+            

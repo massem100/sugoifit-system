@@ -47,8 +47,9 @@ class User(db.Model, UserMixin):
     lname = db.Column(db.String(25))
     user_address = db.Column(db.String(50))
     phone = db.Column(db.String(10))
-    user_credentials = db.relationship('UserCredential', backref = 'user', uselist = False)
     date_joined = db.Column(db.DateTime())
+
+    user_credentials = db.relationship('UserCredential', backref = 'user', uselist = False)
 
     def __init__(self, userID, fname, lname, user_address, phone):  
         self.userID = userID
@@ -85,6 +86,7 @@ class UserCredential(db.Model, UserMixin):
     user_email = db.Column(db.String(50), unique=True)
     user_password = db.Column(db.String(255))
     busID = db.Column(db.String(200), db.ForeignKey('business.busID'))
+
     roles = db.relationship('Role', backref='usercredentials', lazy='dynamic')
     
     def __init__(self, userID, busID, user_email, user_password, active = False, cid = None):  
@@ -116,6 +118,6 @@ class Role(db.Model, UserMixin):
     __tablename__ = 'role'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    userID = db.Column(db.ForeignKey('usercredentials.userID'))
+    userID = db.Column(db.String(100), db.ForeignKey('usercredentials.userID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     role_name = db.Column(db.String(30), nullable =False)
    

@@ -1,5 +1,5 @@
 <template>
-  <div class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white">
+  <div class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light ">
     <div class="scrollbar-inner" ref="sidebarScrollArea">
       <div class="sidenav-header d-flex justify-content-center">
         <a class="m-4" href="#">

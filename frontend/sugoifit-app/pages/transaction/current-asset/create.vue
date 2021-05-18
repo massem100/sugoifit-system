@@ -11,7 +11,7 @@
                     type= "primary">{{alert_message}}
       </base-alert>
       <b-row>
-        <back-button class="mt-4 "></back-button>
+        <back-button class="mt-4 ml-2"></back-button>
         <b-col>
            <h3 class="mt-4 ml-0">Manage transactions</h3>
             <p class = "mb-2 mt-2 "> 
@@ -41,23 +41,29 @@
         ref="observer"
         v-slot="{handleSubmit}"
       >
-        <b-form class="" id="AddNCAForm" @submit.stop.prevent="handleSubmit(launchConfirm)">
+        <b-form class="" id="AddNCAForm" @submit.stop.prevent="handleSubmit(launchConfirm)" method="POST" enctype="multipart/form-data">
           <b-row class="m-1 w-100">
-            <b-col cols="12" class="text-primary mb-3 pl-0">Add Current Asset</b-col>
+            <b-col cols="12" class="text-primary mb-3 pl-0" >Add Current Asset</b-col>
 
-            <b-col md="6" cols="12" class="bg-secondary px-5 py-3">
+            <b-col md="6" cols="12" class="px-5 py-3">
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="asset name">
-                  <label for="asset_name">Asset Name</label>
+                  <label for="asset_name" >Asset Name 
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    "name of what the transaction is for eg.commercial paper, Treasury bills "/>
+                  </label>
                   <b-form-input v-model="form.asset_name" type="text" id="asset_name" required
                                 :state="getValidationState(errors)">
+                              
                   </b-form-input>
                   <b-form-invalid-feedback> {{ errors[0] }}</b-form-invalid-feedback>
                 </validation-provider>
               </div>
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="transaction_date">
-                  <label for="date">Transaction Date</label>
+                  <label for="date">Transaction Date
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Date transaction was made "/>
+                  </label>
                   <b-form-datepicker id="transaction_date"
                                      v-model="form.transaction_date"
                                      :date-format-options="{ year: 'numeric', month: 'short', day: 'numeric' }"
@@ -75,7 +81,9 @@
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="amount">
 
-                  <label for="amount">Amount</label>
+                  <label for="amount">Amount
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Cost of the transaction "/>
+                  </label>
                   <b-form-input v-model="form.amount"
                                 type="number"
                                 id="amount"
@@ -86,19 +94,48 @@
                   </b-form-invalid-feedback>
                 </validation-provider>
               </div>
-              <div class="mb-2"><label for="description">Description</label>
+              <div class="mb-2">
+                <label for="description">Description
+                  <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    " eg. 14-day Treasury bill"/>
+                </label>
                 <b-form-textarea v-model="form.asset_desc" type="text" id="description"
                                  maxlength="200"></b-form-textarea>
               </div>
             </b-col>
             <b-col md="6" cols="12" class="px-3">
+              <div class = "mb-2">
+                 <validation-provider
+                      v-slot="{ errors }"
+                      rules="required"
+                      name="tag"
+                    >
+                      <label for="tag">Select a Tag
+                        <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                          " Types of current assets"/>
+                      </label>
+                      <b-form-select v-model="form.tag"
+                                    :options="asset_tags"
+                                    id="tag"
+                                    name="tag"
+                                    class="text-black"
+                                    :state="getValidationState(errors)"
+                      >
+                      </b-form-select>
+                      <b-form-invalid-feedback>
+                        {{ errors[0] }}
+                      </b-form-invalid-feedback>
+                    </validation-provider>
+              </div>
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="tan_in">
-                  <label>Increase/Decrease</label>
+                  <label>Increase/Decrease
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
+                    " indicates whether a business should be able to meet its short-term obligations "/>
+                  </label>
                   <b-form-radio-group v-model="form.increase_decrease"
                                       :options="inc_dec"
-                                      class="border border-radius px-4 py-3"
-                                      style="Background: #E5E5E5; "
+                                      class="px-4 py-3"
                                       stacked
                                       :state="getValidationState(errors)"
                   >
@@ -110,18 +147,17 @@
               </div>
               <div class="mb-2">
                 <validation-provider v-slot="{ errors }" rules="required" name="paid_using">
-                  <label for="paid_using"> Paid Using</label>
+                  <label for="paid_using"> Paid Using
+                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="eg. "/>
+                  </label>
                   <b-form-radio-group v-model="form.paid_using"
                                       :options="paid_using"
                                       id="paid_using"
                                       stacked
-                                      class="border border-radius py-3 px-4"
-                                      style="Background: #E5E5E5; "
+                                      class="py-3 px-4"
                                       :state="getValidationState(errors)"
                   >
                   </b-form-radio-group>
-
-
                   <b-form-invalid-feedback>
                     {{ errors[0] }}
                   </b-form-invalid-feedback>
@@ -160,7 +196,6 @@
             return {
                 alert_message:'',
                 form: {
-
                     transaction_date: new Date().toISOString().substr(0, 10)
                 },
                 inc_dec: [
@@ -173,6 +208,18 @@
                     {value: 'Cheque', text: 'Cheque '},
                     {value: 'Credit', text: 'Credit '},
                 ],
+                asset_tags:[ 
+                    {value: null, text: 'Please select an option'},
+                    {value: 'Inventory', text: 'Inventory'},
+                    {value: 'Cash', text: 'Cash'},
+                    {value: 'Cash Equivalents', text: 'Cash Equivalents'},
+                    {value: 'Accounts Receivables', text: 'Accounts Receivables'},
+                    {value: 'Prepaid Expenses', text: 'Prepaid Expenses'},
+                    {value: 'Marketable Securities', text: 'Marketable Securities'},
+                    {value: 'Other Current Assets', text: 'Other Current Assets'},
+
+                    
+                ]
             }
         },
         methods: {
@@ -180,7 +227,8 @@
                 this.$refs['confirmModal'].hide();
             },
             modalSubmit() {
-                let PATH_API = 'transaction/currentasset';
+                let busID = localStorage.getItem('busID');
+                let PATH_API = `transaction/${busID}/currentasset`;
                 let form_data = new FormData();
                 Object.entries(this.form).forEach(entry => {
                     const [key, value] = entry;
@@ -190,7 +238,6 @@
                 this.$axios.post(`/api/${PATH_API}`, form_data, {
                     headers: {
                         'contentType': 'application/json',
-                        "Authorization": "Bearer " + localStorage.getItem("token"),
                     }
                 })
                     .then(jsonResponse => {

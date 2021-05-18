@@ -9,7 +9,7 @@ export const mutations = {
         state.message = message;
     },
     info (state, message) {
-        state.type = 'alert-info';
+        state. type = 'alert-info';
         state.message = message;
     },
     warning(state, message) {

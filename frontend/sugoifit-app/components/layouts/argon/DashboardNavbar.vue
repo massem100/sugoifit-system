@@ -10,14 +10,14 @@
                     'navbar-search-light': type === 'default',
                     'navbar-search-dark': type === 'light',
                   }">
-      <div class="form-group mb-0">
+      <!-- <div class="form-group mb-0">
         <div class="input-group input-group-alternative input-group-merge">
           <div class="input-group-prepend">
             <span class="input-group-text"><i class="fas fa-search"></i></span>
           </div>
           <input class="form-control" placeholder="Search" type="text" />
         </div>
-      </div>
+      </div> -->
       <button type="button" class="close" data-action="search-close" data-target="#navbar-search-main"
               aria-label="Close" > <span aria-hidden="true">×</span>
       </button>
@@ -25,17 +25,9 @@
 
     <!-- Navbar links -->
     <i class="ni ni-lg ni-bell-55 m-2 text-white"></i>
-    <i class="ni ni-lg ni-circle-08 m-2 text-white"></i>
-    <b-link class="m-0" :to = "{name: 'settings-main'}">
-      <b-nav-item-dropdown toggle-class="text-decoration-none"  no-caret>
-          <!-- Using 'button-content' slot -->
-          <template #button-content>
+    <!-- <i class="ni ni-lg ni-circle-08 m-2 text-white"></i> -->
+    <b-link class="m-0" :to = "{name: 'settings'}">
             <i class="ni ni-lg ni-settings-gear-65 m-2 text-white"></i>
-          </template>
-          <b-dropdown-item ><b-link :to="{name: 'settings-business-create'}">Business Profile</b-link></b-dropdown-item>
-          <b-dropdown-item ><b-link :to="{name: 'settings-profile-create'}">User Profile</b-link></b-dropdown-item>
-          <b-dropdown-item ><b-link :to="{name: 'settings-website-create'}"> Edit Website</b-link></b-dropdown-item>
-        </b-nav-item-dropdown>
         </b-link>
     <i @click="Logout" class="ni ni-lg ni-button-power m-2 text-white"></i>
     

@@ -5,11 +5,12 @@ from functools import wraps
 from datetime import datetime, timedelta
 
 # WTF Forms and SQLAlchemy Models
-from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm,orderForm, LTLiabForm, CAForm,ExpForm, RevForm
-from app.model import  accounts, auth, sales, transactions
+from app.forms import RegisterForm, LoginForm, NCAForm, websiteForm,orderForm, CLiabForm, LTLiabForm, CAForm,ExpForm, RevForm, EquityForm
+from app.model import  accounts, auth, sales
 from app.model.financial_statement import Financialstmt, Financialstmtline, Financialstmtlineseq, \
                                           Financialstmtlinealia,Financialstmtdesc 
 from sqlalchemy import func, inspection, event
+from sqlalchemy.inspection import inspect
 
 from flask import request, jsonify, flash, session, _request_ctx_stack, g
 from werkzeug.utils import secure_filename
@@ -17,6 +18,7 @@ from werkzeug.utils import secure_filename
 from flask import Blueprint, current_app
 from app import db, login_manager, principal, csrf_
 from app.auth.routes import requires_auth
+from app.views import form_errors
 
 # Flask-Login imports for session management.
 from flask_login import logout_user, current_user, login_required, login_user
@@ -26,145 +28,151 @@ from flask_principal import RoleNeed, UserNeed, identity_changed, identity_loade
 # Blueprint Configuration
 accounting= Blueprint('accounting', __name__)
 
-def check(): 
-    return "working"
-
 """
---------------------------------------- Financial Statement Routes ----------------------------------------------------------
+--------------------------------------- General Ledger Accounts Routes ----------------------------------------------------------
 """
-
-def account_balances(*args,**accounts): 
+natural_balances = {
+                    "NonCurrentAsset": "Debit", 
+                    "CurrentAsset": "Debit", 
+                    "Currentliability" : "Credit",
+                    "Longtermliability" : "Credit",
+                    "OperatingExpense" : "Debit",
+                    "NonOperatingExpense" : "Debit",
+                    "OperatingRevenue" : "Credit",
+                    "NonOperatingRevenue" : "Credit",
+                    "ShareholdersEquity" : "Credit",
+                   }
+                   
+def account_balances(ledgerID, *args,**accounts): 
     account_bal = []
     for key, value in accounts.items(): 
-        balance = db.session.query(value[0]).order_by(value[1].desc()).first()
+        balance = db.session.query(value).filter_by(ledgerID = ledgerID).order_by(value.id.desc()).first()
         balance = (float(balance.Balance) if balance is not None else 0)
         account_bal.append(balance)
     return account_bal
 
-# def get_last_id(*args,**accounts): 
-#     ids = []
-#     for key, value in accounts.items(): 
-#         last_id = db.session.query(value[0]).order_by(value[1].desc()).first()
-#         last_id = (float(balance.Balance) if balance is not None else 0)
-#         account_bal.append(balance)
-#     return ids
-#     last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-#             last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
+def get_last_id(ledgerID, *args,**accounts): 
+    id_lst = []
+    for key, value in accounts.items(): 
+        last_id = db.session.query(value).filter_by(ledgerID = ledgerID).order_by(value.id.desc()).first()
+        last_id = (int(last_id.id)+1 if last_id is not None else 1)
+        id_lst.append(last_id)
+    return id_lst
 
-
-def bal_debit_cred(amount, *args, **balances): 
+def bal_debit_cred(ledgerID, balance_label, amount, **balances): 
     debit_cred = []
-    for key, value in balances.items(): 
-        debitSum =  value.query.with_entities(func.coalesce(func.sum(value.debitBalance), 0).label("totalDebit")).first()
-        creditSum = value.query.with_entities(func.coalesce(func.sum(value.creditBalance), 0).label("totalCredit")).first()
-        BalanceDC = ("Debit" if float(debitSum.totalDebit) > float(creditSum.totalCredit) else "Credit")
+    for key, value in balances.items():
+        print(type(key)) 
+        total_sum =  value.query.with_entities( value.ledgerID,
+                                                func.coalesce(func.sum(value.debitBalance),0).label("totalDebit"),
+                                                func.coalesce(func.sum(value.creditBalance),0).label("totalCredit")
+                                              ).filter_by(ledgerID = ledgerID).first()
+        if "Debit" in balance_label: 
+            BalanceDC = ("Debit" if float(total_sum.totalDebit) + amount > float(total_sum.totalCredit) else "Credit")
+        elif "Credit" in balance_label: 
+            BalanceDC = ("Debit" if float(total_sum.totalDebit) > float(total_sum.totalCredit) + amount else "Credit")
+        else: 
+            BalanceDC = natural_balances[key]
         debit_cred.append(BalanceDC)
     return debit_cred 
 
-# WHats left: Depreciation Amortization Intangible Tangible 
-@accounting.route('/api/transaction/currentasset', methods = ["POST", "GET"])
+def findLedger(busID, year): 
+    ledger = db.session.query(accounts.GeneralLedger).filter_by(busID =busID, year = year).first()
+    if ledger is None:
+        newledger = accounts.GeneralLedger(ledgerID=None, busID=busID, year=year)
+
+        try:
+            db.session.add(newledger)
+            db.session.commit()
+        except Exception as e:
+            error = str(e)
+            print(error)
+        newledger = db.session.query(accounts.GeneralLedger).filter_by(busID=busID, year=year).first()
+        if newledger is not None: 
+            return newledger.ledgerID
+    else:
+        return ledger.ledgerID
+    
+def prepAccounts(ledgerID, label, amount, *args, **kwargs):
+    account_starter ={} 
+    for  key, value in kwargs.items():
+        account_store = []
+        last_id = get_last_id(ledgerID, key=value)
+        account_store.append(last_id)
+        # Get the balances of Accounts 
+        balances = account_balances(ledgerID, key=value)
+        account_store.append(balances)
+
+        BalanceDC = bal_debit_cred(ledgerID, "Debit", amount, key=value)
+        account_store.append(BalanceDC)
+        account_starter[key]=account_store
+    return account_starter
+
+    
+
+@accounting.route('/api/transaction/<busID>/currentasset', methods = ["POST", "GET"])
 @login_required
 @requires_auth
-def ca_transaction():
+def ca_transaction(busID):
     if request.method == "POST": 
-        if request['form_id'] == "AddCAForm":
-            form = CAForm(request.form)
-            
-            # Add form data
-            asset_name = form.asset_name.data 
-            transaction_date = form.transaction_date.data 
-            asset_desc = form.asset_desc.data 
-            amount = float(form.amount.data)
-            account_affected = form.paid_using.data
-            increase_decrease = form.increase_decrease.data
-            
-            transaction_inputs = [current_user.busID, lifeSpan, dep_type, transaction_date, amount]
+    
+        form = CAForm(request.form)
+        asset_name = form.asset_name.data 
+        transaction_date = form.transaction_date.data 
+        asset_desc = form.asset_desc.data 
+        amount = float(form.amount.data)
+        account_affected = form.paid_using.data
+        increase_decrease = form.increase_decrease.data
+        loanPeriods = form.loan_period.data
+        tag=form.tag.data
+        ledgerID =findLedger(busID, 2021)
+        # FIX HOW DATE IS ADDED__ CURRENTLY HARDCODED
 
-            tag="tag"
-            # Get ID of Non Current Asset to increment 
-            last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-            last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
+        prep_acc = prepAccounts(ledgerID, "Debit", amount, CurrentAsset = accounts.CurrentAsset, Currentliability = accounts.Currentliability)
+        last_ca, CA_Balance, CA_BalanceDC = prep_acc["CurrentAsset"][0][0], prep_acc["CurrentAsset"][1][0],prep_acc["CurrentAsset"][2][0]
+        last_cl, CL_Balance, CL_BalanceDC = prep_acc["Currentliability"][0][0], prep_acc["Currentliability"][1][0],prep_acc["Currentliability"][2][0]
+        # prep_accs = results in a dicitonary {'Non Current Assset': [id, balance, BalanceDC]}
 
-            # last_cl
-            # Get ID of Non Current Asset to increment 
-            last_clID = db.session.query(accounts.Currentliability).order_by(accounts.Currentliability.cliabID.desc()).first()
-            last_cl = (int(last_clID.cliabID)+1 if last_clID is not None else 1)
+        if "Increase" in  increase_decrease: 
+            debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,  "CA" + str(last_ca+1), tag, asset_name, CA_Balance, CA_BalanceDC)
+            if account_affected == "Cash": 
+                creditEntry = accounts.CurrentAsset.credit(last_ca+1,ledgerID, transaction_date, amount,"CA" + str(last_ca), "Cash",  "Cash", CA_Balance, CA_BalanceDC)
 
-            # Get the balances of Accounts 
-            balances = account_balances(NonCurrentAsset =  [accounts.NonCurrentAsset, accounts.NonCurrentAsset.ncaID], 
-                                        CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                        Currentliability =[accounts.Currentliability, accounts.Currentliability.cliabID])
-            NCA_Balance, CA_Balance, CL_Balance = balances[0], balances[1], balances[2]
-            if "Increase" in  increase_decrease: 
-                if account_affected == "Cash": 
-
-                    BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset)
-                    CA_BalanceDC = BalanceDC[0]
-                    # credit entry is cASH
-
-                    debitEntry = accounts.CurrentAsset.debit(last_ca, "CA" + str(last_ca+1), tag, asset_name, CA_Balance, CA_BalanceDC, transaction_inputs)
-                    creditEntry = accounts.CurrentAsset.credit(last_ca+1,"CA" + str(last_ca), tag,  "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
-
-                elif account_affected == "Cheque": 
-                    BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset)
-                    CA_BalanceDC = BalanceDC[0]
-                    # credit entry is cheque
-                    debitEntry = accounts.CurrentAsset.debit(last_ca, "CA" + str(last_ca+1), tag, asset_name, CA_Balance, CA_BalanceDC, transaction_inputs)
-                    creditEntry = accounts.CurrentAsset.credit(last_ca+1,"CA" + str(last_ca),tag, "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
-                else: 
-
-                    BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset, 
-                                                       Currentliability = accounts.Currentliability)
-                    CA_BalanceDC, CL_BalanceDC = BalanceDC[0], BalanceDC[1]
-
-                    debitEntry = accounts.CurrentAsset.debit(last_ca, "CLiab" + str(last_cl), tag, asset_name, CA_Balance, CA_BalanceDC, transaction_inputs)
-                    creditEntry = accounts.Currentliability.credit(last_cl, "CA" + str(last_ca), tag, "Accounts Payable", CL_Balance, CL_BalanceDC, liability_inputs)
-            
-                try:
-                    db.session.add(debitEntry)
-                    db.session.add(creditEntry)
-                    db.session.commit()
-                except Exception as e:
-                     error = str(e)
-                     print(error)
-                return jsonify({'message': 'Transaction sucessfully added.'})   
+            elif account_affected == "Cheque": 
+                creditEntry = accounts.CurrentAsset.credit(last_ca+1,ledgerID, transaction_date, amount,"CA" + str(last_ca),'Cash Equivalents', "Cash Equivalents", CA_Balance, CA_BalanceDC)
             else: 
-                if account_affected == "Cash": 
-                    BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset)             
-                    CA_BalanceDC = BalanceDC[0]
+                BalanceDC = bal_debit_cred(current_user.ledgerID, amount, Currentliability = accounts.Currentliability)
+                CL_BalanceDC = BalanceDC[0]
 
-                    debitEntry = accounts.CurrentAsset.debit(last_ca, "CA" + str(last_ca+1), tag, "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
-                    creditEntry = accounts.CurrentAsset.credit(last_ca+1,"CA" + str(last_ca),tag, asset_name, CA_Balance, CA_BalanceDC, transaction_inputs)
-                elif account_affected == "Cheque": 
-                    BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset)             
-                    CA_BalanceDC = BalanceDC[0]
-
-                    debitEntry = accounts.CurrentAsset.debit(last_ca, "CA" + str(last_ca+1), tag, "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
-                    creditEntry = accounts.CurrentAsset.credit(last_ca+1,"CA" + str(last_ca), tag, asset_name, CA_Balance, CA_BalanceDC, transaction_inputs)
-                else: 
-                    BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset)
-                    CA_BalanceDC = BalanceDC[0]
-                    debitEntry = accounts.CurrentAsset.debit(last_ca, "CA" + str(last_ca+1), tag, "Accounts Receivable", CA_Balance, CA_BalanceDC, transaction_inputs)
-                    creditEntry = accounts.CurrentAsset.credit(last_ca+1, "CA" + str(last_ca),tag,  asset_name, CA_Balance, CA_BalanceDC, transaction_inputs)
-                    
-                try:
-                    db.session.add(debitEntry)
-                    db.session.add(creditEntry)
-                    db.session.commit()
-                except Exception as e:
-                     error = str(e)
-                     print(error)
-                return jsonify({'message': 'Transaction sucessfully added.'})   
+                debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,  "CLiab" + str(last_cl), tag, asset_name, CA_Balance, CA_BalanceDC)
+                creditEntry = accounts.Currentliability.credit(last_cl, ledgerID, transaction_date, loanPeriods, amount, "CA" + str(last_ca), "Accounts Payable", "Accounts Payable", CL_Balance, CL_BalanceDC)
+        
         else: 
-            jsonify({'message': 'Form does not match - Select Non Current Asset Form'})    
+            creditEntry = accounts.CurrentAsset.credit(last_ca+1,ledgerID, transaction_date, amount, "CA" + str(last_ca),tag, asset_name, CA_Balance, CA_BalanceDC)
+            if account_affected == "Cash": 
+                debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,"CA" + str(last_ca+1), "Cash", "Cash", CA_Balance, CA_BalanceDC)
+            elif account_affected == "Cheque": 
+                debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,  "CA" + str(last_ca+1), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC)
+            else: 
+                debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,  "CA" + str(last_ca+1), "Accounts Receivable", "Accounts Receivable", CA_Balance, CA_BalanceDC)
+        try:
+            db.session.add(debitEntry)
+            db.session.add(creditEntry)
+            db.session.commit()
+        except Exception as e:
+                error = str(e)
+                print(error)
+        return jsonify({'message': 'Transaction sucessfully added.'})   
+        
     else: 
         error_list = form_errors(form)
         return jsonify(errors= error_list)
 
-@accounting.route('/api/transaction/noncurrentasset', methods = ["POST", "GET"])
+# WHats left: Depreciation Amortization Intangible Tangible 
+@accounting.route('/api/transaction/<busID>/noncurrentasset', methods = ["POST", "GET"])
 @login_required
 @requires_auth
-def nca_transaction():
+def nca_transaction(busID):
     if request.method == "POST":
         if request.form['form_id'] == "AddNCAForm":
             form = NCAForm(request.form)
@@ -172,105 +180,61 @@ def nca_transaction():
             asset_name = form.asset_name.data 
             transaction_date = form.transaction_date.data 
             dep_type = form.dep_type.data
-            dep_rate = form.dep_rate.data
             asset_desc = form.asset_desc.data 
             amount = float(form.amount.data)
             account_affected = form.paid_using.data
-            lifeSpan = form.asset_lifespan.data
+            lifeSpan = int(form.asset_lifespan.data)
+            dueDate = form.due_date.data 
+            totalUnits = 1
+            salvageVal = float(form.salvage_val.data )
+            remainingLife = 1  #form.remainingLife.data  #calculate remaining life from lifeSpan
             bought_sold = form.bought_sold.data
+            tag= form.tag.data
+            ledgerID =findLedger(busID, 2021)
+            """ How to deal with INTANGIBLE ASSETS """
             # CHANGE TRANSACTION DATE TO DUE DATE
-            transaction_inputs = [current_user.busID, lifeSpan, dep_type, transaction_date, amount]
-            liability_inputs = [current_user.busID, transaction_date, transaction_date, amount]
-            
-            # Get ID of Non Current Asset to increment 
-            last_ncaID = db.session.query(accounts.NonCurrentAsset).order_by(accounts.NonCurrentAsset.ncaID.desc()).first()
-            last_nca = (int(last_ncaID.ncaID)+1 if last_ncaID is not None else 1)
 
-            # Get ID of Non Current Asset to increment 
-            last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-            last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
+            # Calculate Net Asset by subtracting Depreciation from Asset at Cost 
+            assetCost = amount - accounts.NonCurrentAsset.calcDepExpense(dep_type, amount, lifeSpan, totalUnits, salvageVal, remainingLife)
 
-            # last_cl
-            # Get ID of Non Current Asset to increment 
-            last_clID = db.session.query(accounts.Currentliability).order_by(accounts.Currentliability.cliabID.desc()).first()
-            last_cl = (int(last_clID.cliabID)+1 if last_clID is not None else 1)
-
-            # Get the balances of Accounts 
-            balances = account_balances(NonCurrentAsset =  [accounts.NonCurrentAsset, accounts.NonCurrentAsset.ncaID], 
-                                        CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                        Currentliability =[accounts.Currentliability, accounts.Currentliability.cliabID])
-            NCA_Balance, CA_Balance, CL_Balance = balances[0], balances[1], balances[2]
-                                
+            # Get Last Account ID, Balance, Label Balance
+            prep_acc = prepAccounts(ledgerID, "Debit", amount, NonCurrentAsset = accounts.NonCurrentAsset, CurrentAsset = accounts.CurrentAsset,
+                                                                Currentliability = accounts.Currentliability)
+            last_ca, CA_Balance, CA_BalanceDC = prep_acc["CurrentAsset"][0][0], prep_acc["CurrentAsset"][1][0],prep_acc["CurrentAsset"][2][0]
+            last_cl, CL_Balance, CL_BalanceDC = prep_acc["Currentliability"][0][0], prep_acc["Currentliability"][1][0],prep_acc["Currentliability"][2][0]
+            last_nca, NCA_Balance, NCA_BalanceDC = prep_acc["NonCurrentAsset"][0][0], prep_acc["NonCurrentAsset"][1][0],prep_acc["NonCurrentAsset"][2][0]
             
             if "Bought" in  bought_sold: 
+                debitEntry = accounts.NonCurrentAsset.debit(last_nca, ledgerID, transaction_date, assetCost,lifeSpan, dep_type, "CA" + str(last_ca), tag, asset_name, NCA_Balance, NCA_BalanceDC)
                 if account_affected == "Cash": 
-                    BalanceDC = bal_debit_cred(amount, NonCurrentAsset = accounts.NonCurrentAsset, 
-                                                       CurrentAsset = accounts.CurrentAsset)
-                    NCA_BalanceDC, CA_BalanceDC = BalanceDC[0], BalanceDC[1]
-                    
-                    debitEntry = accounts.NonCurrentAsset.debit(last_nca,"CA" + str(last_ca), asset_name, NCA_Balance, NCA_BalanceDC, transaction_inputs)
-                    creditEntry = accounts.CurrentAsset.credit(last_ca,"NCA" + str(last_nca), "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, transaction_date, assetCost, "NCA" + str(last_nca), "Cash", "Cash", CA_Balance, CA_BalanceDC)
 
                 elif account_affected == "Cheque": 
-                    BalanceDC = bal_debit_cred(amount, NonCurrentAsset = accounts.NonCurrentAsset, 
-                                                       CurrentAsset = accounts.CurrentAsset)
-                    NCA_BalanceDC, CA_BalanceDC = BalanceDC[0], BalanceDC[1]
-
-                    debitEntry = accounts.NonCurrentAsset.debit(last_nca,"CA" + str(last_ca), asset_name, CA_Balance, NCA_BalanceDC, transaction_inputs)
-                    creditEntry = accounts.CurrentAsset.credit(last_ca,"NCA" + str(last_nca), "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.CurrentAsset.credit(last_ca,ledgerID, transaction_date, assetCost,"NCA" + str(last_nca), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC)
 
                 else: 
-                    BalanceDC = bal_debit_cred(amount, NonCurrentAsset = accounts.NonCurrentAsset, 
-                                                       Currentliability = accounts.Currentliability)
-                    NCA_BalanceDC, CL_BalanceDC = BalanceDC[0], BalanceDC[1]
 
-                    debitEntry = accounts.NonCurrentAsset.debit(last_nca, "CLiab" + str(last_cl), asset_name, NCA_Balance, NCA_BalanceDC, transaction_inputs)
-                    creditEntry = accounts.Currentliability.credit(last_cl, "NCA" + str(last_nca), "Accounts Payable", CL_Balance, CL_BalanceDC, liability_inputs)
-
-                try:
-                    db.session.add(debitEntry)
-                    db.session.add(creditEntry)
-                    db.session.commit()
-                except Exception as e:
-                     error = str(e)
-                     print(error)
-                
-                return jsonify({'message': 'Transaction sucessfully added.'})   
-
+                    debitEntry = accounts.NonCurrentAsset.debit(last_nca, ledgerID, transaction_date, assetCost,lifeSpan, dep_type, "CLiab" + str(last_cl), tag, asset_name, NCA_Balance, NCA_BalanceDC)
+                    creditEntry = accounts.Currentliability.credit(last_cl, ledgerID, transaction_date, loan_periods, amount,"NCA" + str(last_nca), "Accounts Payable" ,"Accounts Payable", CL_Balance, CL_BalanceDC)
             else: 
+                creditEntry = accounts.NonCurrentAsset.credit(last_nca,ledgerID, transaction_date, assetCost,lifeSpan, dep_type,"CA" +str(last_ca),tag, asset_name, NCA_Balance, NCA_BalanceDC)
                 if account_affected == "Cash": 
-
-                    BalanceDC = bal_debit_cred(amount, NonCurrentAsset = accounts.NonCurrentAsset, 
-                                                       CurrentAsset = accounts.CurrentAsset)
-                    NCA_BalanceDC, CA_BalanceDC = BalanceDC[0], BalanceDC[1]
-
-                    debitEntry = accounts.CurrentAsset.debit(last_ca, "NCA" + str(last_nca), "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
-                    creditEntry = accounts.NonCurrentAsset.credit(last_nca,"CA" +str(last_ca), asset_name, NCA_Balance, NCA_BalanceDC, transaction_inputs)
-
-                elif account_affected == "Cheque": 
-                    NCA_related_entry = "Cash" +str(transaction_inputs[0])
-                    BalanceDC = bal_debit_cred(amount, NonCurrentAsset = accounts.NonCurrentAsset, 
-                                                       CurrentAsset = accounts.CurrentAsset)
-                    NCA_BalanceDC, CA_BalanceDC = BalanceDC[0], BalanceDC[1]
-                    debitEntry = accounts.CurrentAsset.debit(last_ca, "NCA" + str(last_nca), "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
-                    creditEntry = accounts.NonCurrentAsset.credit(last_nca,"CA" +str(last_ca), asset_name, NCA_Balance, NCA_BalanceDC, transaction_inputs)
-
-                else: 
-                    BalanceDC = bal_debit_cred(amount, NonCurrentAsset = accounts.NonCurrentAsset, 
-                                                       CurrentAsset = accounts.CurrentAsset)
-                    NCA_BalanceDC, CA_BalanceDC = BalanceDC[0], BalanceDC[1]
-                    debitEntry = accounts.CurrentAsset.debit(last_ca, "NCA" + str(last_nca), "Accounts Receivable", CA_Balance, CA_BalanceDC, transaction_inputs)
-                    creditEntry = accounts.NonCurrentAsset.credit(last_nca, "CA" + str(last_ca), asset_name, NCA_Balance, NCA_BalanceDC, transaction_inputs)
+                    debitEntry = accounts.CurrentAsset.debit(last_ca, ledgerID, transaction_date, assetCost,  "NCA" + str(last_nca),"Cash","Cash", CA_Balance, CA_BalanceDC)
                     
-                try:
-                    db.session.add(debitEntry)
-                    db.session.add(creditEntry)
-                    db.session.commit()
-                except Exception as e:
-                     error = str(e)
-                     print(error)
+                elif account_affected == "Cheque": 
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, assetCost,  "NCA" + str(last_nca), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC) 
+                else: 
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, assetCost, "NCA" + str(last_nca),"Accounts Receivable", "Accounts Receivable", CA_Balance, CA_BalanceDC)
+                    
+            try:
+                db.session.add(debitEntry)
+                db.session.add(creditEntry)
+                db.session.commit()
+            except Exception as e:
+                    error = str(e)
+                    print(error)
 
-                return jsonify({'message': 'Transaction sucessfully added.'})                   
+            return jsonify({'message': 'Transaction sucessfully added.'})                   
         else: 
             jsonify({'message': 'Form does not match - Select Non Current Asset Form'})    
     else: 
@@ -278,524 +242,353 @@ def nca_transaction():
         return jsonify(errors= error_list)
 
         
-@accounting.route('/api/transaction/currentliability', methods = ["POST", "GET"])
+@accounting.route('/api/transaction/<busID>/currentliability', methods = ["POST", "GET"])
 @login_required
 @requires_auth
-def cl_transaction():
+def cl_transaction(busID):
     if request.method == "POST": 
-        if request['form_id'] == "CLiabForm": 
-            form = CLiabForm(request.form)
-            liab_name = form.liab_name.data
-            person_owed = form.person_owed.data 
-            loan_rate = form.loan_rate.data 
-            loan_periods = form.loan_periods.data 
-            borrow_date = form.borrow_date.data 
-            payment_start_date = form.payment_start_date.data 
-            amount_borrowed = form.amount_borrowed.data 
-            account_affected = form.account_affected.data
-            increase_decrease = form.increase_decrease.data
-            # I need to calculate interest on long term loan 
-            # How to handle the current portion of long term loan that should be paid out
-            return 1 
-    else:  
+        form = CLiabForm(request.form)
+        liab_name = form.liab_name.data
+        person_owed = form.person_owed.data 
+        loan_rate = form.loan_rate.data 
+        loan_periods = form.loan_periods.data 
+        borrow_date = form.borrow_date.data 
+        payment_start_date = form.payment_start_date.data 
+        amount_borrowed = float(form.amount_borrowed.data )
+        account_affected = form.account_affected.data
+        increase_decrease = form.increase_decrease.data
+        tag = form.tag.data
+        ledgerID =findLedger(busID, 2021)
+        # new year = datetime.strptime(borrow_date, "%Y-%m-%d").year + loan_periods
+
+        # Get Last Account ID, Balance, Label Balance
+        prep_acc = prepAccounts(ledgerID, "Credit", amount_borrowed, CurrentAsset = accounts.CurrentAsset, Currentliability = accounts.Currentliability)
+        last_ca, CA_Balance, CA_BalanceDC = prep_acc["CurrentAsset"][0][0], prep_acc["CurrentAsset"][1][0],prep_acc["CurrentAsset"][2][0]
+        last_cl, CL_Balance, CL_BalanceDC = prep_acc["Currentliability"][0][0], prep_acc["Currentliability"][1][0],prep_acc["Currentliability"][2][0]
+    
+                            
+        if "Increase" in increase_decrease: 
+            creditEntry = accounts.Currentliability.credit(last_cl, ledgerID, borrow_date, loan_periods, amount_borrowed, "CA" +str (last_ca), tag, liab_name, CL_Balance, CL_BalanceDC)
+            if account_affected == "Cash": 
+                debitEntry = accounts.CurrentAsset.debit(last_ca, ledgerID, borrow_date, amount_borrowed,  "CL" +str(last_cl), "Cash", "Cash", CA_Balance, CA_BalanceDC)
+            else:
+                debitEntry = accounts.CurrentAsset.debit(last_ca,  ledgerID, borrow_date, amount_borrowed,  "CL" +str(last_cl), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC)
+                
+        else: 
+            debitEntry = accounts.Currentliability.debit(last_cl, ledgerID, borrow_date, loan_periods, amount_borrowed,  "CA" +str(last_ca), tag, liab_name, CL_Balance, CL_BalanceDC)
+            if account_affected == "Cash": 
+                creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, borrow_date, amount_borrowed, "CL" +str(last_cl),"Cash", "Cash", CA_Balance, CA_BalanceDC)
+            else:
+                creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, borrow_date, amount_borrowed, "CL" +str(last_cl), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC)
+        try:
+            db.session.add(debitEntry)
+            db.session.add(creditEntry)
+            db.session.commit()
+        except Exception as e:
+            error = str(e)
+            print(error)
+        return jsonify({'message': 'Transaction sucessfully added.'}) 
+    else:
         error_list = form_errors(form)
         return jsonify(errors= error_list)   
 
-@accounting.route('/api/transaction/ltliability', methods = ["POST", "GET"])
+@accounting.route('/api/transaction/<busID>/ltliability', methods = ["POST", "GET"])
 @login_required
 @requires_auth
-def lt_transaction():
+def lt_transaction(busID):
     if request.method == "POST": 
         if request['form_id'] == "LTLiabForm":
             form = LTLiabForm(request.form)
+            
             liab_name = form.liab_name.data
             person_owed = form.person_owed.data 
             loan_rate = form.loan_rate.data 
             loan_periods = form.loan_periods.data 
             borrow_date = form.borrow_date.data 
             payment_start_date = form.payment_start_date.data 
-            amount_borrowed = form.amount_borrowed.data 
-            return 1
-        
-
-@accounting.route('/api/transaction/expense', methods = ["POST", "GET"])
-@login_required
-@requires_auth
-def exp_transaction():
-    if request.method == "POST": 
-        if request['form_id'] == "ExpForm": 
-            form = ExpenseForm(request.form)
-
-            expense_name = form.expense_name.data
-            transaction_date = form.transaction_date.data 
-            expense_type = form.expense_type.data
-            expense_desc = form.expense_desc.data 
-            amount = float(form.amount.data)
-            account_affected = form.paid_using.data
+            amount_borrowed = float(form.amount_borrowed.data )
+            account_affected = form.account_affected.data
             increase_decrease = form.increase_decrease.data
+            tag = form.tag.data
+            ledgerID =findLedger(busID, 2021) 
 
-            if "Operating" in  expense_type: 
-                # use Operating classess.. 
-                if "Increase" in increase_decrease: 
-                    # increase operating expense
-                    if account_affected == "Cash": 
-                        # Paid using Cash 
-                         # Get ID of Non Current Asset to increment 
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
-
-                        last_opexID = db.session.query(accounts.OperatingExpense).order_by(accounts.OperatingExpense.opexID.desc()).first()
-                        last_opex = (int(last_opexID.opexID)+1 if last_opexID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    OperatingExpense =[accounts.OperatingExpense, accounts.OperatingExpense.opexID])
-                        CA_Balance, OE_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset, OperatingExpense = accounts.OperatingExpense)
-                        CA_BalanceDC, OE_BalanceDC = BalanceDC[0], BalanceDC[1]
-                        # credit entry is cASH
-                        debitEntry = accounts.OperatingExpense.debit(last_opex, "CA" + str(last_ca), asset_name, OE_Balance, OE_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.CurrentAsset.credit(last_ca,"OE" + str(last_opex), "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
-
-                    else: 
-                        # paid using cheque 
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
-
-                        last_opexID = db.session.query(accounts.OperatingExpense).order_by(accounts.OperatingExpense.opexID.desc()).first()
-                        last_opex = (int(last_opexID.opexID)+1 if last_opexID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    OperatingExpense =[accounts.OperatingExpense, accounts.OperatingExpense.opexID])
-                        CA_Balance, OE_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset, OperatingExpense = accounts.OperatingExpense)
-                        CA_BalanceDC, OE_BalanceDC = BalanceDC[0], BalanceDC[1]
-                        # credit entry is cASH
-                        debitEntry = accounts.OperatingExpense.debit(last_opex, "CA" + str(last_ca), asset_name, OE_Balance, OE_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.CurrentAsset.credit(last_ca,"OE" + str(last_opex), "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
-
-                    # Add to db...
-                    try:
-                        db.session.add(debitEntry)
-                        db.session.add(creditEntry)
-                        db.session.commit()
-                    except Exception as e:
-                        error = str(e)
-                        print(error)
-                    return jsonify({'message': 'Transaction sucessfully added.'}) 
-                else: 
-                    # decrease operating expense
-                    if account_affected == "Cash": 
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
-
-                        last_opexID = db.session.query(accounts.OperatingExpense).order_by(accounts.OperatingExpense.opexID.desc()).first()
-                        last_opex = (int(last_opexID.opexID)+1 if last_opexID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    OperatingExpense =[accounts.OperatingExpense, accounts.OperatingExpense.opexID])
-                        CA_Balance, OE_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset, OperatingExpense= accounts.OperatingExpense)
-                        CA_BalanceDC, OE_BalanceDC = BalanceDC[0], BalanceDC[1]
-                        
-                        debitEntry = accounts.CurrentAsset.debit(last_ca,"OE" + str(last_opex), "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.OperatingExpense.credit(last_opex, "CA" + str(last_ca), asset_name, OE_Balance, OE_BalanceDC, transaction_inputs)
+            # CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE CABALCNE TO LTBALANCE
+            
+            # new year = datetime.strptime(borrow_date, "%Y-%m-%d").year + loan_periods
+            # Get Last Account ID, Balance, Label Balance
+            prep_acc = prepAccounts(ledgerID, "Credit", amount_borrowed, CurrentAsset = accounts.CurrentAsset, Currentliability = accounts.Currentliability)
+            last_ca, CA_Balance, CA_BalanceDC = prep_acc["CurrentAsset"][0][0], prep_acc["CurrentAsset"][1][0],prep_acc["CurrentAsset"][2][0]
+            last_cl, CL_Balance, CL_BalanceDC = prep_acc["Currentliability"][0][0], prep_acc["Currentliability"][1][0],prep_acc["Currentliability"][2][0]
+             # prep_accs = results in a dicitonary {'Non Current Assset': [id, balance, BalanceDC]}
+                                                        
+            if "Increase" in increase_decrease: 
+                creditEntry = accounts.Currentliability.credit(last_cl, ledgerID, borrow_date, loan_periods, amount_borrowed, "CA" +str (last_ca), tag, liab_name, CL_Balance, CL_BalanceDC)
+                if account_affected == "Cash": 
+                    debitEntry = accounts.CurrentAsset.debit(last_ca, ledgerID, borrow_date, amount_borrowed,  "CL" +str(last_cl), "Cash", "Cash", CA_Balance, CA_BalanceDC)
+                else:
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,  ledgerID, borrow_date, amount_borrowed,  "CL" +str(last_cl), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC)
                     
-                    else:
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
-
-                        last_opexID = db.session.query(accounts.OperatingExpense).order_by(accounts.OperatingExpense.opexID.desc()).first()
-                        last_opex = (int(last_opexID.opexID)+1 if last_opexID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    OperatingExpense =[accounts.OperatingExpense, accounts.OperatingExpense.opexID])
-                        CA_Balance, OE_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset, OperatingExpense = accounts.OperatingExpense)
-                        CA_BalanceDC, OE_BalanceDC = BalanceDC[0], BalanceDC[1]
-                        
-                        debitEntry = accounts.CurrentAsset.debit(last_ca,"OE" + str(last_opex), "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.OperatingExpense.credit(last_opex, "CA" + str(last_ca), asset_name, OE_Balance, OE_BalanceDC, transaction_inputs)
-                        
-                        
-                    # Add to db... 
-                    try:
-                        db.session.add(debitEntry)
-                        db.session.add(creditEntry)
-                        db.session.commit()
-                    except Exception as e:
-                        error = str(e)
-                        print(error)
-                    return jsonify({'message': 'Transaction sucessfully added.'})  
             else: 
-                # use non operating expense class 
-                if "Increase" in increase_decrease: 
-                    # increase operating expense
-                    if account_affected == "Cash": 
-                        # Paid using Cash 
-                         # Get ID of Non Current Asset to increment 
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
-
-                        last_nOpexID = db.session.query(accounts.NonOperatingExpense).order_by(accounts.NonOperatingExpense.nOpexID.desc()).first()
-                        last_nOpex = (int(last_nOpexID.nOpexID)+1 if last_nOpexID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    NonOperatingExpense =[accounts.NonOperatingExpense, accounts.NonOperatingExpense.opexID])
-                        CA_Balance, nOE_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset, NonOperatingExpense = accounts.NonOperatingExpense)
-                        CA_BalanceDC, nOE_BalanceDC = BalanceDC[0], BalanceDC[1]
-                        # credit entry is cASH
-                        debitEntry = accounts.NonOperatingExpense.debit(last_nOpex, "CA" + str(last_ca), asset_name, nOE_Balance, nOE_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.CurrentAsset.credit(last_ca,"NOE" + str(last_nOpex), "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
-
-                    else: 
-                        # paid using cheque 
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
-
-                        last_nOpexID = db.session.query(accounts.NonOperatingExpense).order_by(accounts.NonOperatingExpense.nOpexID.desc()).first()
-                        last_nOpex = (int(last_nOpexID.nOpexID)+1 if last_nOpexID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    NonOperatingExpense =[accounts.NonOperatingExpense, accounts.NonOperatingExpense.opexID])
-                        CA_Balance, nOE_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset, NonOperatingExpense = accounts.NonOperatingExpense)
-                        CA_BalanceDC, nOE_BalanceDC = BalanceDC[0], BalanceDC[1]
-                        # credit entry is cASH
-                        debitEntry = accounts.NonOperatingExpense.debit(last_nOpex, "CA" + str(last_ca), asset_name, nOE_Balance, nOE_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.CurrentAsset.credit(last_ca,"NOE" + str(last_nOpex), "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
-
-                    # Add to db...
-                    try:
-                        db.session.add(debitEntry)
-                        db.session.add(creditEntry)
-                        db.session.commit()
-                    except Exception as e:
-                        error = str(e)
-                        print(error)
-                    return jsonify({'message': 'Transaction sucessfully added.'}) 
-                else: 
-                    # decrease operating expense
-                    if account_affected == "Cash": 
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
-
-                        last_nOpexID = db.session.query(accounts.NonOperatingExpense).order_by(accounts.NonOperatingExpense.opexID.desc()).first()
-                        last_nOpex = (int(last_nOpexID.nOpexID)+1 if last_nOpexID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    NonOperatingExpense =[accounts.NonOperatingExpense, accounts.NonOperatingExpense.nOpexID])
-                        CA_Balance, nOE_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset, NonOperatingExpense =accounts.NonOperatingExpense)
-                        CA_BalanceDC, nOE_BalanceDC = BalanceDC[0], BalanceDC[1]
-                        
-                        debitEntry = accounts.CurrentAsset.debit(last_ca,"NOE" + str(last_nOpex), "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.NonOperatingExpense.credit(last_nOpex, "CA" + str(last_ca), asset_name, nOE_Balance, nOE_BalanceDC, transaction_inputs)
-                    else:
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
-
-                        last_nOpexID = db.session.query(accounts.NonOperatingExpense).order_by(accounts.NonOperatingExpense.nOpexID.desc()).first()
-                        last_nOpex = (int(last_nOpexID.nOpexID)+1 if last_nOpexID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    OperatingExpense =[accounts.NonOperatingExpense, accounts.NonOperatingExpense.nOpexID])
-                        CA_Balance, nOE_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset, NonOperatingExpense =accounts.NonOperatingExpense)
-                        CA_BalanceDC, nOE_BalanceDC = BalanceDC[0], BalanceDC[1]
-                        
-                        debitEntry = accounts.CurrentAsset.debit(last_ca,"NOE" + str(last_nOpex), "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.NonOperatingExpense.credit(last_nOpex, "CA" + str(last_ca), asset_name, nOE_Balance, nOE_BalanceDC, transaction_inputs)
-                        
-                        
-                    # Add to db... 
-                    try:
-                        db.session.add(debitEntry)
-                        db.session.add(creditEntry)
-                        db.session.commit()
-                    except Exception as e:
-                        error = str(e)
-                        print(error)
-                    return jsonify({'message': 'Transaction sucessfully added.'})  
-
-        else: 
-            jsonify({'message': 'Form does not match - Select Non Current Asset Form'})    
-    else: 
-        error_list = form_errors(form)
-        return jsonify(errors= error_list)
-
-@accounting.route('/api/transaction/revenue', methods = ["POST", "GET"])
-@login_required
-@requires_auth
-def rev_transaction():
-    if request.method == "POST": 
-        if request['form_id'] == "RevForm": 
-            form = RevenueForm(request.form)
-            revenue_name = form.revenue_name.data 
-            revenue_type = form.revenue_type.data
-            transaction_date = form.transaction_date.data
-            revenue_desc = form.revenue_desc.data
-            amount = form.amount.data 
-            account_affected = form.paid_using.data   
-            increase_decrease = form.increase_decrease.data    
+                debitEntry = accounts.Currentliability.debit(last_cl, ledgerID, borrow_date, loan_periods, amount_borrowed,  "CA" +str(last_ca), tag, liab_name, CL_Balance, CL_BalanceDC)
+                if account_affected == "Cash": 
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, borrow_date, amount_borrowed, "CL" +str(last_cl),"Cash", "Cash", CA_Balance, CA_BalanceDC)
+                else:
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, borrow_date, amount_borrowed, "CL" +str(last_cl), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC)
+            try:
+                db.session.add(debitEntry)
+                db.session.add(creditEntry)
+                db.session.commit()
+            except Exception as e:
+                error = str(e)
+                print(error)
+            return jsonify({'message': 'Transaction sucessfully added.'}) 
+        else:
+            error_list = form_errors(form)
+            return jsonify(errors= error_list)   
             
 
-            if "Operating" in  revenue_type: 
-                # use Operating classess.. 
-                if "Increase" in increase_decrease: 
-                    # increase operating expense
-                    if account_affected == "Cash": 
-                        # Paid using Cash 
-                         # Get ID of Non Current Asset to increment 
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
+@accounting.route('/api/transaction/<busID>/expense', methods = ["POST", "GET"])
+@login_required
+@requires_auth
+def exp_transaction(busID):
+    if request.method == "POST": 
+        form = ExpForm(request.form)
 
-                        last_opRevenueID = db.session.query(accounts.OperatingRevenue).order_by(accounts.OperatingRevenue.opRevenueID.desc()).first()
-                        last_opRevenueID = (int(last_opRevenueID.opRevenueID)+1 if last_opRevenueID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    OperatingRevenue =[accounts.OperatingRevenue, accounts.OperatingRevenue.opRevenueID])
-                        CA_Balance, OR_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset, OperatingRevenue = accounts.OperatingRevenue)
-                        CA_BalanceDC, OR_BalanceDC = BalanceDC[0], BalanceDC[1]
-
-                        # credit entry is cASH
-                       
-                        debitEntry = accounts.CurrentAsset.debit(last_ca,"OR" + str(last_opRevenueID), "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.OperatingRevenue.credit(last_opRevenueID, "CA" + str(last_ca), revenue_name, OR_Balance, OR_BalanceDC, transaction_inputs)
-
-                    else: 
-                        # Paid using Cheque
-                         # Get ID of Non Current Asset to increment 
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
-
-                        last_opRevenueID = db.session.query(accounts.OperatingRevenue).order_by(accounts.OperatingRevenue.opRevenueID.desc()).first()
-                        last_opRevenueID = (int(last_opRevenueID.opRevenueID)+1 if last_opRevenueID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    OperatingRevenue =[accounts.OperatingRevenue, accounts.OperatingRevenue.opRevenueID])
-                        CA_Balance, OR_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset, OperatingRevenue = accounts.OperatingRevenue)
-                        CA_BalanceDC, OR_BalanceDC = BalanceDC[0], BalanceDC[1]
-
-                        # credit entry is cASH
-                        
-                        debitEntry = accounts.CurrentAsset.debit(last_ca,"OR" + str(last_opRevenueID), "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.OperatingRevenue.credit(last_opRevenueID, "CA" + str(last_ca), revenue_name, OR_Balance, OR_BalanceDC, transaction_inputs)
-                    # Add to db...
-                    try:
-                        db.session.add(debitEntry)
-                        db.session.add(creditEntry)
-                        db.session.commit()
-                    except Exception as e:
-                        error = str(e)
-                        print(error)
-                    return jsonify({'message': 'Transaction sucessfully added.'}) 
+        expense_name = form.expense_name.data
+        transaction_date = form.transaction_date.data 
+        expense_category = form.expense_type.data
+        expense_desc = form.expense_desc.data 
+        amount = float(form.amount.data)
+        account_affected = form.paid_using.data
+        increase_decrease = form.increase_decrease.data
+        tag= form.tag.data
+        ledgerID =findLedger(busID, 2021)
+        
+        # Get Last Account ID, Balance, Label Balance
+        prep_acc = prepAccounts(ledgerID, "Credit", amount, CurrentAsset = accounts.CurrentAsset, OperatingExpense = accounts.OperatingExpense,
+                                NonOperatingExpense = accounts.NonOperatingExpense)
+        last_ca, CA_Balance, CA_BalanceDC = prep_acc["CurrentAsset"][0][0], prep_acc["CurrentAsset"][1][0],prep_acc["CurrentAsset"][2][0]
+        last_opex,  OE_Balance, OE_BalanceDC = prep_acc["OperatingExpense"][0][0], prep_acc["OperatingExpense"][1][0],prep_acc["OperatingExpense"][2][0]
+        last_nOpex, nOE_Balance, nOE_BalanceDC = prep_acc["NonOperatingExpense"][0][0], prep_acc["NonOperatingExpense"][1][0],prep_acc["NonOperatingExpense"][2][0]
+    
+        if "Operating" in  expense_category: 
+            # use Operating classess.. 
+            if "Increase" in increase_decrease: 
+                debitEntry = accounts.OperatingExpense.debit(last_opex, ledgerID, transaction_date, expense_category, amount,  "CA" + str(last_ca), tag, expense_name, OE_Balance, OE_BalanceDC)
+                if account_affected == "Cash": 
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, transaction_date, amount, "OE" + str(last_opex), tag,"Cash", CA_Balance, CA_BalanceDC)
                 else: 
-                    # decrease operating revenue
-                    if account_affected == "Cash": 
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
-
-                        last_opRevenueID = db.session.query(accounts.OperatingRevenue).order_by(accounts.OperatingRevenue.opRevenueID.desc()).first()
-                        last_opRevenueID = (int(last_opRevenueID.opRevenueID)+1 if last_opRevenueID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    OperatingRevenue =[accounts.OperatingRevenue, accounts.OperatingRevenue.opRevenueID])
-                        CA_Balance, OR_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset, OperatingRevenue =accounts.OperatingRevenue)
-                        CA_BalanceDC, OR_BalanceDC = BalanceDC[0], BalanceDC[1]
-                        
-                        debitEntry = accounts.OperatingRevenue.debit(last_ca,"CA" + str(last_ca+1), "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.CurrentAsset.credit(last_ca+1, "CA" + str(last_ca), asset_name, CA_Balance, CA_BalanceDC, transaction_inputs)
-                    else:
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
-
-                        last_opexID = db.session.query(accounts.OperatingExpense).order_by(accounts.OperatingExpense.opexID.desc()).first()
-                        last_opex = (int(last_opexID.opexID)+1 if last_opexID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    OperatingExpense =[accounts.OperatingExpense, accounts.OperatingExpense.opexID])
-                        CA_Balance, OE_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset)
-                        CA_BalanceDC = BalanceDC[0]
-                        
-                        debitEntry = accounts.CurrentAsset.debit(last_ca,"CA" + str(last_ca+1), "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.CurrentAsset.credit(last_ca+1, "CA" + str(last_ca), asset_name, CA_Balance, CA_BalanceDC, transaction_inputs)
-                        
-                        
-                    # Add to db... 
-                    try:
-                        db.session.add(debitEntry)
-                        db.session.add(creditEntry)
-                        db.session.commit()
-                    except Exception as e:
-                        error = str(e)
-                        print(error)
-                    return jsonify({'message': 'Transaction sucessfully added.'})  
+                    creditEntry = accounts.CurrentAsset.credit(last_ca,ledgerID, transaction_date, amount, "OE" + str(last_opex), tag,"Cash Equivalents", CA_Balance, CA_BalanceDC)
             else: 
-                # use non operating expense class 
-                if "Increase" in increase_decrease: 
-                    # increase operating expense
-                    if account_affected == "Cash": 
-                        # Paid using Cash 
-                         # Get ID of Non Current Asset to increment 
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
-
-                        last_nOpexID = db.session.query(accounts.NonOperatingExpense).order_by(accounts.NonOperatingExpense.nOpexID.desc()).first()
-                        last_nOpex = (int(last_nOpexID.nOpexID)+1 if last_nOpexID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    NonOperatingExpense =[accounts.NonOperatingExpense, accounts.NonOperatingExpense.opexID])
-                        CA_Balance, OE_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset)
-                        CA_BalanceDC = BalanceDC[0]
-                        # credit entry is cASH
-                        debitEntry = accounts.CurrentAsset.debit(last_ca, "CA" + str(last_ca+1), asset_name, CA_Balance, CA_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.CurrentAsset.credit(last_ca+1,"CA" + str(last_ca), "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
-
-                    else: 
-                        # paid using cheque 
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
-
-                        last_nOpexID = db.session.query(accounts.NonOperatingExpense).order_by(accounts.NonOperatingExpense.nOpexID.desc()).first()
-                        last_nOpex = (int(last_nOpexID.nOpexID)+1 if last_nOpexID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    NonOperatingExpense =[accounts.NonOperatingExpense, accounts.NonOperatingExpense.opexID])
-                        CA_Balance, OE_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset)
-                        CA_BalanceDC = BalanceDC[0]
-                        # credit entry is cASH
-                        debitEntry = accounts.CurrentAsset.debit(last_ca, "CA" + str(last_ca+1), asset_name, CA_Balance, CA_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.CurrentAsset.credit(last_ca+1,"CA" + str(last_ca), "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
-
-                    # Add to db...
-                    try:
-                        db.session.add(debitEntry)
-                        db.session.add(creditEntry)
-                        db.session.commit()
-                    except Exception as e:
-                        error = str(e)
-                        print(error)
-                    return jsonify({'message': 'Transaction sucessfully added.'}) 
-                else: 
-                    # decrease operating expense
-                    if account_affected == "Cash": 
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
-
-                        last_nOpexID = db.session.query(accounts.NonOperatingExpense).order_by(accounts.NonOperatingExpense.opexID.desc()).first()
-                        last_nOpex = (int(last_nOpexID.nOpexID)+1 if last_nOpexID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    NonOperatingExpense =[accounts.NonOperatingExpense, accounts.NonOperatingExpense.nOpexID])
-                        CA_Balance, OE_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset)
-                        CA_BalanceDC = BalanceDC[0]
-                        
-                        debitEntry = accounts.CurrentAsset.debit(last_ca,"CA" + str(last_ca+1), "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.CurrentAsset.credit(last_ca+1, "CA" + str(last_ca), asset_name, CA_Balance, CA_BalanceDC, transaction_inputs)
-                    else:
-                        last_caID = db.session.query(accounts.CurrentAsset).order_by(accounts.CurrentAsset.caID.desc()).first()
-                        last_ca = (int(last_caID.caID)+1 if last_caID is not None else 1)
-
-                        last_nOpexID = db.session.query(accounts.NonOperatingExpense).order_by(accounts.NonOperatingExpense.nOpexID.desc()).first()
-                        last_nOpex = (int(last_nOpexID.nOpexID)+1 if last_nOpexID is not None else 1)
-
-                         # Get the balances of Accounts 
-                        balances = account_balances(CurrentAsset = [accounts.CurrentAsset, accounts.CurrentAsset.caID],
-                                                    OperatingExpense =[accounts.NonOperatingExpense, accounts.NonOperatingExpense.nOpexID])
-                        CA_Balance, OE_Balance = balances[0], balances[1]
-
-
-                        BalanceDC = bal_debit_cred(amount, CurrentAsset = accounts.CurrentAsset)
-                        CA_BalanceDC = BalanceDC[0]
-                        
-                        debitEntry = accounts.CurrentAsset.debit(last_ca,"CA" + str(last_ca+1), "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
-                        creditEntry = accounts.CurrentAsset.credit(last_ca+1, "CA" + str(last_ca), asset_name, CA_Balance, CA_BalanceDC, transaction_inputs)
-                        
-                        
-                    # Add to db... 
-                    try:
-                        db.session.add(debitEntry)
-                        db.session.add(creditEntry)
-                        db.session.commit()
-                    except Exception as e:
-                        error = str(e)
-                        print(error)
-                    return jsonify({'message': 'Transaction sucessfully added.'})  
-
+                creditEntry = accounts.OperatingExpense.credit(last_opex, ledgerID, transaction_date, expense_category, amount,   "CA" + str(last_ca), tag, expense_name, OE_Balance, OE_BalanceDC)
+                if account_affected == "Cash": 
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,  "OE" + str(last_opex),"Cash", "Cash", CA_Balance, CA_BalanceDC)
+                else:                        
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,  "OE" + str(last_opex), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC)
+            try:
+                db.session.add(debitEntry)
+                db.session.add(creditEntry)
+                db.session.commit()
+            except Exception as e:
+                error = str(e)
+                print(error)
+            return jsonify({'message': 'Transaction sucessfully added.'})  
         else: 
-            jsonify({'message': 'Form does not match - Select Non Current Asset Form'})    
+            # use non operating expense class 
+            if "Increase" in increase_decrease: 
+                debitEntry = accounts.NonOperatingExpense.debit(last_nOpex,ledgerID, transaction_date, amount,   "CA" + str(last_ca),tag, expense_name, nOE_Balance, nOE_BalanceDC)
+                if account_affected == "Cash": 
+                    creditEntry = accounts.CurrentAsset.credit(last_ca,ledgerID, transaction_date, amount, "NOE" + str(last_nOpex), "Cash", "Cash", CA_Balance, CA_BalanceDC)
+                else: 
+                    creditEntry = accounts.CurrentAsset.credit(last_ca,ledgerID, transaction_date, amount, "NOE" + str(last_nOpex), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC) 
+            else: 
+                creditEntry = accounts.NonOperatingExpense.credit(last_nOpex, ledgerID, transaction_date, expense_category, amount,  "CA" + str(last_ca), tag, expense_name, nOE_Balance, nOE_BalanceDC)
+                if account_affected == "Cash": 
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount, "NOE" + str(last_nOpex), "Cash","Cash", CA_Balance, CA_BalanceDC)
+                else:
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount, "NOE" + str(last_nOpex), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC)
+            try:
+                db.session.add(debitEntry)
+                db.session.add(creditEntry)
+                db.session.commit()
+            except Exception as e:
+                error = str(e)
+                print(error)
+            return jsonify({'message': 'Transaction sucessfully added.'})  
+
+    else: 
+        error_list = form_errors(form)
+        return jsonify(errors= error_list)
+
+@accounting.route('/api/transaction/<busID>/revenue', methods = ["POST", "GET"])
+@login_required
+@requires_auth
+def rev_transaction(busID):
+    if request.method == "POST": 
+        form = RevForm(request.form)
+        revenue_name = form.revenue_name.data 
+        revenue_type = form.revenue_type.data
+        transaction_date = form.transaction_date.data
+        revenue_desc = form.revenue_desc.data
+        amount = float(form.amount.data )
+        account_affected = form.paid_using.data   
+        increase_decrease = form.increase_decrease.data    
+        tag = form.tag.data
+        ledgerID =findLedger(busID, 2021)
+
+        # Get Last Account ID, Balance, Label Balance
+        prep_acc = prepAccounts(ledgerID, "Credit", amount, CurrentAsset = accounts.CurrentAsset, OperatingRevenue = accounts.OperatingRevenue,
+                                NonOperatingRevenue= accounts.NonOperatingRevenue)
+        last_ca, CA_Balance, CA_BalanceDC = prep_acc["CurrentAsset"][0][0], prep_acc["CurrentAsset"][1][0],prep_acc["CurrentAsset"][2][0]
+        last_opRevenueID,  OR_Balance, OE_BalanceDC = prep_acc["OperatingRevenue"][0][0], prep_acc["OperatingRevenue"][1][0],prep_acc["OperatingRevenue"][2][0]
+        last_nopRevenueID, nOR_Balance, nOR_BalanceDC = prep_acc["NonOperatingRevenue"][0][0], prep_acc["NonOperatingRevenue"][1][0],prep_acc["NonOperatingRevenue"][2][0]
+    
+        if "Operating" in  revenue_type: 
+            # use Operating classess.. 
+            if "Increase" in increase_decrease: 
+                # increase operating revenue
+                creditEntry = accounts.OperatingRevenue.credit(last_opRevenueID, ledgerID, transaction_date,  amount, "CA" + str(last_ca), tag, revenue_name, OR_Balance, OR_BalanceDC)
+                if account_affected == "Cash":                         
+                    debitEntry = accounts.CurrentAsset.debit(last_ca, ledgerID, transaction_date,  amount,"OR" + str(last_opRevenueID), "Cash", "Cash", CA_Balance, CA_BalanceDC)
+                else: 
+                    debitEntry = accounts.CurrentAsset.debit(last_ca, ledgerID, transaction_date,  amount,"OR" + str(last_opRevenueID), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC)
+            else: 
+                # decrease operating revenue
+                debitEntry = accounts.OperatingRevenue.debit(last_opRevenueID, ledgerID, transaction_date,  amount, "CA" + str(last_ca), tag,revenue_name, OR_Balance, OR_BalanceDC)
+                if account_affected == "Cash": 
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, transaction_date,  amount,"OR" + str(last_opRevenueID),"Cash", "Cash", CA_Balance, CA_BalanceDC)
+                else:
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, transaction_date,  amount, "OR" + str(last_opRevenueID), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC)
+        
+            try:
+                db.session.add(debitEntry)
+                db.session.add(creditEntry)
+                db.session.commit()
+            except Exception as e:
+                error = str(e)
+                print(error)
+            return jsonify({'message': 'Transaction sucessfully added.'})  
+        else: 
+            # use non operating revenue class 
+            if "Increase" in increase_decrease: 
+                creditEntry = accounts.NonOperatingRevenue.credit(last_nopRevenueID,"CA" + str(last_ca), tag, revenue_name , nOR_Balance, nOR_BalanceDC)
+                if account_affected == "Cash": 
+                    debitEntry =  accounts.CurrentAsset.debit(last_ca, ledgerID, transaction_date, amount,"NOR" + str(last_nopRevenueID), tag, "Cash", CA_Balance, CA_BalanceDC)
+                else: 
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount, "NOR" + str(last_nopRevenueID), tag,"Cash Equivalents", CA_Balance, CA_BalanceDC)
+            else: 
+                # decrease non operating revenue
+                debitEntry = accounts.NonOperatingRevenue.debit(last_nopRevenueID,"CA" + str(last_ca), tag, revenue_name, nOR_Balance, nOR_BalanceDC, transaction_inputs)
+                if account_affected == "Cash": 
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, transaction_date, amount, lifeSpan,"NOR" + str(last_nopRevenueID),tag, "Cash", CA_Balance, CA_BalanceDC)
+                else:                        
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, transaction_date, amount,"NOR" + str(last_nopRevenueID), tag, "Cash Equivalents", CA_Balance, CA_BalanceDC)
+            
+            try:
+                db.session.add(debitEntry)
+                db.session.add(creditEntry)
+                db.session.commit()
+            except Exception as e:
+                error = str(e)
+                print(error)
+            return jsonify({'message': 'Transaction sucessfully added.'})  
+
     else: 
         error_list = form_errors(form)
         return jsonify(errors= error_list)
         
-@accounting.route('/api/transaction/equity', methods = ["POST", "GET"])
+@accounting.route('/api/transaction/<busID>/equity', methods = ["POST", "GET"])
 @login_required
 @requires_auth
-def equity_transaction():
+def equity_transaction(busID):
     if request.method == "POST":             
-        if request['form_id'] == "EquityForm": 
-            form = EquityForm(request.form)
-            return 1
+        form = EquityForm(request.form)
+        equity_name= form.equity_name.data
+        transaction_date =form.transaction_date.data
+        equity_desc = form.equity_desc.data
+        amount = float(form.amount.data)
+        account_affected = form.paid_using.data
+        increase_decrease = form.increase_decrease.data
+        tag = form.tag.data
+        ledgerID =findLedger(busID, 2021)
 
+        # Get Last Account ID, Balance, Label Balance
+        prep_acc = prepAccounts(ledgerID, "Credit", amount, CurrentAsset = accounts.CurrentAsset, ShareholdersEquity = accounts.ShareholdersEquity)
+        last_ca, CA_Balance, CA_BalanceDC = prep_acc["CurrentAsset"][0][0], prep_acc["CurrentAsset"][1][0],prep_acc["CurrentAsset"][2][0]
+        last_equityID,  SE_Balance, SE_BalanceDC = prep_acc["ShareholdersEquity"][0][0], prep_acc["ShareholdersEquity"][1][0],prep_acc["ShareholdersEquity"][2][0]
     
-@accounting.route('/api/printstmtdata', methods= ["GET"])
-def stmt():
-    resultstmt = []
-    financiatransaction_inputsmt = Financiatransaction_inputsmt.query.all()
-    for stmt in financiatransaction_inputsmt:
-        resultstmt.append({ 'id' :stmt.stmtID,'Statement Name': stmt.fs_name})
+        if "Increase" in increase_decrease: 
+            # Increase in Capital
+            creditEntry = accounts.ShareholdersEquity.credit(last_equityID,ledgerID, transaction_date, amount, "CA" + str(last_ca), tag, equity_name, SE_Balance, SE_BalanceDC)
+            if account_affected == "Cash": 
+                debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount, "SE" + str(last_equityID), "Cash", "Cash", CA_Balance, CA_BalanceDC)
+            else:
+                debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,"SE" + str(last_equityID), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC)
+        else: 
+            # Decrease in Capital
+            debitEntry = accounts.ShareholdersEquity.debit(last_equityID,ledgerID, transaction_date, amount,"CA" + str(last_ca), tag, equity_name, SE_Balance, SE_BalanceDC)
+            if account_affected == "Cash":
+                creditEntry = accounts.CurrentAsset.credit(last_ca,ledgerID, transaction_date, amount,"SE" + str(last_equityID), "Cash", "Cash", CA_Balance, CA_BalanceDC)            
+            else: 
+                creditEntry = accounts.CurrentAsset.credit(last_ca,ledgerID, transaction_date, amount,"SE" + str(last_equityID), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC)
+                
+        try:
+            db.session.add(debitEntry)
+            db.session.add(creditEntry)
+            db.session.commit()
+        except Exception as e:
+            error = str(e)
+            print(error)
+        return jsonify({'message': 'Transaction sucessfully added.'}) 
+    else: 
+        error_list = form_errors(form)
+        return jsonify(errors= error_list)
+  
 
-    return jsonify(response = [resultstmt])
+def list_accounts(ledgerID, *args, **kwargs): 
+    output = {}
+    for key, value in kwargs.items(): 
+        all_accounts = db.session.query(value).filter_by(ledgerID =ledgerID).all()
+        output[key] = all_accounts
+    return output
+
+
+@accounting.route('/api/transactions/<busID>/', methods = ["GET", "POST"])
+def get_all_accounts(busID): 
+    ledgerID =findLedger(busID, 2021)
+
+    all_accounts = list_accounts(ledgerID, CurrentAsset = accounts.CurrentAsset, NonCurrentAsset = accounts.NonCurrentAsset, 
+                 Currentliability = accounts.Currentliability, Longtermliability = accounts.Longtermliability, 
+                 OperatingRevenue = accounts.OperatingRevenue, NonOperatingRevenue = accounts.NonOperatingRevenue, 
+                 OperatingExpense = accounts.OperatingExpense, NonOperatingExpense = accounts.NonOperatingExpense,  
+                 ShareholdersEquity = accounts.ShareholdersEquity)
+    
+    def load_Accounts(**account_entries):
+        final_list = []
+        for key,value in account_entries.items(): 
+            if value is not None or value != []: 
+                for entry in value: 
+                    balance = (entry.debitBalance if entry.debitBalance is not None else entry.creditBalance)
+                    if key == "NonCurrentAsset" or key == "CurrentAsset":
+                        final_list.append({'date': entry.acquisDATE, 'transaction_id': entry.id,
+                                           'transaction_name': entry.assetName, 'related_entry': entry.related_entry, 'amount': balance,'actions': 'true' })
+                    elif key == "Currentliability" or key == "Longtermliability":
+                        final_list.append({'date': entry.borwDATE, 'transaction_id': entry.id, 'transaction_name': entry.liabName, 'related_entry':entry.related_entry,'amount': balance, 'actions': 'true'})
+                    elif key == "OperatingRevenue":
+                        final_list.append({'date': entry.dateEarned, 'transaction_id': entry.id, 'transaction_name':entry.oprevName, 'related_entry': entry.related_entry, 'amount':balance, 'actions': 'true'})
+                    elif key == "NonOperatingRevenue":
+                        final_list.append({'date': entry.dateEarned, 'transaction_id': entry.id, 'transaction_name':entry.nOprevName, 'related_entry': entry.related_entry, 'amount':balance,'actions': 'true'})
+                    elif key == "OperatingExpense":
+                        final_list.append({'date': entry.dateIncurred, 'transaction_id': entry.id, 'transaction_name':entry.opexName, 'related_entry': entry.related_entry,'amount': balance,'actions': 'true'})
+                    else:
+                        final_list.append({'date': entry.dateIncurred, 'transaction_id': entry.id, 'transaction_name':entry.nOpexName, 'related_entry': entry.related_entry, 'amount':balance,'actions': 'true'})
+            else: 
+                print(value)
+        return final_list
+                
+    
+    all_transactions = load_Accounts(CurrentAsset = all_accounts["CurrentAsset"], NonCurrentAsset = all_accounts["NonCurrentAsset"], Currentliability = all_accounts["Currentliability"], 
+                    Longtermliability = all_accounts["Longtermliability"], OperatingRevenue = all_accounts["OperatingRevenue"], NonOperatingRevenue = all_accounts["NonOperatingRevenue"], 
+                    OperatingExpense = all_accounts["OperatingExpense"], NonOperatingExpense = all_accounts["NonOperatingExpense"], ShareholdersEquity = all_accounts["ShareholdersEquity"])
+    return jsonify({'transaction': all_transactions})
+    

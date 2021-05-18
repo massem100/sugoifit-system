@@ -1,126 +1,234 @@
 <template>
+
     <div class="wrapper">
-        <div class="header">
-            <WebsiteHeader />
-        </div>
-        <div class="container">
-            <div class="left">
-                <div class="column">
-                    <div class="card" v-for="card in cards" :card="card" :key="card.id" >
-                        
-                        <div class="card-image"> 
-                            <img :src="card.img" />
-                        </div>
-                        <div class="card-text">
-                            <p class="quantity">Quantity: {{ card.quantity }} </p>
-                            <p class="size">Size: {{card.size}} </p>
-                            <p class="colour">Colour: {{card.colour}} </p>
-                            <p class="price">Price: {{card.price}} </p>
-                        </div>
-                
-                    </div>
-                </div>
-            </div>
-
-            <div class="right">
-                <div class="column">
-                    <div class="top">
-                        <div class="right-text" >
-                            <h3>Cost Breakdown</h3>
-                            <p id="tprice">Item Cost: ${{ tprice }} </p>
-                            <p>Delivery Cost/Pick up: ${{ deliver }}</p>
-                            <p id="tcost">Total Cost: ${{ tcost }}</p>
-                        </div>
-                        <!--<div class="right-btn">
-                            <button id="checkout-btn" type="submit">Checkout</button>
-                        </div>-->
-                    </div>
-
-                    <!-- customer info form -->
-                    <div class="bottom">
-                        <div class="order-form-div">
-                            <h3>You're Almost Done</h3>
-                            <p>Please fill out the form below.</p>
-                            
-                            <b-form id="orderForm" method="POST" @submit.prevent="custOrder" enctype="multipart/form-data">
-                                <input type="hidden" name="_token" :value="token">
-
-                                <div class="business-form-item">
-                                    <label for="fname"> First Name </label>
-                                    <b-form-input placeholder= "" name="fname" id = "fname" required></b-form-input>
-                                </div>
-                                
-                                <div class = "business-form-item"> 
-                                    <label for="lname"> Last Name </label>
-                                    <b-form-input placeholder="" name="lname" id="lname"></b-form-input>
-                                </div>
-
-                                <div class="business-form-item">
-                                    <label for="trn">TRN</label>
-                                    <b-form-input placeholder= "" name="trn" id="trn"></b-form-input>
-                                </div>
-                                
-                                <div class="business-form-item">
-                                    <label for="address">Address</label>
-                                    <b-form-input placeholder="" name="address" id="address"></b-form-input>
-                                </div>
-
-                                <div class="business-form-item">
-                                    <label for="phone_num">Phone Number</label>
-                                    <b-form-input placeholder="" name="phone_num" id="phone_num"></b-form-input>
-                                </div>
-
-                                <div class="business-form-item">
-                                    <label for="email">Email Address</label>
-                                    <b-form-input placeholder="" name="email" id="email"></b-form-input>
-                                </div>
-
-                                <div class="business-form-item">
-                                    <button type="submit" class="order-submit"> Order </button>
-                                </div>
-                            </b-form>
-                           
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         
+        <div class="d-flex flex-column justify-content-center m-2">
+            <h1 class="m-3 ml-4">Shopping Cart </h1>
+            <b-col class="d-flex" >
+                <div class="d-flex w-50">
+                    <b-col class="">
+                        <b-col class="card d-flex flex-row  w-80" v-for="product in products"  :key="product.prodID">
+                            
+                            <b-row class="card-image d-flex flex-row m-2 align-items-center"> 
+                                <img style="width: 150px; height:150px;" 
+                                    class ="bg-white " 
+                                    :src=" 'http://localhost:8080/static/uploads/' + product.image" 
+                                />
+                            </b-row>
+                            <b-col class="card-text d-flex flex-column text-black text-left align-items-start justify-content-center ">
+                                <h4 v-text="product.prodName"></h4>
+                                <b-row class=""> 
+                                    <span class="text-left m-2"> Quantity: </span>
+                                    <b-form-input class="m-2" 
+                                                :style="[{width: '2rem'}, {height: '2rem'}]" 
+                                                :value="product.quantity"
+                                                :name="form.quantity"> </b-form-input>
+                                </b-row>
+                                <b-row class=""> 
+                                    <span class="text-left m-2"> Size: </span>
+                                    <b-form-input class="m-2 justify-content-end" 
+                                                :style="[{width: '10rem'}, {height: '2rem'}]" 
+                                                :value="product.size"
+                                                :name="form.size"> </b-form-input>
+                                </b-row>
+                                <b-row class=""> 
+                                    <span class="text-left m-2"> Colour: </span>
+                                    <b-form-input class="m-2" 
+                                                :style="[{width: '4rem'}, {height: '2rem'}]" 
+                                                :name="form.color"> </b-form-input>
+                                    <div :style= "[{'Background-color': '#e5e5e5' }]"> </div>
+                                </b-row>
+                            
+                                <span class=""> Price: {{product.unit_price}} </span>
+                            </b-col>
+                            
+                        </b-col>
+                    </b-col>
+
+                </div>
+
+                <div class="ml-5">
+                    <div class="">
+                        <div class="">
+                            <div class=""  >
+                                <h2>Cost Breakdown</h2>
+                            
+                                    <b-row class="h4 w-100 "> 
+                                        <b-col class=" w-100 ">
+                                            <p class="m-2 h3" >Item Cost: {{ orderTotal }} </p>
+                                            <p class="m-2 h3" style="width: 14rem;">Delivery Cost/Pick up:</p>
+                                            <hr
+                                                class="my-3"
+                                                style="
+                                                    border: 0;
+                                                    border-top: 1px solid rgba(0, 0, 0, 0.1);
+                                                    min-width: 80%;
+                                                    overflow: visible;
+                                                    box-sizing: content-box;
+                                                    height: 0;
+                                                "
+                                                />
+                                            <p class="m-2 h2 font-weight-bold ">Total:  </p> 
+                                        </b-col>
+                                        <b-col> 
+                                            <!-- <p class="m-2 h3 ml-3">${{ product.unit_price }} </p> -->
+                                            <!-- <p class="m-2 h3 ml-3">${{ product.deliver }} </p> -->
+                                            <hr
+                                                class="my-3"
+                                                style="
+                                                border: 0;
+                                                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                                                min-width: 80%;
+                                                overflow: visible;
+                                                box-sizing: content-box;
+                                                height: 0;
+                                                "
+                                            />
+                                            <p class="h2 m-2 ml-3" >Total  </p>
+
+                                        </b-col>
+                                        
+                                    </b-row>
+                            </div>
+                        </div>
+
+                        <!-- customer info form -->
+                        <div class="d-flex flex-column align-items-center mt-5 pt-5">
+                            <b-col class="d-flex flex-column align-items-center">
+                                <h3>You're Almost Done</h3>
+                                <p>Please fill out the form below.</p>
+                                
+                                <b-form id="orderForm" method="POST" @submit.prevent="custOrder" enctype="multipart/form-data">
+                                    <b-row> 
+                                        <div class="business-form-item m-2">
+                                        <label for="fname"> First Name </label>
+                                        <b-form-input placeholder= "" name="fname" id = "fname" required></b-form-input>
+                                    </div>
+                                    
+                                    <div class = "business-form-item m-2"> 
+                                        <label for="lname"> Last Name </label>
+                                        <b-form-input placeholder="" name="lname" id="lname"></b-form-input>
+                                    </div>
+
+
+                                    </b-row>
+                                    
+                                    <b-row>
+                                        <div class="business-form-item m-2">
+                                            <label for="trn">TRN</label>
+                                            <b-form-input placeholder= "" name="trn" id="trn"></b-form-input>
+                                        </div>
+                                        <div class="business-form-item m-2">
+                                            <label for="phone_num">Phone Number</label>
+                                            <b-form-input placeholder="" name="phone_num" id="phone_num"></b-form-input>
+                                        </div>
+
+                                    </b-row>
+                            
+                                    <div class="business-form-item">
+                                        <label for="email">Email Address</label>
+                                        <b-form-input placeholder="" name="email" id="email"></b-form-input>
+                                    </div>
+                                    <div class="business-form-item">
+                                        <label for="address">Address</label>
+                                        <b-form-input placeholder="" name="address" id="address"></b-form-input>
+                                    </div>
+
+                                
+                                    <div class="d-flex flex-row justify-content-center ">
+                                        <button type="submit" class="btn btn-lg   bg-secondary m-2 order-submit"> Submit Order </button>
+                                    </div>
+                                </b-form>
+                            
+                            </b-col>
+                        </div>
+                    </div>
+                </div>
+            </b-col>
+        
+        </div>
+    
     </div>
 </template>
 
 <script>
-import WebsiteHeader from '../../components/WebsiteHeader';
+
 export default {
-    name: 'PlaceOrder',
-    components: {
-        WebsiteHeader
+    name: 'placeorder',
+    layout:'WebsiteLayout',
+    components: {},
+    head:{
+        title: 'Business Name Checkout'
     },
+
     data() {
         return{
-            cards: null,
+            products: [],
             deliver: '',
             tprice: '',
-            tcost: '',
-            token: ''
+            tcost: '',                           
+            form: {
+                'quantity': '', 
+                'size': '', 
+                'color': '', 
+                'price': '', 
+              
+
+            }
         }
     },
-    async created() {
-        const response = await fetch('http://localhost:8080/api/checkout-products');
-        const data = await response.json();
-        this.cards = data.lst;
-        this.tcost = data.total_cost;
-        this.deliver = data.delivery_price;
-        this.tprice = data.total_price;
+    computed: {
+        // let self = this
+        orderTotal: function(price, quantity) {
+            if (price && quantity){
+                return parseInt(this.form.price.trim())* parseInt(this.form.quantity.trim());
+            }
+            
+        }
+    },
+    mounted() {
+        let self=this;
+        const busID = localStorage.getItem('busID');
+        this.$axios.get(`/api/${busID}/products`
+            ).then(res =>{
+                return res.data;
+            }).then(res =>{
+                if (res){
+                    let cart = localStorage.getItem('cart');
+                    console.log('initial cart', cart);
+
+                    // Checks if cart exists else create new object
+                    cart = cart ? JSON.parse(cart) : {};
+                    res.forEach(function(item, index){
+                        if (cart[`Product${item.prodID}`]){
+                            self.products.push({'prodID': item.prodID,
+                                                'prodName': item.prodName, 
+                                                'unit_price': item.unit_price,
+                                                'image': item.image
+                                                });
+                        }
+                    });
+                localStorage.setItem('cart', JSON.stringify(cart));
+            }else{
+                console.log('Data not found')
+            }
+            });
+
+    
+        
+        
     },
     methods: {
         custOrder: function () {
-           let self = this;
+            let self = this;
+            let busID = localStorage.getItem('busID');
+            let cart = localStorage.getItem('cart');
             let orderForm = document.getElementById("orderForm");
             let form_data = new FormData(orderForm);
-            form_data.append("tcost",this.tcost);
-
-            let PATH_API = 'placeorder';
+            form_data.append("tcost",self.tcost);
+            form_data.append("products", products)
+            console.log(products);
+            let PATH_API = busID+'placeorder';
                 this.$axios.post(`/api/${PATH_API}`, form_data, {
                   headers: {
                   'contentType': 'application/json',
@@ -140,89 +248,7 @@ export default {
 </script>
 
 <style scoped>
-.wrapper{
-    margin: 2em;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-.container{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-content: center;
-}
-
-
-/*  left side of webpage*/
-
-.card {
-    border: none;
-    position: relative;
-    z-index: 0;
-    height: 200px;
-    display: flex;
-    flex-direction: row;
-}
-img {
-    padding: 2em;
-    border-right: solid 1px rgb(196, 193, 193);
-    height: 200px;
-    width: 200px;
-}
-.card-text {
-    padding: 1rem;
-    position: relative;
-}
-
-/* Right side of the page */
-.right .column {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.top{
-    flex: 1 1 300px;
-    width: 100%;
-    line-height: 2em;
-    margin: 0 auto;
-    overflow: hidden;
-    z-index: 0;
-}
-
-#checkout-btn{
-    height: 3em;
-    width: 170px;
-    border-radius: 15px;
-    color: white;
-    font-size: 15px;
-    background-color: rgb(46, 158, 102);
-}
-
-label{
-  display:block;
-  margin:1em 0 .2em;
-}
-input{
-  display:block;
-  width:100%;
-  padding:.3em;
-  font-size:20px;
-  border: none;
-  background-color: rgba(119, 255, 187, 0.705);
-  border-radius: 20px;
-  resize:vertical;
-}
- 
-.order-submit{
-    height: 2em;
-    width: 120px;
-    border-radius: 15px;
-    color: white;
-    font-size: 15px;
-    margin:1em 0 .2em;
-    background-color: rgb(46, 158, 102);
+.card-text{
+    font: 400 1rem "Poppins";
 }
 </style>

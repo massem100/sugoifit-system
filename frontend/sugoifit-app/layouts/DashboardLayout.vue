@@ -1,14 +1,14 @@
 <template>
   <div class="wrapper">
     <notifications></notifications>
-    <side-bar>
+    <side-bar class="bg-white text-black">
       <template slot="links">
            
-          <div  class="d-flex flex-row justify-content-center"> 
-            <div  class="profile mt-3 mb-3 ">
-                <h5 id="profile_name" class="my-1 font-weight-bold"> Jane S.</h5>
-                <h5 id="profile_ID" class="my-1"> ID 1234567</h5>
-                <h5 id="role" class="my-1"> Role: Business Owner</h5>
+          <div  class="d-flex  flex-row justify-content-start"> 
+            <div  class="profile  ml-3 mt-3 mb-3 ">
+                <h5 id="profile_name" class="my-1 font-weight-bold" :v-text="full_name">Jane S.</h5>
+                <h5 id="profile_ID" class="my-1"> ID: {{userid}}</h5>
+                <h5 id="role" class="my-1"> Role: {{role}}</h5>
               </div>
               <img id="profile-icon" class ="mt-3 ml-2 mr-2 w-25 h-25" :src="user" alt="" aspect-ratio="1" />
              
@@ -27,25 +27,20 @@
         <sidebar-item
           :link="{
             name: 'Dashboard',
-            icon: ['fas', 'plus'],
+            icon: ['fas', 'home'],
             path: '/',
+            color: 'text-black',
           }"
         >
         </sidebar-item>
-        <sidebar-item
-          :link="{
-            name: 'Manage Transactions',
-            icon: ['fas', 'receipt'],
-            path: '/manage-transaction',
-          }"
-        >
-        </sidebar-item>
+      
         <sidebar-item
           
           :link="{
             name: 'Products',
-            icon: ['fas', 'plus'],
+            icon: ['fas', 'box-open'],
             path: '',
+            color: 'text-black',
           }"
         >
         
@@ -55,6 +50,7 @@
               name: 'All Products',
               icon: ['fas', 'plus'],
               path: '/manageproducts/list',
+              color: 'text-black',
             }"
           >
           </sidebar-item>
@@ -64,24 +60,35 @@
               name: 'Add Products',
               icon: ['fas', 'plus'],
               path: '/manageproducts/add',
-            }"
-          >
-          </sidebar-item>
-          <sidebar-item
-            opened
-            :link="{
-              name: 'Product Analytics',
-              icon: ['fas', 'plus'],
-              path: '/manageproducts/analytics',
+              color: 'text-black',
             }"
           >
           </sidebar-item>
         </sidebar-item>
+         <!-- <sidebar-item
+
+          :link="{
+            name: 'Inventory',
+            icon: ['fas', 'plus'],
+            path: '',
+          }"
+        >
+
+          <sidebar-item
+            opened
+            :link="{
+              name: 'All Inventory',
+              icon: ['fas', 'plus'],
+              path: '/inventory/list',
+            }"
+          >
+          </sidebar-item>
+         </sidebar-item> -->
         <sidebar-item
-          
+
           :link="{
             name: 'Manage Sales',
-            icon: ['fas', 'plus'],
+            icon: ['fas', 'tag'],
             path: '/managesales',
           }"
         >
@@ -90,17 +97,18 @@
             :link="{
               name: 'Orders',
               icon: ['fas', 'plus'],
-              path: '/allproducts',
+              path: '/inventory/list',
             }"
           >
           </sidebar-item>
-         
+
         </sidebar-item>
          <sidebar-item
             :link="{
               name: 'Invoices',
-              icon: ['fas', 'plus'],
+              icon: ['fas', 'file-invoice'],
               path: '/invoice/',
+              color: 'text-black',
             }"
           >
             <sidebar-item
@@ -108,6 +116,7 @@
                 name: 'Create Invoice',
                 icon: ['fas', 'plus'],
                 path: '/invoice/create',
+                color: 'text-black',
               }"
             >
             </sidebar-item>
@@ -116,15 +125,26 @@
                 name: 'All Invoices',
                 icon: ['fas', 'plus'],
                 path: '/invoice/list',
+                color: 'text-black',
               }"
             >
             </sidebar-item>
           </sidebar-item>
+            <sidebar-item
+          :link="{
+            name: 'Accounting Entries',
+            icon: ['fas', 'pen-square'],
+            path: '/manage-transaction',
+            color: 'text-black',
+          }"
+        >
+        </sidebar-item>
         <sidebar-item
             :link="{
               name: 'Financials',
-              icon: ['fas', 'plus'],
+              icon: ['fas', 'calculator'],
               path: '/financialstmts/',
+              color: 'text-black',
             }"
           >
           <sidebar-item
@@ -132,6 +152,7 @@
               name: 'Balance Sheet',
               icon: ['fas', 'plus'],
               path: '/financialstmts/balance-sheet/_slug',
+              color: 'text-black',
             }"
           >
           </sidebar-item>
@@ -140,6 +161,7 @@
               name: 'Income Statement',
               icon: ['fas', 'plus'],
               path: '/financialstmts/profit-loss/_slug',
+              color: 'text-black',
             }"
           >
           </sidebar-item>
@@ -147,15 +169,26 @@
         <sidebar-item
             :link="{
               name: 'Reports',
-              icon: ['fas', 'chart-bar'],
+              icon: ['fas', 'chart-pie'],
               path: '/reports/',
+              color: 'text-black',
             }"
           >
           <sidebar-item
             :link="{
-              name: 'Report Generation',
-              icon: ['fas', 'plus'],
+              name: 'Financial Reports',
+              icon: ['fas', ''],
               path: '/reports/charts',
+              color: 'text-black',
+            }"
+          >
+          </sidebar-item>
+          <sidebar-item
+            opened
+            :link="{
+              name: 'Product Reports',
+              icon: ['fas', 'plus'],
+              path: '/manageproducts/analytics',
             }"
           >
           </sidebar-item>
@@ -172,6 +205,15 @@
             height: 0;
           "
         />
+         <sidebar-item
+            :link="{
+              name: 'Start Onboarding Process',
+              icon: ['fas', ''],
+              path: '/onboarding-main/',
+              color: 'text-black',
+            }"
+          >
+          </sidebar-item>
       </template>
     </side-bar>
     
@@ -232,12 +274,27 @@ export default {
   data(){
     return{
       user: require('/assets/uploads/user-icon.svg'),
+      f_name:'', 
+      l_name: ''
+
       
     }
+  },
+  created(){
+
   },
   computed: {
         alert () {
             return this.$store.state.alert
+        }, 
+        full_name(){
+          return this.f_name + " " + this.l_name
+        }, 
+        role(){
+          return localStorage.getItem('user_role');
+        }, 
+        userid(){
+          return localStorage.getItem('userid');
         }
     },
   watch: {

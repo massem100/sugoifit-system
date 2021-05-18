@@ -7,7 +7,7 @@
               <nuxt-link to="/" class="font-weight-bold text-white mt-5">Back to dashboard</nuxt-link>
             </div>
             <div v-else>
-              <h4 >An error occurred</h4>
+              <h4 class="text-white" >An error occurred</h4>
             </div>
   </div>
 </template>

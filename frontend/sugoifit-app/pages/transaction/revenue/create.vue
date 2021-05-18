@@ -32,7 +32,7 @@
       >
         <b-form class="" id="AddNCAForm" @submit.stop.prevent="handleSubmit(launchConfirm)">
           <b-row class="m-1 w-100">
-            <b-col cols="12" class="text-primary mb-3 pl-0">Add Revenue</b-col>
+            <b-col cols="12" class="text-primary mb-3 pl-0" v-b-tooltip.hover title="Examples of revenue are......">Add Revenue</b-col>
 
             <b-col md="6" cols="12" class="bg-secondary px-5 py-3">
               <div class="mb-2">
@@ -85,7 +85,7 @@
                 <validation-provider v-slot="{ errors }" rules="required" name="tan_in">
                   <label>Revenue Type</label>
                   <b-form-radio-group v-model="form.revenue_type"
-                                      :options="inc_dec"
+                                      :options="revenue_type"
                                       class="border border-radius px-4 py-3"
                                       style="Background: #E5E5E5; "
                                       stacked
@@ -173,8 +173,11 @@
                 paid_using: [
                     {value: 'Cash', text: 'Cash '},
                     {value: 'Cheque', text: 'Cheque '},
-                    {value: 'Credit', text: 'Credit '},
                 ],
+                revenue_type:[
+                   {value: 'Operating Revenue', text: 'Operating Revenue'},
+                    {value: 'Non Operating Revenue', text: 'Non Operating Revenue'},
+                ]
             }
         },
         methods: {
@@ -182,7 +185,8 @@
                 this.$refs['confirmModal'].hide();
             },
             modalSubmit() {
-                let PATH_API = 'transaction/revenue';
+                let busID = localStorage.getItem('busID');
+                let PATH_API = `transaction/${busID}/revenue`;
                 let form_data = new FormData();
                 Object.entries(this.form).forEach(entry => {
                     const [key, value] = entry;
