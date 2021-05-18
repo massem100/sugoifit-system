@@ -52,7 +52,7 @@ export default {
     {src: '~/plugins/fontawesome.js', ssr: false},
     {src: '~/plugins/addService.js', ssr: false},
     { src: '~/plugins/jquery.min.js', ssr: false },
-    { src: '~plugins/vuedraggable.js',ssr:false }
+
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

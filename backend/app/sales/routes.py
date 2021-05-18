@@ -4,15 +4,9 @@ from werkzeug.utils import secure_filename
 from app import db
 from flask_login import current_user
 from app.forms import orderForm
-<<<<<<< HEAD
-from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order
-from datetime import datetime  
-#from datetime import timedelta  
-=======
 from app.schema.sales import *
 from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order, Receipt
 from datetime import timedelta, datetime
->>>>>>> 2eaafd1db89ea4eaf4858b615fb94b8a08f67a78
  
 sales= Blueprint('sales', __name__)
 
@@ -48,14 +42,10 @@ def place_order(busID):
     todayString = today.strftime(date_format)
     dateDue = (today + timedelta(days=7)).strftime(date_format)
 
-<<<<<<< HEAD
-    new_order = Order(orderID="O1", order_tot=total_price, order_DATE=todayString, custID=customer.custID, invoiceID="", busID="", status=status, dueDate = dateDue)
-=======
     new_order = Order(orderID="None", order_tot=total_price, order_DATE=todayString, custID=customer.custID, invoiceID="None", busID=busID, status=status)
     order = Order.query.filter_by(busID=busID).order_by(Order.orderID.desc()).first()
     new_invoice = Invoice(invoiceID=order.invoiceID, busID=busID, custID=customer.custID, invoice_DATE=todayString, tax_tot="")
 
->>>>>>> 2eaafd1db89ea4eaf4858b615fb94b8a08f67a78
     try:
         db.session.add(new_order)
         db.session.commit()

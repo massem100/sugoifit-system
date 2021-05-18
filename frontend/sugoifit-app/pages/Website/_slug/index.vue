@@ -171,7 +171,7 @@
 
 <script>
 import {ValidationObserver, ValidationProvider} from "vee-validate";
-import WrapperDraggable from '../../../components/wrapper-draggable.vue';
+
 
 
 export default {
@@ -180,7 +180,6 @@ export default {
     components: {
         ValidationObserver, 
         ValidationProvider,
-        WrapperDraggable,
      
     }, 
     head:{

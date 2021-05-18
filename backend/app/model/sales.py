@@ -115,11 +115,7 @@ class Product(db.Model):
     avg_lead = db.Column(db.Integer)
     longest_lead = db.Column(db.Integer)
 
-<<<<<<< HEAD
-    def ___init__(self, prodID, prodName, unit_price, Unit, limitedTime, taxPercent, prodStatus, avg_lead, longest_lead): 
-=======
     def ___init__(self, prodID, busID, prodName, prodType, prodDesc, prodQuantity, prodSize, unit_price, Unit, limitedTime, grade, taxPercent, prodStatus,image): 
->>>>>>> 2eaafd1db89ea4eaf4858b615fb94b8a08f67a78
         self.prodID = prodID 
         self.prodName = prodName 
         self.prodType = prodType
@@ -133,12 +129,7 @@ class Product(db.Model):
         self.grade = grade
         self.taxPercent = taxPercent
         self.prodStatus = prodStatus
-<<<<<<< HEAD
-        self.avg_lead = avg_lead
-        self.longest_lead = longest_lead
-=======
         self.image =image
->>>>>>> 2eaafd1db89ea4eaf4858b615fb94b8a08f67a78
     
     def get_id(self):
         try:

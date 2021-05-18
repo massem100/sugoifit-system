@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-from sqlalchemy.sql.functions import current_date
-from app import  db, login_manager, csrf_, principal
-from app.forms import orderForm
-from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order, Stock
-from sqlalchemy import func, inspection, event
-from flask import  Blueprint,  request, jsonify, flash, session,  _request_ctx_stack, g
-from werkzeug.utils import secure_filename
-from datetime import datetime
-=======
 import os, sys
 from app import db, login_manager, csrf_, principal
 from app.forms import orderForm, NewProductForm
@@ -20,7 +10,6 @@ from flask import  Blueprint, current_app,  request, jsonify, flash, session,  _
 from flask_login import current_user
 from werkzeug.utils import secure_filename
 import os
->>>>>>> 2eaafd1db89ea4eaf4858b615fb94b8a08f67a78
 
 
 product = Blueprint('product', __name__)
@@ -103,13 +92,7 @@ def aproduct(busID):
 #@app.route('/api/product/classify', methods = ['GET', 'POST'])
 @product.route('/api/classify', methods = ['GET', 'POST'])
 def product_classify():
-<<<<<<< HEAD
-    #product_list = defaultdict(list)
-    date_format = "%Y-%m-%d"
-    notApplicable = []
-=======
     #safety stock = (max daily sales x max lead time in days) - (average daily sales x average lead time in days)
->>>>>>> 2eaafd1db89ea4eaf4858b615fb94b8a08f67a78
     annual_consum_val = []
     total_consum_val = 0
     total_units_sold = 0
@@ -203,65 +186,3 @@ def product_classify():
     
     return jsonify({'products': data})
 
-<<<<<<< HEAD
-    # Find Percentage of Annual Units Sold 
-    # for product in product_sales: 
-    #     desc_consum_val = sorted(annual_consum_val, reverse=True) # List of Annual Consumption Values (Descending Order)
-    #     percent_units_sold = (product.quantitySold/total_units_sold)*100.0  # % of Annual Units Sold
-    #     for val in desc_con_val: 
-    #         percent_consum_val = (val/total_consum_val)*100.0  # % of Total Annual Consumption Value
-
-            # Split Data ito 80/15/5
-            # get length of product_list then divide by percentage
-            # Assign Grades to products based on products in each percentile
-
-
-    # Find Percentage of Annual Consumption Value
-
-
-@product.route('/api/checkout-products', methods = ['GET'])
-def checkoutproducts():
-    message = {}
-    data = {}
-    tprice = 0
-    deliver = 500
-
-    transaction_inputs = [
-            {
-                'id': 1,
-                'img': "https://5.imimg.com/data5/RU/WI/MY-46283651/school-skirts-500x500.jpg",
-                'name': 'skirt',
-                'quantity': '1',
-                'size': 'L',
-                'colour': 'black',
-                'price': "500"
-            },
-            {
-                'id': 2,
-                'img': "https://slimages.macysassets.com/is/image/MCY/products/2/optimized/17864922_fpx.tif?$browse$&wid=170&fmt=jpeg",
-                'name': 'pants',
-                'quantity': '1',
-                'size': 'medium',
-                'colour': 'white',
-                'price': '1000'
-            },
-            {
-                'id': 3,
-                'img': "https://di2ponv0v5otw.cloudfront.net/posts/2018/03/24/5ab6a736077b9758675a91e5/m_5ab6c769c9fcdfbadf53cd14.jpeg",
-                'name': 'top',
-                'quantity': '1',
-                'size': 'medium',
-                'colour': 'white',
-                'price': '800'
-            }
-        ]
-
-    for card in transaction_inputs:
-        tprice = tprice + int(card['price'])
-
-    tcost = tprice + deliver
-
-    return jsonify(data)
-=======
-
->>>>>>> 2eaafd1db89ea4eaf4858b615fb94b8a08f67a78

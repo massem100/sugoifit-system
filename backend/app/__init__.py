@@ -26,13 +26,8 @@ UPLOAD_FOLDER = './app/static/uploads'
 
 
 def init_app(): 
-<<<<<<< HEAD
-    app = Flask(__name__, instance_relative_config=False, template_folder = None)
-    #app.config.from_object('config.Config')
-=======
     app = Flask(__name__,  )
     app.config.from_object('config.Config')
->>>>>>> 2eaafd1db89ea4eaf4858b615fb94b8a08f67a78
 
     #username, password, server = 'root', 'SQLpass','localhost'
     username, password, server = 'root', '', 'localhost'
