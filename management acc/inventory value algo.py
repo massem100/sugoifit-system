@@ -53,14 +53,14 @@ for category, products in inventory.items():
     for items in products:
         
         #my attempt at separating by categories, not efficient ik
-        if "shirt" in products[item]['id']:
+        if "shirt" in products['item']['id']:
             
             #couldnt figure out how to add the two consecutive numbers properly eg. 5 and 10
             t_quantity = value[key]['quantity'] + value[key]['quantity']  #total number of items in that category
-            if value[key]['cost'] < value[key]['market-p']
+            if value[key]['cost'] < value[key]['market-p']:
                 t_paid = value[key]['quantity'] * value[key]['cost']          #total cost of items in that category
 
-            if value[key]['cost'] > value[key]['market-p']
+            if value[key]['cost'] > value[key]['market-p']:
                 t_paid = value[key]['quantity'] * value[key]['market-p']
 
             #this gives the value per item for that category
@@ -73,10 +73,10 @@ for category, products in inventory.items():
         if "skirt" in products[item]['id']:
             t_quantity = value[key]['quantity'] + value[key]['quantity']
             
-            if value[key]['cost'] < value[key]['market-p']
+            if value[key]['cost'] < value[key]['market-p']:
                 t_paid = value[key]['quantity'] * value[key]['cost']       
 
-            if value[key]['cost'] > value[key]['market-p']
+            if value[key]['cost'] > value[key]['market-p']:
                 t_paid = value[key]['quantity'] * value[key]['market-p']
                 
             #this gives the value per item for that category

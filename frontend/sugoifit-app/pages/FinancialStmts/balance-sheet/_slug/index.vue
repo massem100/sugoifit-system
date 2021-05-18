@@ -74,7 +74,7 @@
 import BackButton from '../../../../components/argon-core/BackButton.vue';
     export default {
         name: "invoice-card",
-        layout: 'dashboard',
+        layout: 'DashboardLayout',
         components: { BackButton },
         head(){
           return{
@@ -82,7 +82,6 @@ import BackButton from '../../../../components/argon-core/BackButton.vue';
           }
         },
     };
-       
 </script>
 
 <style scoped lang="scss">

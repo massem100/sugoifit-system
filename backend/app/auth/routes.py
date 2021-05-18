@@ -69,6 +69,21 @@ def token():
 """
 --------------------------------------- User Authentication Routes ----------------------------------------------------------
 """
+@authorize.route('/api/user/<userID>', methods = ["GET"])
+def userDetails(userID):
+    userid = current_user.userID
+    if userID == userid:
+        user = db.session.query(auth.User).filter_by(userID=userid).all()
+        #output = sales.invoices_schema.dump(user)
+    return jsonify(user)
+
+@authorize.route('/api/user/<busID>', methods = ["GET"])
+def busDetails(busID):
+    busid = current_user.busID
+    if busID == busid:
+        business = db.session.query(auth.Business).filter_by(busID=busID).all()
+        #output = sales.invoices_schema.dump(user)
+    return jsonify(business)
 
 @identity_loaded.connect_via(authorize)
 def on_identity_loaded(sender, identity):

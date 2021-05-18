@@ -8,7 +8,7 @@
         ref="observer"
         v-slot="{handleSubmit}"
       >
-        <b-form @submit.stop.prevent="handleSubmit(onSubmit)">
+        <b-form id="invoiceForm" @submit.stop.prevent="handleSubmit(onSubmit)">
           <b-row>
             <b-col cols="12" class="text-info mb-3">Add Invoice</b-col>
 

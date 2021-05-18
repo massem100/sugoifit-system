@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-<<<<<<< HEAD
+
         <b-col>
             <b-container fluid>
                 
@@ -127,7 +127,6 @@
                             <button type="button" class="btn btn-outline-danger" @click="resetForm()">Reset</button>
                         </b-col>
                     </b-row>
-=======
         <div class="conatainer">
             <!-- contact section -->
             <div class="contact">
@@ -154,7 +153,7 @@
                     <fieldset>
                         <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
                     </fieldset>
->>>>>>> main
+
                 </form>
                 </validation-observer>
             </b-container>
@@ -163,11 +162,11 @@
 </template>
 
 <script>
-<<<<<<< HEAD
+
 import {ValidationObserver, ValidationProvider} from "vee-validate";
 export default {
     name: 'Contact',
-    layout: 'website',
+    layout:'WebsiteLayout',
     components: {
         ValidationProvider,
         ValidationObserver,
@@ -221,14 +220,8 @@ export default {
                 console.log(jsonResponse);
             })
             }, 
-=======
 
-export default {
-    name: 'Contact',
-    layout:'WebsiteLayout',
-    components: {
->>>>>>> main
-    }
+
 }
 </script>
 

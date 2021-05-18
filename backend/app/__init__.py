@@ -19,14 +19,14 @@ login_manager = LoginManager()
 csrf_ = csrf
 # JWT Authorization Setup
 jwt = JWTManager()
-ma = Marshmallow
-UploadFolder ='./app/static/uploads'
+ma = Marshmallow()
 mail = Mail()
+UPLOAD_FOLDER = './app/static/uploads'
 
 
 
 def init_app(): 
-    app = Flask(__name__, instance_relative_config=False, template_folder = None)
+    app = Flask(__name__,  )
     app.config.from_object('config.Config')
 
     # username, password, server = 'root', 'SQLpass','localhost'
@@ -39,7 +39,9 @@ def init_app():
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
-    app.config['UPLOAD_FOLDER'] = UploadFolder
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
     # from app.model import db
     db.init_app(app)
 
@@ -51,7 +53,7 @@ def init_app():
     login_manager.login_view = 'login'
 
     # Flask marshmallow
-    #ma.init_app(app)
+    # ma.init_app(app)
 
     # Flask migrate
     migrate = Migrate(app, db)
@@ -73,7 +75,6 @@ def init_app():
         csrf_wrap = csrf_.CSRFProtect(app)
 
         
-            
         # Cross Site Resource Sharing Protection
         cors = CORS(app, support_credentials=True, resources = {r"/api/*": {"origins": "http://localhost:3000"}})
         app.config['TOKEN_KEY'] = "3cc8464f0b2eef61bf0872ebf640505db394175ed8d314ab9f2d9e6eb27552ce"
@@ -99,10 +100,10 @@ def init_app():
         app.register_blueprint(statement)   
 
        
-        #    Include View routes
+        # Include View routes
         from app import views
         
-         # from . import model
+        # from . import model
         # from .model import auth, accounts, financial_statement, sales
         # db.create_all()
     return app 

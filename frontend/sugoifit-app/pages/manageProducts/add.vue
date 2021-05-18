@@ -139,6 +139,107 @@
                 </validation-provider>
               </div>
               -->
+             </b-row>
+            <b-row>
+              <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
+                <validation-provider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="unit_price"
+                >
+                  <label for="unit_price">Unit Price</label>
+                  <b-form-input v-model="form.unit_price"
+                                type="number"
+                                class="w-100"
+                                id="unit_price"
+                                name="unit_price"
+                                :state="getValidationState(errors)">
+                  </b-form-input>
+                  <b-form-invalid-feedback>
+                    {{ errors[0] }}
+                  </b-form-invalid-feedback>
+                </validation-provider>
+              </b-col>
+              <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
+                <validation-provider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="man_units"
+                >
+                  <label for="man_units">Manufacture Units</label>
+                  <b-form-input v-model="form.man_unitts"
+                                type="number"
+                                class="w-100"
+                                id="man_units"
+                                name="man_units"
+                                :state="getValidationState(errors)">
+                  </b-form-input>
+                  <b-form-invalid-feedback>
+                    {{ errors[0] }}
+                  </b-form-invalid-feedback>
+                </validation-provider>
+              </b-col>
+              <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
+                <validation-provider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="tax_percent"
+                >
+                  <label for="tax">Tax percent</label>
+                  <b-form-input v-model="form.tax"
+                                type="number"
+                                class="w-100"
+                                id="tax"
+                                step=".01"
+                                name="tax"
+                                :state="getValidationState(errors)">
+                  </b-form-input>
+                  <b-form-invalid-feedback>
+                    {{ errors[0] }}
+                  </b-form-invalid-feedback>
+                </validation-provider>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
+                <validation-provider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="product_status"
+                >
+                  <label for="status">Product Status</label>
+                  <b-form-select v-model="form.status"
+                                class="w-100"
+                                id="status"
+                                name="status"
+                                :options="status_options"
+                                :state="getValidationState(errors)">
+                  </b-form-select>
+                  <b-form-invalid-feedback>
+                    {{ errors[0] }}
+                  </b-form-invalid-feedback>
+                </validation-provider>
+              </b-col>
+
+              <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
+                <validation-provider
+                  v-slot="{ errors }"
+                  rules="required"
+                  name="image"
+                >
+                  <label for="image">Product Image</label>
+                  <b-form-file  v-model="form.image"
+                                class="w-100"
+                                id="image"
+                                name="image"
+                                placeholder="Choose a file or drop it here..."
+                                drop-placeholder="Drop file here..."
+                                :state="getValidationState(errors)">
+                  </b-form-file>
+                  <b-form-invalid-feedback>
+                    {{ errors[0] }}
+                  </b-form-invalid-feedback>
+                </validation-provider>
                 <b-row>
                   <div class="mb-2 ">
                     <validation-provider

@@ -16,7 +16,7 @@
               <thead>
               <tr style="border-bottom: 4px solid #7cc3cd">
                 <th></th>
-                <th v-for="mon in field" :key= "mon" class="text-capitalize">
+                <th v-for="(mon,index) in field" :key="index" class="text-capitalize">
                   {{mon}}
                 </th>
               </tr>
@@ -27,49 +27,49 @@
               </tr>
               <tr class="br-bottom">
                 <td class="pl-4">Sales</td>
-                <td v-for="mon in field" :key= "mon">
+                <td v-for="(mon,index) in field" :key="index">
                   ${{sales[mon]}}
                 </td>
               </tr>
               <tr class="br-bottom">
                 <td class="pl-4">Cost of Goods Sold</td>
-                <td v-for="mon in field" :key= "mon">
+                <td v-for="(mon,index) in field" :key="index">
                   ${{cost_sold[mon]}}
                 </td>
               </tr>
               <tr>
                 <td class="font-weight-bold">Gross Profit</td>
-                <td v-for="mon in field" :key= "mon" class="font-weight-bold">
+                <td v-for="(mon,index) in field" :key="index" class="font-weight-bold">
                   ${{sales[mon]+cost_sold[mon]}}
                 </td>
               </tr>
               <tr class="br-bottom font-weight-bold">
                 <td>Other Operating Income</td>
-                <td v-for="mon in field" :key= "mon">
+                <td v-for="(mon,index) in field" :key="index">
                   ${{operate_income[mon]}}
                 </td>
               </tr>
               <tr class="br-bottom font-weight-bold">
                 <td>Less Expenses</td>
-                <td v-for="mon in field" :key= "mon">
+                <td v-for="(mon,index) in field" :key="index">
                   ${{sales[mon]}}
                 </td>
               </tr>
               <tr class="br-bottom">
                 <td class="pl-4">Expenses</td>
-                <td v-for="mon in field" :key= "mon">
+                <td v-for="(mon,index) in field" :key="index">
                   ${{cost_sold[mon]}}
                 </td>
               </tr>
               <tr class="br-bottom">
                 <td class="font-weight-bold">Total Expense</td>
-                <td v-for="mon in field" :key= "mon" class="font-weight-bold">
+                <td v-for="(mon,index) in field" :key="index" class="font-weight-bold">
                   ${{sales[mon]+cost_sold[mon]}}
                 </td>
               </tr>
               <tr>
                 <td class="font-weight-bold">Net Profit</td>
-                <td v-for="mon in field" :key= "mon" class="font-weight-bold">
+                <td v-for="(mon,index) in field" :key="index" class="font-weight-bold">
                   ${{sales[mon]+cost_sold[mon]}}
                 </td>
               </tr>

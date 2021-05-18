@@ -1,9 +1,13 @@
-from app import  db, login_manager, csrf_, principal
+import os, sys
+from app import db, login_manager, csrf_, principal
 from app.forms import orderForm, NewProductForm
 from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order
-from app.schema import sales
-from sqlalchemy import func, inspection, event
-from flask import  Blueprint, current_app, request, jsonify, flash, session,  _request_ctx_stack, g
+from app.schema.sales import product_schema, products_schema
+from app.views import form_errors
+from sqlalchemy import func, inspection, event, desc
+from datetime import datetime
+from flask import  Blueprint, current_app,  request, jsonify, flash, session,  _request_ctx_stack, g
+from flask_login import current_user
 from werkzeug.utils import secure_filename
 import os
 
@@ -23,78 +27,69 @@ product = Blueprint('product', __name__)
 #     db.session.commit()
 #     return jsonify({'dev': dev.serialize()})
 
-@product.route('/api/product/<prodID>', methods =['PUT'])
-def update_product(prodID):
-    product = Product.query.get(prodID)
-    # What parts to
-    return 1
 
-@product.route('/api/product/<prodID>', methods = ['DELETE'])
-def delete_product(prodID): 
-    product = Product.query.get(prodID)
-    db.session.delete(product)
-    db.session.commit() 
-    return jsonify({'message': 'Product {} has been deleted.'}.format(prodID))
+@product.route('/api/<busID>/products/<prodID>', methods = ['PUT', 'DELETE'])
+def delete_product(busID, prodID):
+    busID = current_user.busID 
+    if request.method == 'DELETE': 
+        product = Product.query.get(prodID)
+        db.session.delete(product)
+        db.session.commit() 
+        return jsonify({'message': 'Product {} has been deleted.'}.format(prodID))
 
-@product.route('/api/newproduct', methods = ['GET', 'POST'])
-def new_product():
+    if request.method == 'PUT': 
+        pass
+
+@product.route('/api/<busID>/products', methods = ["GET", "POST"])
+def new_product(busID):
+    busID = current_user.busID 
     form = NewProductForm(request.form)
 
     if request.method == "POST":
-        product_name = form.product_name.data
-        quantity = form.quantity.data
-        uom = form.uom.data
-        unit_price = form.unit_price.data
-        status = form.status.data
-        tax = form.tax.data
+        if form.validate_on_submit():
+            product_name = form.product_name.data
+            quantity = form.quantity.data
+            man_units = form.man_units.data
+            unit_price = form.unit_price.data
+            status = form.status.data
+            tax = form.tax.data 
+            image_file = request.files["image"]
 
-        image_file = request.files['image']
-        if image_file:
-            filename = secure_filename(image_file.filename)
-            image_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+            if image_file is not None:
+                basedir = os.path.abspath(os.path.dirname(__file__))
+                sec_filename = secure_filename(image_file.filename)
+                image_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], sec_filename))
 
-       
-        newProduct = Product(prodID=None, busID="Mon1", prodName=product_name, unit_price=unit_price, 
-                            Unit="", limitedTime="", taxPercent=tax, prodStatus=status, image=filename)
+                try:
+                    newProduct = Product(prodID=None, busID=busID, prodName=product_name, unit_price=unit_price, 
+                                    Unit=man_units, limitedTime=datetime.now(), taxPercent=tax, 
+                                    prodStatus=status, image=sec_filename)
+
+                    db.session.add(newProduct)
+                    db.session.commit()
+                except Exception as e:
+                    error = str(e)
+                    print(error)
+
+                return jsonify({"message":"New product added successfully"})
+        else: 
+            errors = form_errors(form) 
+            return jsonify(erorrs=errors)
+
+    if request.method == "GET": 
+        products = []
+        product_list = db.session.query(Product).filter_by(busID=busID).order_by(desc(Product.prodID)).all()
+        product_dump = products_schema.dump(product_list)
     
-        try:
-            db.session.add(newProduct)
-            db.session.commit()
-        except Exception as e:
-            error = str(e)
+        # QUERY THE SERVICES TABLE TOO
+        return jsonify(product_dump)
 
-        flash('New product added successfully')
-    return jsonify({"message":"New product added successfully"})
-
-@product.route('/api/products', methods = ['GET', 'POST'])
-def all_product():
-    data_list = []
-    busID = "Mon1"
-    products = Product.query.filter_by(busID=busID).all()
-    output = sales.products_schema.dump(products)
-
-    for item in output:
-        case = {
-            "id":item['prodID'],
-            "name":item['prodName'],
-            "price":item['unit_price'],
-            "tax":item['taxPercent'],   
-            "status":item['prodStatus'],
-            "image":item['image']
-        }
-        data_list.append(case)
-        #data.update(item=item.index)
-
-    #return jsonify(output)
-    return jsonify(data_list)
+   
 
 #@app.route('/api/product/classify', methods = ['GET', 'POST'])
 @product.route('/api/classify', methods = ['GET', 'POST'])
-
-#safety stock = (max daily sales x max lead time in days) - (average daily sales x average lead time in days)
-
 def product_classify():
-    #product_list = defaultdict(list)
+    #safety stock = (max daily sales x max lead time in days) - (average daily sales x average lead time in days)
     annual_consum_val = []
     total_consum_val = 0
     total_units_sold = 0
@@ -136,17 +131,4 @@ def product_classify():
     
     return jsonify({'products': data})
 
-    # Find Percentage of Annual Units Sold 
-    # for product in product_sales: 
-    #     desc_consum_val = sorted(annual_consum_val, reverse=True) # List of Annual Consumption Values (Descending Order)
-    #     percent_units_sold = (product.quantitySold/total_units_sold)*100.0  # % of Annual Units Sold
-    #     for val in desc_con_val: 
-    #         percent_consum_val = (val/total_consum_val)*100.0  # % of Total Annual Consumption Value
-
-            # Split Data ito 80/15/5
-            # get length of product_list then divide by percentage
-            # Assign Grades to products based on products in each percentile
-
-
-    # Find Percentage of Annual Consumption Value
 

@@ -108,10 +108,10 @@ export default {
         color: white;
     }
 
-    .sugoifit-name h4{
+    /* .sugoifit-name h4{
         
         
-    }
+    } */
 
     .checked{
         width:24px; 

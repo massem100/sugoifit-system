@@ -15,9 +15,12 @@ class Customer(db.Model):
     email = db.Column(db.String(255))
     address = db.Column(db.String(255))
 
-    business = db.relationship('Busines')
+    #business = db.relationship('Busines')
+    sale = db.relationship('Sale')
+    customerpayment = db.relationship('CustomerPayment')
 
-    def ___init__(self, custID, fname, lname, trn, email,address):
+    def ___init__(self, busID, custID, fname, lname, trn, email,address):
+        self.busID = busID
         self.custID = custID
         self.fname = fname
         self.lname = lname 
@@ -40,12 +43,14 @@ class CustomerPayment(db.Model):
     __tablename__ ='customerpayment'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    cusID = db.Column(db.ForeignKey('customer.custID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    custID = db.Column(db.ForeignKey('customer.custID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     orderID =db.Column(db.ForeignKey('custorder.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     receipt = db.Column(db.String(255))
 
-    def __init__(self, custID, orderID, receipt): 
-        self.cusID =custID
+    def __init__(self, busID, custID, orderID, receipt): 
+        self.busID = busID
+        self.cusID = custID
         self.orderID = orderID
         self.receipt = receipt
 
@@ -58,6 +63,7 @@ class Sale(db.Model):
 
     saleID = db.Column(db.Integer, primary_key=True)
     customerID = db.Column(db.ForeignKey('customer.custID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     timePaid = db.Column(db.DateTime)
     timeCreated = db.Column(db.DateTime)
     saleAmt = db.Column(db.Integer)
@@ -65,12 +71,12 @@ class Sale(db.Model):
     SaleStatus = db.Column(db.String(11))
     receiptID = db.Column(db.ForeignKey('receipt.receiptID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
 
-    customer = db.relationship('Customer')
-    receipt = db.relationship('Receipt')
+    
 
-    def __init__(self, saleID, customerID, timePaid, timeCreated, saleAmt, saleAmtPaid, SaleStatus, receiptID): 
+    def __init__(self, saleID, customerID, busID, timePaid, timeCreated, saleAmt, saleAmtPaid, SaleStatus, receiptID): 
         self.saleID = saleID
         self.customerID = customerID
+        self.busID = busID
         self.timePaid = timePaid
         self.timeCreate =timeCreated
         self.saleAmt = saleAmt
@@ -95,25 +101,33 @@ class Product(db.Model):
     prodID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     prodName = db.Column(db.String(100))
+    prodType = db.Column(db.String(40))
+    prodDesc = db.Column(db.String(40))
+    prodQuantity = db.Column(db.Integer)
+    prodSize = db.Column(db.String(40))
     unit_price = db.Column(db.DECIMAL(10, 2))
     Unit = db.Column(db.DECIMAL(10, 2))
     limitedTime = db.Column(db.DateTime())
     taxPercent = db.Column(db.DECIMAL(3, 2))
-    #grade = db.Column(db.String(5))
+    grade = db.Column(db.String(5))
     prodStatus = db.Column(db.String(25))
     image = db.Column(db.String(50))
 
-    receiptdetails = db.relationship('Receiptdetail')
-    stock = db.relationship('Stock')
-
-    def ___init__(self, prodID, prodName, unit_price, Unit, limitedTime, taxPercent, prodStatus): 
+    def ___init__(self, prodID, busID, prodName, prodType, prodDesc, prodQuantity, prodSize, unit_price, Unit, limitedTime, grade, taxPercent, prodStatus,image): 
         self.prodID = prodID 
         self.prodName = prodName 
+        self.prodType = prodType
+        self.prodDesc = prodDesc
+        self.prodQuantity = prodQuantity
+        self.prodSiz = prodSize
+        self.busID = busID 
         self.unit_price = unit_price
         self.Unit = Unit 
         self.limitedTime = limitedTime
+        self.grade = grade
         self.taxPercent = taxPercent
         self.prodStatus = prodStatus
+        self.image =image
     
     def get_id(self):
         try:
@@ -130,6 +144,7 @@ class Stock(Product):
     __tablename__ = 'stock'
 
     prodID = db.Column(db.ForeignKey('product.prodID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True)
+    #busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     inStock = db.Column(db.String(10))
     lastUpdateTime = db.Column(db.DateTime())
     quantity = db.Column(db.Integer)
@@ -137,6 +152,7 @@ class Stock(Product):
 
     def __init__(self, prodID, inStock, lastUpdateTime, quantity, threshold): 
         self.prodID = prodID 
+        #self.busID = busID
         self.inStock = inStock
         self.lastUpdateTime = lastUpdateTime
         self.quantity = quantity
@@ -165,8 +181,9 @@ class Service(db.Model):
 
     receiptdetails = db.relationship('Receiptdetail')
 
-    def __init__(self, serviceID, serv_name, serv_cost, taxPercent, in_season): 
+    def __init__(self, serviceID, busID, serv_name, serv_cost, taxPercent, in_season): 
         self.serviceID = serviceID 
+        self.busID = busID
         self.serv_name = serv_name
         self.serv_cost = serv_cost
         self.taxPercent = taxPercent
@@ -187,15 +204,16 @@ class ServiceSaleItem(Service):
     ssiID = db.Column(db.Integer, primary_key=True)
     serv_price = db.Column(db.Integer)
     taxAmt = db.Column(db.Integer)
+    #busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     serviceID = db.Column(db.ForeignKey('service.serviceID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     userID = db.Column(db.ForeignKey('user.userID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
 
-    user = db.relationship('User')
 
-    def ___init__(self, ssiID, serv_price, taxAmt, serviceID, userID): 
+    def ___init__(self, ssiID, serv_price, taxAmt, userID, serviceID): 
         self.ssiID = ssiID
         self.serv_price = serv_price 
         self.taxAmt = taxAmt 
+        #self.busID = busID
         self.serviceID = serviceID 
         self.userID = userID
 
@@ -218,6 +236,7 @@ class ConServiceSaleItem(db.Model):
     unit_price = db.Column(db.Integer)
     serv_price = db.Column(db.Integer)
     taxAmt = db.Column(db.Integer)
+    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     serviceID = db.Column(db.ForeignKey('service.serviceID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     starttime = db.Column(db.DateTime)
     endtime = db.Column(db.DateTime)
@@ -225,12 +244,13 @@ class ConServiceSaleItem(db.Model):
 
     service = db.relationship('Service')
 
-    def ___init__(self, cssiID, quantitySold, unit_price, serv_price, taxAmt, serviceID, startTime, endtime, prolong_period):
+    def ___init__(self, cssiID, quantitySold, unit_price, serv_price, taxAmt, busID, serviceID, startTime, endtime, prolong_period):
         self.cssiID = cssiID
         self.quantitySold = quantitySold
         self.unit_price = unit_price
         self.serv_price = serv_price 
         self.taxAmt = taxAmt 
+        self.busID = busID
         self.serviceID = serviceID 
         self.starttime = startTime
         self.endtime = endtime
@@ -249,7 +269,7 @@ class ConServiceSaleItem(db.Model):
 class Invoice(db.Model):
     __tablename__ = 'invoice'
 
-    invoiceID = db.Column(db.Integer, primary_key=True)
+    invoiceID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     custID = db.Column(db.ForeignKey('customer.custID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     invoice_DATE = db.Column(db.Date)
@@ -257,8 +277,9 @@ class Invoice(db.Model):
 
     customer = db.relationship('Customer')
 
-    def __init__(self, invoiceID, custID, invoice_DATE, tax_total): 
+    def __init__(self, invoiceID, busID, custID, invoice_DATE, tax_total): 
         self.invoiceID = invoiceID 
+        self.busID = busID
         self.custID = custID 
         self.invoice_DATE = invoice_DATE
         self.tax_tot = tax_total
@@ -276,6 +297,7 @@ class ProductSaleItem(db.Model):
     __tablename__ = 'product_sale_item'
 
     psiID = db.Column(db.Integer, primary_key=True)
+    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     customerID = db.Column(db.ForeignKey('customer.custID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     timePaid = db.Column(db.DateTime)
     timeCreated = db.Column(db.DateTime)
@@ -290,8 +312,9 @@ class ProductSaleItem(db.Model):
     customer = db.relationship('Customer')
     product = db.relationship('Product')
 
-    def __init__(self, psiID, customerID, timePaid, timeCreated, saleAmt, saleAmtPaid, status, qSold, uPrice, prodID,taxAmt): 
+    def __init__(self, psiID, busID, customerID, timePaid, timeCreated, saleAmt, saleAmtPaid, status, qSold, uPrice, prodID,taxAmt): 
         self.psiID = psiID
+        self.busID = busID
         self.customerID = customerID 
         self.timePaid = timePaid
         self.timeCreated = timeCreated
@@ -328,9 +351,10 @@ class ConService(db.Model):
 
     con_service_sale_item = db.relationship('ConServiceSaleItem')
 
-    def __init__(self, serviceID, serv_name, serv_uprice, basic_unit, 
+    def __init__(self, serviceID, busID, serv_name, serv_uprice, basic_unit, 
                 d_prolongperiod, taxPercent, in_season, cssiID):
         self.serviceID = serviceID 
+        self.busID = busID
         self.serv_name = serv_name
         self.serv_uprice = serv_uprice
         self.basic_unit = basic_unit
@@ -354,7 +378,7 @@ class ConService(db.Model):
 class Order(db.Model):
     __tablename__ = 'custorder'
 
-    orderID = db.Column(db.Integer, primary_key=True)
+    orderID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     order_tot = db.Column(db.DECIMAL(10, 2))
     order_DATE = db.Column(db.Date)
     custID = db.Column(db.ForeignKey('customer.custID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
@@ -367,6 +391,7 @@ class Order(db.Model):
     invoice = db.relationship('Invoice')
     receipt = db.relationship('Receipt')
     receiptdetails = db.relationship('Receiptdetail')
+    customerpayment = db.relationship('CustomerPayment')
     orderdetails = db.relationship('Orderdetail',  uselist = False)
 
     def ___init__(self, orderID, order_tot,order_DATE, custID, invoiceID, busID, status): 
@@ -420,12 +445,13 @@ class Orderdetail(db.Model):
 class Receipt(db.Model):
     __tablename__ = 'receipt'
 
-    receiptID = db.Column(db.String(10), primary_key=True)
+    receiptID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     orderID = db.Column(db.ForeignKey('custorder.orderID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     DATE_issued = db.Column(db.Date)
 
     receiptdetails = db.relationship('Receiptdetail')
+    sale = db.relationship('Sale')
 
     def __init__(self, receiptID, orderID, busID, date_issued): 
         self.receiptID = receiptID
@@ -477,13 +503,15 @@ class Receiptdetail(db.Model):
 class Websitedetails(db.Model):
     _tablename_ = 'websitedetails'
     
+    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     section_detail = db.Column(db.String(10), primary_key=True, unique=True) 
     sec_header = db.Column(db.String(50)) 
     sec_message = db.Column(db.String(50))
 
-    websitedrag = db.relationship("Websitedrag", uselist=False, backref= db.backref("websitedetails", uselist=False))
+    #websitedrag = db.relationship("Websitedrag", uselist=False, backref= db.backref("websitedetails", uselist=False))
 
-    def _init_(self, section_detail, sec_header, sec_message): 
+    def _init_(self, busID, section_detail, sec_header, sec_message): 
+        self.busID = busID
         self.section_detail = section_detail
         self.sec_header = sec_header
         self.sec_message = sec_message
@@ -497,26 +525,26 @@ class Websitedetails(db.Model):
     def __repr__(self):
         return "<Website Details {} ".format(self.section_detail)
 
-class Websitedrag(db.Model):
-    _tablename_ = 'websitedrag'
+# class Websitedrag(db.Model):
+#     _tablename_ = 'websitedrag'
 
-    sectionID = db.Column(db.Integer, primary_key=True, unique=True)
-    positionID = db.Column(db.String(50)) 
-    sectionName = db.Column(db.String(50)) 
-    section_detail = db.Column(db.String(50), db.ForeignKey('websitedetails.section_detail', ondelete='CASCADE', onupdate='CASCADE'))
+#     sectionID = db.Column(db.Integer, primary_key=True, unique=True)
+#     positionID = db.Column(db.String(50)) 
+#     sectionName = db.Column(db.String(50)) 
+#     section_detail = db.Column(db.String(50), db.ForeignKey('websitedetails.section_detail', ondelete='CASCADE', onupdate='CASCADE'))
     
-    def _init_(self,  sectionID, positionID, sectionName, section_detail):
-        self.sectionID = sectionID
-        self.positionID = positionID
-        self.sectionName = sectionName
-        self.section_detail = section_detail
+#     def _init_(self,  sectionID, positionID, sectionName, section_detail):
+#         self.sectionID = sectionID
+#         self.positionID = positionID
+#         self.sectionName = sectionName
+#         self.section_detail = section_detail
     
-    def get_id(self):
-        try:
-            return unicode(self.sectionID)  # python 2 support
-        except NameError:
-            return str(self.sectionID)  # python 3 support       
+#     def get_id(self):
+#         try:
+#             return unicode(self.sectionID)  # python 2 support
+#         except NameError:
+#             return str(self.sectionID)  # python 3 support       
     
-    def __repr__(self):
-        return "<WebsiteDrag {}, {}, {}".format(self.sectionID, self.positionID, self.sectionName)
+#     def __repr__(self):
+#         return "<WebsiteDrag {}, {}, {}".format(self.sectionID, self.positionID, self.sectionName)
 
