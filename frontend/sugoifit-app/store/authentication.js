@@ -1,6 +1,6 @@
 import { userService } from '../services';
 // import { userServ } from '../plugins/addService';
-const user = localStorage.getItem('user');
+const user = localStorage.getItem('userid');
 const initialState = user
     ? { status: { loggedIn: true }, user }
     : { status: {}, user: null };

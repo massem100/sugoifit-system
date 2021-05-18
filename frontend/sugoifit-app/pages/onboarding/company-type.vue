@@ -49,7 +49,7 @@ import BackButton from '../../components/argon-core/BackButton.vue';
 export default {
 components: { BackButton },
 name: 'company-type',
-layout:'onboarding',
+layout:'DashboardLayout',
 head(){
         return{
             title: 'Company Type'
@@ -88,17 +88,14 @@ methods: {
     .company-type-section p{
         font:400 1rem "Poppins";
     }
-    /* .company-heading{ 
-        margin-top: 1rem;
-    } */
+
     .company-heading h4{ 
         font: 600 1.6rem "Poppins";
     }
     .type-categories{
         display: grid;
         grid-template-rows: 1fr 1fr 1fr;
-        /* background-color: #5e4ad1; */
-        /* min-height:100vh; */
+        
     }
 
     .type-item{
@@ -142,11 +139,8 @@ methods: {
         display:flex; 
         flex-direction: row;
         justify-content: center;
-
-        
         width: 8rem;
         height: 2.8rem;   
-        /* padding: 2rem;      */
         background-color: #E5E5E5;
         box-shadow: 0 2px 2px 0 rgba(107, 104, 104, 0.15), 0 6px 20px 0 rgba(119, 114, 114, 0.15);
         
@@ -163,52 +157,5 @@ methods: {
         align-items:center;
         justify-content: center;
         vertical-align: middle;
-    }
-     /* Extra small devices (phones, 600px and down) */
-    @media only sreen and (max-width: 600px){
-            /* .company-type-page{
-                background-color: #387780;
-            } */
-    }
-    /* Small devices (portrait tablets and large phones, 600px and up) */
-    @media only screen and (min-width: 600px){
-         /* .company-type-page{
-                background-color: #c7db54;
-            } */
-    }
-    
-/* Medium devices (landscape tablets, 768px and up) */
-    @media only screen and (min-width: 768px){
-         /* .company-type-page{
-                background-color: #5e4ad1;
-            } */
-            .side-bar{
-                display:block;
-                position:fixed;
-            }
-            .company-type-section{
-                margin-left: 20rem;
-            }             /* .type-btn-n{
-                margin: 2rem;
-                position: absolute;
-                top: 36rem; 
-                left: 26rem;              
-             } */
-
-
-
-    }
-
-/* Large devices (laptops/desktops, 992px and up) */
-    @media only screen and (min-width: 992px){
-         /* .company-type-page{
-                background-color: #a6c5ff;
-            } */
-    }
-/* Extra large devices (large laptops and desktops, 1200px and up) */
-    @media only screen and (min-width: 1200px){
-         /* .company-type-page{
-                background-color: #bb2d8c;
-            } */
     }
 </style>

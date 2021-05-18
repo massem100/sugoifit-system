@@ -105,6 +105,22 @@ ltl_tags= [
         
 ]
 
+rev_tags =[
+    ('Other operating revenue','Other operating revenue' ),
+    ('Non Operating Revenue','Non Operating Revenue' )
+
+]
+
+exp_tags =[
+    ('Selling & Administration Expenses','Selling & Administration Expenses' ),
+    ('Distribution Expenses','Distribution Expenses' ),
+    ('General Expenses','General Expenses' ),
+    ('Depreciation Expense','Depreciation Expense' ),
+    ('Bad Debt Expense','Bad Debt Expense' ),
+    ('Other Operating Expense','Other Operating Expense' )
+
+]
+
 class NCAForm(FlaskForm): 
     asset_name = StringField('Asset Name', validators = [InputRequired('Please enter the name of the asset, e.g. Motor Vehicle')])
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
@@ -115,9 +131,9 @@ class NCAForm(FlaskForm):
     salvage_val = DecimalField('Salvage Value', places=2, rounding=None, validators = [InputRequired('Please enter salvage value amount')])
     asset_lifespan = IntegerField('LifeSpanNumber')
     totalUnits = IntegerField('Total Units')
-    tan_in = RadioField("Tangible or Intangible", choices = tan_in)
-    bought_sold = RadioField('Bought or Sold', choices = bought_sold)
-    paid_using = RadioField('Paid Using', choices = paid_using)
+    tan_in = SelectField("Tangible or Intangible", choices = tan_in)
+    bought_sold = SelectField('Bought or Sold', choices = bought_sold)
+    paid_using = SelectField('Paid Using', choices = paid_using)
     tag = SelectField('Tag', choices= nca_tags)
 
 class CAForm(FlaskForm): 
@@ -151,17 +167,17 @@ class CLiabForm(FlaskForm):
     borrow_date = DateField('Loan Borrow Date', validators = [InputRequired('Please enter the date the loan was received.')])
     payment_start_date = DateField('Loan Payment Start Date', validators = [InputRequired('Please enter the date that repayment is expected to start.')])
     amount_borrowed = DecimalField('Amount Received', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
-    tag = SelectField('Tag', choices= cl_tags)
+    tag = SelectField('Tag', choices= exp_tags)
 
 class ExpForm(FlaskForm): 
     expense_name = StringField('Expense  Name', validators = [InputRequired('Please enter the name of the asset.')])
     transaction_date = DateField('Transaction Date', validators = [InputRequired('Please Enter a transaction date.')])
-    expense_type = RadioField('Expense Type', choices = expense_type)
+    expense_type = SelectField('Expense Type', choices = expense_type)
     expense_desc = TextAreaField('Description', validators = [optional(), Length(max=200)])
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
-    increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
-    # tag = SelectField('Tag', choices= nca_tags)
+    increase_decrease = SelectField('Increase or Decrease', choices = increase_decrease)
+    tag = SelectField('Tag', choices= exp_tags)
     
 class RevForm(FlaskForm): 
     revenue_name = StringField('Asset Name', validators = [InputRequired('Please enter the name of the asset.')])
@@ -171,7 +187,7 @@ class RevForm(FlaskForm):
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
     increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
-    #   tag = SelectField('Tag', choices= nca_tags)
+    tag = SelectField('Tag', choices= rev_tags)
 
 class EquityForm(FlaskForm): 
     equity_name = StringField('Equity Name', validators = [InputRequired('Please enter the equity name')])
@@ -180,4 +196,4 @@ class EquityForm(FlaskForm):
     amount = DecimalField('Amount', places=2, rounding=None, validators = [InputRequired('Please enter expense amount.')])
     paid_using = SelectField('Paid Using', choices = paid_using)
     increase_decrease = RadioField('Increase or Decrease', choices = increase_decrease)
-    #   tag = SelectField('Tag', choices= nca_tags)
+    tag = SelectField('Tag', choices= nca_tags)

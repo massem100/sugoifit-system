@@ -87,16 +87,12 @@ def ca_transaction():
         asset_name = form.asset_name.data 
         transaction_date = form.transaction_date.data 
         asset_desc = form.asset_desc.data 
-        lifeSpan = form.asset_lifespan.data 
         amount = float(form.amount.data)
         account_affected = form.paid_using.data
         increase_decrease = form.increase_decrease.data
         loanPeriods = form.loan_period.data
         tag=form.tag.data
         ledgerID = 1
-
-        transaction_inputs = [ledgerID, transaction_date, amount, lifeSpan]
-        liability_inputs = [ledgerID, transaction_date, loanPeriods, amount]
 
         # Get IDs for related_entry
         last_id = get_last_id(ledgerID, CurrentAsset = accounts.CurrentAsset, Currentliability = accounts.Currentliability)
@@ -111,27 +107,27 @@ def ca_transaction():
         CA_BalanceDC = BalanceDC[0] 
 
         if "Increase" in  increase_decrease: 
-            debitEntry = accounts.CurrentAsset.debit(last_ca, "CA" + str(last_ca+1), tag, asset_name, CA_Balance, CA_BalanceDC, transaction_inputs)
+            debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,  "CA" + str(last_ca+1), tag, asset_name, CA_Balance, CA_BalanceDC)
             if account_affected == "Cash": 
-                creditEntry = accounts.CurrentAsset.credit(last_ca+1,"CA" + str(last_ca), "Cash",  "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                creditEntry = accounts.CurrentAsset.credit(last_ca+1,ledgerID, transaction_date, amount,"CA" + str(last_ca), "Cash",  "Cash", CA_Balance, CA_BalanceDC)
 
             elif account_affected == "Cheque": 
-                creditEntry = accounts.CurrentAsset.credit(last_ca+1,"CA" + str(last_ca),'Cash Equivalents', "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
+                creditEntry = accounts.CurrentAsset.credit(last_ca+1,ledgerID, transaction_date, amount,"CA" + str(last_ca),'Cash Equivalents', "Cash Equivalents", CA_Balance, CA_BalanceDC)
             else: 
                 BalanceDC = bal_debit_cred(current_user.ledgerID, amount, Currentliability = accounts.Currentliability)
                 CL_BalanceDC = BalanceDC[0]
 
-                debitEntry = accounts.CurrentAsset.debit(last_ca, "CLiab" + str(last_cl), tag, asset_name, CA_Balance, CA_BalanceDC, transaction_inputs)
-                creditEntry = accounts.Currentliability.credit(last_cl, "CA" + str(last_ca), "Accounts Payable", "Accounts Payable", CL_Balance, CL_BalanceDC, liability_inputs)
+                debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,  "CLiab" + str(last_cl), tag, asset_name, CA_Balance, CA_BalanceDC)
+                creditEntry = accounts.Currentliability.credit(last_cl, ledgerID, transaction_date, loanPeriods, amount, "CA" + str(last_ca), "Accounts Payable", "Accounts Payable", CL_Balance, CL_BalanceDC)
         
         else: 
-            creditEntry = accounts.CurrentAsset.credit(last_ca+1,"CA" + str(last_ca),tag, asset_name, CA_Balance, CA_BalanceDC, transaction_inputs)
+            creditEntry = accounts.CurrentAsset.credit(last_ca+1,ledgerID, transaction_date, amount, "CA" + str(last_ca),tag, asset_name, CA_Balance, CA_BalanceDC)
             if account_affected == "Cash": 
-                debitEntry = accounts.CurrentAsset.debit(last_ca, "CA" + str(last_ca+1), "Cash", "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,"CA" + str(last_ca+1), "Cash", "Cash", CA_Balance, CA_BalanceDC)
             elif account_affected == "Cheque": 
-                debitEntry = accounts.CurrentAsset.debit(last_ca, "CA" + str(last_ca+1), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
+                debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,  "CA" + str(last_ca+1), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC)
             else: 
-                debitEntry = accounts.CurrentAsset.debit(last_ca, "CA" + str(last_ca+1), "Accounts Receivable", "Accounts Receivable", CA_Balance, CA_BalanceDC, transaction_inputs)
+                debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,  "CA" + str(last_ca+1), "Accounts Receivable", "Accounts Receivable", CA_Balance, CA_BalanceDC)
         try:
             db.session.add(debitEntry)
             db.session.add(creditEntry)
@@ -160,21 +156,18 @@ def nca_transaction():
             asset_desc = form.asset_desc.data 
             amount = float(form.amount.data)
             account_affected = form.paid_using.data
-            lifeSpan = form.asset_lifespan.data
+            lifeSpan = int(form.asset_lifespan.data)
             dueDate = form.due_date.data 
-            totalUnits = form.totalUnits.data
-            salvageVal = form.salvage_val.data 
+            totalUnits = 1
+            salvageVal = float(form.salvage_val.data )
             remainingLife = 1  #form.remainingLife.data  #calculate remaining life from lifeSpan
             bought_sold = form.bought_sold.data
             tag= form.tag.data
             ledgerID = 1
             """ How to deal with INTANGIBLE ASSETS """
             # CHANGE TRANSACTION DATE TO DUE DATE
-            # find out when noncurrent asset is on credit - is the full amount added or net 
+           
             assetCost = amount - accounts.NonCurrentAsset.calcDepExpense(dep_type, amount, lifeSpan, totalUnits, salvageVal, remainingLife)
-
-            transaction_inputs = [ledgerID, lifeSpan, dep_type, transaction_date, assetCost]
-            liability_inputs = [ledgerID, transaction_date, dueDate, assetCost]
             
             last_id = get_last_id(ledgerID, NonCurrentAsset = accounts.NonCurrentAsset, CurrentAsset = accounts.CurrentAsset,
                                     Currentliability = accounts.Currentliability)
@@ -190,28 +183,28 @@ def nca_transaction():
                                 
             
             if "Bought" in  bought_sold: 
-                debitEntry = accounts.NonCurrentAsset.debit(last_nca,"CA" + str(last_ca), tag, asset_name, NCA_Balance, NCA_BalanceDC, transaction_inputs)
+                debitEntry = accounts.NonCurrentAsset.debit(last_nca, ledgerID, transaction_date, assetCost,lifeSpan, dep_type, "CA" + str(last_ca), tag, asset_name, NCA_Balance, NCA_BalanceDC)
                 if account_affected == "Cash": 
-                    creditEntry = accounts.CurrentAsset.credit(last_ca,"NCA" + str(last_nca), "Cash", "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, transaction_date, assetCost, "NCA" + str(last_nca), "Cash", "Cash", CA_Balance, CA_BalanceDC)
 
                 elif account_affected == "Cheque": 
-                    creditEntry = accounts.CurrentAsset.credit(last_ca,"NCA" + str(last_nca), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.CurrentAsset.credit(last_ca,ledgerID, transaction_date, assetCost,"NCA" + str(last_nca), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC)
 
                 else: 
                     BalanceDC = bal_debit_cred(ledgerID, "Debit", amount, Currentliability = accounts.Currentliability)
                     CL_BalanceDC = BalanceDC[0]
 
-                    debitEntry = accounts.NonCurrentAsset.debit(last_nca, "CLiab" + str(last_cl), tag, asset_name, NCA_Balance, NCA_BalanceDC, transaction_inputs)
-                    creditEntry = accounts.Currentliability.credit(last_cl, "NCA" + str(last_nca), "Accounts Payable" ,"Accounts Payable", CL_Balance, CL_BalanceDC, liability_inputs)
+                    debitEntry = accounts.NonCurrentAsset.debit(last_nca, ledgerID, transaction_date, assetCost,lifeSpan, dep_type, "CLiab" + str(last_cl), tag, asset_name, NCA_Balance, NCA_BalanceDC)
+                    creditEntry = accounts.Currentliability.credit(last_cl, ledgerID, transaction_date, loan_periods, amount,"NCA" + str(last_nca), "Accounts Payable" ,"Accounts Payable", CL_Balance, CL_BalanceDC)
             else: 
-                creditEntry = accounts.NonCurrentAsset.credit(last_nca,"CA" +str(last_ca),tag, asset_name, NCA_Balance, NCA_BalanceDC, transaction_inputs)
+                creditEntry = accounts.NonCurrentAsset.credit(last_nca,ledgerID, transaction_date, assetCost,lifeSpan, dep_type,"CA" +str(last_ca),tag, asset_name, NCA_Balance, NCA_BalanceDC)
                 if account_affected == "Cash": 
-                    debitEntry = accounts.CurrentAsset.debit(last_ca, "NCA" + str(last_nca),"Cash","Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    debitEntry = accounts.CurrentAsset.debit(last_ca, ledgerID, transaction_date, assetCost,  "NCA" + str(last_nca),"Cash","Cash", CA_Balance, CA_BalanceDC)
                     
                 elif account_affected == "Cheque": 
-                    debitEntry = accounts.CurrentAsset.debit(last_ca, "NCA" + str(last_nca), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs) 
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, assetCost,  "NCA" + str(last_nca), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC) 
                 else: 
-                    debitEntry = accounts.CurrentAsset.debit(last_ca, "NCA" + str(last_nca),"Accounts Receivable", "Accounts Receivable", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, assetCost, "NCA" + str(last_nca),"Accounts Receivable", "Accounts Receivable", CA_Balance, CA_BalanceDC)
                     
             try:
                 db.session.add(debitEntry)
@@ -241,14 +234,12 @@ def cl_transaction():
         loan_periods = form.loan_periods.data 
         borrow_date = form.borrow_date.data 
         payment_start_date = form.payment_start_date.data 
-        amount_borrowed = form.amount_borrowed.data 
+        amount_borrowed = float(form.amount_borrowed.data )
         account_affected = form.account_affected.data
         increase_decrease = form.increase_decrease.data
         tag = form.tag.data
         ledgerID = 1 
         # new year = datetime.strptime(borrow_date, "%Y-%m-%d").year + loan_periods
-        transaction_inputs = [ledgerID, borrow_date, loan_periods, amount_borrowed]
-        
         last_id = get_last_id(ledgerID, CurrentAsset = accounts.CurrentAsset, Currentliability = accounts.Currentliability)
         last_ca, last_cl = last_id[0], last_id[1]
 
@@ -260,18 +251,18 @@ def cl_transaction():
         CA_BalanceDC, CL_BalanceDC = BalanceDC[0], BalanceDC[1]
                             
         if "Increase" in increase_decrease: 
-            creditEntry = accounts.Currentliability.credit(last_cl, "CA" +str (last_ca), tag, liab_name, CL_Balance, CL_BalanceDC, transaction_inputs)
+            creditEntry = accounts.Currentliability.credit(last_cl, ledgerID, borrow_date, loan_periods, amount_borrowed, "CA" +str (last_ca), tag, liab_name, CL_Balance, CL_BalanceDC)
             if account_affected == "Cash": 
-                debitEntry = accounts.CurrentAsset.debit(last_ca, "CL" +str(last_cl), "Cash", "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                debitEntry = accounts.CurrentAsset.debit(last_ca, ledgerID, borrow_date, amount_borrowed,  "CL" +str(last_cl), "Cash", "Cash", CA_Balance, CA_BalanceDC)
             else:
-                debitEntry = accounts.CurrentAsset.debit(last_ca, "CL" +str(last_cl), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
+                debitEntry = accounts.CurrentAsset.debit(last_ca,  ledgerID, borrow_date, amount_borrowed,  "CL" +str(last_cl), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC)
                 
         else: 
-            debitEntry = accounts.Currentliability.debit(last_cl, "CA" +str(last_ca), tag, liab_name, CL_Balance, CL_BalanceDC, transaction_inputs)
+            debitEntry = accounts.Currentliability.debit(last_cl, ledgerID, borrow_date, loan_periods, amount_borrowed,  "CA" +str(last_ca), tag, liab_name, CL_Balance, CL_BalanceDC)
             if account_affected == "Cash": 
-                creditEntry = accounts.CurrentAsset.credit(last_ca, "CL" +str(last_cl),"Cash", "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, borrow_date, amount_borrowed, "CL" +str(last_cl),"Cash", "Cash", CA_Balance, CA_BalanceDC)
             else:
-                creditEntry = accounts.CurrentAsset.credit(last_ca, "CL" +str(last_cl), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
+                creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, borrow_date, amount_borrowed, "CL" +str(last_cl), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC)
         try:
             db.session.add(debitEntry)
             db.session.add(creditEntry)
@@ -297,7 +288,7 @@ def lt_transaction():
             loan_periods = form.loan_periods.data 
             borrow_date = form.borrow_date.data 
             payment_start_date = form.payment_start_date.data 
-            amount_borrowed = form.amount_borrowed.data 
+            amount_borrowed = float(form.amount_borrowed.data )
             tag = form.tag.data
             ledgerID = 1
              # I need to calculate interest on long term loan 
@@ -325,7 +316,7 @@ def exp_transaction():
 
         expense_name = form.expense_name.data
         transaction_date = form.transaction_date.data 
-        expense_type = form.expense_type.data
+        expense_category = form.expense_type.data
         expense_desc = form.expense_desc.data 
         amount = float(form.amount.data)
         account_affected = form.paid_using.data
@@ -347,20 +338,20 @@ def exp_transaction():
                                     NonOperatingExpense=accounts.NonOperatingExpense)
         CA_BalanceDC, OE_BalanceDC, nOE_BalanceDC = BalanceDC[0], BalanceDC[1], BalanceDC[2]
 
-        if "Operating" in  expense_type: 
+        if "Operating" in  expense_category: 
             # use Operating classess.. 
             if "Increase" in increase_decrease: 
-                debitEntry = accounts.OperatingExpense.debit(last_opex, "CA" + str(last_ca), tag, expense_name, OE_Balance, OE_BalanceDC, transaction_inputs)
+                debitEntry = accounts.OperatingExpense.debit(last_opex, ledgerID, transaction_date, expense_category, amount,  "CA" + str(last_ca), tag, expense_name, OE_Balance, OE_BalanceDC)
                 if account_affected == "Cash": 
-                    creditEntry = accounts.CurrentAsset.credit(last_ca,"OE" + str(last_opex), tag,"Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, transaction_date, amount, "OE" + str(last_opex), tag,"Cash", CA_Balance, CA_BalanceDC)
                 else: 
-                    creditEntry = accounts.CurrentAsset.credit(last_ca,"OE" + str(last_opex), tag,"Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.CurrentAsset.credit(last_ca,ledgerID, transaction_date, amount, "OE" + str(last_opex), tag,"Cash Equivalents", CA_Balance, CA_BalanceDC)
             else: 
-                creditEntry = accounts.OperatingExpense.credit(last_opex, "CA" + str(last_ca), tag, expense_name, OE_Balance, OE_BalanceDC, transaction_inputs)
+                creditEntry = accounts.OperatingExpense.credit(last_opex, ledgerID, transaction_date, expense_category, amount,   "CA" + str(last_ca), tag, expense_name, OE_Balance, OE_BalanceDC)
                 if account_affected == "Cash": 
-                    debitEntry = accounts.CurrentAsset.debit(last_ca,"OE" + str(last_opex),"Cash", "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,  "OE" + str(last_opex),"Cash", "Cash", CA_Balance, CA_BalanceDC)
                 else:                        
-                    debitEntry = accounts.CurrentAsset.debit(last_ca,"OE" + str(last_opex), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,  "OE" + str(last_opex), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC)
             try:
                 db.session.add(debitEntry)
                 db.session.add(creditEntry)
@@ -372,17 +363,17 @@ def exp_transaction():
         else: 
             # use non operating expense class 
             if "Increase" in increase_decrease: 
-                debitEntry = accounts.NonOperatingExpense.debit(last_nOpex, "CA" + str(last_ca),tag, expense_name, nOE_Balance, nOE_BalanceDC, transaction_inputs)
+                debitEntry = accounts.NonOperatingExpense.debit(last_nOpex,ledgerID, transaction_date, amount,   "CA" + str(last_ca),tag, expense_name, nOE_Balance, nOE_BalanceDC)
                 if account_affected == "Cash": 
-                    creditEntry = accounts.CurrentAsset.credit(last_ca,"NOE" + str(last_nOpex), "Cash", "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.CurrentAsset.credit(last_ca,ledgerID, transaction_date, amount, "NOE" + str(last_nOpex), "Cash", "Cash", CA_Balance, CA_BalanceDC)
                 else: 
-                    creditEntry = accounts.CurrentAsset.credit(last_ca,"NOE" + str(last_nOpex), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs) 
+                    creditEntry = accounts.CurrentAsset.credit(last_ca,ledgerID, transaction_date, amount, "NOE" + str(last_nOpex), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC) 
             else: 
-                creditEntry = accounts.NonOperatingExpense.credit(last_nOpex, "CA" + str(last_ca), tag, expense_name, nOE_Balance, nOE_BalanceDC, transaction_inputs)
+                creditEntry = accounts.NonOperatingExpense.credit(last_nOpex, ledgerID, transaction_date, expense_category, amount,  "CA" + str(last_ca), tag, expense_name, nOE_Balance, nOE_BalanceDC)
                 if account_affected == "Cash": 
-                    debitEntry = accounts.CurrentAsset.debit(last_ca,"NOE" + str(last_nOpex), "Cash","Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount, "NOE" + str(last_nOpex), "Cash","Cash", CA_Balance, CA_BalanceDC)
                 else:
-                    debitEntry = accounts.CurrentAsset.debit(last_ca,"NOE" + str(last_nOpex), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount, "NOE" + str(last_nOpex), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC)
             try:
                 db.session.add(debitEntry)
                 db.session.add(creditEntry)
@@ -406,13 +397,12 @@ def rev_transaction():
         revenue_type = form.revenue_type.data
         transaction_date = form.transaction_date.data
         revenue_desc = form.revenue_desc.data
-        amount = form.amount.data 
+        amount = float(form.amount.data )
         account_affected = form.paid_using.data   
         increase_decrease = form.increase_decrease.data    
         tag = form.tag.data
         ledgerID = 1
-        transaction_inputs = [ledgerID, transaction_date,  amount]
-
+       
         last_id = get_last_id(ledgerID, CurrentAsset = accounts.CurrentAsset, OperatingRevenue = accounts.OperatingRevenue,
                                 NonOperatingRevenue= accounts.NonOperatingRevenue)
         last_ca, last_opRevenueID, last_nopRevenueID = last_id[0], last_id[1], last_id[2]
@@ -430,18 +420,18 @@ def rev_transaction():
             # use Operating classess.. 
             if "Increase" in increase_decrease: 
                 # increase operating revenue
-                creditEntry = accounts.OperatingRevenue.credit(last_opRevenueID, "CA" + str(last_ca), tag, revenue_name, OR_Balance, OR_BalanceDC, transaction_inputs)
+                creditEntry = accounts.OperatingRevenue.credit(last_opRevenueID, ledgerID, transaction_date,  amount, "CA" + str(last_ca), tag, revenue_name, OR_Balance, OR_BalanceDC)
                 if account_affected == "Cash":                         
-                    debitEntry = accounts.CurrentAsset.debit(last_ca,"OR" + str(last_opRevenueID), "Cash", "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    debitEntry = accounts.CurrentAsset.debit(last_ca, ledgerID, transaction_date,  amount,"OR" + str(last_opRevenueID), "Cash", "Cash", CA_Balance, CA_BalanceDC)
                 else: 
-                    debitEntry = accounts.CurrentAsset.debit(last_ca,"OR" + str(last_opRevenueID), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    debitEntry = accounts.CurrentAsset.debit(last_ca, ledgerID, transaction_date,  amount,"OR" + str(last_opRevenueID), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC)
             else: 
                 # decrease operating revenue
-                debitEntry = accounts.OperatingRevenue.debit(last_opRevenueID,"CA" + str(last_ca), tag,revenue_name, OR_Balance, OR_BalanceDC, transaction_inputs)
+                debitEntry = accounts.OperatingRevenue.debit(last_opRevenueID, ledgerID, transaction_date,  amount, "CA" + str(last_ca), tag,revenue_name, OR_Balance, OR_BalanceDC)
                 if account_affected == "Cash": 
-                    creditEntry = accounts.CurrentAsset.credit(last_ca, "OR" + str(last_opRevenueID),"Cash", "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, transaction_date,  amount,"OR" + str(last_opRevenueID),"Cash", "Cash", CA_Balance, CA_BalanceDC)
                 else:
-                    creditEntry = accounts.CurrentAsset.credit(last_ca, "OR" + str(last_opRevenueID), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, transaction_date,  amount, "OR" + str(last_opRevenueID), "Cash Equivalents","Cash Equivalents", CA_Balance, CA_BalanceDC)
         
             try:
                 db.session.add(debitEntry)
@@ -454,18 +444,18 @@ def rev_transaction():
         else: 
             # use non operating revenue class 
             if "Increase" in increase_decrease: 
-                creditEntry = accounts.NonOperatingRevenue.credit(last_nopRevenueID,"CA" + str(last_ca), tag, revenue_name , nOR_Balance, nOR_BalanceDC, transaction_inputs)
+                creditEntry = accounts.NonOperatingRevenue.credit(last_nopRevenueID,"CA" + str(last_ca), tag, revenue_name , nOR_Balance, nOR_BalanceDC)
                 if account_affected == "Cash": 
-                    debitEntry =  accounts.CurrentAsset.debit(last_ca, "NOR" + str(last_nopRevenueID), tag, "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    debitEntry =  accounts.CurrentAsset.debit(last_ca, ledgerID, transaction_date, amount,"NOR" + str(last_nopRevenueID), tag, "Cash", CA_Balance, CA_BalanceDC)
                 else: 
-                    debitEntry = accounts.CurrentAsset.debit(last_ca, "NOR" + str(last_nopRevenueID), tag,"Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount, "NOR" + str(last_nopRevenueID), tag,"Cash Equivalents", CA_Balance, CA_BalanceDC)
             else: 
                 # decrease non operating revenue
                 debitEntry = accounts.NonOperatingRevenue.debit(last_nopRevenueID,"CA" + str(last_ca), tag, revenue_name, nOR_Balance, nOR_BalanceDC, transaction_inputs)
                 if account_affected == "Cash": 
-                    creditEntry = accounts.CurrentAsset.credit(last_ca, "NOR" + str(last_nopRevenueID),tag, "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, transaction_date, amount, lifeSpan,"NOR" + str(last_nopRevenueID),tag, "Cash", CA_Balance, CA_BalanceDC)
                 else:                        
-                    creditEntry = accounts.CurrentAsset.credit(last_ca, "NOR" + str(last_nopRevenueID), tag, "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
+                    creditEntry = accounts.CurrentAsset.credit(last_ca, ledgerID, transaction_date, amount,"NOR" + str(last_nopRevenueID), tag, "Cash Equivalents", CA_Balance, CA_BalanceDC)
             
             try:
                 db.session.add(debitEntry)
@@ -494,8 +484,7 @@ def equity_transaction():
         increase_decrease = form.increase_decrease.data
         tag = form.tag.data
         ledgerID = 1
-        transaction_inputs = [ledgerID, transaction_date, amount]
-        
+               
         last_id = get_last_id(ledgerID, CurrentAsset = accounts.CurrentAsset, ShareholdersEquity = accounts.ShareholdersEquity)
         last_ca, last_equityID = last_id[0], last_id[1]
 
@@ -508,18 +497,18 @@ def equity_transaction():
 
         if "Increase" in increase_decrease: 
             # Increase in Capital
-            creditEntry = accounts.ShareholdersEquity.credit(last_equityID, "CA" + str(last_ca), tag, equity_name, SE_Balance, SE_BalanceDC, transaction_inputs)
+            creditEntry = accounts.ShareholdersEquity.credit(last_equityID,ledgerID, transaction_date, amount, "CA" + str(last_ca), tag, equity_name, SE_Balance, SE_BalanceDC)
             if account_affected == "Cash": 
-                debitEntry = accounts.CurrentAsset.debit(last_ca,"SE" + str(last_equityID), "Cash", "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)
+                debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount, "SE" + str(last_equityID), "Cash", "Cash", CA_Balance, CA_BalanceDC)
             else:
-                debitEntry = accounts.CurrentAsset.debit(last_ca,"SE" + str(last_equityID), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
+                debitEntry = accounts.CurrentAsset.debit(last_ca,ledgerID, transaction_date, amount,"SE" + str(last_equityID), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC)
         else: 
             # Decrease in Capital
-            debitEntry = accounts.ShareholdersEquity.debit(last_equityID, "CA" + str(last_ca), tag, equity_name, SE_Balance, SE_BalanceDC, transaction_inputs)
+            debitEntry = accounts.ShareholdersEquity.debit(last_equityID,ledgerID, transaction_date, amount,"CA" + str(last_ca), tag, equity_name, SE_Balance, SE_BalanceDC)
             if account_affected == "Cash":
-                creditEntry = accounts.CurrentAsset.credit(last_ca,"SE" + str(last_equityID), "Cash", "Cash", CA_Balance, CA_BalanceDC, transaction_inputs)            
+                creditEntry = accounts.CurrentAsset.credit(last_ca,ledgerID, transaction_date, amount,"SE" + str(last_equityID), "Cash", "Cash", CA_Balance, CA_BalanceDC)            
             else: 
-                creditEntry = accounts.CurrentAsset.credit(last_ca,"SE" + str(last_equityID), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC, transaction_inputs)
+                creditEntry = accounts.CurrentAsset.credit(last_ca,ledgerID, transaction_date, amount,"SE" + str(last_equityID), "Cash Equivalents", "Cash Equivalents", CA_Balance, CA_BalanceDC)
                 
         try:
             db.session.add(debitEntry)
@@ -532,8 +521,6 @@ def equity_transaction():
     else: 
         error_list = form_errors(form)
         return jsonify(errors= error_list)
-
-
     
 @accounting.route('/api/printstmtdata', methods= ["GET"])
 def stmt():

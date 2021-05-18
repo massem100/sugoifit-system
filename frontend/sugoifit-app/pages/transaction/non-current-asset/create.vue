@@ -1,6 +1,5 @@
 <template>
-  <div class="d-flex">
-  <b-container fluid>
+  <div class="d-flex flex-column">
       <base-alert v-if= "alert_message" 
                     class = "mt-5 d-flex flex-row justify-content-center" 
                     style="width: 25rem; 
@@ -10,9 +9,10 @@
                     type= "primary">{{alert_message}}
       </base-alert>
         <b-row>
-          
+          <back-button></back-button>
           <b-col>
-            <h3  class="mt-3 ml-0"> Manage Transactions </h3>
+            <h2  class="mt-3 ml-0"> Manage Transactions </h2>
+            <!-- <p class="mt-3 ml-0  font-weight-bold">Add Non Current Asset </p> -->
              <p class = "mb-2 mt-2 "> 
               Transactions are used to automatically generate your financials. 
               Keep track of your daily transactions.
@@ -37,298 +37,193 @@
         </b-modal>
 
         <transaction-top class = "d-flex justify-content-center w-100"/>
-        <validation-observer
-        ref="observer"
-        v-slot="{handleSubmit}"
-        >
-      
+         <h3 class="text-primary ml-5" :style="[{font: `600 1rem 'Poppins'`}]"
+                    v-b-tooltip.hover title="Non-current Assets are......">Add Non Current Asset</h3>
+    <validation-observer class="ml-5 w-50 " ref="observer" v-slot="{handleSubmit}">
       <b-form class ="" id= "AddNCAForm"   @submit.stop.prevent="handleSubmit(launchConfirm)">
-          <b-row cols = "12" class = "m-1 S "> 
-            <b-col  class = "m-1">
+          <div class="d-flex flex-row m-2 align-items-center">
+            <!-- Asset Name -->
+            <validation-provider class=" w-50 " v-slot="{ errors }" rules="required" name="asset name" >
+                <label for="asset_name">Asset Name</label>
+                <b-form-input v-model="form.asset_name" type="text" 
+                              id="asset_name" name="asset_name"
+                              class="p-4"
+                              
+                                :state="getValidationState(errors)">
+                </b-form-input>
+                <b-form-invalid-feedback> {{ errors[0] }}</b-form-invalid-feedback>
+            </validation-provider>
+                  <!-- Amount Input -->
+            <validation-provider class="ml-3 w-50" v-slot="{ errors }" rules="required" name="amount">
+                <label for="amount">Amount</label>
+                <b-form-input v-model="form.amount" type="number"  id="amount" name="amount"
+                                :state="getValidationState(errors)">
+                </b-form-input>
+                <b-form-invalid-feedback>
+                    {{ errors[0] }}
+                </b-form-invalid-feedback>
+            </validation-provider>
+          </div>
+        <div class="d-flex flex-row m-2 align-items-center">
+              <!-- Transaction Date -->
+            <validation-provider class="w-50" v-slot="{ errors }" rules="required" name="transaction_date">
               
-              <!-- Add Non Current Asset heading -->
-              <b-col cols="12" class="text-primary mb-3 pl-0" xl="8" md="8" v-b-tooltip.hover title="Non-current Assets are......">Add Non Current Asset</b-col>
-              <!-- Major Form Fields -->
-              <b-col cols = "12" class = "ml-1 mt-4   ">
-              <!-- Asset Name -->
-                <b-col cols = "8" class="mb-2   pl-0" xl="9" md="6" sm="12">
-                  <validation-provider v-slot="{ errors }" rules="required" name="asset name" >
-                    <label for="asset_name">Asset Name
-                       <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
-                       "name of what the transaction is for eg.commercial paper, Treasury bills "/>
-                    </label>
-                    <b-form-input v-model="form.asset_name" type="text" id="asset_name" name="asset_name"
-                                  :state="getValidationState(errors)">
-                    </b-form-input>
-                    <b-form-invalid-feedback> {{ errors[0] }}</b-form-invalid-feedback>
-                  </validation-provider>
-                </b-col>
-
-                <!-- Transaction Date -->
-                <b-col class="mb-2 pl-0" xl="9" md="6" sm="12">
-                  <validation-provider v-slot="{ errors }" rules="required" name="transaction_date">
-                    <label for="date"> Transaction Date
-                      <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Date transaction was made "/>
-                    </label>
+                    <label for="date">Date</label>
                     <b-form-datepicker id="transaction_date"
-                                      name ="transaction_date"
-                                      v-model="form.date"
-                                      :date-format-options="{ year: 'numeric', month: 'short', day: 'numeric' }"
-                                      locale="en-US"
-                                      required
-                                      calendar-width="180px"
-                                      :state="getValidationState(errors)"
+                                        name ="transaction_date"
+                                        v-model="form.date"
+                                        :date-format-options="{ year: 'numeric', month: 'short', day: 'numeric' }"
+                                        locale="en-US"
+                                        required
+                                        calendar-width="200px"
+                                        class="p-0 "
+                                        
+                                        :state="getValidationState(errors)"
                     >
                     </b-form-datepicker>
-                    <b-form-invalid-feedback>
-                      {{ errors[0] }}
-                    </b-form-invalid-feedback>
-                  </validation-provider>
-                </b-col>
-              
 
-                <!-- Amount Input -->
-                <b-col  class="mb-2 pl-0" xl="9" md="6" sm="12">
-                  <validation-provider v-slot="{ errors }" rules="required" name="amount">
-                  
-                    <label for="amount">Amount
-                      <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="Cost of the transaction "/>
-                    </label>
-                    <b-form-input v-model="form.amount" type="number" id="amount" name="amount"
-                                  :state="getValidationState(errors)">
+                    <b-form-invalid-feedback>
+                        {{ errors[0] }}
+                    </b-form-invalid-feedback>
+    
+            </validation-provider>
+            
+            <!-- Tag  -->
+            <validation-provider class="m-2 ml-3  w-50" v-slot="{ errors }" rules="required" name="tag" >
+                <label for="tag">Tag</label>
+                <b-form-select v-model="form.tag"
+                            :options="tag_items"
+                            id="tag"
+                            name="tag"
+                            class=""
+                            
+                            :state="getValidationState(errors)"
+                >
+                </b-form-select>
+                <b-form-invalid-feedback>
+                {{ errors[0] }}
+                </b-form-invalid-feedback>
+            </validation-provider>
+        </div>
+
+        <div class="d-flex flex-row align-items-center">
+            <!-- Bought Sold -->
+            <validation-provider class = "w-50" v-slot="{ errors }" rules="required" name="bought_sold" >
+                <label for="bought_sold"> Bought or Sold?</label>
+                <b-form-select v-model="form.bought_sold"
+                                :options="bought_sold"
+                                id="bought_sold"
+                                name="bought_sold"
+                                class = "border border-radius p-3"
+                                style = "Background: #E5E5E5; "
+                                size = "lg"
+                                :state="getValidationState(errors)"
+                >
+                </b-form-select>
+                
+
+                <b-form-invalid-feedback>
+                    {{ errors[0] }}
+                </b-form-invalid-feedback>
+            </validation-provider>
+
+            <!-- Paid Using -->
+            <validation-provider class="m-2 w-50 ml-3" v-slot="{ errors }" rules="required" name="bought_sold" >
+            <label for="paid_using"> Paid Using Cash or Cheque</label>
+            <b-form-select v-model="form.paid_using"
+                            :options="paid_using"
+                            id="paid_using"
+                            name="paid_using"
+                            class = "border border-radius p-3"
+                            style = "Background: #E5E5E5; "
+                            size = "lg"
+                            :state="getValidationState(errors)"
+            >
+            </b-form-select>
+            <b-form-invalid-feedback>
+                {{ errors[0] }}
+            </b-form-invalid-feedback>
+        </validation-provider>
+        
+         
+        </div>
+
+        <div class="text-primary mb-3 pl-0"><strong>Depreciation</strong></div>
+        <div class="d-flex flex-row m-2 align-items-center">
+             <!-- Depreciation Type Input  -->
+            <validation-provider class="w-50 m-2" v-slot="{ errors }" rules="required" name="dep type" >
+                <label for="dep_type">Depreciation Type</label>
+                <b-form-select v-model="form.asset_type"
+                            :options="asset_options"
+                            id="dep_type"
+                            name="dep_type"
+                            
+                            :state="getValidationState(errors)"
+                >
+                </b-form-select>
+                <b-form-invalid-feedback>
+                {{ errors[0] }}
+                </b-form-invalid-feedback>
+            </validation-provider>
+
+            <!-- Intangible Assets Input  -->
+            <validation-provider class="w-50 m-2" v-slot="{ errors }" rules="required" name="tan_in" >
+                <label for="tan_in">Type of Asset</label>
+                <b-form-select v-model="form.tan_in"
+                            :options="tangible_intan"
+                            id="tan_in"
+                            name="tan_in"
+                            
+                            :state="getValidationState(errors)"
+                >
+                </b-form-select>
+                <b-form-invalid-feedback>
+                {{ errors[0] }}
+                </b-form-invalid-feedback>
+            </validation-provider>
+        </div>
+         <div class="d-flex flex-row align-items-center"> 
+                <!-- Asset LifeSpan -->
+                <validation-provider class="m-2 w-50" v-slot="{ errors }" name="asset lifespan" >
+                    <label for="expected_lifespan">Asset Lifespan</label>
+                    <b-form-input v-model="form.asset_lifespan"
+                                type="number"
+                                id="asset_lifespan"
+                                name="asset_lifespan"
+                                
+                                :state="getValidationState(errors)">
                     </b-form-input>
                     <b-form-invalid-feedback>
-                      {{ errors[0] }}
+                    {{ errors[0] }}
                     </b-form-invalid-feedback>
-                  </validation-provider>
-                </b-col>
-                <!-- Amortization Selected -->
-              
-                  <!-- Description Input -->
-                <b-col class="mb-2 pl-0" xl="9" md="6" sm="12">
-                    <label for="description">Description
-                      <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
-                    " eg. for intellectual propert: Utility patents, design patents etc."/>
-                    </label>
-                    <b-form-textarea v-model="form.description" type="text" id="description"></b-form-textarea>
-                </b-col>
-              
-                
-              </b-col>
-
-              
-            
-            </b-col>
-             <b-col>
-                <div v-if= "reduct_hide">
-                  <b-col cols="8" class="text-info mb-3 pl-0">Amortization
-                    <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
-                    " cost of those intangible assets that have a specific useful life
-                     eg. Broadcast licenses. Copyrights"/>
-                    cost of those intangible assets that have a specific useful life
-                  </b-col>
-                  <b-col class = "m-2">
-                    
-                  <!-- Depreciation Type Input  -->
-                  <b-col cols = "6" class="mb-2 c-box pl-0" xl="4" md="8" sm="12">
-                    <validation-provider
-                      v-slot="{ errors }"
-                      rules="required"
-                      name="dep type"
-                    >
-                      <label for="dep_type">Depreciation Type</label>
-                      <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
-                      "Depreciation: refers to the decline in the value of fixed assets due to their usage, passage of time or obsolescence"/>
-                      <b-form-select v-model="form.asset_type"
-                                    :options="asset_options"
-                                    id="dep_type"
-                                    name="dep_type"
-                                    :state="getValidationState(errors)"
-                      >
-                      </b-form-select>
-                      <b-form-invalid-feedback>
-                        {{ errors[0] }}
-                      </b-form-invalid-feedback>
-                    </validation-provider>
-                  </b-col>
-                  <!-- Depreciation  Rate -->
-                  <b-col class="mb-2 mr-3 c-box pl-0" xl="7" md="6" sm="12">
-                    <validation-provider
-                      v-slot="{ errors }"
-                      rules="required"
-                      name="depreciation rate"
-                    >
-                      <label for="depreciation">Depreciation Rate</label>
-                      <b-form-input v-model="form.depreciation"
-                                    type="number"
-                                    id="depreciation_rate"
-                                    name="depreciation_rate"
-                                    :state="getValidationState(errors)">
-                      </b-form-input>
-                      <b-form-invalid-feedback>
-                        {{ errors[0] }}
-                      </b-form-invalid-feedback>
-                    </validation-provider>
-                  </b-col>
-
-                  <!-- Asset LifeSpan -->
-                  <b-col class="mb-2 c-box pl-0" xl="7" md="6" sm="12">
-                    <validation-provider
-                      v-slot="{ errors }"
-                      
-                      name="asset lifespan"
-                    >
-                      <label for="expected_lifespan">Asset Lifespan</label>
-                      <b-form-input v-model="form.asset_lifespan"
-                                    type="text"
-                                    id="asset_lifespan"
-                                    name="asset_lifespan"
-                                    :state="getValidationState(errors)">
-                      </b-form-input>
-                      <b-form-invalid-feedback>
-                        {{ errors[0] }}
-                      </b-form-invalid-feedback>
-                    </validation-provider>
-                  </b-col>
-                    </b-col>
-                </div>
-                <div v-else>
-                  <b-col cols="8" class="text-primar mb-3 pl-0">Depreciation</b-col>
-                  <!-- Depreciation Selected -->
-                  <b-row class = "ml-2">
-                  <!-- Depreciation Type Input  -->
-                  
-                  <b-col class="mb-2 c-box pl-0" xl="7" md="6" sm="12">
-                    <validation-provider
-                      v-slot="{ errors }"
-                      rules="required"
-                      name="dep type"
-                    >
-                      <label for="dep_type">Depreciation Type</label>
-                      <b-form-select v-model="form.asset_type"
-                                    :options="asset_options"
-                                    id="dep_type"
-                                    name="dep_type"
-                                    :state="getValidationState(errors)"
-                      >
-                      </b-form-select>
-                      <b-form-invalid-feedback>
-                        {{ errors[0] }}
-                      </b-form-invalid-feedback>
-                    </validation-provider>
-                  </b-col>
-                  <!-- Depreciation  Rate -->
-                  <b-col class="mb-2 mr-3 c-box pl-0" xl="7" md="6" sm="12">
-                    <validation-provider
-                      v-slot="{ errors }"
-                      rules="required"
-                      name="depreciation rate"
-                    >
-                      <label for="depreciation">Depreciation Rate</label>
-                      <b-form-input v-model="form.depreciation"
-                                    type="number"
-                                    id="depreciation_rate"
-                                    name="depreciation_rate"
-                                    :state="getValidationState(errors)">
-                      </b-form-input>
-                      <b-form-invalid-feedback>
-                        {{ errors[0] }}
-                      </b-form-invalid-feedback>
-                    </validation-provider>
-                  </b-col>
-
-                  <!-- Asset LifeSpan -->
-                  <b-col class="mb-2 c-box pl-0" xl="7" md="6" sm="12">
-                    <validation-provider
-                      v-slot="{ errors }"
-                      
-                      name="asset lifespan"
-                    >
-                      <label for="expected_lifespan">Asset Lifespan</label>
-                      <b-form-input v-model="form.asset_lifespan"
-                                    type="text"
-                                    id="asset_lifespan"
-                                    name="asset_lifespan"
-                                    :state="getValidationState(errors)">
-                      </b-form-input>
-                      <b-form-invalid-feedback>
-                        {{ errors[0] }}
-                      </b-form-invalid-feedback>
-                    </validation-provider>
-                  </b-col>
-                    </b-row>
-                  </div>
-              </b-col>
-            <b-col class = "ml-auto m-2">
-                <!-- Intangible/Tangible Asset Radio Input  -->
-                  <b-col cols= "8" class="mt-5 mb-2 ml-2 c-box pl-0 " xl="7" md="6" sm="12">
-                    <br/>
-                    <validation-provider v-slot="{ errors }" rules="required" name="tan_in" >
-                      <label for="tan_in">Type of Asset</label>
-                      <b-form-radio-group @change="onChange($event)" v-model="selected"
-                                    :options="tangible_intan"
-                                    id="tan_in"
-                                    name="tan_in"
-                                    class = "border border-radius p-3"
-                                    style = "Background: #E5E5E5; "
-                                  
-                                    :state="getValidationState(errors)"
-                      >
-                      </b-form-radio-group>
-                      
-        
-                      <b-form-invalid-feedback>
-                        {{ errors[0] }}
-                      </b-form-invalid-feedback>
-                    </validation-provider>
-                  
-                  </b-col>
-                  
-                  <!-- Bought/Sold Radio Input  -->
-                <b-col class="mb-2 ml-2 c-box pl-0" xl="7" md="6" sm="12">
-                  <validation-provider v-slot="{ errors }" rules="required" name="bought_sold" >
-                    <label for="bought_sold"> Bought or Sold?</label>
-                    <b-form-radio-group v-model="form.bought_sold"
-                                  :options="bought_sold"
-                                  id="bought_sold"
-                                  name="bought_sold"
-                                  class = "border border-radius p-3"
-                                  style = "Background: #E5E5E5; "
-                                  :state="getValidationState(errors)"
-                    >
-                    </b-form-radio-group>
-                    
-      
+                </validation-provider>
+                   <!-- Salvage Value-->  
+                <validation-provider class="m-2 w-50 ml-3" v-slot="{ errors }" rules="required" name="salvage value" >
+                    <label for="depreciation">Salvage Value</label>
+                    <b-form-input v-model="form.salvage_val"
+                                type="number"
+                                id="salvage_val"
+                                name="salvage_val"
+                                
+                                :state="getValidationState(errors)">
+                    </b-form-input>
                     <b-form-invalid-feedback>
-                      {{ errors[0] }}
+                    {{ errors[0] }}
                     </b-form-invalid-feedback>
-                  </validation-provider>
-                
-                </b-col>
-                  <!-- Paid Using Radio Input  -->
-                <b-col cols = "6" class=" mb-2 ml-2 c-box pl-0" xl="7" md="10" sm="12">
-                  <validation-provider v-slot="{ errors }" rules="required" name="paid_using" >
-                    <label for="paid_using"> Paid Using</label>
-                    <b-form-radio-group v-model="form.paid_using"
-                                  :options="paid_using"
-                                  id="paid_using"
-                                  name="paid_using"
-                                  class = "border border-radius p-3"
-                                  style = "Background: #E5E5E5; "
-                                  :state="getValidationState(errors)"
-                    >
-                    </b-form-radio-group>
-                    
-      
-                    <b-form-invalid-feedback>
-                      {{ errors[0] }}
-                    </b-form-invalid-feedback>
-                  </validation-provider>
-                
-                </b-col>
-              </b-col>
+                </validation-provider>
+                                                                                                                                     
+         </div>
+          
+             
+               
+          <div>
+            <!-- Description Input -->
+            <b-col class="mb-2 pl-0">
+                <label for="description">Description</label>
+                <b-form-textarea v-model="form.description" type="text" id="description"></b-form-textarea>
+            </b-col>    
 
-          </b-row>
+        </div>
           <!-- Submit and Reset -->
               <b-row cols="12" class="text-right my-2">
                 <b-button type="submit" variant="primary" >Submit</b-button>
@@ -336,7 +231,7 @@
               </b-row>
       </b-form>
     </validation-observer>
-  </b-container>
+ 
   </div>
 </template>
 
@@ -345,6 +240,7 @@
     import {ValidationObserver, ValidationProvider} from "vee-validate";
 import Modal from '../../../components/argon-core/Modal.vue';
 import BaseAlert from '../../../components/argon-core/BaseAlert.vue';
+import BackButton from '../../../components/argon-core/BackButton.vue';
 
     export default {
         name: "non-current-asset-create",
@@ -355,6 +251,7 @@ import BaseAlert from '../../../components/argon-core/BaseAlert.vue';
       
                 Modal,
                 BaseAlert,
+                BackButton,
              },
         data() {
             return {
@@ -385,6 +282,12 @@ import BaseAlert from '../../../components/argon-core/BaseAlert.vue';
                 bought_sold: [
                    {value: 'Bought', text: 'Bought Asset'},
                    {value: 'Sold', text:' Sold Asset'}
+                ], 
+                tag_items: [
+                    {value: 'Property Plant & Equipment', text: 'Property Plant & Equipment'},
+                    {value: 'Intangible Asset', text: 'Intangible Asset'},
+                    {value: 'Long Term Investment', text: 'Long Term Investment'},
+                    {value: 'Other Non Current Asset', text: 'Other Non Current Asset'},
                 ]
             }
         },

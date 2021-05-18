@@ -4,11 +4,11 @@
     <side-bar class="bg-white text-black">
       <template slot="links">
            
-          <div  class="d-flex flex-row justify-content-center"> 
-            <div  class="profile mt-3 mb-3 ">
-                <h5 id="profile_name" class="my-1 font-weight-bold"> Jane S.</h5>
-                <h5 id="profile_ID" class="my-1"> ID 1234567</h5>
-                <h5 id="role" class="my-1"> Role: Business Owner</h5>
+          <div  class="d-flex  flex-row justify-content-start"> 
+            <div  class="profile  ml-3 mt-3 mb-3 ">
+                <h5 id="profile_name" class="my-1 font-weight-bold" :v-text="full_name">Jane S.</h5>
+                <h5 id="profile_ID" class="my-1"> ID: {{userid}}</h5>
+                <h5 id="role" class="my-1"> Role: {{role}}</h5>
               </div>
               <img id="profile-icon" class ="mt-3 ml-2 mr-2 w-25 h-25" :src="user" alt="" aspect-ratio="1" />
              
@@ -72,18 +72,45 @@
             }"
           >
           </sidebar-item>
+        </sidebar-item>
+         <!-- <sidebar-item
+
+          :link="{
+            name: 'Inventory',
+            icon: ['fas', 'plus'],
+            path: '',
+          }"
+        >
+
           <sidebar-item
             opened
             :link="{
-              name: 'Product Analytics',
+              name: 'All Inventory',
               icon: ['fas', 'plus'],
-              path: '/manageproducts/analytics',
-              color: 'text-black',
+              path: '/inventory/list',
             }"
           >
           </sidebar-item>
+         </sidebar-item> -->
+        <sidebar-item
+
+          :link="{
+            name: 'Manage Sales',
+            icon: ['fas', 'plus'],
+            path: '/managesales',
+          }"
+        >
+          <sidebar-item
+            opened
+            :link="{
+              name: 'Orders',
+              icon: ['fas', 'plus'],
+              path: '/allproducts',
+            }"
+          >
+          </sidebar-item>
+
         </sidebar-item>
-       
          <sidebar-item
             :link="{
               name: 'Invoices',
@@ -155,6 +182,15 @@
             }"
           >
           </sidebar-item>
+          <sidebar-item
+            opened
+            :link="{
+              name: 'Product Analytics',
+              icon: ['fas', 'plus'],
+              path: '/manageproducts/analytics',
+            }"
+          >
+          </sidebar-item>
           </sidebar-item>
 
         <hr
@@ -168,6 +204,15 @@
             height: 0;
           "
         />
+         <sidebar-item
+            :link="{
+              name: 'Start Onboarding Process',
+              icon: ['fas', 'plus'],
+              path: '/onboarding-main/',
+              color: 'text-black',
+            }"
+          >
+          </sidebar-item>
       </template>
     </side-bar>
     
@@ -228,12 +273,27 @@ export default {
   data(){
     return{
       user: require('/assets/uploads/user-icon.svg'),
+      f_name:'', 
+      l_name: ''
+
       
     }
+  },
+  created(){
+
   },
   computed: {
         alert () {
             return this.$store.state.alert
+        }, 
+        full_name(){
+          return this.f_name + " " + this.l_name
+        }, 
+        role(){
+          return localStorage.getItem('user_role');
+        }, 
+        userid(){
+          return localStorage.getItem('userid');
         }
     },
   watch: {

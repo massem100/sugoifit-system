@@ -1,27 +1,62 @@
 <template>
 
-     <div class=" email-create-section w-100" >
-         <back-button class="mt-4 ml-2"></back-button>
-                <div class="email-form-section h-25 d-flex flex-column">
-                    <div class = "email-heading">
+     <div class=" d-flex flex-column w-100" >
+          <b-row class="d-flex flex-row align-items-center">
+            <back-button class=" ml-2"></back-button>
+            <div class = "d-flex flex-column justify-content-center mt-4">
                         <h4 class ="mb-4">Set up your Business Profile.</h4>
                         <p class="email-text mb-5"> Managing your business has never been this easy. <br>
                             Enter your business email address to continue. 
                         </p>
-                    </div>
-                    <div class = "email-container  ml-3">
-                    
-                        <label class ="d-flex text-center align-items-center" for="email">Email Address</label>
-                        <input type="text" name ="email" class="form-control" >
-                    
-                        <div @click ="ChangeComp" class="get-started btn btn-sm ">Get Started <span></span></div>
-                    </div>
+            </div>     
+        </b-row>
+         
+        <div class="email-form-section h-25 d-flex flex-row">
+            
+            <div class = "d-flex ml-4">
+            
+                <label class ="" for="email">Email Address</label>
+                <input type="text" name ="email" class="form-control" >
+            
+                <div @click ="ChangeComp" class="get-started btn btn-sm ">Get Started <span></span></div>
+            </div>
+    <div  class="company-type-section bg-danger" >
+     
+        <div class = "company-heading">
+            <h5 class="">Choose the type of business</h5>
+            <p class="">Choose the option that best describes your business.</p>
+        </div>
+        <div class="type-categories">
+            
+            <div class="type-item">
+                <img class = "type-icon" src="~assets/uploads/checked.svg" alt="">
+                <h6> Sole Trader </h6>
+                <p> A business owned and operated by one individual.</p>
+            </div>
+            <div class="type-item">
+                <img class = "type-icon" src="~assets/uploads/checked.svg" alt="">
+                <h6>Partnership</h6>
+                <p>An unincorporated business owned by two or more persons.</p>
+            </div>
+            <div class="type-item">
+                <img class = "type-icon" src="~assets/uploads/checked.svg" alt="">
+                <h6>Company</h6>
+                <p>A business that is incorporated. Please select type of incorporation, private or public.</p>
+            </div>
+            <div class ="d-flex flex-row justify-content-center ">
+            <div  class="type-btn-n btn btn-lg">
 
-                </div>
-                <div class="w-40 ">
-                    <img class="business-image" src="~assets/uploads/business_board.jpg" alt="">
-                    <img class="doodle" src="~assets/uploads/linecurve.svg" alt="">
-                </div>
+                    <h6> Next</h6>
+            </div>
+        </div>
+                         
+    </div>
+    
+
+    
+</div>
+        </div>
+
     </div>
    
 </template>
@@ -33,7 +68,7 @@ import BackButton from '../../components/argon-core/BackButton.vue';
 
 export default {
     components: { BackButton },
-    layout: 'onboarding',
+    layout: 'DashboardLayout',
     name: 'emailsection', 
     head(){
           return{
@@ -59,22 +94,6 @@ export default {
 
 <style scoped>
     
-    .email-create-section{
-        margin-top: 5rem;
-        margin-left: 4rem;
-        display: flex;
-        flex-direction: row;
-        min-height:100vh;
-        
-    }
-    .business-image{
-        margin-left: 2rem;
-        width: 28rem;
-        height: 24rem;
-        border-radius: 20px;
-    }
-    
-   
     .email-heading{
         margin: 20px 20px 20px 20px;
 
@@ -104,120 +123,87 @@ export default {
     .email-form label{
         margin:10px;
     }
-    .get-started{
+   
+    
+    .company-type-section{
         display: flex;
-        margin-top: 2.8rem;
+        flex-direction: column;
+        justify-content: center;
+        /* align-items: center; */
+        min-height:100vh;
+    }
+  
+    .company-type-section p{
+        font:400 1rem "Poppins";
+    }
+
+    .company-heading h4{ 
+        font: 600 1.6rem "Poppins";
+    }
+    .type-categories{
+        display: grid;
+        grid-template-rows: 1fr 1fr 1fr;
+        
+    }
+
+    .type-item{
+        display: grid;
+        grid-template-areas: "icon type-name " 
+                            "icon text ";
+        margin: 0.5rem 1rem;
+        width:25rem;
+        height: 7.6rem;
+        background-color: #ffffff;
+        border-radius:20px;
+        /* padding: 15px; */
+     
+        box-shadow: 0 2px 2px 0 rgba(107, 104, 104, 0.15), 0 6px 20px 0 rgba(119, 114, 114, 0.15);
+    }
+
+    .type-item h6{
+        color: #387780;
+        font: 600  1rem "Poppins";
+        grid-area: type-name;
+    }
+
+    .type-item p{
+           font: 400 0.91rem "Poppins";
+           grid-area: text;
+    }
+
+    .type-icon{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin:  0.5rem;
+        width: 2rem; 
+        height: 4rem;
+        grid-area: icon;
+        /* background-color: #387780; */
+    }
+
+    .type-btn-n{
+        margin-top: 1rem;
+        display:flex; 
+        flex-direction: row;
+        justify-content: center;
         width: 8rem;
-        height: 3rem;
+        height: 2.8rem;   
+        background-color: #E5E5E5;
+        box-shadow: 0 2px 2px 0 rgba(107, 104, 104, 0.15), 0 6px 20px 0 rgba(119, 114, 114, 0.15);
+        
+        font: 600 1rem "Poppins";
+        vertical-align: middle;
+        color: rgb(41, 41, 41);
+
+
+    }
+
+    .type-btn-n h6{
+        padding: 6px;
+        display: flex;
         align-items:center;
         justify-content: center;
-        background-color: #4DC4D4;
-        color:white;
+        vertical-align: middle;
     }
-
-    .doodle{
-        position:absolute;
-        right: 0; 
-        top: 32rem;
-        z-index: 1; 
-        overflow: hidden;   
-        width: 42rem;
-        
-    }
-    
-    /* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
-    .color-bg{
-        /* background-color: green; */
-    }
-    .side-bar{ 
-        display:none;
-    }
-
-    .business-image{
-        display: none;
-    }
-}
-
-/* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) {
-    /* .color-bg{
-        background-color: purple;
-    } */
-    .side-bar{ 
-        display:none;
-    }
-    .business-image{
-        display: none;
-    }
-    .email-create-section{
-        /* align-items: center; */
-        justify-content: center ;
-    }
-    
-}
-
-/* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 768px) {
-    .color-bg{
-        /* background-color: yellow; */
-    }
-    .side-bar{ 
-        display:block;
-        position: fixed;
-    }
-    .email-create-section{
-        margin-left: 4rem;
-        /* align-items: center; */
-        justify-content: center ;
-    }
-     .business-image{
-        display: none;
-
-    }
-
-}
-
-/* Large devices (laptops/desktops, 992px and up) */
-@media only screen and (min-width: 992px) {
-    .color-bg{
-        /* background-color: red; */
-    }
-     .business-image{
-        display: block;
-        margin-right:10px;
-        width: 24rem;
-        height: 22rem;
-        overflow: hidden;
-
-    }
-    
-}
-
-/* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-width: 1200px) {
-    .color-bg{
-        /* background-color: blue; */
-    }
-    .business-image{
-        margin-left: 4rem;
-        margin-right: 0px;
-        z-index: 2;
-    }
-
-    .doodle{
-        position:absolute;
-        right: 0; 
-        top: 28rem;
-        z-index: 1; 
-        overflow: hidden;   
-        width: 42rem;
-        
-    }
-    .email-form input{
-        width: 16rem;
-        margin: 10px;
-       
-    }
-}
 </style>

@@ -290,6 +290,60 @@ df_service_table = defaultdict(list)
 
 
 
+
+commercial_income_statement = Financialstmt(fs_name='Commercial Income Statement')
+commercial_balance_sheet = Financialstmt(fs_name='Commercial Balance Sheet Statement')
+commercial_cash_flow_statement = Financialstmt(fs_name='Commercial Cash Flow Statement')
+
+financial_income_statement = Financialstmt(fs_name='Financial Income Statement')
+financial_balance_sheet = Financialstmt(fs_name='Financial Balance Sheet Statement')
+financial_cash_flow_statement = Financialstmt(fs_name='Financial Cash Flow Statement')
+
+
+@event.listens_for(Financialstmt.__table__, "after_create")
+def insert_initial_values(*args, **kwargs):
+    print ("working")
+    db.session.add(commercial_income_statement)
+    db.session.add(commercial_balance_sheet)
+    db.session.add(commercial_cash_flow_statement)
+    db.session.add(financial_income_statement)
+    db.session.add(financial_balance_sheet)
+    db.session.add(financial_cash_flow_statement)
+    db.session.commit()
+
+@event.listens_for(Financialstmtline.__table__, "after_create")
+def insert_initial_values(*args, **kwargs):
+    
+    financial_statement_lines = pd.read_csv(r"C:\Users\Masse\Desktop\Files\sugoifit-system\backend\app\financial_statements_lines.csv")
+    print (financial_statement_lines)       
+    for index, line in financial_statement_lines.iterrows():
+        db.session.add(Financialstmtline( tag=line['tag'], line_name=line['name']))
+    db.session.commit()   
+
+@event.listens_for(Financialstmtlineseq.__table__, "after_create")
+def insert_initial_values(*args, **kwargs):
+    print("reach")
+    financial_statement_lines = pd.read_csv(r"C:\Users\Masse\Desktop\Files\sugoifit-system\backend\app\financial_statements_lines.csv")
+    statement_types = ['commercial', 'financial']
+    statement_codes = ['income_statement', 'balance_sheet_statement', 'cash_flow_statement']
+
+    for statement_type in statement_types:
+        for statement_code in statement_codes:
+            statement_name = (statement_type + ' ' + statement_code.replace('_',' ')).title()
+            statement = db.session.query(Financialstmt) \
+                .filter(Financialstmt.fs_name == statement_name).first()
+            financial_statement_sequence = financial_statement_lines[
+                (financial_statement_lines['statement_type'] == statement_type) & \
+                (financial_statement_lines['statement_code'] == statement_code)]
+            
+            for index, row in financial_statement_sequence.iterrows():
+                line = db.session.query(Financialstmtline) \
+                    .filter(Financialstmtline.tag == row['tag']).first()
+                db.session.add(Financialstmtlineseq(sequence=row['sequence'],
+                                                        fsStmtID =statement.stmtID,
+                                                        fsStmtLineID=line.lineID))
+        db.session.commit()
+        
 if __name__ == '__main__':
     # print (user)
     print(1)
@@ -304,3 +358,4 @@ if __name__ == '__main__':
     # print(Invoice)
 
     # print(result)
+
