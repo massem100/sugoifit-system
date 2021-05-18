@@ -31,27 +31,14 @@ statement= Blueprint('statement', __name__)
 
 
 """
-Things not yet accounted for 
-
-Inventory 
-Sales 
-Purchases 
-How to calculate stuff that cant be directly entered? 
-"""
-# Create Inventory Tables
-# def calcTotalOpex(*args, **kwargs): 
-#     balance = db.session.query(value).order_by(value.id.desc()).first()
-#     balance = (str(balance.Balance) if balance is not None else 0)
-#     return balance
-"""
 ------------------------------------------------------ Generate Income Statement -------------------------------------------------------------------------
 """
-def calcNetSales(busID, *args, **kwargs):
+def calcNetSales(busID):
     total_sales = 0
     sales = db.session.query(Sale, Sale.busID,func.coalesce(func.sum(Sale.saleAmtPaid), 0).label("totalSales")).filter_by(busID=busID).all()
     print(sales)
-    total_sales = (float(sales.total_sales) if sales is not None else 0)
-    return total_sales
+    net_sales = (float(sales.total_sales) if sales is not None else 0)
+    return net_sales
 
 def calcCOGS(beg_inv, end_inv, purchases, year): 
     return beg_inv + purchases - end_inv
@@ -431,7 +418,11 @@ def lt_list_items(ledgerID):
 # Find some of Capital 
         
 # Balance Sheet Totals - Total Assets Total Liabilities Total Equity
+            
 
+"""
+------------------------------------------------------ Generate Cash Flow Statement-------------------------------------------------------------------------
+"""
 @statement.route('/api/financialstmt/balancesheet/<busID>/<year>')
 def generate_balance_sheet(busID, year =str(datetime.today().strftime('%Y'))):
 

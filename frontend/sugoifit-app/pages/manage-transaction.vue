@@ -136,76 +136,20 @@ import BackButton from '../components/argon-core/BackButton.vue';
                 el: "",
                 totalRows: 1,
                 currentPage: 1,
-                perPage: 5,
+                perPage: 10,
                 pageOptions: [5, 10, 15, { value: 100, text: "Show a lot" }],
                 sortBy: '',
                 sortDesc: false,
                 sortDirection: 'asc',
                 filter: null,
                 filterOn: [],
-                fields: [
-                          {key:'date', sortable: true},
-                          {key: 'transaction_id', sortable: false},
-                          {key: 'transaction_name', sortable: true},
-                          {key: 'related_entry', sortable: false}, 
-                          {key:'amount', sortable: true},
-                          {key:'actions', sortable: false},
-              
-                        ],
-                items: [
-                 {'date': '12/1/2008', 
-                 'transaction_id': 'nca_1', 
-                 'transaction_name': 'Non Current Asset', 
-                  'related_entry': 'CA_1',
-                  'amount': '$200.50',
-                  'actions': true, 
-                  
-                  } ,
-                 {'date': '12/1/2008', 
-                 'transaction_id': 'nca_1', 
-                 'transaction_name': 'Non Current Asset', 
-                  'related_entry': 'CA_1',
-                  'amount': '$200.75',
-                  'actions': true, 
-                 
-                  },
-                   {'date': '12/1/2008', 
-                 'transaction_id': 'nca_1', 
-                 'transaction_name': 'Non Current Asset', 
-                  'related_entry': 'CA_1',
-                  'amount': '$200.75',
-                  'actions': true, 
-                 
-                  },
-                   {'date': '12/1/2008', 
-                 'transaction_id': 'nca_1', 
-                 'transaction_name': 'Non Current Asset', 
-                  'related_entry': 'CA_1',
-                  'amount': '$200.75',
-                  'actions': true, 
-                 
-                  } ,
-                   {'date': '12/1/2008', 
-                 'transaction_id': 'nca_1', 
-                 'transaction_name': 'Non Current Asset', 
-                  'related_entry': 'CA_1',
-                  'amount': '$200.75',
-                  'actions': true, 
-                 
-                  },
-                   {'date': '12/1/2008', 
-                 'transaction_id': 'nca_1', 
-                 'transaction_name': 'Non Current Asset', 
-                  'related_entry': 'CA_1',
-                  'amount': '$200.75',
-                  'actions': true, 
-                 
-                  },
-                  ]
+                fields: ['date', 'transaction_id', 'transaction_name', 'related_entry', 'amount', 'actions'],
+                items: [],
             };
                 
         },
         created(){
+
 
         }, 
         computed: {
@@ -214,7 +158,22 @@ import BackButton from '../components/argon-core/BackButton.vue';
         }, 
         mounted() {
             // Set the initial number of items
-            this.totalRows = this.items.length
+          let self=this;
+          
+          const busID = localStorage.getItem('busID');
+          this.$axios.get(`/api/transactions/${busID}`
+              ).then(res =>{
+                  return res.data;
+              }).then(res =>{
+                  if (res){
+                      self.items = res.transaction;
+                      console.log(res);
+                      this.totalRows = this.res.transaction.length
+              
+              }else{
+                  console.log('Data not found')
+              }
+              });
           },
         methods:{
           onFiltered(filteredItems) {

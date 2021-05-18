@@ -125,7 +125,7 @@ def ca_transaction():
         increase_decrease = form.increase_decrease.data
         loanPeriods = form.loan_period.data
         tag=form.tag.data
-        ledgerID =findLedger(current_user.busID, 2021)
+        ledgerID =findLedger(busID, 2021)
         # FIX HOW DATE IS ADDED__ CURRENTLY HARDCODED
 
         prep_acc = prepAccounts(ledgerID, "Debit", amount, CurrentAsset = accounts.CurrentAsset, Currentliability = accounts.Currentliability)
@@ -190,7 +190,7 @@ def nca_transaction():
             remainingLife = 1  #form.remainingLife.data  #calculate remaining life from lifeSpan
             bought_sold = form.bought_sold.data
             tag= form.tag.data
-            ledgerID =findLedger(current_user.busID, 2021)
+            ledgerID =findLedger(busID, 2021)
             """ How to deal with INTANGIBLE ASSETS """
             # CHANGE TRANSACTION DATE TO DUE DATE
 
@@ -258,7 +258,7 @@ def cl_transaction():
         account_affected = form.account_affected.data
         increase_decrease = form.increase_decrease.data
         tag = form.tag.data
-        ledgerID =findLedger(current_user.busID, 2021)
+        ledgerID =findLedger(busID, 2021)
         # new year = datetime.strptime(borrow_date, "%Y-%m-%d").year + loan_periods
 
         # Get Last Account ID, Balance, Label Balance
@@ -310,7 +310,7 @@ def lt_transaction():
             account_affected = form.account_affected.data
             increase_decrease = form.increase_decrease.data
             tag = form.tag.data
-            ledgerID =findLedger(current_user.busID, 2021) 
+            ledgerID =findLedger(busID, 2021) 
 
             # CHANGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE CABALCNE TO LTBALANCE
             
@@ -362,7 +362,7 @@ def exp_transaction():
         account_affected = form.paid_using.data
         increase_decrease = form.increase_decrease.data
         tag= form.tag.data
-        ledgerID =findLedger(current_user.busID, 2021)
+        ledgerID =findLedger(busID, 2021)
         
         # Get Last Account ID, Balance, Label Balance
         prep_acc = prepAccounts(ledgerID, "Credit", amount, CurrentAsset = accounts.CurrentAsset, OperatingExpense = accounts.OperatingExpense,
@@ -434,7 +434,7 @@ def rev_transaction():
         account_affected = form.paid_using.data   
         increase_decrease = form.increase_decrease.data    
         tag = form.tag.data
-        ledgerID =findLedger(current_user.busID, 2021)
+        ledgerID =findLedger(busID, 2021)
 
         # Get Last Account ID, Balance, Label Balance
         prep_acc = prepAccounts(ledgerID, "Credit", amount, CurrentAsset = accounts.CurrentAsset, OperatingRevenue = accounts.OperatingRevenue,
@@ -510,7 +510,7 @@ def equity_transaction():
         account_affected = form.paid_using.data
         increase_decrease = form.increase_decrease.data
         tag = form.tag.data
-        ledgerID =findLedger(current_user.busID, 2021)
+        ledgerID =findLedger(busID, 2021)
 
         # Get Last Account ID, Balance, Label Balance
         prep_acc = prepAccounts(ledgerID, "Credit", amount, CurrentAsset = accounts.CurrentAsset, ShareholdersEquity = accounts.ShareholdersEquity)
@@ -544,3 +544,51 @@ def equity_transaction():
         error_list = form_errors(form)
         return jsonify(errors= error_list)
   
+
+def list_accounts(ledgerID, *args, **kwargs): 
+    output = {}
+    for key, value in kwargs.items(): 
+        all_accounts = db.session.query(value).filter_by(ledgerID =ledgerID).all()
+        output[key] = all_accounts
+    return output
+
+
+@accounting.route('/api/transactions/<busID>/', methods = ["GET", "POST"])
+def get_all_accounts(busID): 
+    ledgerID =findLedger(busID, 2021)
+
+    all_accounts = list_accounts(ledgerID, CurrentAsset = accounts.CurrentAsset, NonCurrentAsset = accounts.NonCurrentAsset, 
+                 Currentliability = accounts.Currentliability, Longtermliability = accounts.Longtermliability, 
+                 OperatingRevenue = accounts.OperatingRevenue, NonOperatingRevenue = accounts.NonOperatingRevenue, 
+                 OperatingExpense = accounts.OperatingExpense, NonOperatingExpense = accounts.NonOperatingExpense,  
+                 ShareholdersEquity = accounts.ShareholdersEquity)
+    
+    def load_Accounts(**account_entries):
+        final_list = []
+        for key,value in account_entries.items(): 
+            if value is not None or value != []: 
+                for entry in value: 
+                    balance = (entry.debitBalance if entry.debitBalance is not None else entry.creditBalance)
+                    if key == "NonCurrentAsset" or key == "CurrentAsset":
+                        final_list.append({'date': entry.acquisDATE, 'transaction_id': entry.id,
+                                           'transaction_name': entry.assetName, 'related_entry': entry.related_entry, 'amount': balance,'actions': 'true' })
+                    elif key == "Currentliability" or key == "Longtermliability":
+                        final_list.append({'date': entry.borwDATE, 'transaction_id': entry.id, 'transaction_name': entry.liabName, 'related_entry':entry.related_entry,'amount': balance, 'actions': 'true'})
+                    elif key == "OperatingRevenue":
+                        final_list.append({'date': entry.dateEarned, 'transaction_id': entry.id, 'transaction_name':entry.oprevName, 'related_entry': entry.related_entry, 'amount':balance, 'actions': 'true'})
+                    elif key == "NonOperatingRevenue":
+                        final_list.append({'date': entry.dateEarned, 'transaction_id': entry.id, 'transaction_name':entry.nOprevName, 'related_entry': entry.related_entry, 'amount':balance,'actions': 'true'})
+                    elif key == "OperatingExpense":
+                        final_list.append({'date': entry.dateIncurred, 'transaction_id': entry.id, 'transaction_name':entry.opexName, 'related_entry': entry.related_entry,'amount': balance,'actions': 'true'})
+                    else:
+                        final_list.append({'date': entry.dateIncurred, 'transaction_id': entry.id, 'transaction_name':entry.nOpexName, 'related_entry': entry.related_entry, 'amount':balance,'actions': 'true'})
+            else: 
+                print(value)
+        return final_list
+                
+    
+    all_transactions = load_Accounts(CurrentAsset = all_accounts["CurrentAsset"], NonCurrentAsset = all_accounts["NonCurrentAsset"], Currentliability = all_accounts["Currentliability"], 
+                    Longtermliability = all_accounts["Longtermliability"], OperatingRevenue = all_accounts["OperatingRevenue"], NonOperatingRevenue = all_accounts["NonOperatingRevenue"], 
+                    OperatingExpense = all_accounts["OperatingExpense"], NonOperatingExpense = all_accounts["NonOperatingExpense"], ShareholdersEquity = all_accounts["ShareholdersEquity"])
+    return jsonify({'transaction': all_transactions})
+    

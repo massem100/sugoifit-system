@@ -41,7 +41,7 @@ def delete_product(busID, prodID):
         pass
 
 @product.route('/api/<busID>/products', methods = ["GET", "POST"])
-def new_product(busID):
+def aproduct(busID):
     busID = current_user.busID 
     form = NewProductForm(request.form)
 

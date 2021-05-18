@@ -125,6 +125,7 @@ def login():
 
 
 @authorize.route('/api/auth/logout', methods = ["GET"])
+@login_required
 def logout():
     # Clears user from session
     
@@ -226,8 +227,10 @@ def register():
 
 @login_manager.user_loader
 def load_user(id):
-    user = auth.UserCredential.query.get(id)
-    return user
+    user = db.session.query(auth.UserCredential).get(id)
+    if user is not None: 
+        user_obj = auth.UserCredential(user.userID, user.busID, user.user_email, user.user_password, user.active , user.cid)
+        return user_obj
 
 """
 --------------------------------------- Onboarding Routes (To be added)----------------------------------------------------------

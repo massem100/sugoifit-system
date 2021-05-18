@@ -48,12 +48,42 @@ CashFlow Revenue
 Group by Tag then print out values for expenses 
 
 """
-@reports('/api/ratios', methods=["GET"])
-def ratios():
-    cliab = getBSTotals()[0]
-    casset = getBSTotals()[2]
-    return str(currentRatio(casset, cliab)) + ":0"
+@reports('/api/<busID>/ratios', methods=["GET"])
+def generateRatios():
+    total_cash_equiv = 0
+    total_inventories = 0
+    total_current_liab = getBSTotals()[0]
+    total_current_asssets = getBSTotals()[2]
+    net_sales = calcNetSales(current_user.busID)
+    cost_of_goods_sold = calcCOGS
+    total_assets = getBSTotals[0] + getBSTotals[1]
+    total_liab = getBSTotals[2] + getBSTotals[3]
+    operating_income = calcIncomeStmtTotals(busID, ledgerID)["Operating Income"]
 
+   current_ratio = currentRatio(total_current_asssets, total_current_liab ) 
+   cash_ratio = cashRatio(total_cash_equiv, total_current_liab s)
+   acid_test_ratio = acidTestRatio(total_current_asssets, inventories, total_current_liab )
+   invent_turn = inventoryTurnoverRatio(cost_of_goods_sold, avgInventory)
+   asset_turn = assetTurnoverRatio(net_sales, avgTotalAssets)
+   debt_ratio =  debtRatio(total_liab, total_assets)
+   
+
+    return jsonify({
+                    'Current Ratio': current_ratio, 
+                    'Acid Test Ratio': acid_test_ratio, 
+                    'Cash Ratio': cash_ratio, 
+                    'Debt Ratio': debt_ratio, 
+                    'Asset Turnover': asset_turn, 
+                    'Inventory Turnover': invent_turn, 
+                     
+    })
+'''
+ # interest expense
+    # avgAccountsReceivable
+    # avgInventory
+    # avgTotalAssets
+    # operating_cashflow 
+'''
 
 # Liquidity Ratios
 def currentRatio(currentAsset,cLiabilities): 
@@ -94,9 +124,9 @@ def inventoryTurnoverRatio(costOfGoodsSold, avgInventory):
     calcc = costOfGoodsSold/avgInventory
     return calc 
 
-def receivablesTurnoverRatio(netCreditSales, avgAccountsReceivable):
-    calc = netCreditSales/avgAccountsReceivable
-    return calc
+# def receivablesTurnoverRatio(netCreditSales, avgAccountsReceivable):
+#     calc = netCreditSales/avgAccountsReceivable
+#     return calc
 
 def daysInventoryRatio(inventoryTurnoverRatio):
     calcc = 365/inventoryTurnoverRatio

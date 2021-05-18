@@ -4,7 +4,8 @@ export class productService  {
         this.$axios = $axios;
     }
     showProducts() {
-        return this.$axios.get('http://localhost:8080/api/products')
+        let busID = localStorage.getItem('busID');
+        return this.$axios.get(`/api/${busID}/products`)
         .then(res => {
             return res.data;
         })
@@ -18,9 +19,9 @@ export class productService  {
         })*/
     }
     addProduct(form_data) {
-        let PATH_API = 'newproduct';
+        let busID = localStorage.getItem('busID');
         return this.$axios({
-            url: `/api/${PATH_API}`, data: form_data,
+            url: `/api/${busID}/products`, data: form_data,
             method: "POST",
             headers:{'Content-Type': 'application/json', },
         }).then(res =>{

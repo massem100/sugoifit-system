@@ -220,26 +220,7 @@
                 </validation-provider>
               </b-col>
 
-              <b-col class="mb-2 c-box" xl="3" md="6" sm="12">
-                <validation-provider
-                  v-slot="{ errors }"
-                  rules="required"
-                  name="image"
-                >
-                  <label for="image">Product Image</label>
-                  <b-form-file  v-model="form.image"
-                                class="w-100"
-                                id="image"
-                                name="image"
-                                placeholder="Choose a file or drop it here..."
-                                drop-placeholder="Drop file here..."
-                                :state="getValidationState(errors)">
-                  </b-form-file>
-                  <b-form-invalid-feedback>
-                    {{ errors[0] }}
-                  </b-form-invalid-feedback>
-                </validation-provider>
-              </b-col>
+             
             </b-row>
             <b-row class=" my-4 px-3">
                 <b-button type="submit" variant="primary">Submit</b-button>
