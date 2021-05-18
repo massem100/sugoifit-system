@@ -80,11 +80,12 @@ def proof_payment():
     if request.method == 'POST' and form.validate_on_submit(): 
 
         order_no = form.order_no.data 
-        customer_name = form.customer_name.data 
-        receipt = form.receipt.data
-
-        secure_file = secure_filename(receipt.filename)
-        receipt.save(os.path.join(current_app.config['UPLOAD_FOLDER'], secure_file))
+        customer_name = form.cust_name.data 
+        receipt = request.files["image"]
+        
+        if receipt is not None:
+            secure_file = secure_filename(receipt.filename)
+            receipt.save(os.path.join(current_app.config['UPLOAD_FOLDER'], secure_file))
 
         fname, lname = customer_name.split() 
 
@@ -145,7 +146,7 @@ def web_place_order():
 
 
 
-@website.route('/api/website/contact')
+@website.route('/api/website/contact', methods=['POST', 'GET'])
 def contact_form(): 
     form = ContactForm(request.form)
     if request.method == 'POST' and form.validate_on_submit(): 

@@ -59,7 +59,6 @@ def new_product(busID):
             
 
             if image_file is not None:
-                basedir = os.path.abspath(os.path.dirname(__file__))
                 sec_filename = secure_filename(image_file.filename)
                 image_file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], sec_filename))
 

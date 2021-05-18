@@ -17,7 +17,7 @@ sales= Blueprint('sales', __name__)
 @sales.route('/api/<busID>/placeorder', methods = ['POST', 'GET'])
 def place_order(busID):
   #Display order based on rank
-  busID = current_user.busID 
+  #busID = current_user.busID 
   form = orderForm(request.form)
 
   if request.method == "POST":

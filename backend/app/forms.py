@@ -37,10 +37,16 @@ class orderForm(FlaskForm):
     # submit = SubmitField('Submit')
 
 class ProofOfPaymentForm(FlaskForm): 
-    pass
+    order_no = StringField('Order Number', validators=[InputRequired('Order Number field should not be empty')])
+    cust_name = StringField('Full Name', validators=[InputRequired('Name field should not be empty')])
+    image = FileField('Image', validators=[FileAllowed(['jpg','jpeg','png'], 'Images only!')])
 
 class ContactForm(FlaskForm):
-    pass
+    name = StringField('Customer Name', validators=[InputRequired('Customer Name field should not be empty')])  
+    subject = StringField('Subject', validators=[InputRequired('Subject field should not be empty')])
+    email = EmailField('Email', validators = [InputRequired('Email Field should not be  empty'), Email()])
+    phone_num = StringField('Telephone Number', validators=[InputRequired('Telephone Number field should not be empty')]) 
+    message = StringField('Message', validators=[InputRequired('Messagefield should not be empty')])
 
 class websiteForm(FlaskForm):
     wel_head = StringField('Welcome Header', validators=[InputRequired('Welcome Header field should not be empty')])
