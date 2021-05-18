@@ -110,7 +110,7 @@ class Stock(Product):
 
     prodID = db.Column(db.ForeignKey('product.prodID', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True)
     inStock = db.Column(db.String(10))
-    lastUpdateTime = db.Column(db.DateTime())
+    lastUpdateTime = db.Column(db.Date)
     quantity = db.Column(db.Integer)
     threshold = db.Column(db.Integer)
 
@@ -339,13 +339,14 @@ class Order(db.Model):
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     status = db.Column(db.String(20))
     dueDate = db.Column(db.Date)
+    note = db.Column(db.String(255))
 
     busines = db.relationship('Busines')
     customer = db.relationship('Customer')
     invoice = db.relationship('Invoice')
 
 
-    def ___init__(self, orderID, order_tot,order_DATE, custID, invoiceID, busID, status): 
+    def ___init__(self, orderID, order_tot,order_DATE, custID, invoiceID, busID, status,dueDate, note): 
         self.orderID = orderID 
         self.order_tot = order_tot
         self.order_DATE = order_DATE
@@ -353,6 +354,9 @@ class Order(db.Model):
         self.invoiceID = invoiceID 
         self.busID = busID 
         self.status = status 
+        self.dueDate = dueDate
+        self.note = note
+
     
 
     def get_id(self): 

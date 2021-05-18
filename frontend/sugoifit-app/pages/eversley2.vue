@@ -1,11 +1,10 @@
 <template>
     <div class= "container"> 
-        <h1> Order List </h1>
+        <h1> Manage Orders </h1>
         <hr>
         <table class= "content-table">
           <thead>
             <tr>
-              
               <th scope="col"> Customer ID </th>
               <th scope="col"> Invoice ID </th>
               <th scope="col"> Order ID </th>
@@ -13,15 +12,13 @@
               <th scope="col"> Date Ordered </th>
               <th scope="col"> Date Due </th>
               <th scope="col"> Status </th>
-              
-              
+              <th scope="col"> Change Status </th>
             </tr>
           </thead>
 
             <tbody>
-                <tr v-for="(result,index) in results" :key="index">
-                    
-                    
+                <tr v-for="result in results" :key="result.orderID">
+              
                     <td> {{result.custID}} </td>
                     <td> {{result.invoiceID}} </td>
                     <td> {{result.orderID}} </td>
@@ -30,8 +27,19 @@
                     <td> {{result.dueDate}} </td>
                     <td> {{result.status}} </td>
                     
+                    <br>
+                    <select name="status" id="action" onchange="this.form.submit()">
+                      <option value="Pending">Pending</option>
+                      <option value="Payment Received">Payment Received</option>
+                      <option value="Processing">Processing</option>
+                      <option value="On Hold">On Hold</option>
+                      <option value="Shipped">Shipped</option>
+                      <option value="Cancelled">Cancelled</option>
+                      <option value="Failed">Failed</option>
+                    </select>
+                    <br>
+                    <br>
                     
-
                 </tr>
             </tbody>
         </table>
@@ -39,7 +47,6 @@
 </template>
 
  <script>
- import axios from 'axios';
  import BackButton from '../components/argon-core/BackButton.vue';
  export default {
    components: { BackButton },
@@ -52,13 +59,13 @@
   },
   data() {
     return {
-      result: [],
+      results: [],
     };
   },
   methods: {
     getResult() {
       const path = 'http://localhost:8080/api/manage-orders';
-      axios.get(path)
+      this.$axios.get(path)
         .then((res) => {
           this.results = res.data.results;
         })
@@ -110,6 +117,10 @@
 
     .content-table tbody tr:last-of-type{
       border-bottom: 2px solid #90D8E1;
+    }
+
+    #action{
+      
     }
 
  </style>

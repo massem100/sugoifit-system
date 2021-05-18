@@ -5,21 +5,24 @@
         <table class= "content-table">
           <thead>
             <tr>
-              <th scope="col"> Product ID </th>
+              <th scope="col"> Product </th>
               <th scope="col"> Consumption Value </th>
+              <th scope="col"> Status </th>
+              <th scope="col"> Date Updated </th>
               <th scope="col"> Grade </th>
-              <th scope="col"> Action </th>
+
             </tr>
           </thead>
 
             <tbody>
-                <tr v-for="(product,prodID) in products" :key="prodID">
+                <tr v-for="product in products" :key="product.prodID">
                     
                     <td> {{product.prodID}} </td>
                     <td> {{product.con_val}} </td>
+                    <td> {{product.stock}} </td>
+                    <td> {{product.dateAdded}} </td>
                     <td> {{product.grade}} </td>
-                    <td> Button </td>
-        
+                    
                 </tr>
             </tbody>
         </table>
@@ -27,7 +30,6 @@
 </template>
 
  <script>
- import axios from 'axios';
  import BackButton from '../components/argon-core/BackButton.vue';
  export default {
    components: { BackButton },
@@ -46,7 +48,7 @@
   methods: {
     getProducts() {
       const path = 'http://localhost:8080/api/classify';
-      axios.get(path)
+      this.$axios.get(path)
         .then((res) => {
           this.products = res.data.products;
         })

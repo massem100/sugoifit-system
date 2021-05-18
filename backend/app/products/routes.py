@@ -1,9 +1,11 @@
+from sqlalchemy.sql.functions import current_date
 from app import  db, login_manager, csrf_, principal
 from app.forms import orderForm
-from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order
+from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order, Stock
 from sqlalchemy import func, inspection, event
 from flask import  Blueprint,  request, jsonify, flash, session,  _request_ctx_stack, g
 from werkzeug.utils import secure_filename
+from datetime import datetime
 
 
 product = Blueprint('product', __name__)
@@ -139,16 +141,38 @@ def all_product():
 
 def product_classify():
     #product_list = defaultdict(list)
+    date_format = "%Y-%m-%d"
+    notApplicable = []
     annual_consum_val = []
     total_consum_val = 0
     total_units_sold = 0
     product_sales = db.session.query(ProductSaleItem).all()
 
+    today = datetime.today()
+    today = today.strftime(date_format)
+    today = datetime.strptime(today, date_format)
+
     for product in product_sales: 
         consum_val = product.quantitySold * product.unit_price
-        annual_consum_val.append([product.psiID, consum_val, 'C']) #Set them as C by default
-        total_consum_val += consum_val
-        total_units_sold += product.quantitySold
+        pDateAdded = db.session.query(Stock).filter_by(prodID = product.psiID)
+        pDateAdded = pDateAdded[0].lastUpdateTime
+        pDateAdded = pDateAdded.strftime(date_format)
+        pDateAdded = datetime.strptime(pDateAdded, date_format)
+
+        daysPassed = today - pDateAdded
+        daysPassed = daysPassed.days
+        
+        print("days passed = " + str(daysPassed))
+
+
+        if daysPassed >=28:    
+            annual_consum_val.append([product.psiID, consum_val, 'C']) #Set them as C by default
+            total_consum_val += consum_val
+            total_units_sold += product.quantitySold
+        else:
+            notApplicable.append([product.psiID, consum_val, 'N/A'])
+
+        
 
     #Sort consumption list in descending order
     annual_consum_val.sort(key= lambda x: x[1], reverse = True)
@@ -173,10 +197,32 @@ def product_classify():
         if percentage >=15:
             break
 
+    
     data = []
     #Convert to dict
     for product in annual_consum_val:
-        data.append({'prodID':product[0], 'con_val': str(product[1]), 'grade':product[2]})
+
+        prod = db.session.query(Product).filter_by(prodID = product[0])
+        
+        """ Date fetching """
+        prodDate = db.session.query(Stock).filter_by(prodID = product[0])
+        updatedDate = prodDate[0].lastUpdateTime
+        updatedDate = updatedDate.strftime(date_format)
+
+        product[1] = "{:.2f}".format(product[1])
+        data.append({'prodID':prod[0].prodName, 'con_val': "$"+product[1], 'grade':product[2], 'stock': prod[0].prodStatus, 'dateAdded':updatedDate})
+
+    for naItem in notApplicable:
+        prod = db.session.query(Product).filter_by(prodID = naItem[0])
+
+        """ Date Fetching """
+        prodDate = db.session.query(Stock).filter_by(prodID = naItem[0])
+        updatedDate = prodDate[0].lastUpdateTime
+        updatedDate = updatedDate.strftime(date_format)
+
+        naItem[1] = "{:.2f}".format(naItem[1]) #consumption val
+        data.append({'prodID':prod[0].prodName, 'con_val': "$"+naItem[1], 'grade':naItem[2], 'stock': prod[0].prodStatus, 'dateAdded':updatedDate})
+
     
     return jsonify({'products': data})
 
