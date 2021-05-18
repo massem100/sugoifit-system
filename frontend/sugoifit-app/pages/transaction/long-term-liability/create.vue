@@ -266,7 +266,8 @@
                 this.$refs['confirmModal'].hide();
             },
             modalSubmit() {
-                let PATH_API = 'transaction/ltliabform';
+                let busID = localStorage.getItem('busID');
+                let PATH_API = `transaction/${busID}/ltliability`;
                 let form_data = new FormData();
                 Object.entries(this.form).forEach(entry => {
                     const [key, value] = entry;

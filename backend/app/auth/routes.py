@@ -143,7 +143,6 @@ def login():
 
 
 @authorize.route('/api/auth/logout', methods = ["GET"])
-@login_required
 def logout():
     # Clears user from session
     

@@ -59,10 +59,10 @@ export default {
   },
     data(){
         return{
-          show=false,
+          show:false,
           token: '', 
           alert_message: ''
-        }
+      }
     }, 
     methods:{
         RegisterUser: function () {
@@ -85,7 +85,7 @@ export default {
               })
         }, 
         error: function () {
-          if (this.alert_message === ) {
+          if (this.alert_message ==="" ) {
             show= true;
           }
 

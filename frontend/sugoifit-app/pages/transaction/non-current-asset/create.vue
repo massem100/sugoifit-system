@@ -324,7 +324,8 @@ import BackButton from '../../../components/argon-core/BackButton.vue';
             },
             modalSubmit(){
                 let self = this;
-                let PATH_API = 'transaction/noncurrentasset';
+                let busID = localStorage.getItem('busID');
+                let PATH_API = `transaction/${busID}/noncurrentasset`;
                 let NCAForm = document.getElementById('AddNCAForm');
                 let form_data = new FormData(NCAForm);
                 form_data.append('form_id','AddNCAForm' );

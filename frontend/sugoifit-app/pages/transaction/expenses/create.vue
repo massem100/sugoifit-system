@@ -176,7 +176,8 @@
                 this.$refs['confirmModal'].hide();
             },
             modalSubmit() {
-                let PATH_API = 'transaction/expense';
+                let busID = localStorage.getItem('busID');
+                let PATH_API = `transaction/${busID}/expense`;
                 let form_data = new FormData();
                 Object.entries(this.form).forEach(entry => {
                     const [key, value] = entry;

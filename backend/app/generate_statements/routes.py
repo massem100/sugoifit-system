@@ -35,9 +35,8 @@ statement= Blueprint('statement', __name__)
 """
 def calcNetSales(busID):
     total_sales = 0
-    sales = db.session.query(Sale, Sale.busID,func.coalesce(func.sum(Sale.saleAmtPaid), 0).label("totalSales")).filter_by(busID=busID).all()
-    print(sales)
-    net_sales = (float(sales.total_sales) if sales is not None else 0)
+    sales = Sale.query.with_entities( Sale.busID, func.coalesce(func.sum(Sale.saleAmtPaid),0).label("totalSales")).filter_by(busID = busID).all()
+    net_sales = (float(sales.totalSales) if sales is not None else 0)
     return net_sales
 
 def calcCOGS(beg_inv, end_inv, purchases, year): 
@@ -163,7 +162,7 @@ def noprev_list_items(ledgerID):
             
 
         nonoperating_revenue_lst = {
-                                'Non Operating Revenue': str(interest_exp), 
+                                'Non Operating Revenue': str(other_nop_rev), 
                                
                             }
     return nonoperating_revenue_lst    
@@ -195,19 +194,19 @@ def generate_income_statement(busID, year =str(datetime.today().strftime('%Y')))
     GeneralLedger = db.session.query(accounts.GeneralLedger).filter_by(busID = busID, year = year).first()
     if GeneralLedger is not None: 
         id = GeneralLedger.ledgerID 
-        
+        busID = current_user.busID
         return jsonify({
             'Operating Expenses': opex_list_items(id), 
             'Non Operating Expenses': nopex_list_items(id),
             'Operating Revenue': oprev_list_items(id), 
             'Non Operating Revenue': noprev_list_items(id),
-            'Sales': calcIncomeStmtTotals(busID, ledgerID)["Sales"], 
-            'Cost of Goods Sold': calcIncomeStmtTotals(busID, ledgerID)["Cost of Good Sold"], 
-            'Gross Profit': calcIncomeStmtTotals(busID, ledgerID)["Gross Profit"], 
-            'Taxation': calcIncomeStmtTotals(busID, ledgerID)["Taxation"], 
-            'Income Before Tax': calcIncomeStmtTotals(busID, ledgerID)["Income Before Tax"], 
-            'Net Profit': calcIncomeStmtTotals(busID, ledgerID)["Net Profit"], 
-            'Operating Income': calcIncomeStmtTotals(busID, ledgerID)["Operating Income"], 
+            'Sales': calcIncomeStmtTotals(busID, id)["Sales"], 
+            'Cost of Goods Sold': calcIncomeStmtTotals(busID, id)["Cost of Good Sold"], 
+            'Gross Profit': calcIncomeStmtTotals(busID, id)["Gross Profit"], 
+            'Taxation': calcIncomeStmtTotals(busID, id)["Taxation"], 
+            'Income Before Tax': calcIncomeStmtTotals(busID, id)["Income Before Tax"], 
+            'Net Profit': calcIncomeStmtTotals(busID, id)["Net Profit"], 
+            'Operating Income': calcIncomeStmtTotals(busID, id)["Operating Income"], 
             
         })
     else: 
@@ -362,14 +361,14 @@ def cl_list_items(ledgerID):
                 st_loans_bal += liab.totalDebit - liab.totalCredit
 
         current_liab_items= [
-                            {'Accounts Payable': str(payables_bal), 
-                            'Short Term Loans': str(st_loans_bal), 
-                            'Tax Payable': str(tax_payable),
-                            'Accrued Expenses': str(accrued_exp_bal), 
-                            'Current Portion of Long Term Loans': str(cportion_loan_bal), 
-                            'Unearned Revenue': str(unearned_revenue),
-                            'Other Current Liabilities': str(other_cliab_bal),
-                            'Total Current Liabilities':str(getBSTotals(ledgerID)[2])
+                            {'Accounts Payable': payables_bal, 
+                            'Short Term Loans': st_loans_bal, 
+                            'Tax Payable': tax_payable,
+                            'Accrued Expenses': accrued_exp_bal, 
+                            'Current Portion of Long Term Loans': cportion_loan_bal, 
+                            'Unearned Revenue': unearned_revenue,
+                            'Other Current Liabilities': other_cliab_bal,
+                            'Total Current Liabilities': getBSTotals(ledgerID)[2]
 
         }]
     return current_liab_items

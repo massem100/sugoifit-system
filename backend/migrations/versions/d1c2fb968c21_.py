@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: d55dadab27eb
-Revises: 714271008010
-Create Date: 2021-05-17 22:46:23.567883
+Revision ID: d1c2fb968c21
+Revises: 
+Create Date: 2021-05-18 11:35:26.482419
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd55dadab27eb'
-down_revision = '714271008010'
+revision = 'd1c2fb968c21'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -51,13 +51,6 @@ def upgrade():
     sa.Column('date_joined', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('userID'),
     sa.UniqueConstraint('userID')
-    )
-    op.create_table('websitedetails',
-    sa.Column('section_detail', sa.String(length=10), nullable=False),
-    sa.Column('sec_header', sa.String(length=50), nullable=True),
-    sa.Column('sec_message', sa.String(length=50), nullable=True),
-    sa.PrimaryKeyConstraint('section_detail'),
-    sa.UniqueConstraint('section_detail')
     )
     op.create_table('customer',
     sa.Column('custID', sa.Integer(), autoincrement=True, nullable=False),
@@ -111,9 +104,9 @@ def upgrade():
     op.create_index(op.f('ix_financialstmtlineseq_fsStmtID'), 'financialstmtlineseq', ['fsStmtID'], unique=False)
     op.create_index(op.f('ix_financialstmtlineseq_fsStmtLineID'), 'financialstmtlineseq', ['fsStmtLineID'], unique=False)
     op.create_table('genledger',
-    sa.Column('ledgerID', sa.String(length=80), nullable=False),
+    sa.Column('ledgerID', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('busID', sa.String(length=100), nullable=True),
-    sa.Column('Year', sa.Date(), nullable=True),
+    sa.Column('year', sa.String(length=15), nullable=True),
     sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('ledgerID')
     )
@@ -162,32 +155,36 @@ def upgrade():
     sa.UniqueConstraint('userID'),
     sa.UniqueConstraint('user_email')
     )
-    op.create_table('websitedrag',
-    sa.Column('sectionID', sa.Integer(), nullable=False),
-    sa.Column('positionID', sa.String(length=50), nullable=True),
-    sa.Column('sectionName', sa.String(length=50), nullable=True),
-    sa.Column('section_detail', sa.String(length=50), nullable=True),
-    sa.ForeignKeyConstraint(['section_detail'], ['websitedetails.section_detail'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('sectionID'),
-    sa.UniqueConstraint('sectionID')
+    op.create_table('websitedetails',
+    sa.Column('busID', sa.String(length=100), nullable=True),
+    sa.Column('section_detail', sa.String(length=10), nullable=False),
+    sa.Column('sec_header', sa.String(length=50), nullable=True),
+    sa.Column('sec_message', sa.String(length=50), nullable=True),
+    sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('section_detail'),
+    sa.UniqueConstraint('section_detail')
     )
+    op.create_index(op.f('ix_websitedetails_busID'), 'websitedetails', ['busID'], unique=False)
     op.create_table('con_service_sale_item',
     sa.Column('cssiID', sa.Integer(), nullable=False),
     sa.Column('quantitySold', sa.Integer(), nullable=True),
     sa.Column('unit_price', sa.Integer(), nullable=True),
     sa.Column('serv_price', sa.Integer(), nullable=True),
     sa.Column('taxAmt', sa.Integer(), nullable=True),
+    sa.Column('busID', sa.String(length=100), nullable=True),
     sa.Column('serviceID', sa.Integer(), nullable=True),
     sa.Column('starttime', sa.DateTime(), nullable=True),
     sa.Column('endtime', sa.DateTime(), nullable=True),
     sa.Column('prolong_period', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['serviceID'], ['service.serviceID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('cssiID')
     )
+    op.create_index(op.f('ix_con_service_sale_item_busID'), 'con_service_sale_item', ['busID'], unique=False)
     op.create_index(op.f('ix_con_service_sale_item_serviceID'), 'con_service_sale_item', ['serviceID'], unique=False)
     op.create_table('currentasset',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('ledgerID', sa.String(length=80), nullable=True),
+    sa.Column('ledgerID', sa.Integer(), nullable=True),
     sa.Column('assetName', sa.String(length=100), nullable=True),
     sa.Column('acquisDATE', sa.Date(), nullable=True),
     sa.Column('tag', sa.String(length=50), nullable=True),
@@ -203,7 +200,7 @@ def upgrade():
     op.create_index(op.f('ix_currentasset_ledgerID'), 'currentasset', ['ledgerID'], unique=False)
     op.create_table('currentliability',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('ledgerID', sa.String(length=80), nullable=True),
+    sa.Column('ledgerID', sa.Integer(), nullable=True),
     sa.Column('liabName', sa.String(length=100), nullable=True),
     sa.Column('borwDATE', sa.Date(), nullable=True),
     sa.Column('loanPeriods', sa.Integer(), nullable=True),
@@ -220,7 +217,7 @@ def upgrade():
     op.create_index(op.f('ix_currentliability_ledgerID'), 'currentliability', ['ledgerID'], unique=False)
     op.create_table('equity',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('ledgerID', sa.String(length=80), nullable=True),
+    sa.Column('ledgerID', sa.Integer(), nullable=True),
     sa.Column('equityName', sa.String(length=100), nullable=True),
     sa.Column('date', sa.Date(), nullable=True),
     sa.Column('tag', sa.String(length=50), nullable=True),
@@ -248,7 +245,7 @@ def upgrade():
     op.create_index(op.f('ix_invoice_custID'), 'invoice', ['custID'], unique=False)
     op.create_table('ledgerdetails',
     sa.Column('ledgerDetailsID', sa.Integer(), nullable=False),
-    sa.Column('ledgerID', sa.String(length=80), nullable=True),
+    sa.Column('ledgerID', sa.Integer(), nullable=True),
     sa.Column('accountName', sa.String(length=250), nullable=True),
     sa.Column('accountBalance', sa.String(length=250), nullable=True),
     sa.ForeignKeyConstraint(['ledgerID'], ['genledger.ledgerID'], onupdate='CASCADE', ondelete='CASCADE'),
@@ -257,7 +254,7 @@ def upgrade():
     op.create_index(op.f('ix_ledgerdetails_ledgerID'), 'ledgerdetails', ['ledgerID'], unique=False)
     op.create_table('longtermliability',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('ledgerID', sa.String(length=80), nullable=True),
+    sa.Column('ledgerID', sa.Integer(), nullable=True),
     sa.Column('liabName', sa.String(length=100), nullable=True),
     sa.Column('borwDATE', sa.Date(), nullable=True),
     sa.Column('loanPeriods', sa.Integer(), nullable=True),
@@ -274,7 +271,7 @@ def upgrade():
     op.create_index(op.f('ix_longtermliability_ledgerID'), 'longtermliability', ['ledgerID'], unique=False)
     op.create_table('noncurrentasset',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('ledgerID', sa.String(length=80), nullable=True),
+    sa.Column('ledgerID', sa.Integer(), nullable=True),
     sa.Column('assetName', sa.String(length=100), nullable=True),
     sa.Column('tag', sa.String(length=50), nullable=True),
     sa.Column('lifeSpan', sa.Integer(), nullable=True),
@@ -292,7 +289,7 @@ def upgrade():
     op.create_index(op.f('ix_noncurrentasset_ledgerID'), 'noncurrentasset', ['ledgerID'], unique=False)
     op.create_table('nonopex',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('ledgerID', sa.String(length=80), nullable=True),
+    sa.Column('ledgerID', sa.Integer(), nullable=True),
     sa.Column('nOpexName', sa.String(length=100), nullable=True),
     sa.Column('dateIncurred', sa.Date(), nullable=True),
     sa.Column('tag', sa.String(length=50), nullable=True),
@@ -308,7 +305,7 @@ def upgrade():
     op.create_index(op.f('ix_nonopex_ledgerID'), 'nonopex', ['ledgerID'], unique=False)
     op.create_table('nonoprev',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('ledgerID', sa.String(length=80), nullable=True),
+    sa.Column('ledgerID', sa.Integer(), nullable=True),
     sa.Column('nOprevName', sa.String(length=100), nullable=True),
     sa.Column('dateEarned', sa.Date(), nullable=True),
     sa.Column('tag', sa.String(length=50), nullable=True),
@@ -324,7 +321,7 @@ def upgrade():
     op.create_index(op.f('ix_nonoprev_ledgerID'), 'nonoprev', ['ledgerID'], unique=False)
     op.create_table('opex',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('ledgerID', sa.String(length=80), nullable=True),
+    sa.Column('ledgerID', sa.Integer(), nullable=True),
     sa.Column('opexName', sa.String(length=100), nullable=True),
     sa.Column('dateIncurred', sa.Date(), nullable=True),
     sa.Column('expenseCategory', sa.String(length=80), nullable=True),
@@ -341,7 +338,7 @@ def upgrade():
     op.create_index(op.f('ix_opex_ledgerID'), 'opex', ['ledgerID'], unique=False)
     op.create_table('oprev',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('ledgerID', sa.String(length=80), nullable=True),
+    sa.Column('ledgerID', sa.Integer(), nullable=True),
     sa.Column('oprevName', sa.String(length=100), nullable=True),
     sa.Column('dateEarned', sa.Date(), nullable=True),
     sa.Column('tag', sa.String(length=50), nullable=True),
@@ -357,6 +354,7 @@ def upgrade():
     op.create_index(op.f('ix_oprev_ledgerID'), 'oprev', ['ledgerID'], unique=False)
     op.create_table('product_sale_item',
     sa.Column('psiID', sa.Integer(), nullable=False),
+    sa.Column('busID', sa.String(length=100), nullable=True),
     sa.Column('customerID', sa.Integer(), nullable=True),
     sa.Column('timePaid', sa.DateTime(), nullable=True),
     sa.Column('timeCreated', sa.DateTime(), nullable=True),
@@ -367,10 +365,12 @@ def upgrade():
     sa.Column('unit_price', sa.DECIMAL(precision=10, scale=2), nullable=True),
     sa.Column('prodID', sa.Integer(), nullable=True),
     sa.Column('taxAmt', sa.DECIMAL(precision=10, scale=2), nullable=True),
+    sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['customerID'], ['customer.custID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['prodID'], ['product.prodID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('psiID')
     )
+    op.create_index(op.f('ix_product_sale_item_busID'), 'product_sale_item', ['busID'], unique=False)
     op.create_index(op.f('ix_product_sale_item_customerID'), 'product_sale_item', ['customerID'], unique=False)
     op.create_index(op.f('ix_product_sale_item_prodID'), 'product_sale_item', ['prodID'], unique=False)
     op.create_table('role',
@@ -429,7 +429,7 @@ def upgrade():
     sa.Column('status', sa.String(length=20), nullable=True),
     sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['custID'], ['customer.custID'], onupdate='CASCADE', ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['invoiceID'], ['invoice.custID'], onupdate='CASCADE', ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['invoiceID'], ['invoice.invoiceID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('orderID')
     )
     op.create_index(op.f('ix_custorder_busID'), 'custorder', ['busID'], unique=False)
@@ -437,13 +437,16 @@ def upgrade():
     op.create_index(op.f('ix_custorder_invoiceID'), 'custorder', ['invoiceID'], unique=False)
     op.create_table('customerpayment',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('busID', sa.String(length=100), nullable=True),
     sa.Column('custID', sa.Integer(), nullable=True),
     sa.Column('orderID', sa.Integer(), nullable=True),
     sa.Column('receipt', sa.String(length=255), nullable=True),
+    sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['custID'], ['customer.custID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['orderID'], ['custorder.orderID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_index(op.f('ix_customerpayment_busID'), 'customerpayment', ['busID'], unique=False)
     op.create_index(op.f('ix_customerpayment_custID'), 'customerpayment', ['custID'], unique=False)
     op.create_index(op.f('ix_customerpayment_orderID'), 'customerpayment', ['orderID'], unique=False)
     op.create_table('orderdetails',
@@ -488,16 +491,19 @@ def upgrade():
     op.create_table('sale',
     sa.Column('saleID', sa.Integer(), nullable=False),
     sa.Column('customerID', sa.Integer(), nullable=True),
+    sa.Column('busID', sa.String(length=100), nullable=True),
     sa.Column('timePaid', sa.DateTime(), nullable=True),
     sa.Column('timeCreated', sa.DateTime(), nullable=True),
     sa.Column('saleAmt', sa.Integer(), nullable=True),
     sa.Column('saleAmtPaid', sa.Integer(), nullable=True),
     sa.Column('SaleStatus', sa.String(length=11), nullable=True),
     sa.Column('receiptID', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['busID'], ['business.busID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['customerID'], ['customer.custID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['receiptID'], ['receipt.receiptID'], onupdate='CASCADE', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('saleID')
     )
+    op.create_index(op.f('ix_sale_busID'), 'sale', ['busID'], unique=False)
     op.create_index(op.f('ix_sale_customerID'), 'sale', ['customerID'], unique=False)
     op.create_index(op.f('ix_sale_receiptID'), 'sale', ['receiptID'], unique=False)
     # ### end Alembic commands ###
@@ -507,6 +513,7 @@ def downgrade():
     # ### commands auto generated by Alembic - please adjust! ###
     op.drop_index(op.f('ix_sale_receiptID'), table_name='sale')
     op.drop_index(op.f('ix_sale_customerID'), table_name='sale')
+    op.drop_index(op.f('ix_sale_busID'), table_name='sale')
     op.drop_table('sale')
     op.drop_index(op.f('ix_receiptdetails_serviceID'), table_name='receiptdetails')
     op.drop_index(op.f('ix_receiptdetails_prodID'), table_name='receiptdetails')
@@ -518,6 +525,7 @@ def downgrade():
     op.drop_table('orderdetails')
     op.drop_index(op.f('ix_customerpayment_orderID'), table_name='customerpayment')
     op.drop_index(op.f('ix_customerpayment_custID'), table_name='customerpayment')
+    op.drop_index(op.f('ix_customerpayment_busID'), table_name='customerpayment')
     op.drop_table('customerpayment')
     op.drop_index(op.f('ix_custorder_invoiceID'), table_name='custorder')
     op.drop_index(op.f('ix_custorder_custID'), table_name='custorder')
@@ -534,6 +542,7 @@ def downgrade():
     op.drop_table('role')
     op.drop_index(op.f('ix_product_sale_item_prodID'), table_name='product_sale_item')
     op.drop_index(op.f('ix_product_sale_item_customerID'), table_name='product_sale_item')
+    op.drop_index(op.f('ix_product_sale_item_busID'), table_name='product_sale_item')
     op.drop_table('product_sale_item')
     op.drop_index(op.f('ix_oprev_ledgerID'), table_name='oprev')
     op.drop_table('oprev')
@@ -559,8 +568,10 @@ def downgrade():
     op.drop_index(op.f('ix_currentasset_ledgerID'), table_name='currentasset')
     op.drop_table('currentasset')
     op.drop_index(op.f('ix_con_service_sale_item_serviceID'), table_name='con_service_sale_item')
+    op.drop_index(op.f('ix_con_service_sale_item_busID'), table_name='con_service_sale_item')
     op.drop_table('con_service_sale_item')
-    op.drop_table('websitedrag')
+    op.drop_index(op.f('ix_websitedetails_busID'), table_name='websitedetails')
+    op.drop_table('websitedetails')
     op.drop_table('usercredentials')
     op.drop_index(op.f('ix_service_busID'), table_name='service')
     op.drop_table('service')
@@ -575,7 +586,6 @@ def downgrade():
     op.drop_table('financialstmtdesc')
     op.drop_index(op.f('ix_customer_busID'), table_name='customer')
     op.drop_table('customer')
-    op.drop_table('websitedetails')
     op.drop_table('user')
     op.drop_table('financialstmtline')
     op.drop_table('financialstmt')

@@ -4,7 +4,7 @@
         <div class="d-flex flex-column ml-5 ">
            <!-- Updated Hero -->
               <div class="d-flex flex-row "
-                    style="max-width: 100vw;
+                    style="max-width: 100vw; 
                             height: 60vh;"
                 >
                 <div class="d-flex flex-column justify-content-center w-50 ">

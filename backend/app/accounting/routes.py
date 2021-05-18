@@ -110,10 +110,10 @@ def prepAccounts(ledgerID, label, amount, *args, **kwargs):
 
     
 
-@accounting.route('/api/transaction/currentasset', methods = ["POST", "GET"])
+@accounting.route('/api/transaction/<busID>/currentasset', methods = ["POST", "GET"])
 @login_required
 @requires_auth
-def ca_transaction():
+def ca_transaction(busID):
     if request.method == "POST": 
     
         form = CAForm(request.form)
@@ -169,10 +169,10 @@ def ca_transaction():
         return jsonify(errors= error_list)
 
 # WHats left: Depreciation Amortization Intangible Tangible 
-@accounting.route('/api/transaction/noncurrentasset', methods = ["POST", "GET"])
+@accounting.route('/api/transaction/<busID>/noncurrentasset', methods = ["POST", "GET"])
 @login_required
 @requires_auth
-def nca_transaction():
+def nca_transaction(busID):
     if request.method == "POST":
         if request.form['form_id'] == "AddNCAForm":
             form = NCAForm(request.form)
@@ -242,10 +242,10 @@ def nca_transaction():
         return jsonify(errors= error_list)
 
         
-@accounting.route('/api/transaction/currentliability', methods = ["POST", "GET"])
+@accounting.route('/api/transaction/<busID>/currentliability', methods = ["POST", "GET"])
 @login_required
 @requires_auth
-def cl_transaction():
+def cl_transaction(busID):
     if request.method == "POST": 
         form = CLiabForm(request.form)
         liab_name = form.liab_name.data
@@ -292,10 +292,10 @@ def cl_transaction():
         error_list = form_errors(form)
         return jsonify(errors= error_list)   
 
-@accounting.route('/api/transaction/ltliability', methods = ["POST", "GET"])
+@accounting.route('/api/transaction/<busID>/ltliability', methods = ["POST", "GET"])
 @login_required
 @requires_auth
-def lt_transaction():
+def lt_transaction(busID):
     if request.method == "POST": 
         if request['form_id'] == "LTLiabForm":
             form = LTLiabForm(request.form)
@@ -347,10 +347,10 @@ def lt_transaction():
             return jsonify(errors= error_list)   
             
 
-@accounting.route('/api/transaction/expense', methods = ["POST", "GET"])
+@accounting.route('/api/transaction/<busID>/expense', methods = ["POST", "GET"])
 @login_required
 @requires_auth
-def exp_transaction():
+def exp_transaction(busID):
     if request.method == "POST": 
         form = ExpForm(request.form)
 
@@ -420,10 +420,10 @@ def exp_transaction():
         error_list = form_errors(form)
         return jsonify(errors= error_list)
 
-@accounting.route('/api/transaction/revenue', methods = ["POST", "GET"])
+@accounting.route('/api/transaction/<busID>/revenue', methods = ["POST", "GET"])
 @login_required
 @requires_auth
-def rev_transaction():
+def rev_transaction(busID):
     if request.method == "POST": 
         form = RevForm(request.form)
         revenue_name = form.revenue_name.data 
@@ -497,10 +497,10 @@ def rev_transaction():
         error_list = form_errors(form)
         return jsonify(errors= error_list)
         
-@accounting.route('/api/transaction/equity', methods = ["POST", "GET"])
+@accounting.route('/api/transaction/<busID>/equity', methods = ["POST", "GET"])
 @login_required
 @requires_auth
-def equity_transaction():
+def equity_transaction(busID):
     if request.method == "POST":             
         form = EquityForm(request.form)
         equity_name= form.equity_name.data
