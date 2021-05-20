@@ -1,7 +1,7 @@
 import os, sys
 from app import db, login_manager, csrf_, principal
 from app.forms import orderForm, NewProductForm
-from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order
+from app.model.sales import Product, ProductSaleItem, Customer, Invoice, Order, Stock
 from app.schema.sales import product_schema, products_schema
 from app.views import form_errors
 from sqlalchemy import func, inspection, event, desc
@@ -92,8 +92,10 @@ def aproduct(busID):
 #@app.route('/api/product/classify', methods = ['GET', 'POST'])
 @product.route('/api/classify', methods = ['GET', 'POST'])
 def product_classify():
+    date_format = "%Y-%m-%d"
     #safety stock = (max daily sales x max lead time in days) - (average daily sales x average lead time in days)
     annual_consum_val = []
+    notApplicable = []
     total_consum_val = 0
     total_units_sold = 0
     product_sales = db.session.query(ProductSaleItem).all()

@@ -74,6 +74,7 @@ print (delta.days)
 """
 @sales.route('/api/manage-orders')
 def manageOrders():
+    date_format = "%Y-%m-%d"
     #Get all orders that are pending
     rank = {
         "Payment Received": 1,
@@ -85,7 +86,6 @@ def manageOrders():
         "Failed": 7
     }
 
-    date_format = "%Y-%m-%d"
     allOrders = []
     ordersQuery = Order.query.filter_by().all()
     #Calculate days left for each record

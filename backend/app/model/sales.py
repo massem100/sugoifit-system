@@ -101,32 +101,32 @@ class Product(db.Model):
     prodID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     prodName = db.Column(db.String(100))
-    prodType = db.Column(db.String(40))
-    prodDesc = db.Column(db.String(40))
-    prodQuantity = db.Column(db.Integer)
-    prodSize = db.Column(db.String(40))
+    #prodType = db.Column(db.String(40))
+    #prodDesc = db.Column(db.String(40))
+    #prodQuantity = db.Column(db.Integer)
+    #prodSize = db.Column(db.String(40))
     unit_price = db.Column(db.DECIMAL(10, 2))
     Unit = db.Column(db.DECIMAL(10, 2))
     limitedTime = db.Column(db.DateTime())
     taxPercent = db.Column(db.DECIMAL(3, 2))
-    grade = db.Column(db.String(5))
+    #grade = db.Column(db.String(5))
     prodStatus = db.Column(db.String(25))
     image = db.Column(db.String(50))
     avg_lead = db.Column(db.Integer)
     longest_lead = db.Column(db.Integer)
 
-    def ___init__(self, prodID, busID, prodName, prodType, prodDesc, prodQuantity, prodSize, unit_price, Unit, limitedTime, grade, taxPercent, prodStatus,image): 
+    def ___init__(self, prodID, busID, prodName, unit_price, Unit, limitedTime, grade, taxPercent, prodStatus,image): 
         self.prodID = prodID 
         self.prodName = prodName 
-        self.prodType = prodType
-        self.prodDesc = prodDesc
-        self.prodQuantity = prodQuantity
-        self.prodSiz = prodSize
+        #self.prodType = prodType
+        #self.prodDesc = prodDesc
+        #self.prodQuantity = prodQuantity
+        #self.prodSiz = prodSize
         self.busID = busID 
         self.unit_price = unit_price
         self.Unit = Unit 
         self.limitedTime = limitedTime
-        self.grade = grade
+        #self.grade = grade
         self.taxPercent = taxPercent
         self.prodStatus = prodStatus
         self.image =image
@@ -299,7 +299,7 @@ class ProductSaleItem(db.Model):
     __tablename__ = 'product_sale_item'
 
     psiID = db.Column(db.Integer, primary_key=True)
-    busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
+    #busID = db.Column(db.ForeignKey('business.busID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     customerID = db.Column(db.ForeignKey('customer.custID', ondelete='CASCADE', onupdate='CASCADE'), index=True)
     timePaid = db.Column(db.DateTime)
     timeCreated = db.Column(db.DateTime)
@@ -314,9 +314,9 @@ class ProductSaleItem(db.Model):
     customer = db.relationship('Customer')
     product = db.relationship('Product')
 
-    def __init__(self, psiID, busID, customerID, timePaid, timeCreated, saleAmt, saleAmtPaid, status, qSold, uPrice, prodID,taxAmt): 
+    def __init__(self, psiID, customerID, timePaid, timeCreated, saleAmt, saleAmtPaid, status, qSold, uPrice, prodID,taxAmt): 
         self.psiID = psiID
-        self.busID = busID
+        #self.busID = busID
         self.customerID = customerID 
         self.timePaid = timePaid
         self.timeCreated = timeCreated

@@ -64,6 +64,16 @@
             }"
           >
           </sidebar-item>
+          <sidebar-item
+            opened
+            :link="{
+              name: 'ABC Analysis',
+              icon: ['fas', 'plus'],
+              path: '/analysis',
+              color: 'text-black',
+            }"
+          >
+          </sidebar-item>
         </sidebar-item>
          <!-- <sidebar-item
 
@@ -98,6 +108,15 @@
               name: 'Orders',
               icon: ['fas', 'plus'],
               path: '/inventory/list',
+            }"
+          >
+          </sidebar-item>
+        <sidebar-item
+            opened
+            :link="{
+              name: 'RankOrders',
+              icon: ['fas', 'plus'],
+              path: '/rankorders',
             }"
           >
           </sidebar-item>
