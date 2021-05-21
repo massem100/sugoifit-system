@@ -27,8 +27,8 @@ export class productService  {
         }).then(res =>{
             return res.data;
         }).then (res => {
-            if (res.success["0"].message){
-                this.alert_message = res.success["0"].message;   
+            if (res.message){
+                this.alert_message = res.message;   
             }
             return res.success;
         });
