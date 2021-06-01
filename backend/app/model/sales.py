@@ -121,7 +121,7 @@ class Product(db.Model):
         self.prodType = prodType
         self.prodDesc = prodDesc
         self.prodQuantity = prodQuantity
-        self.prodSiz = prodSize
+        self.prodSize = prodSize
         self.busID = busID 
         self.unit_price = unit_price
         self.Unit = Unit 

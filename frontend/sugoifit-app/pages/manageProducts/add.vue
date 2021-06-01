@@ -95,7 +95,7 @@
                   
                 
               
-              <!--<div class="mb-2">
+              <div class="mb-2">
                 <validation-provider
                   v-slot="{ errors }"
                   rules="required"
@@ -138,7 +138,7 @@
                   </b-form-invalid-feedback>
                 </validation-provider>
               </div>
-              -->
+              
             </b-row>
             <b-row>
               <b-col class="mb-2 c-box" xl="3" md="6" sm="12">

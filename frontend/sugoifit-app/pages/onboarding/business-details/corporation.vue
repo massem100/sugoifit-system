@@ -52,7 +52,7 @@
 export default{
   components: {  },
     name: 'BusinessDetails', 
-    layout: 'onboarding',
+    layout: 'DashboardLayout',
     head(){
           return{
               title: 'About the Corporation'
@@ -169,7 +169,7 @@ export default{
         }
 
         .business-main{
-            margin-left: 20rem;
+            /* margin-left: 20rem; */
         }
 
         

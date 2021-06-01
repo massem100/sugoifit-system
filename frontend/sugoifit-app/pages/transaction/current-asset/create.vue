@@ -211,8 +211,8 @@
                 asset_tags:[ 
                     {value: null, text: 'Please select an option'},
                     {value: 'Inventory', text: 'Inventory'},
-                    {value: 'Cash', text: 'Cash'},
-                    {value: 'Cash Equivalents', text: 'Cash Equivalents'},
+                    // {value: 'Cash', text: 'Cash'},
+                    // {value: 'Cash Equivalents', text: 'Cash Equivalents'},
                     {value: 'Accounts Receivables', text: 'Accounts Receivables'},
                     {value: 'Prepaid Expenses', text: 'Prepaid Expenses'},
                     {value: 'Marketable Securities', text: 'Marketable Securities'},

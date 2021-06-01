@@ -2,12 +2,20 @@
 
 <div class = "wrapper bg-white "> 
     <b-nav class="m-4 mr-5 p-2">
-        <b-nav-item class = "h3" active>Monique Boutique</b-nav-item>
+        <b-nav-item class = "h3" active>
+            <nuxt-link class="btnStyle pop-link" to="website:PanJewlry">Monique Boutique</nuxt-link></b-nav-item>
         <b-row class="ml-lg-auto">
-            <b-nav-item active>Products</b-nav-item>
+            <b-nav-item active>
+
+                <nuxt-link class="btnStyle pop-link" :to="{name:'website-index'}">Products</nuxt-link>
+
+            </b-nav-item>
             <!-- <b-nav-item>FAQ</b-nav-item> -->
-            <b-nav-item>Contact</b-nav-item>
-            
+            <!-- <b-nav-item>
+                 <nuxt-link class="btnStyle pop-link" :to="{name:'website-placeorder'}">Contact
+                 </nuxt-link>
+                </b-nav-item>
+             -->
             <b-nav-item>
                 <nuxt-link class="btnStyle pop-link" :to="{name:'website-placeorder'}">Shopping Cart</nuxt-link>
             </b-nav-item>

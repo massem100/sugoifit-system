@@ -134,17 +134,26 @@ import BackButton from '../components/argon-core/BackButton.vue';
                 depreciationMethod: "",
                 sortOptions:{},
                 el: "",
-                totalRows: 1,
+                // totalRows: null,
                 currentPage: 1,
-                perPage: 10,
+                perPage: 8,
                 pageOptions: [5, 10, 15, { value: 100, text: "Show a lot" }],
                 sortBy: '',
                 sortDesc: false,
                 sortDirection: 'asc',
                 filter: null,
                 filterOn: [],
-                fields: ['date', 'transaction_id', 'transaction_name', 'related_entry', 'amount', 'actions'],
+                // fields: ['date', 'transaction_id', 'transaction_name', 'related_entry', 'amount', 'actions'],
                 items: [],
+                fields: [
+                          {key:'date', sortable: true},
+                          {key: 'transaction_id', sortable: false},
+                          {key: 'transaction_name', sortable: true},
+                          {key: 'related_entry', sortable: false}, 
+                          {key:'amount', sortable: true},
+                          {key:'actions', sortable: false},
+              
+                        ],
             };
                 
         },
@@ -153,13 +162,18 @@ import BackButton from '../components/argon-core/BackButton.vue';
 
         }, 
         computed: {
-            
+             totalRows(){
+               return this.items.length;
+          }
       
+        }, 
+        watch:{
+         
         }, 
         mounted() {
             // Set the initial number of items
           let self=this;
-          
+  
           const busID = localStorage.getItem('busID');
           this.$axios.get(`/api/transactions/${busID}`
               ).then(res =>{
@@ -168,7 +182,7 @@ import BackButton from '../components/argon-core/BackButton.vue';
                   if (res){
                       self.items = res.transaction;
                       console.log(res);
-                      this.totalRows = this.res.transaction.length
+                      // this.totalRows = this.res.transaction.length; 
               
               }else{
                   console.log('Data not found')

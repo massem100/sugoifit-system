@@ -1,23 +1,29 @@
 <template>
 <div class = "company-type-page">
     <div  class="company-type-section" >
-        <back-button class="mt-4 ml-2"></back-button>
-        <div class = "company-heading">
+         
+       <div class="d-flex flex-row"> 
+            <back-button class="mt-4 ml-2"></back-button>
+            <div class = "company-heading">
             <h4 class=" m-4">Choose the type of business</h4>
             <p class="m-4">Choose the option that best describes your business.</p>
         </div>
+       </div>
+       
         <div class="type-categories">
             
             <div class="type-item">
                 <img class = "type-icon" src="~assets/uploads/checked.svg" alt="">
                 <h6> Sole Trader 
                     <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="A business owned and operated by one individual."/>
+                     <p> A business owned and operated by one individual.</p>
                 </h6>
             </div>
             <div class="type-item">
                 <img class = "type-icon" src="~assets/uploads/checked.svg" alt="">
                 <h6>Partnership
                     <font-awesome-icon icon="info-circle" v-b-tooltip.hover title="An unincorporated business owned by two or more persons."/>
+                     <p>An unincorporated business owned by two or more persons.</p>
                 </h6>
             </div>
             <div class="type-item">
@@ -25,6 +31,7 @@
                 <h6>Company
                     <font-awesome-icon icon="info-circle" v-b-tooltip.hover title=
                         "A business that is incorporated. Please select type of incorporation, private or public."/>
+                         <p>A business that is incorporated. Please select type of incorporation, private or public.</p>
                 </h6>
             </div>
             <div class ="d-flex flex-row justify-content-center ">

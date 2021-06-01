@@ -283,14 +283,14 @@ def ca_list_items(ledgerID):
     
         
         current_asset_lst = {
-                                'Inventory': str(inventory_bal), 
-                                'Accounts Receivable': str(receivable_bal), 
-                                'Cash': str(cash_bal), 
-                                'Cash Equivalents': str(bank_bal),
-                                'Prepaid Expense': str(prepaid_exp_bal), 
-                                'Marketable Securities':str(market_sec_bal),
-                                'Other Liquid Assets': str(other_assets_bal),
-                                'Total Current Assets': str(getBSTotals(ledgerID)[0])
+                                'Inventory': inventory_bal, 
+                                'Accounts Receivable': receivable_bal, 
+                                'Cash': cash_bal, 
+                                'Cash Equivalents': bank_bal,
+                                'Prepaid Expense': prepaid_exp_bal, 
+                                'Marketable Securities':market_sec_bal,
+                                'Other Liquid Assets': other_assets_bal,
+                                'Total Current Assets': getBSTotals(ledgerID)[0]
                             }
     return current_asset_lst
 
@@ -319,11 +319,11 @@ def nca_list_items(ledgerID):
             
         
         noncurrent_asset_lst = {
-                                'Property, Plant & Equipment': str(ppe_bal), 
-                                'Long Term Investment': str(investments_bal),
-                                'Intangible Asset': (intan_bal), 
-                                'Other Non Current Asset': str(other_nca_assets), 
-                                'Total Non Current Assets': str(getBSTotals(ledgerID)[1])
+                                'Property, Plant & Equipment': ppe_bal, 
+                                'Long Term Investment': investments_bal,
+                                'Intangible Asset': intan_bal, 
+                                'Other Non Current Asset': other_nca_assets, 
+                                'Total Non Current Assets': getBSTotals(ledgerID)[1]
                                 
                             }
     return noncurrent_asset_lst
@@ -360,9 +360,8 @@ def cl_list_items(ledgerID):
             else: 
                 st_loans_bal += liab.totalDebit - liab.totalCredit
 
-        current_liab_items= [
-                            {'Accounts Payable': payables_bal, 
-                            'Short Term Loans': st_loans_bal, 
+        current_liab_items= {'Accounts Payable': payables_bal, 
+                            'Short Term Loans':st_loans_bal, 
                             'Tax Payable': tax_payable,
                             'Accrued Expenses': accrued_exp_bal, 
                             'Current Portion of Long Term Loans': cportion_loan_bal, 
@@ -370,7 +369,7 @@ def cl_list_items(ledgerID):
                             'Other Current Liabilities': other_cliab_bal,
                             'Total Current Liabilities': getBSTotals(ledgerID)[2]
 
-        }]
+        }
     return current_liab_items
 
 def lt_list_items(ledgerID):
@@ -403,13 +402,13 @@ def lt_list_items(ledgerID):
                 bonds_bal += liab.totalDebit - liab.totalCredit
 
         long_term_liab_items= [
-                            {'Long Term Loan': str(lt_loan_bal), 
-                            'Deferred Taxation': str(def_tax_bal), 
-                            'Mortgage': str(mortgage_bal),
-                            'Bonds Payable': str(bonds_bal), 
-                            'Debentures': str(debentures), 
-                            'Other Long Term Liabilities': str(other_ltliab_bal),
-                            'Total Long Term Liabilities': str(getBSTotals(ledgerID)[3])
+                            {'Long Term Loan': lt_loan_bal, 
+                            'Deferred Taxation': def_tax_bal, 
+                            'Mortgage': mortgage_bal,
+                            'Bonds Payable': bonds_bal, 
+                            'Debentures': debentures, 
+                            'Other Long Term Liabilities': other_ltliab_bal,
+                            'Total Long Term Liabilities': getBSTotals(ledgerID)[3]
 
                             }]
     return long_term_liab_items
@@ -463,7 +462,7 @@ def generate_cashflow(busID, year =str(datetime.today().strftime('%Y'))):
             'Operating Activities': op_list_items(id),
             'Financing Activities': fin_list_items(id),
             'Long Term Liability': lt_list_items(id),
-            'Equity': str(calcCapital(id))
+            'Equity': calcCapital(id)
         })
     else: 
         return jsonify({'message': 'No general ledger'})

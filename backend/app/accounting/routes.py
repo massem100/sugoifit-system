@@ -569,19 +569,23 @@ def get_all_accounts(busID):
             if value is not None or value != []: 
                 for entry in value: 
                     balance = (entry.debitBalance if entry.debitBalance is not None else entry.creditBalance)
-                    if key == "NonCurrentAsset" or key == "CurrentAsset":
-                        final_list.append({'date': entry.acquisDATE, 'transaction_id': entry.id,
+                    if key == "NonCurrentAsset":
+                        final_list.append({'date': entry.acquisDATE, 'transaction_id': 'NCA' + str(entry.id),
                                            'transaction_name': entry.assetName, 'related_entry': entry.related_entry, 'amount': balance,'actions': 'true' })
-                    elif key == "Currentliability" or key == "Longtermliability":
-                        final_list.append({'date': entry.borwDATE, 'transaction_id': entry.id, 'transaction_name': entry.liabName, 'related_entry':entry.related_entry,'amount': balance, 'actions': 'true'})
+                    elif  key == "CurrentAsset":
+                        final_list.append({'date': entry.acquisDATE, 'transaction_id': 'CA' + str(entry.id),'transaction_name': entry.assetName, 'related_entry': entry.related_entry, 'amount': balance,'actions': 'true' })
+                    elif key == "Currentliability":
+                        final_list.append({'date': entry.borwDATE, 'transaction_id': 'CL'+ str(entry.id), 'transaction_name': entry.liabName, 'related_entry':entry.related_entry,'amount': balance, 'actions': 'true'})
+                    elif key == "Longtermliability":
+                        final_list.append({'date': entry.borwDATE, 'transaction_id': 'LT'  +str(entry.id), 'transaction_name': entry.liabName, 'related_entry':entry.related_entry,'amount': balance, 'actions': 'true'})
                     elif key == "OperatingRevenue":
-                        final_list.append({'date': entry.dateEarned, 'transaction_id': entry.id, 'transaction_name':entry.oprevName, 'related_entry': entry.related_entry, 'amount':balance, 'actions': 'true'})
+                        final_list.append({'date': entry.dateEarned, 'transaction_id': 'OR'+ str(entry.id), 'transaction_name':entry.oprevName, 'related_entry': entry.related_entry, 'amount':balance, 'actions': 'true'})
                     elif key == "NonOperatingRevenue":
-                        final_list.append({'date': entry.dateEarned, 'transaction_id': entry.id, 'transaction_name':entry.nOprevName, 'related_entry': entry.related_entry, 'amount':balance,'actions': 'true'})
+                        final_list.append({'date': entry.dateEarned, 'transaction_id': 'NOR' +str(entry.id), 'transaction_name':entry.nOprevName, 'related_entry': entry.related_entry, 'amount':balance,'actions': 'true'})
                     elif key == "OperatingExpense":
-                        final_list.append({'date': entry.dateIncurred, 'transaction_id': entry.id, 'transaction_name':entry.opexName, 'related_entry': entry.related_entry,'amount': balance,'actions': 'true'})
+                        final_list.append({'date': entry.dateIncurred, 'transaction_id': 'OE' + str(entry.id), 'transaction_name':entry.opexName, 'related_entry': entry.related_entry,'amount': balance,'actions': 'true'})
                     else:
-                        final_list.append({'date': entry.dateIncurred, 'transaction_id': entry.id, 'transaction_name':entry.nOpexName, 'related_entry': entry.related_entry, 'amount':balance,'actions': 'true'})
+                        final_list.append({'date': entry.dateIncurred, 'transaction_id': 'NOE' + str(entry.id), 'transaction_name':entry.nOpexName, 'related_entry': entry.related_entry, 'amount':balance,'actions': 'true'})
             else: 
                 print(value)
         return final_list

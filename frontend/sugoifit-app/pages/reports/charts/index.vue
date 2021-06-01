@@ -64,10 +64,10 @@
           <b-card no-body>
             <b-card-text class="d-flex justify-content-between align-items-center p-3">
               <div>
-                <h3 class="mb-0">
+                <h2 class="mb-0">
                   <font-awesome-icon :icon="['fas','dollar-sign']"></font-awesome-icon>
                   {{kFormatter(report.revenue)}}
-                </h3>
+                </h2>
                 <small>Total Revenue</small>
               </div>
               <div>
@@ -82,7 +82,7 @@
         <b-col lg="7" cols="12" class="py-3">
           <b-card class="h-100">
             <b-card-title class="d-flex justify-content-between flex-wrap align-items-center">
-              <h3 class="col-lg-5 col-md-12">Revenue</h3>
+              <h2 class="col-lg-5 col-md-12 ml-0">Revenue</h2>
               <div class="d-flex  col-lg-7 col-md-12">
                 <b-form-select v-model="selectedTitle" class="mx-2" :options="titleOptions" size="sm"></b-form-select>
                 <b-form-select v-model="selectedYear" class="mx-2" :options="yearOptions" size="sm"></b-form-select>
@@ -96,7 +96,7 @@
         <b-col lg="5" cols="12" class="py-3">
           <b-card class="h-100">
             <b-card-title>
-              <h3>Expenses</h3>
+              <h2>Expenses</h2>
             </b-card-title>
             <b-card-text class="d-flex align-items-center justify-content-center" style="height: calc( 100% - 50px)">
               <doughnut-chart :data="pieData" :options="pieOp" :height="200"></doughnut-chart>
@@ -105,8 +105,8 @@
         </b-col>
         <b-col cols="12">
           <b-card>
-            <b-card-title>Ratio Analysis</b-card-title>
-            <b-card-title>Profit Ability Ration</b-card-title>
+            <b-card-title class="h2">Ratio Analysis</b-card-title>
+            <!-- <b-card-title>Profit Ability Ration</b-card-title> -->
             <b-card-text>
               <b-table-simple responsive>
                 <b-thead>

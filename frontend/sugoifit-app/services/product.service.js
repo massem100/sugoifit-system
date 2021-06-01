@@ -7,16 +7,12 @@ export class productService  {
         let busID = localStorage.getItem('busID');
         return this.$axios.get(`/api/${busID}/products`)
         .then(res => {
-            return res.data;
+            let products = res.data;
+            console.log('from service-product.js', products);
+            return products;
+           
         })
-        /*let PATH_API = 'products';
-        return this.$axios({
-            url: `/api/${PATH_API}`,
-            method: "GET",
-            headers:{'Content-Type': 'application/json', },
-        }).then(res =>{
-            return res.data;
-        })*/
+       
     }
     addProduct(form_data) {
         let busID = localStorage.getItem('busID');
@@ -32,6 +28,20 @@ export class productService  {
             }
             return res.success;
         });
+    }
+    deleteProduct(id){
+        let busID = localStorage.getItem('busID'); 
+        return this.$axios({
+            url: `/api/${busID}/products/${id}`,
+            method: "DELETE", 
+            headers:{'Content-Type': 'application/json', },
+        }).then(res => {
+            return res.data;
+        }).then(res => {
+            if (res.message){
+                return res.message
+            }
+        })
     }
     handleResponse(response) {
         return response.text().then(text => {

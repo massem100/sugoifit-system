@@ -30,12 +30,16 @@ product = Blueprint('product', __name__)
 
 @product.route('/api/<busID>/products/<prodID>', methods = ['PUT', 'DELETE'])
 def delete_product(busID, prodID):
-    busID = current_user.busID 
     if request.method == 'DELETE': 
-        product = Product.query.get(prodID)
-        db.session.delete(product)
-        db.session.commit() 
-        return jsonify({'message': 'Product {} has been deleted.'}.format(prodID))
+        product = db.session.query(Product).filter_by(busID =busID, prodID = prodID).first()
+        print(product)
+        if product is not None:
+
+            db.session.delete(product)
+            db.session.commit() 
+            return jsonify({'message': 'Product {} has been deleted.'.format(prodID)})
+        else: 
+            return jsonify({'message': 'No product found'})
 
     if request.method == 'PUT': 
         pass

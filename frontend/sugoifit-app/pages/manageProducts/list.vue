@@ -34,19 +34,25 @@
 
         <b-col cols="12" class="my-4">
           
-            <b-table striped hover :items="allproducts"
+            <b-table striped hover :items="products"
                                   :fields="fields" 
                                   :filter="search" 
                                   :per-page="perPage" 
                                   :current-page="currPage">
-              <template v-slot:cell(image)="data">
-                <img :src="path+'/static/uploads'+data.products.image" alt="">
+             <template #cell(image)="data" >
+                <img class="d-flex flex-row justify-content-center" style="width: 4rem; height: 4rem;" :src="path + data.value" alt="">
               </template>
-              
-              <template v-slot:cell(actions)="data">
-                <b-button variant="danger" @click="deleteItem(data.products.id)"> Delete </b-button>
+                <template #cell(actions)="data">
+                  <b-button size="sm" variant="primary"  class="mr-2">
+                     Edit
+                  </b-button>
+                  <b-button size="sm" variant="danger" @click="deleteProduct(data.item.prodID)" class="mr-2">
+                    Delete
+                  </b-button>
+                  
               </template>
-            </b-table>
+           
+            </b-table> 
           
           <b-pagination v-model="currPage" :total-rows="rows" :per-page="perPage"></b-pagination>
         </b-col>
@@ -69,47 +75,41 @@
         },
         data() {
             return {
-              path: 'http://localhost:8080',
-              title: 'Products',
-            }
-        },
-        data() {
-            return {
+                path: 'http://localhost:8080/static/uploads/',
+                title: 'Products',
                 alert_message: '',
                 perPage: 5,
                 currPage: 1,
                 search: '',
-                fields: ["name","price","tax","status","image","actions"],
+                fields: ["image","prodName","unit_price","taxPercent","prodStatus","actions"],
+                product_lst: this.products,
             }
         },
-         computed: {
-            ...mapGetters(['products/allproducts']),
+        created(){
+            this.$store.dispatch('products/displayProducts');
+        },
+        computed: {
+            ...mapGetters({
+              products: 'products/allProducts',
+            }),         
+           
             rows() {
-              return this.$store.state.products.length
+              return this.products.length
             }
         },
         mounted() {
-          this.$store.dispatch('products/displayProducts');
         },
         methods: {
             /* ADD AN ALERT OPTION BEFORE DELETING */
-            deleteItem(id) {
-                const index = this.items.indexOf((x) => x.id == id);
-                this.items.splice(index, 1);
+            deleteProduct(id) {
+                this.$store.dispatch('products/deleteProduct', id);
+                
             }
         }
     }
 </script>
 
 <style scoped>
-  /*.row {*/
-  /*  display: flex;*/
-  /*  flex-direction: row;*/
-  /*}*/
-  /*  .col {*/
-  /*    display: flex;*/
-  /*    flex-direction: column;*/
-  /*  }*/
   #chartDiv {
     width: 50%;
     height: 30%;

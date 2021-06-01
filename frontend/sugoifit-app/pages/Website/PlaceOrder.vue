@@ -15,8 +15,8 @@
                                     :src=" 'http://localhost:8080/static/uploads/' + product.image" 
                                 />
                             </b-row>
-                            <b-col class="card-text d-flex flex-column text-black text-left align-items-start justify-content-center ">
-                                <h4 v-text="product.prodName"></h4>
+                            <b-col class="card-text d-flex flex-column text-black text-left align-items-start justify-content-start ">
+                                <h4 class="mt-3" v-text="product.prodName"></h4>
                                 <b-row class=""> 
                                     <span class="text-left m-2"> Quantity: </span>
                                     <b-form-input class="m-2" 

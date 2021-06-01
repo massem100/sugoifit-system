@@ -106,13 +106,16 @@
                             <b-form-invalid-feedback> {{ errors[0] }}</b-form-invalid-feedback>
                         </validation-provider>
                     </div>
-                    <button 
+                    <div class="d-flex flex-row justify-content-center">
+                             <button 
                         @click="TeamAdd" 
                         type="button" 
-                        class="btn bus-btn "
+                        class="btn bus-btn bg-primary "
                         >
                         Next
                     </button>
+                    </div>
+                   
                 <!-- </b-form> -->
                 </validation-observer>
             </div>
@@ -126,7 +129,7 @@
 export default{
   components: {  },
     name: 'about-businessDetails', 
-    layout: 'onboarding',
+    layout: 'DashboardLayout',
     head(){
           return{
               title: 'About the Business'
@@ -246,7 +249,7 @@ export default{
         }
 
         .about-business-main{
-            margin-left: 20rem;
+            /* margin-left: 20rem; */
         }
     }
     /* Large devices (laptops/desktops, 992px and up) */

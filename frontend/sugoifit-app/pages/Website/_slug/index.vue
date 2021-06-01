@@ -44,22 +44,32 @@
                 </li>
             </draggable>  -->
             <!-- Updated Product Section -->
+
             <b-col class="mt-5 pt-3 ">
                 <b-row>
-                    <h2 class = "w-25" >Shop Products</h2>
+                    <b-col>
+                            <h2 class = "w-25" >Shop Products</h2>  
+                            <div id ="message-alert" v-if ="message" :v-model="message" class="alert alert-success d-flex justify-content-center">{{message}}</div>
+                    </b-col>
+                    
+
                    
                  </b-row>
                 <ul id="products-div" class="row mt-4 list-unstyled"> 
+                    
                     
                     <li v-for="product in products" :key="product.prodID" 
                         class="d-flex flex-column align-items-center m-2 p-1"
                     >
                         <img class="product" :src=" 'http://localhost:8080/static/uploads/' + product.image"  alt=""> 
                         <h4 class="mt-3">{{product.prodName}}</h4>
+                        <p> {{product.prodID}}</p>
+                        <p> {{product.prodDesc}}</p>
                         <!-- <h6 class="text-center" :style="[{font: `300 0.75rem 'Poppins'`}, {width: '14rem'}]">{{product.desc}}</h6> -->
                         <h3>${{product.unit_price}}</h3>
                         <button @click="AddToCart(product.prodID)" class="btn mt-0  bg-secondary">Add to Cart</button>
                     </li>
+                 
 
             </ul>
              <b-pagination class="d-flex flex-row justify-content-center border-radius-0" 
@@ -82,6 +92,7 @@
                     <div class="mb-2 text-center">
                         <h3 > Welcome to my Boutique </h3>
                         <p> Young aspiring entrepreneur, spreading love and peace through style</p>
+                        <p> Placed an order? Upload Proof of payment</p>
                     </div>
                     <div class="d-flex flex-column align-items-center ">
                         <b-form id="receipt-upload" class="form-style" @submit.prevent="SubmitPayment" method="POST" enctype="multipart/form-data">
@@ -137,30 +148,30 @@
                 
             </b-row>
             <!-- contact section -->
-             <div id="contact">
+             <div id="contact" class="d-flex flex-column align-items-center w-100 ">
                 <h2>Contact us!</h2>
                 <p>Contact us today, and get reply with in 24 hours!</p>
 
-                <form id="contact-us" @submit.prevent="SendEmail" method="POST">
-                    <fieldset>
+                <form id="contact-us" class=""   @submit.prevent="SendEmail" method="POST">
+                    <div class="m-2">
                         <label for="name">Full Name</label>
-                        <input placeholder="" type="text" tabindex="1" required >
-                    </fieldset>
-                    <fieldset>
+                        <b-form-input placeholder="" type="text" tabindex="1" required ></b-form-input>
+                    </div>
+                    <div class="m-2">
                         <label for="mail">Email Address</label>
-                        <input placeholder="" type="email" tabindex="2" required>
-                    </fieldset>
-                    <fieldset>
+                        <b-form-input placeholder="" type="email" tabindex="2" required></b-form-input>
+                    </div>
+                    <div class="m-2">
                         <label for="num">Phone Number</label>
-                        <input placeholder="" type="tel" tabindex="3" required>
-                    </fieldset>
-                    <fieldset>
+                        <b-form-input placeholder="" type="tel" tabindex="3" required></b-form-input>
+                    </div>
+                    <div  class="m-2">
                         <label for="message">Message</label>
-                        <textarea placeholder="" tabindex="5" required></textarea>
-                    </fieldset>
-                    <fieldset>
-                        <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
-                    </fieldset>
+                        <b-textarea placeholder="" tabindex="5" required></b-textarea>
+                    </div>
+                    <div class="d-flex flex-row justify-content-center m-2">
+                        <b-button class= "" name="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</b-button>
+                    </div>
                 </form>
     
             </div> 
@@ -189,6 +200,7 @@ export default {
         return{ 
             cart_confirm: '', 
             text: 'Shop Products',
+            message: '', 
             anotherlist: ['first', 'second'],
             somelist: [
                 {
@@ -309,6 +321,17 @@ export default {
                 
                 // Save back to localStorage
                 localStorage.setItem('cart', JSON.stringify(cart));
+                this.message = "Product added to cart";
+                // this.$store.dispatch('alert/success',"Product added to cart", {root:true} );
+                setTimeout(function(){ 
+                    
+                    let alert = document.getElementById("message-alert");
+                    alert.classList.remove("alert");
+                    alert.classList.remove("alert-success");
+                    this.message='';
+                    }, 2000);
+                    
+                    
 
                 // console.log('Updated String Cart', cart);
                 this.cart_confirm = 'Product already in cart';

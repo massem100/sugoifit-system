@@ -31,41 +31,32 @@
                 <td class="pl-5">{{line_item}}</td>
                 <td class="text-right">{{bal}}</td>
               </tr>
-               <tr  class="br-bottom">
-                <td class="pl-4">Total Non Current Assets</td>
-                <td class="text-right">{{total.nca_total}}</td>
-              </tr>
               <tr  class="br-bottom">
                 <td class="pl-4">Current Assets</td>
-                <td class="text-right">$20</td>
+                <td class="text-right"></td>
               </tr>
-              <tr v-for= "asset in current_assets" :key="asset[1]" class="br-bottom">
-                <td class="pl-5">{{asset[0]}}</td>
-                <td class="text-right">{{asset[1]}}</td>
-              </tr>
-             
-              <tr class="br-bottom">
-                <td class="pl-4">Non Current Assets</td>
-                <td class="text-right">$20</td>
+              <tr v-for= "(asset, index) in current_assets" :key="index" class="br-bottom">
+                <td class="pl-5">{{index}}</td>
+                <td class="text-right">{{asset}}</td>
               </tr>
               <tr>
                 <td class="font-weight-bold">Total Assets</td>
-                <td class="text-right font-weight-bold">$40</td>
+                <td class="text-right font-weight-bold"></td>
               </tr>
               <tr class="br-bottom">
                 <td class="font-weight-bold">Equity</td>
-                <td class="text-right font-weight-bold">$40</td>
+                <td class="text-right font-weight-bold"></td>
               </tr>
               <tr class="br-bottom">
                 <td colspan="2" class="font-weight-bold">Liabilities</td>
               </tr>
               <tr class="br-bottom">
                 <td class="pl-4">Long Term liabilities</td>
-                <td class="text-right">$20</td>
+                <td class="text-right"></td>
               </tr>
               <tr class="br-bottom">
                 <td class="pl-4">Current liabilities</td>
-                <td class="text-right">$20</td>
+                <td class="text-right"></td>
               </tr>
               <tr v-for= "liab_item in liab" :key="liab_item[0]" class="br-bottom">
                 <td class="pl-5">{{liab_item[0]}}</td>
@@ -73,11 +64,11 @@
               </tr>
               <tr>
                 <td class="font-weight-bold">Total Liabilities</td>
-                <td class="text-right font-weight-bold">$40</td>
+                <td class="text-right font-weight-bold"></td>
               </tr>
               <tr>
                 <td class="font-weight-bold">Total Liabilities & Equity</td>
-                <td class="text-right font-weight-bold">$40</td>
+                <td class="text-right font-weight-bold"></td>
               </tr>
               </tbody>
             </table>
@@ -130,12 +121,15 @@ import BackButton from '../../../../components/argon-core/BackButton.vue';
               }).then(res =>{
                   if (res){
                       self.line_items = res;
-                      self.current_assets= res["Current Asset"]; 
+                      console.log(res);
+                      console.log(res["Current Asset"]);
+
+                      self.current_assets= res["currentAsset"]; 
                       self.non_current_assets= res["Non Current Asset"]; 
                       self.current_liabilities.push(res["Current Liabilities"]); 
                       self.long_term_liabilities= res["Long Term Liability"]; 
-                      let ap = new Number(self.current_liabilities["Accounts Payable"]);
-                      self.liab.push(["Accounts Payable",ap] );
+                      console.log(this.current_liabilities);
+                      self.liab.push(["Accounts Payable",self.current_liabilities["Accounts Payable"]] );
                       self.liab.push(["Current Portion of Long Term Loans", self.current_liabilities["Current Portion of Long Term Loans"]]);
                       self.liab.push(["Other Current Liabilities", self.current_liabilities["Other Current Liabilities"]]);
                       self.liab.push(["Short Term Loans", self.current_liabilities["Short Term Loans"]]);
